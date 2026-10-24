@@ -1,0 +1,3923 @@
+game_version: v4.5.2
+generator: 1
+quantity: district_slots
+facts:
+- id: district_slots.ascension_perk.ap_voidborn.habitat_max_districts_add
+  effect: modifies
+  modifier: habitat_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: ascension_perk
+    key: ap_voidborn
+    name: Voidborne
+    file: common/ascension_perks/00_ascension_perks.txt
+  requirement:
+  - is_void_dweller_empire = no
+  - is_wilderness_empire = no
+- id: district_slots.ascension_perk.ap_voidborn.pc_ark_max_districts_add
+  effect: modifies
+  modifier: pc_ark_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: ascension_perk
+    key: ap_voidborn
+    name: Voidborne
+    file: common/ascension_perks/00_ascension_perks.txt
+  requirement:
+  - is_void_dweller_empire = no
+  - is_wilderness_empire = no
+  - is_nomadic = yes
+- id: district_slots.ascension_perk.ap_wanderlust.planet_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: ascension_perk
+    key: ap_wanderlust
+    name: Wanderlust
+    file: common/ascension_perks/00_ascension_perks.txt
+  requirement:
+  - has_nomads_dlc = yes
+  - NOT(has_ascension_perk = ap_wanderlust)
+  - is_nomadic = yes
+- id: district_slots.ascension_perk.ap_wanderlust.planet_artificial_max_districts_add#2
+  effect: modifies
+  modifier: planet_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: ascension_perk
+    key: ap_wanderlust
+    name: Wanderlust
+    file: common/ascension_perks/00_ascension_perks.txt
+  requirement:
+  - has_nomads_dlc = yes
+  - NOT(has_ascension_perk = ap_wanderlust)
+  - is_nomadic = yes
+  - OR(has_country_flag = ancient_wonders_completed ; has_country_flag = antique_threat_completed ; has_country_flag = enclave_completed ; has_country_flag = galactic_landmark_completed ; has_country_flag = marauder_completed ; has_country_flag = natural_spectacle_completed ; has_country_flag = precursor_completed ; has_country_flag = space_ecology_completed)
+  - 'calc_true_if: amount >= 4'
+  - 'calc_true_if: OR(has_country_flag = ancient_wonders_completed ; check_variable: which = ancient_wonders_system_count ; check_variable: value = 0)'
+  - 'calc_true_if: OR(has_country_flag = antique_threat_completed ; check_variable: which = antique_threat_system_count ; check_variable: value = 0)'
+  - 'calc_true_if: OR(has_country_flag = enclave_completed ; check_variable: which = enclave_system_count ; check_variable: value = 0)'
+  - 'calc_true_if: OR(has_country_flag = galactic_landmark_completed ; check_variable: which = galactic_landmark_system_count ; check_variable: value = 0)'
+  - 'calc_true_if: OR(has_country_flag = marauder_completed ; check_variable: which = marauder_system_count ; check_variable: value = 0)'
+  - 'calc_true_if: OR(has_country_flag = natural_spectacle_completed ; check_variable: which = natural_spectacle_system_count ; check_variable: value = 0)'
+  - 'calc_true_if: OR(has_country_flag = precursor_completed ; check_variable: which = precursor_system_count ; check_variable: value = 0)'
+  - 'calc_true_if: OR(has_country_flag = space_ecology_completed ; check_variable: which = space_ecology_system_count ; check_variable: value = 0)'
+- id: district_slots.building.building_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_capital
+    name: Planetary Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony ; uses_habitat_capitals = yes ; is_planet_class = pc_cosmogenesis_world)
+  - sapient_pop_amount >= 1000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_capital
+    name: Planetary Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony ; uses_habitat_capitals = yes ; is_planet_class = pc_cosmogenesis_world)
+  - sapient_pop_amount >= 1000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_capital
+    name: Planetary Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony ; uses_habitat_capitals = yes ; is_planet_class = pc_cosmogenesis_world)
+  - sapient_pop_amount >= 1000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_capital_wilderness.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_capital_wilderness
+    name: Planetary Root Bundle
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value <= 10'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_capital_wilderness.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_capital_wilderness
+    name: Planetary Root Bundle
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value <= 10'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_capital_wilderness.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_capital_wilderness
+    name: Planetary Root Bundle
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value <= 10'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_colony_shelter_wilderness.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_colony_shelter_wilderness
+    name: Planetary Tendrils
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_colony_shelter_wilderness.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_colony_shelter_wilderness
+    name: Planetary Tendrils
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_colony_shelter_wilderness.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_colony_shelter_wilderness
+    name: Planetary Tendrils
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_deployment_post.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_deployment_post
+    name: Deployment Post
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_deployment_post.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_deployment_post
+    name: Deployment Post
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_deployment_post.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_deployment_post
+    name: Deployment Post
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_hab_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_capital
+    name: Habitat Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_1
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_hab_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_capital
+    name: Habitat Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_1
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_hab_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_capital
+    name: Habitat Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_1
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_hab_major_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_major_capital
+    name: Habitat Central Control
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_2
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 1000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_hab_major_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_major_capital
+    name: Habitat Central Control
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_2
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 1000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_hab_major_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_major_capital
+    name: Habitat Central Control
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_2
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 1000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_hab_system_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_system_capital
+    name: Habitat System Control
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_3
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_hab_system_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_system_capital
+    name: Habitat System Control
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_3
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_hab_system_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_system_capital
+    name: Habitat System Control
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_3
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_hive_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_capital
+    name: Hive Core
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_hive_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_capital
+    name: Hive Core
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_hive_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_capital
+    name: Hive Core
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_hive_major_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_major_capital
+    name: Hive Nexus
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_hive_major_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_major_capital
+    name: Hive Nexus
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_hive_major_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_major_capital
+    name: Hive Nexus
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_imperial_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_capital
+    name: Imperial Palace
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_galactic_emperor = yes'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_imperial_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_capital
+    name: Imperial Palace
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_galactic_emperor = yes'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_imperial_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_capital
+    name: Imperial Palace
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_galactic_emperor = yes'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_imperial_capital_wilderness.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_capital_wilderness
+    name: Imperial Complex
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: is_galactic_emperor = yes'
+  - 'owner: is_wilderness_empire = yes'
+  - 'planet: is_capital = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value = 0'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_imperial_capital_wilderness.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_capital_wilderness
+    name: Imperial Complex
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: is_galactic_emperor = yes'
+  - 'owner: is_wilderness_empire = yes'
+  - 'planet: is_capital = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value = 0'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_imperial_capital_wilderness.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_capital_wilderness
+    name: Imperial Complex
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: is_galactic_emperor = yes'
+  - 'owner: is_wilderness_empire = yes'
+  - 'planet: is_capital = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value = 0'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_imperial_hive_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_hive_capital
+    name: Imperial Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_galactic_emperor = yes'
+  - 'owner: is_wilderness_empire = no'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_imperial_hive_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_hive_capital
+    name: Imperial Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_galactic_emperor = yes'
+  - 'owner: is_wilderness_empire = no'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_imperial_hive_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_hive_capital
+    name: Imperial Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_galactic_emperor = yes'
+  - 'owner: is_wilderness_empire = no'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_imperial_machine_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_machine_capital
+    name: Imperial Center
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_galactic_emperor = yes'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_imperial_machine_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_machine_capital
+    name: Imperial Center
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_galactic_emperor = yes'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_imperial_machine_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_machine_capital
+    name: Imperial Center
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_galactic_emperor = yes'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_lathe_major_capital.pc_cosmogenesis_world_max_districts_add
+  effect: modifies
+  modifier: pc_cosmogenesis_world_max_districts_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_lathe_major_capital
+    name: 'Processing Unit: Parallelized'
+    file: common/buildings/20_machine_age_buildings.txt
+  requirement:
+  - uses_district_set = cosmogenesis_world
+  - exists = owner
+  - 'owner: has_ascension_perk = ap_cosmogenesis'
+- id: district_slots.building.building_lathe_super_capital.pc_cosmogenesis_world_max_districts_add
+  effect: modifies
+  modifier: pc_cosmogenesis_world_max_districts_add
+  amount: 4
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_lathe_super_capital
+    name: 'Processing Unit: Vectorial'
+    file: common/buildings/20_machine_age_buildings.txt
+  requirement:
+  - uses_district_set = cosmogenesis_world
+  - exists = owner
+  - 'owner: has_ascension_perk = ap_cosmogenesis'
+- id: district_slots.building.building_machine_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_capital
+    name: Administrative Array
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire ; is_country_type = mechanocalibrator)'
+  - 'owner: is_fallen_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - sapient_pop_amount >= 1000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_machine_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_capital
+    name: Administrative Array
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire ; is_country_type = mechanocalibrator)'
+  - 'owner: is_fallen_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - sapient_pop_amount >= 1000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_machine_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_capital
+    name: Administrative Array
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire ; is_country_type = mechanocalibrator)'
+  - 'owner: is_fallen_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - sapient_pop_amount >= 1000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_machine_major_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_major_capital
+    name: Planetary Processor
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_machine_major_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_major_capital
+    name: Planetary Processor
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_machine_major_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_major_capital
+    name: Planetary Processor
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_machine_system_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_system_capital
+    name: Primary Nexus
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_machine_system_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_system_capital
+    name: Primary Nexus
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_machine_system_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_system_capital
+    name: Primary Nexus
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_major_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_major_capital
+    name: Planetary Capital
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony)
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_major_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_major_capital
+    name: Planetary Capital
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony)
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_major_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_major_capital
+    name: Planetary Capital
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony)
+  - sapient_pop_amount >= 2500
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_major_capital_wilderness.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_major_capital_wilderness
+    name: Planetary Root Complex
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value <= 5'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_major_capital_wilderness.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_major_capital_wilderness
+    name: Planetary Root Complex
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value <= 5'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_major_capital_wilderness.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_major_capital_wilderness
+    name: Planetary Root Complex
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value <= 5'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_resort_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_resort_capital
+    name: Resort Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = resort_colony
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_resort_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_resort_capital
+    name: Resort Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = resort_colony
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_resort_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_resort_capital
+    name: Resort Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = resort_colony
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_resort_major_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_resort_major_capital
+    name: Resort Capital-Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = resort_colony
+  - sapient_pop_amount >= 2000
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_resort_major_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_resort_major_capital
+    name: Resort Capital-Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = resort_colony
+  - sapient_pop_amount >= 2000
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_resort_major_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_resort_major_capital
+    name: Resort Capital-Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = resort_colony
+  - sapient_pop_amount >= 2000
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_slave_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_slave_capital
+    name: Governor's Palace
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = slave_colony
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_slave_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_slave_capital
+    name: Governor's Palace
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = slave_colony
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_slave_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_slave_capital
+    name: Governor's Palace
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = slave_colony
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_slave_major_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_slave_major_capital
+    name: Governor's Estates
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = slave_colony
+  - sapient_pop_amount >= 2000
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_slave_major_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_slave_major_capital
+    name: Governor's Estates
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = slave_colony
+  - sapient_pop_amount >= 2000
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_slave_major_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_slave_major_capital
+    name: Governor's Estates
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = slave_colony
+  - sapient_pop_amount >= 2000
+  - exists = owner
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_system_capital.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_system_capital
+    name: System Capital-Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony)
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_system_capital.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_system_capital
+    name: System Capital-Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony)
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_system_capital.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_system_capital
+    name: System Capital-Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony)
+  - sapient_pop_amount >= 5000
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.building.building_system_capital_wilderness.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_system_capital_wilderness
+    name: Planetary Root Nexus
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value = 0'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 1
+- id: district_slots.building.building_system_capital_wilderness.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_system_capital_wilderness
+    name: Planetary Root Nexus
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value = 0'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 5
+- id: district_slots.building.building_system_capital_wilderness.planet_max_districts_add#3
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_system_capital_wilderness
+    name: Planetary Root Nexus
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value = 0'
+  - 'owner: has_active_tradition = tr_virtuality_5'
+  - has_planetary_ascension_tier >= 10
+- id: district_slots.civic.civic_corporate_world_forgers.pc_volcanic_max_districts_add
+  effect: modifies
+  modifier: pc_volcanic_max_districts_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: civic
+    key: civic_corporate_world_forgers
+    name: Planetary Architects
+    file: common/governments/civics/03_corporate_civics.txt
+  requirement:
+  - 'ethics: NOT(value = ethic_gestalt_consciousness)'
+  - 'OR(authority: value = auth_corporate ; civics: value = civic_galactic_sovereign_megacorp)'
+- id: district_slots.civic.civic_hive_world_forgers.pc_volcanic_max_districts_add
+  effect: modifies
+  modifier: pc_volcanic_max_districts_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: civic
+    key: civic_hive_world_forgers
+    name: Volcanic Nesting
+    file: common/governments/civics/02_gestalt_civics.txt
+  requirement:
+  - 'authority: value = auth_hive_mind'
+- id: district_slots.civic.civic_machine_world_forgers.pc_volcanic_max_districts_add
+  effect: modifies
+  modifier: pc_volcanic_max_districts_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: civic
+    key: civic_machine_world_forgers
+    name: Thermal Optimizers
+    file: common/governments/civics/02_gestalt_civics.txt
+  requirement:
+  - 'authority: value = auth_machine_intelligence'
+- id: district_slots.civic.civic_world_forgers.pc_volcanic_max_districts_add
+  effect: modifies
+  modifier: pc_volcanic_max_districts_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: civic
+    key: civic_world_forgers
+    name: Planet Forgers
+    file: common/governments/civics/00_civics.txt
+  requirement:
+  - is_nomadic = no
+  - 'ethics: NOT(value = ethic_gestalt_consciousness)'
+  - 'authority: NOR(value = auth_corporate ; value = auth_machine_intelligence)'
+- id: district_slots.civic.origin_subterranean.planet_non_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_non_artificial_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: civic
+    key: origin_subterranean
+    name: Subterranean
+    file: common/governments/civics/00_origins.txt
+  requirement:
+  - 'species_archetype: NOT(value = MACHINE)'
+- id: district_slots.civic.origin_subterranean_machines.planet_non_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_non_artificial_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: civic
+    key: origin_subterranean_machines
+    name: Subterranean Machines
+    file: common/governments/civics/00_origins.txt
+  requirement:
+  - 'species_archetype: value = MACHINE'
+- id: district_slots.civic.origin_void_dwellers.habitat_max_districts_add
+  effect: modifies
+  modifier: habitat_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: civic
+    key: origin_void_dwellers
+    name: Void Dwellers
+    file: common/governments/civics/00_origins.txt
+  requirement:
+  - 'species_archetype: NOT(value = MACHINE)'
+- id: district_slots.civic.origin_void_machines.habitat_max_districts_add
+  effect: modifies
+  modifier: habitat_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: civic
+    key: origin_void_machines
+    name: Voidforged
+    file: common/governments/civics/00_origins.txt
+  requirement:
+  - 'species_archetype: value = MACHINE'
+- id: district_slots.deposit.d_abandoned_cities.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_abandoned_cities
+    name: Abandoned Cities
+    file: common/deposits/13_machine_age_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_active_volcano.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_active_volcano
+    name: Active Volcano
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - has_technology = tech_volcano
+  - planet_size >= 10
+- id: district_slots.deposit.d_archaeological_site.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_archaeological_site
+    name: Archaeological Site
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_assimilators_ruins.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_assimilators_ruins
+    name: Silent Ruins
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_aura_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_aura_blocker
+    name: Shrouded Vegetation
+    file: common/deposits/15_shroud_deposits.txt
+  requirement:
+  - has_shroud_dlc = yes
+  - exists = owner
+  - 'owner: NOR(has_covenant_with_the_composer_of_strands = yes ; has_country_flag = forging_our_own_path)'
+- id: district_slots.deposit.d_big_nature_preserve_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_big_nature_preserve_blocker
+    name: Nature Preserve
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_biological_enclaves.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_biological_enclaves
+    name: Biological Enclaves
+    file: common/deposits/13_machine_age_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_bioship_remains.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_bioship_remains
+    name: Biological Ship Remains
+    file: common/deposits/15_biogenesis_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_blue_lava.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_blue_lava
+    name: Blue Lava
+    file: common/deposits/15_strange_worlds_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_bomb_crater.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_bomb_crater
+    name: Bomb Crater
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - is_planet_class = pc_nuked
+- id: district_slots.deposit.d_cd_ancient_tunnels.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  scaled_by: cd_pods_var
+  source:
+    kind: deposit
+    key: d_cd_ancient_tunnels
+    name: Ancient Tunnels
+    file: common/deposits/15_infernals_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_city_ruins.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_city_ruins
+    name: City Ruins
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - is_planet_class = pc_nuked
+  - is_planet_class = pc_relic
+- id: district_slots.deposit.d_coagulated_landscape.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_coagulated_landscape
+    name: Coagulated Landscape
+    file: common/deposits/15_strange_worlds_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_collapsed_burrows.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_collapsed_burrows
+    name: Collapsed Burrows
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_collapsed_spire.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_collapsed_spire
+    name: Collapsed Spire
+    file: common/deposits/06_ancient_relics_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_compact_modules.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_compact_modules
+    name: Compact Module Space
+    file: common/deposits/17_nomads_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_crater.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_crater
+    name: Impact Crater
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_crumbling_mining_tunnels.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_crumbling_mining_tunnels
+    name: Crumbling Mining Tunnels
+    file: common/deposits/06_ancient_relics_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_dangerous_wildlife_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_dangerous_wildlife_blocker
+    name: Dangerous Wildlife
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - has_technology = tech_dangerous_wildlife
+  - planet_size >= 10
+  - NOT(is_planet_class = pc_volcanic)
+- id: district_slots.deposit.d_decrepit_dwellings.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_decrepit_dwellings
+    name: Sprawling Slums
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_decrepit_tunnels_1.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_decrepit_tunnels_1
+    name: Decrepit Tunnels
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_decrepit_tunnels_2.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_decrepit_tunnels_2
+    name: Decrepit Tunnels
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_decrepit_tunnels_3.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_decrepit_tunnels_3
+    name: Decrepit Tunnels
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_deep_sinkhole.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_deep_sinkhole
+    name: Deep Sinkhole
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - has_technology = tech_deep_sinkhole
+  - is_dry = yes
+- id: district_slots.deposit.d_dense_jungle.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_dense_jungle
+    name: Dense Jungle
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - has_technology = tech_dense_jungle
+  - is_wet = yes
+- id: district_slots.deposit.d_devastated_cities.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_devastated_cities
+    name: Devastated Settlements
+    file: common/deposits/15_biogenesis_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_devoured_continent.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_devoured_continent
+    name: Devoured Biosphere
+    file: common/deposits/15_biogenesis_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_dimensional_manipulation_device.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 5
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_dimensional_manipulation_device
+    name: Dimensional Manipulation Device
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_eater_deposit.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_eater_deposit
+    name: Shrouded Crater
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_egg_cracking.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_egg_cracking
+    name: Rifts
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_exploited_deposit_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_exploited_deposit_blocker
+    name: Exhausted Deposit
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_exterminators_ruins.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_exterminators_ruins
+    name: Former Organic City
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_failing_infrastructure.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_failing_infrastructure
+    name: Industrial Wasteland
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_failing_infrastructure_earth.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_failing_infrastructure_earth
+    name: Industrial Wasteland
+    file: common/deposits/05_starting_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_flooded_reactor_pits.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_flooded_reactor_pits
+    name: Flooded Reactor Pits
+    file: common/deposits/06_ancient_relics_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_floodplains.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_floodplains
+    name: Growing Floodplains
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_forgotten_civilization.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_forgotten_civilization
+    name: Forgotten Civilization
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_forgotten_level.planet_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_artificial_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_forgotten_level
+    name: Reclaimed Level
+    file: common/deposits/17_nomads_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_former_battlefield.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_former_battlefield
+    name: Battlefield Remnants
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_fractal_seed.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_fractal_seed
+    name: Fractal Seed
+    file: common/deposits/11_astral_planes_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_fungoid_extermination.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_fungoid_extermination
+    name: Fungoid Extermination Residue
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_genesis_preserve.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_genesis_preserve
+    name: Genesis Preserve
+    file: common/deposits/13_machine_age_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_georadiation_displacement.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_georadiation_displacement
+    name: Georadiation Displacement
+    file: common/deposits/16_extreme_frontiers_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_ghostly_canyon.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_ghostly_canyon
+    name: Ghostly Canyon
+    file: common/deposits/12_cosmic_storms_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_gravity_storm_1_districts.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_gravity_storm_1_districts
+    name: Compacted Plains
+    file: common/deposits/12_cosmic_storms_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_gravity_storm_3_engineering.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_gravity_storm_3_engineering
+    name: Gravitational Caves
+    file: common/deposits/12_cosmic_storms_deposits.txt
+  requirement:
+  - always = no
+  - always = yes
+- id: district_slots.deposit.d_great_pacific_garbage_patch.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_great_pacific_garbage_patch
+    name: Great Pacific Garbage Patch
+    file: common/deposits/05_starting_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_house_turtle.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_house_turtle
+    name: Juvenile Nemma
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_invasion_site.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_invasion_site
+    name: Invasion Site
+    file: common/deposits/15_biogenesis_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_kaiju_lair.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_kaiju_lair
+    name: Slumbering Kaijus
+    file: common/deposits/15_biogenesis_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_landgrab_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -4
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_landgrab_blocker
+    name: Foreign Holdings
+    file: common/deposits/09_first_contact_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_landgrab_foreign_holdings.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_landgrab_foreign_holdings
+    name: Remote Holdings
+    file: common/deposits/09_first_contact_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_lethal_ecosphere_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_lethal_ecosphere_blocker
+    name: Lethal Ecosphere
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_liquid_dark_matter.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_liquid_dark_matter
+    name: Liquid Dark Matter
+    file: common/deposits/15_strange_worlds_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_lithoid_crater.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 6
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_lithoid_crater
+    name: Massive Crater
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_origin = origin_lithoid'
+- id: district_slots.deposit.d_lithoid_devastation.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_lithoid_devastation
+    name: Lithoid Devastation
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_living_snow_reserve.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_living_snow_reserve
+    name: Living Snow Reserve
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_machine_empire_ruins.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_machine_empire_ruins
+    name: Long-Abandoned City
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_machine_ongoing_construction.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_machine_ongoing_construction
+    name: Unfinished Construction
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_machine_prototype_pc_machine.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_machine_prototype_pc_machine
+    name: Prototype Machinery
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_magnetic_storm_1_minerals.planet_non_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_non_artificial_max_districts_add
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_magnetic_storm_1_minerals
+    name: Magnetized Ore
+    file: common/deposits/12_cosmic_storms_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_magnetic_storm_3_mix.planet_non_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_non_artificial_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_magnetic_storm_3_mix
+    name: Skybound Plateaus
+    file: common/deposits/12_cosmic_storms_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_malfunctioning_reactor.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -5
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_malfunctioning_reactor
+    name: Malfunctioning Reactor
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_mass_graves.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_mass_graves
+    name: Mass Graves
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_massive_crevice.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_massive_crevice
+    name: Massive Crevice
+    file: common/deposits/06_ancient_relics_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_massive_glacier.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_massive_glacier
+    name: Massive Glacier
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - has_technology = tech_massive_glacier
+  - is_cold = yes
+- id: district_slots.deposit.d_mothballed_facilities.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_mothballed_facilities
+    name: Mothballed Facilities
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_mountain_range.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_mountain_range
+    name: Impassable Mountains
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - has_technology = tech_mountain_range
+  - planet_size >= 10
+- id: district_slots.deposit.d_mountains_of_steel.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_mountains_of_steel
+    name: Mountains Of Steel
+    file: common/deposits/15_strange_worlds_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_nanosands.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_nanosands
+    name: Nanosands
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_nanotech_devastation.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_nanotech_devastation
+    name: Nanite Harvest Basin
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+  - exists = owner
+  - 'owner: NOT(has_tradition = tr_nanotech_adopt)'
+- id: district_slots.deposit.d_nature_preserve_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_nature_preserve_blocker
+    name: Nature Preserve
+    file: common/deposits/08_overlord_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_noxious_swamp.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_noxious_swamp
+    name: Noxious Swamp
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - has_technology = tech_noxious_swamp
+  - is_cold = yes
+- id: district_slots.deposit.d_numas_breath.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_numas_breath
+    name: Numa's Breath
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_old_towns.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_old_towns
+    name: Old Towns
+    file: common/deposits/13_machine_age_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_particle_storm_1_society.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_particle_storm_1_society
+    name: Storm-ruined Suburbs
+    file: common/deposits/12_cosmic_storms_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_particle_storm_2_unity.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_particle_storm_2_unity
+    name: The Big One
+    file: common/deposits/12_cosmic_storms_deposits.txt
+  requirement:
+  - always = no
+  - always = yes
+- id: district_slots.deposit.d_poisonous_algae.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_poisonous_algae
+    name: Poisonous Algae
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_quicksand_basin.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_quicksand_basin
+    name: Quicksand Basin
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - has_technology = tech_quicksand_basin
+  - is_dry = yes
+- id: district_slots.deposit.d_radioactive_ruins.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_radioactive_ruins
+    name: Radioactive Ruins
+    file: common/deposits/14_grand_archive_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_radioactive_wasteland.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_radioactive_wasteland
+    name: Radioactive Wasteland
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - is_planet_class = pc_nuked
+- id: district_slots.deposit.d_raging_lavafalls.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_raging_lavafalls
+    name: Raging Lavafalls
+    file: common/deposits/15_infernals_deposits.txt
+  requirement:
+  - has_technology = tech_volcano
+  - is_planet_class = pc_volcanic
+- id: district_slots.deposit.d_relic_dense_ruins.planet_max_districts_mult
+  effect: modifies
+  modifier: planet_max_districts_mult
+  amount: -0.25
+  amount_kind: mult
+  source:
+    kind: deposit
+    key: d_relic_dense_ruins
+    name: Dense Ruins
+    file: common/deposits/06_ancient_relics_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_resource_consolidation_1.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_resource_consolidation_1
+    name: Malfunctioning Replicator Bay
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_rotten_soil.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_rotten_soil
+    name: Rotten Soil
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_rugged_landscape.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_rugged_landscape
+    name: Rugged Landscape
+    file: common/deposits/15_infernals_deposits.txt
+  requirement:
+  - has_technology = tech_volcano
+  - is_planet_class = pc_volcanic
+- id: district_slots.deposit.d_ruined_arcology.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_ruined_arcology
+    name: Ruined Arcology
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_ruined_building_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_ruined_building_blocker
+    name: Ruins
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_ruined_district.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_ruined_district
+    name: Ruined District
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_ruined_hatchery.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -4
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_ruined_hatchery
+    name: Ruined Hatchery
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_ruined_sanctum_of_the_lost.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_ruined_sanctum_of_the_lost
+    name: Ruined Sanctum of the Dreamer
+    file: common/deposits/15_shroud_deposits.txt
+  requirement:
+  - has_shroud_dlc = yes
+- id: district_slots.deposit.d_scorched_plains.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_scorched_plains
+    name: Scorched Plains
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_seed_bombing_fungoid_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_seed_bombing_fungoid_blocker
+    name: Explosive Fungal Growth
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_seed_bombing_plantoid_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_seed_bombing_plantoid_blocker
+    name: Explosive Sylvan Growth
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_segment_rubble_1.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_segment_rubble_1
+    name: Ancient Rubble
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_segment_rubble_1_small.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_segment_rubble_1_small
+    name: Ancient Rubble
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_segment_rubble_2.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_segment_rubble_2
+    name: Ancient Rubble
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_segment_rubble_3.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_segment_rubble_3
+    name: Ancient Rubble
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_segment_rubble_4.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_segment_rubble_4
+    name: Ancient Rubble
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_sentinels.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_sentinels
+    name: Sentinels
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_shattered_solar_array.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_shattered_solar_array
+    name: Shattered Solar Array
+    file: common/deposits/06_ancient_relics_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_shimmering_structure.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_shimmering_structure
+    name: Shimmering Structure
+    file: common/deposits/15_strange_worlds_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_ship_debris_broken_shackles_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_ship_debris_broken_shackles_blocker
+    name: Ship Debris
+    file: common/deposits/09_first_contact_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_ship_debris_payback_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_ship_debris_payback_blocker
+    name: Ship Debris
+    file: common/deposits/09_first_contact_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_shroud_flora_deposit.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_shroud_flora_deposit
+    name: Semi-Shrouded Region
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_shroudfall.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_shroudfall
+    name: Shroudfall
+    file: common/deposits/15_shroud_deposits.txt
+  requirement:
+  - has_shroud_dlc = yes
+- id: district_slots.deposit.d_shroudgate.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_shroudgate
+    name: Shroudgate
+    file: common/deposits/15_shroud_deposits.txt
+  requirement:
+  - has_shroud_dlc = yes
+- id: district_slots.deposit.d_shroudstone.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_shroudstone
+    name: Shroudstone
+    file: common/deposits/15_shroud_deposits.txt
+  requirement:
+  - has_shroud_dlc = yes
+  - exists = owner
+  - 'owner: NOR(has_covenant_with_the_composer_of_strands = yes ; has_country_flag = forging_our_own_path)'
+- id: district_slots.deposit.d_sinkhole_subterraneans.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_sinkhole_subterraneans
+    name: Subterranean Entrance
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_solar_storm_2_districts.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_solar_storm_2_districts
+    name: Radiated Highlands
+    file: common/deposits/12_cosmic_storms_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_space_ship_graveyard.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_space_ship_graveyard
+    name: Crashed Ships
+    file: common/deposits/10_paragon_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_spawning_complex_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_spawning_complex_blocker
+    name: Overlord Spawning Complex
+    file: common/deposits/08_overlord_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_sprawling_landfill_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_sprawling_landfill_blocker
+    name: Spreading Landfill
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_sr_diurnal_regulator.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_sr_diurnal_regulator
+    name: Faulty Diurnal Regulator
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_sr_power_grid.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_sr_power_grid
+    name: Shorting Power Grid
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_sr_ring_gyros.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_sr_ring_gyros
+    name: Unaligned Ring Gyros
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_sr_vacuum_fields.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_sr_vacuum_fields
+    name: Unstable Vacuum Fields
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_star_mall_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_star_mall_blocker
+    name: Abandoned Wing
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_star_mall_promenade.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_star_mall_promenade
+    name: Promenade
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_machine_empire = yes'
+- id: district_slots.deposit.d_star_mall_promenade_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_star_mall_promenade_blocker
+    name: Destroyed Promenade
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_strip_mine.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_strip_mine
+    name: Abandoned Strip Mine
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_tainted_snowcaps.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_tainted_snowcaps
+    name: Tainted Snowcaps
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_technocracy_molten_waste_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -3
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_technocracy_molten_waste_blocker
+    name: Molten Waste
+    file: common/deposits/08_overlord_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_technocracy_toxic_waste_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -3
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_technocracy_toxic_waste_blocker
+    name: Toxic Waste
+    file: common/deposits/08_overlord_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_terraforming_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_terraforming_blocker
+    name: Terraforming Residue
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_titanic_life_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_titanic_life_blocker
+    name: Titanic Lifeforms
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_tomb_world_ruins.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_tomb_world_ruins
+    name: Settled Ruins
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_tomb_world_wasteland.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_tomb_world_wasteland
+    name: Radiation Zone
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_toxic_god_blight_upon_the_land.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_toxic_god_blight_upon_the_land
+    name: A Blight Upon the Land
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_toxic_god_deitys_swarms.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_toxic_god_deitys_swarms
+    name: Swarms of the Deity
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_toxic_god_envenomed_seas.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_toxic_god_envenomed_seas
+    name: Envenomed Seas
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_toxic_god_envenomed_seas_upgraded.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_toxic_god_envenomed_seas_upgraded
+    name: Pelagic Bounty
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_toxic_god_pestilential_wasteland.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_toxic_god_pestilential_wasteland
+    name: Pestilential Wasteland
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_toxic_god_pools_most_venemous.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_toxic_god_pools_most_venemous
+    name: Pools Most Venemous
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_toxic_kelp.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_toxic_kelp
+    name: Toxic Kelp
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - has_technology = tech_toxic_kelp
+  - is_wet = yes
+- id: district_slots.deposit.d_underground_contact_zone.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_underground_contact_zone
+    name: Subterranean Contact Zone
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_underground_farm.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_underground_farm
+    name: Subterranean Farming Caverns
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_underground_generator.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_underground_generator
+    name: Subterranean Generator Areas
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_underground_mine.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_underground_mine
+    name: Subterranean Mining Sites
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement: null
+- id: district_slots.deposit.d_unplugged_assimilator_hulk.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_unplugged_assimilator_hulk
+    name: Machine Hulk
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_unsupervised_settlement.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_unsupervised_settlement
+    name: Unsupervised Settlement
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_venomous_insects.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_venomous_insects
+    name: Venomous Insects
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wandering_forests.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wandering_forests
+    name: Wandering Forests
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_city.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_city
+    name: Fetid Swamp
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_city_2.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -4
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_city_2
+    name: Festering Morass
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_farming.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_farming
+    name: Desiccated Forest
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_farming_2.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_farming_2
+    name: Fossilized Forest
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_generator.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_generator
+    name: Scorched Solar Field
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_generator_2.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_generator_2
+    name: Solar Wasteland
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_glade_blocker.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_glade_blocker
+    name: Invasive Thicket
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_industrial.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_industrial
+    name: Metallic Mire
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_industrial_2.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -4
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_industrial_2
+    name: Biochemical Badlands
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_mining.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_mining
+    name: Hollow Cave System
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.deposit.d_wilderness_mining_2.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_wilderness_mining_2
+    name: Pockmarked Plateau
+    file: common/deposits/12_wilderness_deposits.txt
+  requirement:
+  - always = no
+- id: district_slots.starbase_module.arkship_habitation_module.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: arkship_habitation_module
+    name: Habitation Module
+    file: common/starbase_modules/00_arkship_utility_modules.txt
+  requirement:
+  - 'owner?: OR(has_technology = tech_housing_2 ; has_country_flag = champions_forge_enclave_country)'
+  - is_arkship_starbase = yes
+- id: district_slots.starbase_module.orbital_ring_habitation.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: orbital_ring_habitation
+    name: Habitation Module
+    file: common/starbase_modules/00_orbital_ring_modules.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_technology = tech_housing_2'
+  - is_orbital_ring = yes
+- id: district_slots.starbase_module.orbital_ring_habitation.planet_max_districts_add#2
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 0.5
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: orbital_ring_habitation
+    name: Habitation Module
+    file: common/starbase_modules/00_orbital_ring_modules.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_technology = tech_housing_2'
+  - is_orbital_ring = yes
+  - exists = planet
+  - 'planet: exists = owner.overlord'
+  - 'planet: has_holding: holding = holding_orbital_assembly_complex'
+  - 'planet: has_holding: owner = owner.overlord'
+- id: district_slots.static_modifier.arkship_parts.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: arkship_parts
+    name: Arkship Remains
+    file: common/static_modifiers/25_static_modifiers_nomads.txt
+  requirement: null
+- id: district_slots.static_modifier.collided_planet.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 4
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: collided_planet
+    name: Collided Planet
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: district_slots.static_modifier.cosmogenesis_slightly_bigger.planet_non_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_non_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: cosmogenesis_slightly_bigger
+    name: Slightly Bigger
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: district_slots.static_modifier.cosmogenesis_slightly_smaller.planet_non_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_non_artificial_max_districts_add
+  amount: -1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: cosmogenesis_slightly_smaller
+    name: Shrunk
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: district_slots.static_modifier.cultivated_worldscaping_modifier.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: cultivated_worldscaping_modifier
+    name: Cultivated Worldscaping
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: district_slots.static_modifier.high_gravity.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: high_gravity
+    name: High Gravity
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.infernal_library.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 5
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: infernal_library
+    name: Underground Architecture
+    file: common/static_modifiers/24_static_modifiers_infernals.txt
+  requirement: null
+- id: district_slots.static_modifier.intentionally_tidally_locked.planet_max_districts_mult
+  effect: modifies
+  modifier: planet_max_districts_mult
+  amount: -0.3
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: intentionally_tidally_locked
+    name: Intentionally Tidally Locked
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.master_builders_habitats.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: master_builders_habitats
+    name: 'Voidborne: Expansion'
+    file: common/static_modifiers/05_static_modifiers_utopia.txt
+  requirement: null
+- id: district_slots.static_modifier.mastery_of_nature.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: mastery_of_nature
+    name: Mastery of Nature
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: district_slots.static_modifier.migrating_forests_2.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: migrating_forests_2
+    name: Docile Migrating Forests
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.perfect_organization_modifier.planet_max_districts_mult
+  effect: modifies
+  modifier: planet_max_districts_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: perfect_organization_modifier
+    name: Perfect Organization
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.procedural_space_modifier.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: procedural_space_modifier
+    name: Procedural Space
+    file: common/static_modifiers/20_static_modifiers_astral_planes.txt
+  requirement: null
+- id: district_slots.static_modifier.pulsar_frying_pan.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -8
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: pulsar_frying_pan
+    name: Pulsar Flares
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: district_slots.static_modifier.refurbishment_rework_zone.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: refurbishment_rework_zone
+    name: Active Rework Zone
+    file: common/static_modifiers/25_static_modifiers_nomads.txt
+  requirement: null
+- id: district_slots.static_modifier.resort_colony.planet_max_districts_mult
+  effect: modifies
+  modifier: planet_max_districts_mult
+  amount: -0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resort_colony
+    name: Resort World
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: district_slots.static_modifier.sky_dragon_trophy.planet_max_districts_mult
+  effect: modifies
+  modifier: planet_max_districts_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: sky_dragon_trophy
+    name: Sky Dragon's Plume
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.star_mall_habitat.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: star_mall_habitat
+    name: Star Mall
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.stripped_planet.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: stripped_planet
+    name: Stripped World
+    file: common/static_modifiers/25_static_modifiers_nomads.txt
+  requirement: null
+- id: district_slots.static_modifier.subterranean_expansion.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: subterranean_expansion
+    name: Subterranean Cities
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.subterranean_wildlife.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: subterranean_wildlife
+    name: Subterranean Wildlife
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.the_instrument_of_desire_blessing.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: the_instrument_of_desire_blessing
+    name: Gift of the Instrument
+    file: common/static_modifiers/24_static_modifiers_shroud.txt
+  requirement: null
+- id: district_slots.static_modifier.tidal_locked.planet_max_districts_mult
+  effect: modifies
+  modifier: planet_max_districts_mult
+  amount: -0.3
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: tidal_locked
+    name: Tidal Locked
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.transformation_arkship_modifier.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: transformation_arkship_modifier
+    name: Verdant Vessel
+    file: common/static_modifiers/24_static_modifiers_shroud.txt
+  requirement: null
+- id: district_slots.static_modifier.untamed_wilds.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: -1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: untamed_wilds
+    name: Untamed Wilds
+    file: common/static_modifiers/21_static_modifiers_grand_archive.txt
+  requirement: null
+- id: district_slots.static_modifier.volcanic_oasis.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 4
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: volcanic_oasis
+    name: Hellish Oasis
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.volcanic_subterranean.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: volcanic_subterranean
+    name: Subterranean Wildlife
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: district_slots.static_modifier.wooden_planet.planet_max_districts_add
+  effect: modifies
+  modifier: planet_max_districts_add
+  amount: 8
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: wooden_planet
+    name: Arboreal World
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: district_slots.technology.tech_alien_topography.planet_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_alien_topography
+    name: Alien Topography
+    file: common/technology/00_first_contact_tech.txt
+    tier: 2
+    cost: 3000
+    area: society
+  requirement:
+  - has_first_contact_dlc = yes
+  - OR(is_nomadic = yes ; has_void_dweller_origin = yes)
+- id: district_slots.technology.tech_alien_topography.planet_non_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_non_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_alien_topography
+    name: Alien Topography
+    file: common/technology/00_first_contact_tech.txt
+    tier: 2
+    cost: 3000
+    area: society
+  requirement:
+  - has_first_contact_dlc = yes
+- id: district_slots.technology.tech_habitat_2.habitat_max_districts_add
+  effect: modifies
+  modifier: habitat_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_habitat_2
+    name: Habitat Expansion
+    file: common/technology/00_eng_tech.txt
+    tier: 4
+    cost: 10000
+    area: engineering
+  requirement:
+  - has_technology = tech_habitat_1
+  - has_technology = tech_starbase_4
+  - is_wilderness_empire = no
+  - is_nomadic = no
+- id: district_slots.technology.tech_habitat_3.habitat_max_districts_add
+  effect: modifies
+  modifier: habitat_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_habitat_3
+    name: Advanced Space Habitation
+    file: common/technology/00_eng_tech.txt
+    tier: 4
+    cost: 20000
+    area: engineering
+  requirement:
+  - has_technology = tech_habitat_2
+  - has_technology = tech_starbase_5
+  - is_wilderness_empire = no
+  - is_nomadic = no
+- id: district_slots.technology.tech_planetary_infrastructure_1.habitat_max_districts_add
+  effect: modifies
+  modifier: habitat_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_planetary_infrastructure_1
+    name: Ceramo-Metal Infrastructure
+    file: common/technology/00_soc_tech.txt
+    tier: 2
+    cost: 3000
+    area: society
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - has_technology = tech_ship_armor_2
+- id: district_slots.technology.tech_planetary_infrastructure_1.pc_ark_max_districts_add
+  effect: modifies
+  modifier: pc_ark_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_planetary_infrastructure_1
+    name: Ceramo-Metal Infrastructure
+    file: common/technology/00_soc_tech.txt
+    tier: 2
+    cost: 3000
+    area: society
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - has_technology = tech_ship_armor_2
+  - is_nomadic = yes
+- id: district_slots.technology.tech_planetary_infrastructure_2.habitat_max_districts_add
+  effect: modifies
+  modifier: habitat_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_planetary_infrastructure_2
+    name: Durasteel Infrastructure
+    file: common/technology/00_soc_tech.txt
+    tier: 4
+    cost: 12000
+    area: society
+  requirement:
+  - has_technology = tech_galactic_administration
+  - has_technology = tech_ship_armor_4
+  - has_technology = tech_planetary_infrastructure_1
+- id: district_slots.technology.tech_planetary_infrastructure_2.pc_ark_max_districts_add
+  effect: modifies
+  modifier: pc_ark_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_planetary_infrastructure_2
+    name: Durasteel Infrastructure
+    file: common/technology/00_soc_tech.txt
+    tier: 4
+    cost: 12000
+    area: society
+  requirement:
+  - has_technology = tech_galactic_administration
+  - has_technology = tech_ship_armor_4
+  - has_technology = tech_planetary_infrastructure_1
+  - is_nomadic = yes
+- id: district_slots.tradition.tr_adaptability_adaptive_ecology.planet_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_adaptability_adaptive_ecology
+    name: Adaptive Ecology
+    file: common/traditions/00_adaptability.txt
+  requirement:
+  - OR(has_void_dweller_origin = yes ; is_nomadic = yes)
+- id: district_slots.tradition.tr_adaptability_adaptive_ecology.planet_non_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_non_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_adaptability_adaptive_ecology
+    name: Adaptive Ecology
+    file: common/traditions/00_adaptability.txt
+  requirement: null
+- id: district_slots.tradition.tr_expansion_finish.habitat_max_districts_add
+  effect: modifies
+  modifier: habitat_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_expansion_finish
+    name: Expansion Traditions Finished
+    file: common/traditions/00_expansion.txt
+  requirement:
+  - has_void_dweller_origin = yes
+- id: district_slots.tradition.tr_expansion_finish.planet_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_expansion_finish
+    name: Expansion Traditions Finished
+    file: common/traditions/00_expansion.txt
+  requirement:
+  - is_nomadic = yes
+- id: district_slots.tradition.tr_expansion_finish.planet_non_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_non_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_expansion_finish
+    name: Expansion Traditions Finished
+    file: common/traditions/00_expansion.txt
+  requirement: null
+- id: district_slots.tradition.tr_prosperity_public_works.habitat_max_districts_add
+  effect: modifies
+  modifier: habitat_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_prosperity_public_works
+    name: Public Works Division
+    file: common/traditions/00_prosperity.txt
+  requirement:
+  - has_void_dweller_origin = yes
+- id: district_slots.tradition.tr_prosperity_public_works.planet_artificial_max_districts_add
+  effect: modifies
+  modifier: planet_artificial_max_districts_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_prosperity_public_works
+    name: Public Works Division
+    file: common/traditions/00_prosperity.txt
+  requirement:
+  - is_nomadic = yes

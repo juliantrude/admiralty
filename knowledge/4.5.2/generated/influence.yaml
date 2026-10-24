@@ -1,0 +1,950 @@
+game_version: v4.5.2
+generator: 1
+quantity: influence
+facts:
+- id: influence.ascension_perk.ap_galactic_force_projection.country_power_projection_influence_produces_add
+  effect: modifies
+  modifier: country_power_projection_influence_produces_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: ascension_perk
+    key: ap_galactic_force_projection
+    name: Galactic Force Projection
+    file: common/ascension_perks/00_ascension_perks.txt
+  requirement:
+  - NOT(has_ascension_perk = ap_galactic_force_projection)
+- id: influence.building.building_cradle_sanctum.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: building
+    key: building_cradle_sanctum
+    name: Sanctum of the Cradle
+    file: common/buildings/23_shroud_buildings.txt
+  requirement:
+  - has_shroud_dlc = yes
+  - exists = owner
+  - 'owner: has_country_flag = trust_accord'
+  - NOR(has_designation = col_resort ; has_modifier = slave_colony)
+  - has_major_upgraded_capital = yes
+- id: influence.building.building_psionic_offices.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 25
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_psionic_offices
+    name: Psionic Offices
+    file: common/buildings/14_branch_office_buildings.txt
+  requirement:
+  - has_branch_office = yes
+  - 'branch_office_owner: has_breached_shroud = yes'
+  - 'branch_office_owner: has_tradition = tr_psionics_shroud_psi_corps'
+  - 'branch_office_owner: NOT(has_origin = origin_endbringers)'
+- id: influence.civic.civic_galactic_sovereign.country_civics_influence_produces_add
+  effect: modifies
+  modifier: country_civics_influence_produces_add
+  amount: 6
+  amount_kind: add
+  source:
+    kind: civic
+    key: civic_galactic_sovereign
+    name: Galactic Sovereign
+    file: common/governments/civics/01_special_civics.txt
+  requirement:
+  - 'civics: value = civic_galactic_sovereign'
+- id: influence.civic.civic_galactic_sovereign_megacorp.country_civics_influence_produces_add
+  effect: modifies
+  modifier: country_civics_influence_produces_add
+  amount: 6
+  amount_kind: add
+  source:
+    kind: civic
+    key: civic_galactic_sovereign_megacorp
+    name: Corporate Sovereign
+    file: common/governments/civics/01_special_civics.txt
+  requirement:
+  - 'civics: value = civic_galactic_sovereign_megacorp'
+- id: influence.civic.civic_lethargic_leadership.country_civics_influence_upkeep_add
+  effect: modifies
+  modifier: country_civics_influence_upkeep_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: civic
+    key: civic_lethargic_leadership
+    name: Lethargic Leadership
+    file: common/governments/civics/01_special_civics.txt
+  requirement:
+  - 'country_type: value = fallen_empire'
+  - 'ethics: NOT(value = ethic_gestalt_consciousness)'
+- id: influence.civic.civic_revanchist_fervor.country_civics_influence_produces_add
+  effect: modifies
+  modifier: country_civics_influence_produces_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: civic
+    key: civic_revanchist_fervor
+    name: Revanchist Fervor
+    file: common/governments/civics/01_special_civics.txt
+  requirement:
+  - 'country_type: value = awakened_fallen_empire'
+  - 'ethics: NOT(value = ethic_gestalt_consciousness)'
+- id: influence.deposit.d_federation_hegemony_monument_1.country_monuments_influence_produces_add
+  effect: modifies
+  modifier: country_monuments_influence_produces_add
+  amount: 0.25
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_federation_hegemony_monument_1
+    name: Federation Monument
+    file: common/deposits/07_federations_deposits.txt
+  requirement: null
+- id: influence.deposit.d_federation_hegemony_monument_2.country_monuments_influence_produces_add
+  effect: modifies
+  modifier: country_monuments_influence_produces_add
+  amount: 0.5
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_federation_hegemony_monument_2
+    name: Federation Monument
+    file: common/deposits/07_federations_deposits.txt
+  requirement: null
+- id: influence.edict.grand_fleet.country_power_projection_influence_produces_add
+  effect: modifies
+  modifier: country_power_projection_influence_produces_add
+  amount: 0.25
+  amount_kind: add
+  source:
+    kind: edict
+    key: grand_fleet
+    name: 'Decree: A Grand Fleet'
+    file: common/edicts/02_ambitions.txt
+  requirement:
+  - has_technology = tech_ascension_theory
+- id: influence.edict.hive_mind_outreach.diplomacy_influence_upkeep_mult
+  effect: modifies
+  modifier: diplomacy_influence_upkeep_mult
+  amount: -0.5
+  amount_kind: mult
+  source:
+    kind: edict
+    key: hive_mind_outreach
+    name: Hive Mind Outreach
+    file: common/edicts/04_machine_age_edicts.txt
+  requirement:
+  - is_hive_empire = yes
+  - has_country_flag = cyber_hive_volitional
+- id: influence.edict.inner_focus.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: edict
+    key: inner_focus
+    name: Inner Focus
+    file: common/edicts/00_edicts.txt
+  requirement:
+  - is_sovereign_guardianship_empire = yes
+- id: influence.edict.inner_focus.upkeep_influence
+  effect: costs
+  modifier: upkeep_influence
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: edict
+    key: inner_focus
+    name: Inner Focus
+    file: common/edicts/00_edicts.txt
+  requirement:
+  - is_sovereign_guardianship_empire = yes
+- id: influence.edict.will_to_power.country_ambition_influence_produces_add
+  effect: modifies
+  modifier: country_ambition_influence_produces_add
+  amount: 5
+  amount_kind: add
+  source:
+    kind: edict
+    key: will_to_power
+    name: 'Decree: Will to Power'
+    file: common/edicts/02_ambitions.txt
+  requirement:
+  - has_technology = tech_ascension_theory
+- id: influence.megastructure.behemoth_egg.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: behemoth_egg
+    name: Behemoth Egg
+    file: common/megastructures/21_behemoth_egg.txt
+  requirement:
+  - 'owner: has_crisis_perk = menp_behemoth_egg'
+- id: influence.megastructure.behemoth_egg_hatch.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 150
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: behemoth_egg_hatch
+    name: Hatch the Egg
+    file: common/megastructures/21_behemoth_egg.txt
+  requirement: null
+- id: influence.megastructure.civilian_arkship_megastructure.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: civilian_arkship_megastructure
+    name: Arkship (Civilian)
+    file: common/megastructures/29_nomad_arkships.txt
+  requirement:
+  - is_nomadic = yes
+  - has_technology = tech_arkship_construction
+  - has_technology = tech_civilian_arkship
+  - 'from: is_arkship_fleet = yes'
+- id: influence.megastructure.cosmogenesis_world_0.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: cosmogenesis_world_0
+    name: Synaptic Lathe
+    file: common/megastructures/16_cosmogenesis_world.txt
+  requirement:
+  - has_technology = tech_cosmogenesis_world
+- id: influence.megastructure.dyson_gun_0.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: dyson_gun_0
+    name: Stellar Cannon
+    file: common/megastructures/31_dyson_gun.txt
+  requirement:
+  - has_technology = tech_dyson_gun
+  - 'owner?: is_nomadic = no'
+- id: influence.megastructure.gateway_0.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 75
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: gateway_0
+    name: Gateway Site
+    file: common/megastructures/05_gateways.txt
+  requirement:
+  - has_technology = tech_gateway_construction
+- id: influence.megastructure.habitat_central_complex.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 200
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: habitat_central_complex
+    name: Habitat Central Complex
+    file: common/megastructures/habitats.txt
+  requirement:
+  - OR(has_technology = tech_habitat_1 ; has_civic = civic_diadochi ; has_civic = civic_great_khans_legacy ; has_country_flag = democratic_khanate_flag)
+- id: influence.megastructure.habitat_central_complex_restored.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 200
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: habitat_central_complex_restored
+    name: Habitat Central Complex
+    file: common/megastructures/habitats.txt
+  requirement: null
+- id: influence.megastructure.hyper_relay.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 25
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: hyper_relay
+    name: Hyper Relay
+    file: common/megastructures/14_hyper_relay.txt
+  requirement:
+  - has_technology = tech_hyper_relays
+  - NOT(has_country_flag = flash_forge_hyper_relay_activated)
+- id: influence.megastructure.military_arkship_megastructure.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: military_arkship_megastructure
+    name: Arkship (Military)
+    file: common/megastructures/29_nomad_arkships.txt
+  requirement:
+  - is_nomadic = yes
+  - has_technology = tech_arkship_construction
+  - has_technology = tech_military_arkship
+  - 'from: is_arkship_fleet = yes'
+- id: influence.megastructure.orbital_ring.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 50
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: orbital_ring
+    name: Orbital Ring
+    file: common/megastructures/15_orbital_ring.txt
+  requirement:
+  - has_technology = tech_orbital_ring_tier_1
+- id: influence.megastructure.orbital_ring_restored.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 50
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: orbital_ring_restored
+    name: Orbital Ring
+    file: common/megastructures/15_orbital_ring.txt
+  requirement: null
+- id: influence.megastructure.quantum_catapult_0.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: quantum_catapult_0
+    name: Quantum Catapult Site
+    file: common/megastructures/13_quantum_catapult.txt
+  requirement:
+  - has_technology = tech_quantum_catapult
+- id: influence.megastructure.ring_world_1.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: ring_world_1
+    name: Ring World Site
+    file: common/megastructures/00_ring_world.txt
+  requirement:
+  - has_technology = tech_ring_world
+- id: influence.megastructure.science_arkship_megastructure.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: science_arkship_megastructure
+    name: Arkship (Scientific)
+    file: common/megastructures/29_nomad_arkships.txt
+  requirement:
+  - is_nomadic = yes
+  - has_technology = tech_arkship_construction
+  - has_technology = tech_science_arkship
+  - 'from: is_arkship_fleet = yes'
+- id: influence.megastructure.waystation_megastructure.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 100
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: waystation_megastructure
+    name: Waystation
+    file: common/megastructures/30_nomad_waystation.txt
+  requirement:
+  - has_technology = tech_waystation_1
+  - is_nomadic = yes
+  - 'if: limit: is_ai = yes'
+  - 'if: limit: from: is_arkship_fleet = yes'
+  - 'if: NAND(any_owned_contract: NOT(is_mission_type = contract_build_waystation) ; any_owned_fleet: any_owned_ship: is_ship_size = nomads_constructor)'
+- id: influence.megastructure.waystation_megastructure.cost_influence#2
+  effect: costs
+  modifier: cost_influence
+  amount: 50
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: waystation_megastructure
+    name: Waystation
+    file: common/megastructures/30_nomad_waystation.txt
+  requirement:
+  - has_technology = tech_waystation_1
+  - is_nomadic = yes
+  - 'if: limit: is_ai = yes'
+  - 'if: limit: from: is_arkship_fleet = yes'
+  - 'if: NAND(any_owned_contract: NOT(is_mission_type = contract_build_waystation) ; any_owned_fleet: any_owned_ship: is_ship_size = nomads_constructor)'
+  - is_subject = yes
+  - 'any_agreement: has_term_value: term = subject_expand'
+  - 'any_agreement: has_term_value: value = subject_can_expand_with_tithe'
+- id: influence.relic.r_cfl_trophy.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 200
+  amount_kind: per_unit
+  source:
+    kind: relic
+    key: r_cfl_trophy
+    name: Champion's Forge Live! Trophy
+    file: common/relics/relics.txt
+  requirement: null
+- id: influence.relic.r_core_of_the_reckoning.country_base_influence_produces_add
+  effect: modifies
+  modifier: country_base_influence_produces_add
+  amount: 1
+  amount_kind: add
+  scaled_by: value:core_of_the_reckoning_mult
+  source:
+    kind: relic
+    key: r_core_of_the_reckoning
+    name: Core of the Reckoning
+    file: common/relics/relics.txt
+  requirement:
+  - always = yes
+- id: influence.relic.r_galatron.produces_influence
+  effect: produces
+  modifier: produces_influence
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: relic
+    key: r_galatron
+    name: The Galatron
+    file: common/relics/relics.txt
+  requirement: null
+- id: influence.relic.r_tarnished_cfl_trophy.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 200
+  amount_kind: per_unit
+  source:
+    kind: relic
+    key: r_tarnished_cfl_trophy
+    name: Tarnished Champion's Forge Live! Trophy
+    file: common/relics/relics.txt
+  requirement: null
+- id: influence.starbase_module.arkship_exodus_jump.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 250
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: arkship_exodus_jump
+    name: Exodus Jump Coordinator
+    file: common/starbase_modules/00_arkship_spinal_modules.txt
+  requirement:
+  - 'owner?: has_technology = tech_arkship_exodus_jump'
+  - is_arkship_starbase = yes
+- id: influence.starbase_module.arkship_habitation_module.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 25
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: arkship_habitation_module
+    name: Habitation Module
+    file: common/starbase_modules/00_arkship_utility_modules.txt
+  requirement:
+  - 'owner?: OR(has_technology = tech_housing_2 ; has_country_flag = champions_forge_enclave_country)'
+  - is_arkship_starbase = yes
+- id: influence.starbase_module.orbital_ring_habitation.cost_influence
+  effect: costs
+  modifier: cost_influence
+  amount: 25
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: orbital_ring_habitation
+    name: Habitation Module
+    file: common/starbase_modules/00_orbital_ring_modules.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_technology = tech_housing_2'
+  - is_orbital_ring = yes
+- id: influence.static_modifier.agenda_display_of_power_finish.country_power_projection_influence_produces_add
+  effect: modifies
+  modifier: country_power_projection_influence_produces_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: agenda_display_of_power_finish
+    name: Display of Power Agenda
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: influence.static_modifier.agenda_rightful_claims_finish.rivalries_influence_produces_mult
+  effect: modifies
+  modifier: rivalries_influence_produces_mult
+  amount: 0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: agenda_rightful_claims_finish
+    name: Rightful Claims Agenda
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: influence.static_modifier.agenda_rightful_claims_nomads_finish.rivalries_influence_produces_mult
+  effect: modifies
+  modifier: rivalries_influence_produces_mult
+  amount: 0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: agenda_rightful_claims_nomads_finish
+    name: Rightful Claims Agenda
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: influence.static_modifier.country_defaulted.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: -0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: country_defaulted
+    name: Empire Defaulted
+    file: common/static_modifiers/09_static_modifiers_deficit.txt
+  requirement: null
+- id: influence.static_modifier.country_defaulted_wilderness.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: -0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: country_defaulted_wilderness
+    name: Empire Defaulted
+    file: common/static_modifiers/09_static_modifiers_deficit.txt
+  requirement: null
+- id: influence.static_modifier.covenant_end_of_the_cycle.country_covenant_influence_produces_add
+  effect: modifies
+  modifier: country_covenant_influence_produces_add
+  amount: 5
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: covenant_end_of_the_cycle
+    name: 'Covenant: End of the Cycle'
+    file: common/static_modifiers/05_static_modifiers_utopia.txt
+  requirement: null
+- id: influence.static_modifier.covenant_whisperers_in_the_void.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: covenant_whisperers_in_the_void
+    name: 'Covenant: Whisperers in the Void'
+    file: common/static_modifiers/05_static_modifiers_utopia.txt
+  requirement: null
+- id: influence.static_modifier.covenant_whisperers_in_the_void_0.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: 0.075
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: covenant_whisperers_in_the_void_0
+    name: 'Covenant: Whisperers in the Void'
+    file: common/static_modifiers/05_static_modifiers_utopia.txt
+  requirement: null
+- id: influence.static_modifier.cyber_censure_truth.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cyber_censure_truth
+    name: 'Sensory Censorship: Banned'
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: influence.static_modifier.destroyers_of_the_lost_modifier.country_base_influence_produces_add
+  effect: modifies
+  modifier: country_base_influence_produces_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: destroyers_of_the_lost_modifier
+    name: Destroyers of the Lost
+    file: common/static_modifiers/24_static_modifiers_shroud.txt
+  requirement: null
+- id: influence.static_modifier.empire_base.country_power_projection_influence_produces_add
+  effect: modifies
+  modifier: country_power_projection_influence_produces_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: empire_base
+    name: Base
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: influence.static_modifier.first_contact_level_headedness.country_first_contact_influence_produces_add
+  effect: modifies
+  modifier: country_first_contact_influence_produces_add
+  amount: 0.5
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: first_contact_level_headedness
+    name: Good in a Tight Spot
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: influence.static_modifier.first_contact_warlike_warriors_presumed.country_first_contact_influence_produces_add
+  effect: modifies
+  modifier: country_first_contact_influence_produces_add
+  amount: 0.5
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: first_contact_warlike_warriors_presumed
+    name: Warlike Prowess Presumed
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: influence.static_modifier.first_contact_warlike_warriors_presumed_2.country_first_contact_influence_produces_add
+  effect: modifies
+  modifier: country_first_contact_influence_produces_add
+  amount: 0.5
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: first_contact_warlike_warriors_presumed_2
+    name: Rivalry Between (Presumed) Warriors
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: influence.static_modifier.first_contact_warlike_warriors_recognised.country_first_contact_influence_produces_add
+  effect: modifies
+  modifier: country_first_contact_influence_produces_add
+  amount: 0.65
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: first_contact_warlike_warriors_recognised
+    name: Warlike Prowess Recognized
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: influence.static_modifier.first_contact_warlike_warriors_recognised_2.country_first_contact_influence_produces_add
+  effect: modifies
+  modifier: country_first_contact_influence_produces_add
+  amount: 0.65
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: first_contact_warlike_warriors_recognised_2
+    name: Rivalry Between Warriors
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: influence.static_modifier.full_circle.country_shoulders_influence_produces_add
+  effect: modifies
+  modifier: country_shoulders_influence_produces_add
+  amount: 0.5
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: full_circle
+    name: Full Circle
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: influence.static_modifier.gal_custodian.country_custodian_influence_produces_add
+  effect: modifies
+  modifier: country_custodian_influence_produces_add
+  amount: 5
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: gal_custodian
+    name: Galactic Custodian
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: influence.static_modifier.galactic_philanthropy_modifier.country_base_influence_produces_add
+  effect: modifies
+  modifier: country_base_influence_produces_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: galactic_philanthropy_modifier
+    name: Galactic Philanthropy
+    file: common/static_modifiers/21_static_modifiers_grand_archive.txt
+  requirement: null
+- id: influence.static_modifier.galatron_modifier.country_base_influence_produces_add
+  effect: modifies
+  modifier: country_base_influence_produces_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: galatron_modifier
+    name: The Galatron
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: influence.static_modifier.goes_around_comes_around.country_shoulders_influence_produces_add
+  effect: modifies
+  modifier: country_shoulders_influence_produces_add
+  amount: 0.5
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: goes_around_comes_around
+    name: Goes Around, Comes Around
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: influence.static_modifier.humiliated.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: -0.33
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: humiliated
+    name: Humiliated
+    file: common/static_modifiers/01_static_modifiers.txt
+  requirement: null
+- id: influence.static_modifier.humiliated_cosmogenesis.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: humiliated_cosmogenesis
+    name: Humiliated
+    file: common/static_modifiers/01_static_modifiers.txt
+  requirement: null
+- id: influence.static_modifier.immigrants_protection.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: immigrants_protection
+    name: Protecting Minorities
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: influence.static_modifier.imperial_vassal_ai_modifier.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: -0.8
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: imperial_vassal_ai_modifier
+    name: Imperial Tithe
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: influence.static_modifier.insight_influence_01.station_observers_influence_produces_add
+  effect: modifies
+  modifier: station_observers_influence_produces_add
+  amount: 0.1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: insight_influence_01
+    name: Influence Insight
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: influence.static_modifier.navy_coverage_shortage.country_power_projection_influence_produces_mult
+  effect: modifies
+  modifier: country_power_projection_influence_produces_mult
+  amount: -1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: navy_coverage_shortage
+    name: Naval Coverage
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: influence.static_modifier.paperclip_failure.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: -0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: paperclip_failure
+    name: Production Target Failure
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: influence.static_modifier.resolution_custodian_galactic_standard.country_galactic_standard_influence_produces_add
+  effect: modifies
+  modifier: country_galactic_standard_influence_produces_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: resolution_custodian_galactic_standard
+    name: Introduce Galactic Standard
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: influence.static_modifier.rummy_nebula.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: 0.33
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: rummy_nebula
+    name: Exotic Inebriants
+    file: common/static_modifiers/07_static_modifiers_distant_stars.txt
+  requirement: null
+- id: influence.static_modifier.shroud_forged_civic_assistance.country_base_influence_produces_add
+  effect: modifies
+  modifier: country_base_influence_produces_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: shroud_forged_civic_assistance
+    name: Secrets of the Shroud
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: influence.static_modifier.shroud_influence_boost.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: 0.3
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: shroud_influence_boost
+    name: Boon of the Shroud
+    file: common/static_modifiers/05_static_modifiers_utopia.txt
+  requirement: null
+- id: influence.static_modifier.shroud_neg_influence.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: -0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: shroud_neg_influence
+    name: Curse of the Shroud
+    file: common/static_modifiers/05_static_modifiers_utopia.txt
+  requirement: null
+- id: influence.static_modifier.shroudwalkers_depart_reverence.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: shroudwalkers_depart_reverence
+    name: Accept the Lesson
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: influence.static_modifier.slots_disappointment.country_influence_produces_mult
+  effect: modifies
+  modifier: country_influence_produces_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: slots_disappointment
+    name: RNG Disappointment
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: influence.static_modifier.specialist_bulwark_helpful_overlord_modifier.country_base_influence_produces_add
+  effect: modifies
+  modifier: country_base_influence_produces_add
+  amount: 0.5
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: specialist_bulwark_helpful_overlord_modifier
+    name: Helpful Overlord
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: influence.static_modifier.sponsored_rebels.country_base_influence_produces_add
+  effect: modifies
+  modifier: country_base_influence_produces_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: sponsored_rebels
+    name: Sponsored Rebels
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: influence.technology.tech_autonomous_agents.country_tech_influence_produces_add
+  effect: modifies
+  modifier: country_tech_influence_produces_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_autonomous_agents
+    name: Autonomous Agents
+    file: common/technology/00_soc_tech.txt
+    tier: 2
+    cost: 3000
+    area: society
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - has_ethic = ethic_gestalt_consciousness
+- id: influence.technology.tech_federation_code.diplomacy_influence_upkeep_mult
+  effect: modifies
+  modifier: diplomacy_influence_upkeep_mult
+  amount: -0.25
+  amount_kind: mult
+  source:
+    kind: technology
+    key: tech_federation_code
+    name: Federation Code
+    file: common/technology/00_soc_tech.txt
+    tier: 1
+    cost: 1250
+    area: society
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - 'OR(days_passed = 0 ; any_relation: can_form_federation_with_empire = yes ; has_tradition = tr_diplomacy_adopt)'
+- id: influence.tradition.tr_diplomacy_adopt.diplomacy_influence_upkeep_mult
+  effect: modifies
+  modifier: diplomacy_influence_upkeep_mult
+  amount: -0.5
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_diplomacy_adopt
+    name: Diplomacy Traditions
+    file: common/traditions/00_diplomacy.txt
+  requirement: null
+- id: influence.tradition.tr_domination_colonial_viceroys.country_traditions_influence_produces_add
+  effect: modifies
+  modifier: country_traditions_influence_produces_add
+  amount: 0.5
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_domination_colonial_viceroys
+    name: Colonial Viceroys
+    file: common/traditions/00_domination.txt
+  requirement: null

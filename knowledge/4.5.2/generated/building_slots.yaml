@@ -1,0 +1,2064 @@
+game_version: v4.5.2
+generator: 1
+quantity: building_slots
+facts:
+- id: building_slots.zone.zone_agrarian_anglers.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_agrarian_anglers
+    name: Coastal Hamlets
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_valid_civic = civic_agrarian_idyll'
+  - 'owner: is_anglers_empire = yes'
+  - is_wet = yes
+- id: building_slots.zone.zone_agrarian_anglers.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_agrarian_anglers
+    name: Coastal Hamlets
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_valid_civic = civic_agrarian_idyll'
+  - 'owner: is_anglers_empire = yes'
+  - is_wet = yes
+- id: building_slots.zone.zone_agrarian_urban.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_agrarian_urban
+    name: Agrarian Villages
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_valid_civic = civic_agrarian_idyll'
+  - 'if: limit: owner: is_anglers_empire = yes'
+  - 'if: is_wet = no'
+- id: building_slots.zone.zone_agrarian_urban.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_agrarian_urban
+    name: Agrarian Villages
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_valid_civic = civic_agrarian_idyll'
+  - 'if: limit: owner: is_anglers_empire = yes'
+  - 'if: is_wet = no'
+- id: building_slots.zone.zone_anglers.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_anglers
+    name: Aquaculture
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_anglers_empire = yes'
+  - 'OR(is_wet = yes ; owner: is_nomadic = yes)'
+- id: building_slots.zone.zone_ark_ammunition_lines.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_ammunition_lines
+    name: Ammunition Lines
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: has_technology = tech_mass_drivers_2'
+- id: building_slots.zone.zone_ark_engine_bypass.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_engine_bypass
+    name: Engine Bypass
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: has_technology = tech_afterburners_1'
+- id: building_slots.zone.zone_ark_farm_society.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_farm_society
+    name: Socio-Ecological Observation
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: has_technology = tech_society_1'
+- id: building_slots.zone.zone_ark_flight_decks.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_flight_decks
+    name: Flight Decks
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: has_technology = tech_strike_craft_1'
+- id: building_slots.zone.zone_ark_food.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_food
+    name: Ark Hydroponics
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'if: limit: exists = owner'
+  - 'if: limit: owner: is_anglers_empire = yes'
+  - 'if: is_wet = no'
+  - 'else: hidden_trigger: owner?: is_wilderness_empire = no'
+- id: building_slots.zone.zone_ark_forever_cruise_city_crew.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_forever_cruise_city_crew
+    name: Fabrication Deck
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: is_wilderness_empire = no'
+  - 'hidden_trigger: owner?: has_origin = origin_forever_cruise'
+  - 'hidden_trigger: owner?: NOT(has_country_flag = forever_cruise_over)'
+- id: building_slots.zone.zone_ark_forever_cruise_city_mixed.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_forever_cruise_city_mixed
+    name: Utility Deck
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: is_wilderness_empire = no'
+  - 'hidden_trigger: owner?: has_origin = origin_forever_cruise'
+  - 'hidden_trigger: owner?: NOT(has_country_flag = forever_cruise_over)'
+- id: building_slots.zone.zone_ark_forever_cruise_city_passenger.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_forever_cruise_city_passenger
+    name: Observation Deck
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: is_wilderness_empire = no'
+  - 'hidden_trigger: owner?: has_origin = origin_forever_cruise'
+  - 'hidden_trigger: owner?: NOT(has_country_flag = forever_cruise_over)'
+- id: building_slots.zone.zone_ark_forever_cruise_crew.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_forever_cruise_crew
+    name: Operations Center
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: is_wilderness_empire = no'
+  - 'hidden_trigger: owner?: has_origin = origin_forever_cruise'
+  - 'hidden_trigger: owner?: NOT(has_country_flag = forever_cruise_over)'
+- id: building_slots.zone.zone_ark_forever_cruise_engineering.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_forever_cruise_engineering
+    name: Makers Complex
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: has_technology = tech_engineering_1'
+- id: building_slots.zone.zone_ark_forever_cruise_passenger.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_forever_cruise_passenger
+    name: Entertainment Hub
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: is_wilderness_empire = no'
+  - 'hidden_trigger: owner?: has_origin = origin_forever_cruise'
+  - 'hidden_trigger: owner?: NOT(has_country_flag = forever_cruise_over)'
+- id: building_slots.zone.zone_ark_foundry.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_foundry
+    name: Military Logistics Complex
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: is_nomadic = yes'
+  - 'hidden_trigger: owner?: is_gestalt = yes'
+- id: building_slots.zone.zone_ark_harvest.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_harvest
+    name: Harvesting Bay
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: has_technology = tech_nomads_mechanized_mining'
+- id: building_slots.zone.zone_ark_industrial.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_industrial
+    name: Industrial-Trade Quarter
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: is_nomadic = yes'
+  - 'hidden_trigger: owner?: is_gestalt = no'
+- id: building_slots.zone.zone_ark_knights.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_knights
+    name: Order's Hall
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: has_origin = origin_toxic_knights'
+  - 'owner?: NOT(has_country_flag = quest_abandoned)'
+  - OR(has_carrier_flag = toxic_knights_arkship ; has_planet_flag = toxic_knights_settled_world ; has_building = building_order_castle)
+- id: building_slots.zone.zone_ark_knights.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_knights
+    name: Order's Hall
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: has_origin = origin_toxic_knights'
+  - 'owner?: NOT(has_country_flag = quest_abandoned)'
+  - OR(has_carrier_flag = toxic_knights_arkship ; has_planet_flag = toxic_knights_settled_world ; has_building = building_order_castle)
+- id: building_slots.zone.zone_ark_laser_capacitors.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_laser_capacitors
+    name: Laser Capacitors
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: has_technology = tech_lasers_2'
+- id: building_slots.zone.zone_ark_military_eco.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_military_eco
+    name: Void Forges
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: has_technology = tech_basic_industry'
+- id: building_slots.zone.zone_ark_military_engineering.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_military_engineering
+    name: Military-Research Complex
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: has_technology = tech_engineering_1'
+- id: building_slots.zone.zone_ark_missile_silos.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_missile_silos
+    name: Missile Silos
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: has_technology = tech_missiles_2'
+- id: building_slots.zone.zone_ark_reactor_physics.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_reactor_physics
+    name: High-Energy Particle Accelerator
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: has_technology = tech_physics_1'
+- id: building_slots.zone.zone_ark_research_unity.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_research_unity
+    name: Popular Research Mall
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: is_nomadic = yes'
+  - 'hidden_trigger: owner?: is_gestalt = no'
+- id: building_slots.zone.zone_ark_research_unity_gestalt.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_research_unity_gestalt
+    name: Collective Research Complex
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'hidden_trigger: owner?: is_nomadic = yes'
+  - 'hidden_trigger: owner?: is_gestalt = yes'
+- id: building_slots.zone.zone_ark_sacred_path_pilgrims.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_sacred_path_pilgrims
+    name: Consecrated Community
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: has_origin = origin_sacred_path'
+- id: building_slots.zone.zone_ark_shield_overloader.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_shield_overloader
+    name: Shield Overclocker
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: has_technology = tech_shields_2'
+- id: building_slots.zone.zone_ark_shipwright.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_shipwright
+    name: Shipwright Quarter
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: has_technology = tech_doctrine_navy_size_1'
+- id: building_slots.zone.zone_ark_waystation_trade.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_ark_waystation_trade
+    name: Waystation Trade Hub
+    file: common/zones/05_arkship_zones.txt
+  requirement:
+  - 'owner?: is_nomadic = yes'
+  - 'owner?: has_technology = tech_waystation_2'
+- id: building_slots.zone.zone_betharian.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_betharian
+    name: Betharian Processing
+    file: common/zones/00_zones.txt
+  requirement:
+  - has_deposit = d_betharian_deposit
+- id: building_slots.zone.zone_betharian_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_betharian_hive
+    name: Betharian Processing
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - has_deposit = d_betharian_deposit
+- id: building_slots.zone.zone_betharian_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_betharian_nexus
+    name: Betharian Processing
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - has_deposit = d_betharian_deposit
+- id: building_slots.zone.zone_broken_shackles_memorial.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_broken_shackles_memorial
+    name: Unshackled Memorial
+    file: common/zones/02_special_zones.txt
+  requirement:
+  - has_carrier_flag = broken_shackles_memorial_built
+- id: building_slots.zone.zone_central_spire.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_central_spire
+    name: Central Spire
+    file: common/zones/02_special_zones.txt
+  requirement:
+  - has_carrier_flag = central_spire_cleared
+- id: building_slots.zone.zone_cosmogenesis_default.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_cosmogenesis_default
+    name: Government Zone
+    file: common/zones/00_zones.txt
+  requirement: null
+- id: building_slots.zone.zone_default.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 6
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_default
+    name: Government Zone
+    file: common/zones/00_zones.txt
+  requirement: null
+- id: building_slots.zone.zone_energy.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_energy
+    name: Energy Generation
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_energy_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_energy_hive
+    name: Energy Generation
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_energy_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_energy_nexus
+    name: Energy Generation
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_energy_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_energy_ring_world
+    name: Energy Generation
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_energy_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_energy_wilderness
+    name: Solar Mycolungs
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_exotic_gases.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_exotic_gases
+    name: Exotic Gas Capture
+    file: common/zones/00_zones.txt
+  requirement:
+  - has_exotic_gases_deposit = yes
+- id: building_slots.zone.zone_exotic_gases_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_exotic_gases_hive
+    name: Exotic Gas Capture
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - has_exotic_gases_deposit = yes
+- id: building_slots.zone.zone_exotic_gases_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_exotic_gases_nexus
+    name: Exotic Gas Capture
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - has_exotic_gases_deposit = yes
+- id: building_slots.zone.zone_factory.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_factory
+    name: Civilian Industry
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_factory_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_factory_arcology
+    name: Civilian Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_factory_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_factory_hive
+    name: Civilian Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_factory_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_factory_nexus
+    name: Civilian Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_factory_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_factory_ring_world
+    name: Civilian Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_food.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_food
+    name: Agricultural Focus
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'if: limit: exists = owner'
+  - 'if: limit: owner: is_anglers_empire = yes'
+  - 'if: is_wet = no'
+  - 'else: hidden_trigger: owner?: is_wilderness_empire = no'
+- id: building_slots.zone.zone_food_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_food_hive
+    name: Agricultural Focus
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'if: limit: exists = owner'
+  - 'if: limit: owner: is_anglers_empire = yes'
+  - 'if: is_wet = no'
+  - 'else: hidden_trigger: owner?: is_wilderness_empire = no'
+- id: building_slots.zone.zone_food_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_food_ring_world
+    name: Agricultural Focus
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'if: limit: exists = owner'
+  - 'if: limit: owner: is_anglers_empire = yes'
+  - 'if: is_wet = no'
+  - 'else: hidden_trigger: owner?: is_wilderness_empire = no'
+- id: building_slots.zone.zone_food_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_food_wilderness
+    name: Bloomloom
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_fortress.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_fortress
+    name: Military Defenses
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_fortress_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_fortress_arcology
+    name: Military Defenses
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_fortress_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_fortress_hive
+    name: Military Defenses
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_fortress_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_fortress_nexus
+    name: Military Defenses
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_fortress_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_fortress_ring_world
+    name: Military Defenses
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_fortress_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_fortress_wilderness
+    name: Command Bulb
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_foundry.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_foundry
+    name: Heavy Industry
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_foundry_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_foundry_arcology
+    name: Heavy Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_foundry_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_foundry_hive
+    name: Heavy Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_foundry_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_foundry_nexus
+    name: Heavy Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_foundry_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_foundry_ring_world
+    name: Heavy Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_foundry_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_foundry_wilderness
+    name: Moltgut
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_habitat_exotic_gases.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_habitat_exotic_gases
+    name: Exotic Gas Capture
+    file: common/zones/01_habitat_zones.txt
+  requirement:
+  - has_exotic_gases_deposit = yes
+- id: building_slots.zone.zone_habitat_hydroponics.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_habitat_hydroponics
+    name: Solar Farming Bays
+    file: common/zones/01_habitat_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_habitat_knights.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_habitat_knights
+    name: Order's Hall
+    file: common/zones/01_habitat_zones.txt
+  requirement:
+  - 'owner?: has_origin = origin_toxic_knights'
+  - 'owner?: NOT(has_country_flag = quest_abandoned)'
+  - OR(has_planet_flag = toxic_knights_habitat ; has_building = building_order_castle)
+- id: building_slots.zone.zone_habitat_knights.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_habitat_knights
+    name: Order's Hall
+    file: common/zones/01_habitat_zones.txt
+  requirement:
+  - 'owner?: has_origin = origin_toxic_knights'
+  - 'owner?: NOT(has_country_flag = quest_abandoned)'
+  - OR(has_planet_flag = toxic_knights_habitat ; has_building = building_order_castle)
+- id: building_slots.zone.zone_habitat_rare_crystals.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_habitat_rare_crystals
+    name: Rare Crystal Extraction
+    file: common/zones/01_habitat_zones.txt
+  requirement:
+  - has_rare_crystals_deposit = yes
+- id: building_slots.zone.zone_habitat_research.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_habitat_research
+    name: Research Enclave
+    file: common/zones/01_habitat_zones.txt
+  requirement:
+  - always = yes
+- id: building_slots.zone.zone_habitat_research_unity.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_habitat_research_unity
+    name: Archives
+    file: common/zones/01_habitat_zones.txt
+  requirement:
+  - always = yes
+- id: building_slots.zone.zone_habitat_volatile_motes.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_habitat_volatile_motes
+    name: Volatile Motes Harvesting
+    file: common/zones/01_habitat_zones.txt
+  requirement:
+  - has_volatile_motes_deposit = yes
+- id: building_slots.zone.zone_industrial.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_industrial
+    name: Mixed Industry
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_industrial_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_industrial_arcology
+    name: Mixed Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_industrial_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_industrial_hive
+    name: Mixed Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_industrial_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_industrial_nexus
+    name: Mixed Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_industrial_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_industrial_ring_world
+    name: Mixed Industry
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: country_uses_consumer_goods = yes'
+- id: building_slots.zone.zone_machine_replication.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_machine_replication
+    name: Replication Hub
+    file: common/zones/00_zones.txt
+  requirement:
+  - is_planet_class = pc_machine
+  - exists = owner
+  - 'owner: is_machine_empire = yes'
+  - 'owner: has_ascension_perk = ap_machine_worlds'
+- id: building_slots.zone.zone_machine_replication.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_machine_replication
+    name: Replication Hub
+    file: common/zones/00_zones.txt
+  requirement:
+  - is_planet_class = pc_machine
+  - exists = owner
+  - 'owner: is_machine_empire = yes'
+  - 'owner: has_ascension_perk = ap_machine_worlds'
+- id: building_slots.zone.zone_minerals.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_minerals
+    name: Mineral Extraction
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_minerals_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_minerals_hive
+    name: Mineral Extraction
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_minerals_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_minerals_nexus
+    name: Mineral Extraction
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_minerals_physics.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_minerals_physics
+    name: Gravitonic Mines
+    file: common/zones/00_zones.txt
+  requirement:
+  - has_deposit = d_sky_mountain
+- id: building_slots.zone.zone_minerals_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_minerals_wilderness
+    name: Orespine
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_payback_enlightenment.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_payback_enlightenment
+    name: Uplift Center
+    file: common/zones/02_special_zones.txt
+  requirement:
+  - has_carrier_flag = payback_enlightenment_built
+- id: building_slots.zone.zone_rare_crystals.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_rare_crystals
+    name: Rare Crystal Extraction
+    file: common/zones/00_zones.txt
+  requirement:
+  - has_rare_crystals_deposit = yes
+- id: building_slots.zone.zone_rare_crystals_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_rare_crystals_hive
+    name: Rare Crystal Extraction
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - has_rare_crystals_deposit = yes
+- id: building_slots.zone.zone_rare_crystals_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_rare_crystals_nexus
+    name: Rare Crystal Extraction
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - has_rare_crystals_deposit = yes
+- id: building_slots.zone.zone_research.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research
+    name: Research Enclave
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_arcology
+    name: Research Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_engineering.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_engineering
+    name: Engineering Research Specialization
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_engineering_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_engineering_arcology
+    name: Engineering Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_engineering_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_engineering_hive
+    name: Engineering Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_engineering_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_engineering_nexus
+    name: Engineering Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_engineering_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_engineering_ring_world
+    name: Engineering Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_hive
+    name: Research Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_nexus
+    name: Research Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_physics.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_physics
+    name: Physics Research Specialization
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_physics_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_physics_arcology
+    name: Physics Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_physics_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_physics_hive
+    name: Physics Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_physics_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_physics_nexus
+    name: Physics Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_physics_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_physics_ring_world
+    name: Physics Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_ring_world
+    name: Research Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_society.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_society
+    name: Society Research Specialization
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_society_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_society_arcology
+    name: Society Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_society_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_society_hive
+    name: Society Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_society_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_society_nexus
+    name: Society Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_society_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_society_ring_world
+    name: Society Research Specialization
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_unity.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_unity
+    name: Archives
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_research_unity_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_unity_wilderness
+    name: Harmonic Core
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_research_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_research_wilderness
+    name: Thinkstem
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_resort.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_resort
+    name: Resort Complex
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - has_modifier = resort_colony
+- id: building_slots.zone.zone_resort_entertainment.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_resort_entertainment
+    name: Entertainment Megaplex
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - has_modifier = resort_colony
+- id: building_slots.zone.zone_resort_grand_museum.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_resort_grand_museum
+    name: Memory Hall
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_resort_hunting_ground.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_resort_hunting_ground
+    name: Grand Hunting Park
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: is_xenophile = no'
+- id: building_slots.zone.zone_resort_proving_grounds.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_resort_proving_grounds
+    name: Proving Grounds
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: OR(has_valid_civic = civic_warrior_culture ; is_militarist = yes)'
+- id: building_slots.zone.zone_resort_restoration_enclave.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_resort_restoration_enclave
+    name: Restoration Enclave
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_resort_spiritual_retreat.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_resort_spiritual_retreat
+    name: Sacred Retreat
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: is_spiritualist = yes'
+- id: building_slots.zone.zone_resort_zoo.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_resort_zoo
+    name: Xenobiological Zoo
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_technology = tech_alien_life_studies'
+  - 'owner: is_wilderness_empire = no'
+  - has_modifier = resort_colony
+- id: building_slots.zone.zone_spawning.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_spawning
+    name: Spawning Nest
+    file: common/zones/00_zones.txt
+  requirement:
+  - is_planet_class = pc_hive
+  - 'owner: is_hive_empire = yes'
+  - 'owner: has_ascension_perk = ap_hive_worlds'
+- id: building_slots.zone.zone_spawning.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_spawning
+    name: Spawning Nest
+    file: common/zones/00_zones.txt
+  requirement:
+  - is_planet_class = pc_hive
+  - 'owner: is_hive_empire = yes'
+  - 'owner: has_ascension_perk = ap_hive_worlds'
+- id: building_slots.zone.zone_spawning_hive.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_spawning_hive
+    name: Spawning Nest
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - is_planet_class = pc_hive
+  - 'owner: is_hive_empire = yes'
+  - 'owner: has_ascension_perk = ap_hive_worlds'
+- id: building_slots.zone.zone_spawning_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 1
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_spawning_hive
+    name: Spawning Nest
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - is_planet_class = pc_hive
+  - 'owner: is_hive_empire = yes'
+  - 'owner: has_ascension_perk = ap_hive_worlds'
+- id: building_slots.zone.zone_subterranean_urban.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_subterranean_urban
+    name: Subterranean Urbanization
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_subterranean_empire = yes'
+- id: building_slots.zone.zone_subterranean_urban.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_subterranean_urban
+    name: Subterranean Urbanization
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_subterranean_empire = yes'
+- id: building_slots.zone.zone_trade.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_trade
+    name: Commercial Nexus
+    file: common/zones/00_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_trade_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_trade_arcology
+    name: Commercial Nexus
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_trade_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_trade_hive
+    name: Commercial Nexus
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_trade_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_trade_nexus
+    name: Commercial Nexus
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_trade_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_trade_ring_world
+    name: Commercial Nexus
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = no'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_trade_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_trade_wilderness
+    name: Threadway
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_unity.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity
+    name: Administrative Hub
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: is_spiritualist = no'
+  - 'owner: NOT(has_valid_civic = civic_machine_servitor)'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_unity_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_arcology
+    name: Administrative Hub
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: is_spiritualist = no'
+  - 'owner: NOT(has_valid_civic = civic_machine_servitor)'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_unity_bio_trophy.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_bio_trophy
+    name: Sanctuary Enclave
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: has_valid_civic = civic_machine_servitor'
+- id: building_slots.zone.zone_unity_bio_trophy_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_bio_trophy_arcology
+    name: Sanctuary Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: has_valid_civic = civic_machine_servitor'
+- id: building_slots.zone.zone_unity_bio_trophy_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_bio_trophy_nexus
+    name: Sanctuary Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: has_valid_civic = civic_machine_servitor'
+- id: building_slots.zone.zone_unity_bio_trophy_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_bio_trophy_ring_world
+    name: Sanctuary Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: has_valid_civic = civic_machine_servitor'
+- id: building_slots.zone.zone_unity_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_hive
+    name: Administrative Hub
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: is_spiritualist = no'
+  - 'owner: NOT(has_valid_civic = civic_machine_servitor)'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_unity_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_nexus
+    name: Administrative Hub
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: is_spiritualist = no'
+  - 'owner: NOT(has_valid_civic = civic_machine_servitor)'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_unity_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_ring_world
+    name: Administrative Hub
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: is_spiritualist = no'
+  - 'owner: NOT(has_valid_civic = civic_machine_servitor)'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_unity_spiritualist.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_spiritualist
+    name: Spiritual Enclave
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_spiritualist = yes'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_unity_spiritualist_arcology.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_spiritualist_arcology
+    name: Spiritual Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_spiritualist = yes'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_unity_spiritualist_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_spiritualist_nexus
+    name: Spiritual Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_spiritualist = yes'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_unity_spiritualist_ring_world.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_spiritualist_ring_world
+    name: Spiritual Enclave
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'owner: is_spiritualist = yes'
+  - 'OR(owner: is_ai = no ; has_any_research_zone = no ; has_any_industrial_zone = no)'
+- id: building_slots.zone.zone_unity_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_unity_wilderness
+    name: Singing Cliffs
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_urban.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_urban
+    name: Urban Expansion
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_urban.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_urban
+    name: Urban Expansion
+    file: common/zones/00_zones.txt
+  requirement:
+  - 'hidden_trigger: exists = owner'
+  - 'hidden_trigger: owner: is_wilderness_empire = no'
+- id: building_slots.zone.zone_urban_wilderness.max_buildings
+  effect: modifies
+  modifier: max_buildings
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_urban_wilderness
+    name: Heartgrove
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_urban_wilderness.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_urban_wilderness
+    name: Heartgrove
+    file: common/zones/03_wilderness_zones.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: building_slots.zone.zone_volatile_motes.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_volatile_motes
+    name: Volatile Motes Harvesting
+    file: common/zones/00_zones.txt
+  requirement:
+  - has_volatile_motes_deposit = yes
+- id: building_slots.zone.zone_volatile_motes_hive.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_volatile_motes_hive
+    name: Volatile Motes Harvesting
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - has_volatile_motes_deposit = yes
+- id: building_slots.zone.zone_volatile_motes_nexus.zone_building_slots_add
+  effect: modifies
+  modifier: zone_building_slots_add
+  amount: 3
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_volatile_motes_nexus
+    name: Volatile Motes Harvesting
+    file: common/zones/04_secondary_zones.txt
+  requirement:
+  - has_volatile_motes_deposit = yes

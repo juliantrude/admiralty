@@ -1,0 +1,8 @@
+# Sources with facts but no player-facing name; gen_mechanics.py omits them from the facts.
+# Format: <kind> <key>  # reason
+static_modifier copy_alloys_income_modifier      # astral planes: internal income-copy bookkeeping
+static_modifier copy_energy_income_modifier      # astral planes: internal income-copy bookkeeping
+static_modifier copy_food_income_modifier        # astral planes: internal income-copy bookkeeping
+static_modifier copy_minerals_income_modifier    # astral planes: internal income-copy bookkeeping
+static_modifier particle_storm_ship_unity_gain_modifier  # cosmic storm event modifier, never shown
+static_modifier storm_unity_gain_modifier        # cosmic storm event modifier, never shown

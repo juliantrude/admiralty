@@ -1,0 +1,2527 @@
+game_version: v4.5.2
+generator: 1
+quantity: naval_capacity
+facts:
+- id: naval_capacity.ascension_perk.ap_galactic_force_projection.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 150
+  amount_kind: add
+  source:
+    kind: ascension_perk
+    key: ap_galactic_force_projection
+    name: Galactic Force Projection
+    file: common/ascension_perks/00_ascension_perks.txt
+  requirement:
+  - NOT(has_ascension_perk = ap_galactic_force_projection)
+- id: naval_capacity.building.building_lathe_cogitator.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.01
+  amount_kind: mult
+  scaled_by: value:num_chip_slave_raw
+  source:
+    kind: building
+    key: building_lathe_cogitator
+    name: Synaptic Cogitator
+    file: common/buildings/20_machine_age_buildings.txt
+  requirement:
+  - has_technology = tech_lathe_cogitator
+  - is_planet_class = pc_cosmogenesis_world
+  - exists = owner
+  - 'owner: has_ascension_perk = ap_cosmogenesis'
+  - has_active_building = building_lathe_cogitator
+- id: naval_capacity.building.building_military_contractors.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 5
+  amount_kind: per_unit
+  scaled_by: value:branch_office_value_for_buildings
+  source:
+    kind: building
+    key: building_military_contractors
+    name: Mercenary Liaison Office
+    file: common/buildings/14_branch_office_buildings.txt
+  requirement:
+  - has_branch_office = yes
+  - 'branch_office_owner: is_legit_or_legal_criminal = yes'
+  - always = yes
+- id: naval_capacity.building.building_pirate_haven.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 5
+  amount_kind: per_unit
+  scaled_by: value:branch_office_value_for_buildings
+  source:
+    kind: building
+    key: building_pirate_haven
+    name: Pirate Free Haven
+    file: common/buildings/14_branch_office_buildings.txt
+  requirement:
+  - has_branch_office = yes
+  - 'branch_office_owner: is_illegal_criminal = yes'
+  - always = yes
+- id: naval_capacity.building.holding_knight_commandery.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: holding_knight_commandery
+    name: Order's Commandery
+    file: common/buildings/15_overlord_holdings.txt
+  requirement:
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: overlord: has_origin = origin_toxic_knights'
+  - 'owner: overlord: NOT(has_country_flag = quest_abandoned)'
+  - exists = planet
+  - 'planet: is_capital = yes'
+  - 'planet: pop_amount >= 5000'
+- id: naval_capacity.building.holding_recruitment_office.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 5
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: holding_recruitment_office
+    name: Recruitment Office
+    file: common/buildings/15_overlord_holdings.txt
+  requirement:
+  - 'owner: is_wilderness_empire = no'
+  - 'owner: overlord: has_valid_civic = civic_citizen_service'
+- id: naval_capacity.civic.civic_citizen_service.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_citizen_service
+    name: Citizen Service
+    file: common/governments/civics/00_civics.txt
+  requirement:
+  - 'ethics: NOT(value = ethic_gestalt_consciousness)'
+  - 'authority: NOT(value = auth_corporate)'
+- id: naval_capacity.civic.civic_diadochi.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_diadochi
+    name: Diadochus
+    file: common/governments/civics/01_special_civics.txt
+  requirement:
+  - 'origin: value = origin_khan_successor'
+- id: naval_capacity.civic.civic_fanatic_purifiers.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.33
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_fanatic_purifiers
+    name: Fanatic Purifiers
+    file: common/governments/civics/00_civics.txt
+  requirement:
+  - 'ethics: NOT(value = ethic_gestalt_consciousness)'
+  - 'authority: NOT(value = auth_corporate)'
+- id: naval_capacity.civic.civic_hive_devouring_swarm.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.33
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_hive_devouring_swarm
+    name: Devouring Swarm
+    file: common/governments/civics/02_gestalt_civics.txt
+  requirement:
+  - 'authority: value = auth_hive_mind'
+- id: naval_capacity.civic.civic_hive_scorched_earth.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.5
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_hive_scorched_earth
+    name: Pyromanic Instinct
+    file: common/governments/civics/02_gestalt_civics.txt
+  requirement:
+  - 'authority: value = auth_hive_mind'
+- id: naval_capacity.civic.civic_hive_subspace_ephapse.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_hive_subspace_ephapse
+    name: Subspace Ephapse
+    file: common/governments/civics/02_gestalt_civics.txt
+  requirement:
+  - 'authority: value = auth_hive_mind'
+- id: naval_capacity.civic.civic_machine_terminator.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.33
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_machine_terminator
+    name: Determined Exterminator
+    file: common/governments/civics/02_gestalt_civics.txt
+  requirement:
+  - 'authority: value = auth_machine_intelligence'
+- id: naval_capacity.civic.civic_naval_contractors.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_naval_contractors
+    name: Naval Contractors
+    file: common/governments/civics/03_corporate_civics.txt
+  requirement:
+  - 'OR(authority: value = auth_corporate ; civics: value = civic_galactic_sovereign_megacorp)'
+- id: naval_capacity.civic.civic_scorched_earth.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.5
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_scorched_earth
+    name: Scorched World Heralds
+    file: common/governments/civics/00_civics.txt
+  requirement:
+  - 'ethics: NOT(value = ethic_gestalt_consciousness)'
+  - 'authority: NOT(value = auth_corporate)'
+- id: naval_capacity.civic.origin_demonic_incursion.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 1
+  amount_kind: mult
+  source:
+    kind: civic
+    key: origin_demonic_incursion
+    name: Daemonic Incursion
+    file: common/governments/civics/01_origins_non_playable.txt
+  requirement:
+  - always = no
+- id: naval_capacity.civic.origin_fallen_empire.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1000
+  amount_kind: add
+  source:
+    kind: civic
+    key: origin_fallen_empire
+    name: Elder Race
+    file: common/governments/civics/01_origins_non_playable.txt
+  requirement: null
+- id: naval_capacity.civic.origin_fallen_empire_hive.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1000
+  amount_kind: add
+  source:
+    kind: civic
+    key: origin_fallen_empire_hive
+    name: Elder Race
+    file: common/governments/civics/01_origins_non_playable.txt
+  requirement: null
+- id: naval_capacity.civic.origin_slavers.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 50
+  amount_kind: add
+  source:
+    kind: civic
+    key: origin_slavers
+    name: Your Ladder To The Sky
+    file: common/governments/civics/01_origins_non_playable.txt
+  requirement: null
+- id: naval_capacity.edict.cybernetic_creed_war_edict.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: edict
+    key: cybernetic_creed_war_edict
+    name: The Crusade of Steel
+    file: common/edicts/04_machine_age_edicts.txt
+  requirement:
+  - is_cyber_creed_advanced_government = yes
+  - has_country_flag = cybernetic_creed_war
+- id: naval_capacity.edict.grand_fleet.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: edict
+    key: grand_fleet
+    name: 'Decree: A Grand Fleet'
+    file: common/edicts/02_ambitions.txt
+  requirement:
+  - has_technology = tech_ascension_theory
+- id: naval_capacity.edict.masters_writings_war.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: edict
+    key: masters_writings_war
+    name: 'Master''s Teachings: Warring States'
+    file: common/edicts/01_campaigns.txt
+  requirement:
+  - has_country_flag = edict_masters_writings_war
+- id: naval_capacity.edict.nanotech_naval_augmentation.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: edict
+    key: nanotech_naval_augmentation
+    name: Nano-operated Supply Chains
+    file: common/edicts/04_machine_age_edicts.txt
+  requirement:
+  - has_tradition = tr_nanotech_5
+- id: naval_capacity.job.archivist.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: archivist
+    name: Archivist
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.archivist.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: archivist
+    name: Archivist
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.astral_drone.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: astral_drone
+    name: Astral Drone
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.astral_drone.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: astral_drone
+    name: Astral Drone
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.astral_researcher.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: astral_researcher
+    name: Astral Researcher
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.astral_researcher.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: astral_researcher
+    name: Astral Researcher
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.astral_unit.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: astral_unit
+    name: Astral Unit
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.battle_thrall.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 4
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: battle_thrall
+    name: Battle Thrall
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement: null
+- id: naval_capacity.job.battle_thrall.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: battle_thrall
+    name: Battle Thrall
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_technology = tech_ground_defense_planning'
+- id: naval_capacity.job.battle_thrall.country_naval_cap_add#3
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.5
+  amount_kind: per_unit
+  scaled_by: value:bellicose_naval_cap
+  source:
+    kind: job
+    key: battle_thrall
+    name: Battle Thrall
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: any_owned_leader: is_councilor = yes'
+  - 'owner: any_owned_leader: has_trait = leader_trait_bellicose'
+- id: naval_capacity.job.battle_thrall.country_naval_cap_add#4
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: battle_thrall
+    name: Battle Thrall
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: is_nomadic = yes'
+- id: naval_capacity.job.battle_thrall.country_naval_cap_add#5
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: battle_thrall
+    name: Battle Thrall
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'colony?: has_deposit = d_abandoned_black_needle_base'
+- id: naval_capacity.job.battle_thrall.country_naval_cap_add#6
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: battle_thrall
+    name: Battle Thrall
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - soldier_is_shipwright_trigger = yes
+- id: naval_capacity.job.biologist.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: biologist
+    name: Biologist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.biologist.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: biologist
+    name: Biologist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.broken_shackles_scavenger.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: broken_shackles_scavenger
+    name: Scavenger
+    file: common/pop_jobs/09_first_contact_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.bureaucrat.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.125
+  amount_kind: per_unit
+  scaled_by: value:scripted_ethics_weight_mult|ETHIC|militarist|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_militarist = yes'
+  - 'colony?: bureaucrat_is_memorialist = yes'
+- id: naval_capacity.job.calculator_biologist.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: calculator_biologist
+    name: Biology Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.calculator_biologist.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: calculator_biologist
+    name: Biology Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.calculator_engineer.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: calculator_engineer
+    name: Engineering Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.calculator_engineer.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: calculator_engineer
+    name: Engineering Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.calculator_physicist.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: calculator_physicist
+    name: Physics Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.calculator_physicist.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: calculator_physicist
+    name: Physics Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.dimensional_portal_researcher.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: dimensional_portal_researcher
+    name: Dimensional Portal Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.dimensional_portal_researcher.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: dimensional_portal_researcher
+    name: Dimensional Portal Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.dimensional_portal_researcher_gestalt.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: dimensional_portal_researcher_gestalt
+    name: Dimensional Portal Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.dimensional_portal_researcher_gestalt.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: dimensional_portal_researcher_gestalt
+    name: Dimensional Portal Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.engineer.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: engineer
+    name: Engineer
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.engineer.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: engineer
+    name: Engineer
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.entertainer.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: entertainer
+    name: Entertainer
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - entertainer_is_duelist_trigger = yes
+- id: naval_capacity.job.experiment_engineer.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: experiment_engineer
+    name: Experiment Engineer
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - exists = colony
+- id: naval_capacity.job.experiment_engineer.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: experiment_engineer
+    name: Experiment Engineer
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.experiment_engineer_drone.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: experiment_engineer_drone
+    name: Experiment Engineer Drone
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - exists = colony
+- id: naval_capacity.job.experiment_engineer_drone.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: experiment_engineer_drone
+    name: Experiment Engineer Drone
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.foundry.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: foundry
+    name: Metallurgist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.knight.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 4
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: knight
+    name: Knight
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement: null
+- id: naval_capacity.job.knight_commander.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 600
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: knight_commander
+    name: Lord Commander
+    file: common/pop_jobs/01_ruler_jobs.txt
+  requirement: null
+- id: naval_capacity.job.low_tech_researcher.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: low_tech_researcher
+    name: Scientist
+    file: common/pop_jobs/09_first_contact_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.manufactorium_complex_drone.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: manufactorium_complex_drone
+    name: Operator Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.manufactorium_specialist.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: manufactorium_specialist
+    name: Operator
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.munitions_decommissioner.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: munitions_decommissioner
+    name: Munitions Decommissioner
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.munitions_decommissioner.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: munitions_decommissioner
+    name: Munitions Decommissioner
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.munitions_decommissioning_drone.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: munitions_decommissioning_drone
+    name: Munitions Decommissioning Drone
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.munitions_decommissioning_unit.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: munitions_decommissioning_unit
+    name: Munitions Decommissioning Unit
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.munitions_decommissioning_unit.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: munitions_decommissioning_unit
+    name: Munitions Decommissioning Unit
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.munitions_decommissioning_unit_lithoid.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: munitions_decommissioning_unit_lithoid
+    name: Munitions Decommissioning Unit
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.munitions_decommissioning_unit_lithoid.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: munitions_decommissioning_unit_lithoid
+    name: Munitions Decommissioning Unit
+    file: common/pop_jobs/11_astral_planes_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.nanotech_research_unit.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: nanotech_research_unit
+    name: Nanotech Research Unit
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.nanotech_researcher.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: nanotech_researcher
+    name: Nanotech Researcher
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.odd_factory_drone.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: odd_factory_drone
+    name: Odd Factory Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.odd_factory_worker.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: odd_factory_worker
+    name: Odd Factory Worker
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.physicist.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: physicist
+    name: Physicist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.physicist.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: physicist
+    name: Physicist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.skywatcher.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher
+    name: Skywatcher
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_technology = tech_ground_defense_planning'
+- id: naval_capacity.job.skywatcher.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.5
+  amount_kind: per_unit
+  scaled_by: value:bellicose_naval_cap
+  source:
+    kind: job
+    key: skywatcher
+    name: Skywatcher
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: any_owned_leader: is_councilor = yes'
+  - 'owner: any_owned_leader: has_trait = leader_trait_bellicose'
+- id: naval_capacity.job.skywatcher.country_naval_cap_add#3
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher
+    name: Skywatcher
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - 'owner?: is_nomadic = yes'
+- id: naval_capacity.job.skywatcher.country_naval_cap_add#4
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher
+    name: Skywatcher
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - 'colony?: has_deposit = d_abandoned_black_needle_base'
+- id: naval_capacity.job.skywatcher.country_naval_cap_add#5
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher
+    name: Skywatcher
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - soldier_is_shipwright_trigger = yes
+- id: naval_capacity.job.skywatcher.country_naval_cap_add#6
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 6
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher
+    name: Skywatcher
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement: null
+- id: naval_capacity.job.skywatcher_drone.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher_drone
+    name: Skywatcher Drone
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_technology = tech_ground_defense_planning'
+- id: naval_capacity.job.skywatcher_drone.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.5
+  amount_kind: per_unit
+  scaled_by: value:bellicose_naval_cap
+  source:
+    kind: job
+    key: skywatcher_drone
+    name: Skywatcher Drone
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: any_owned_leader: is_councilor = yes'
+  - 'owner: any_owned_leader: has_trait = leader_trait_bellicose'
+- id: naval_capacity.job.skywatcher_drone.country_naval_cap_add#3
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher_drone
+    name: Skywatcher Drone
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - 'owner?: is_nomadic = yes'
+- id: naval_capacity.job.skywatcher_drone.country_naval_cap_add#4
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher_drone
+    name: Skywatcher Drone
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - 'colony?: has_deposit = d_abandoned_black_needle_base'
+- id: naval_capacity.job.skywatcher_drone.country_naval_cap_add#5
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher_drone
+    name: Skywatcher Drone
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement:
+  - soldier_is_shipwright_trigger = yes
+- id: naval_capacity.job.skywatcher_drone.country_naval_cap_add#6
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 6
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: skywatcher_drone
+    name: Skywatcher Drone
+    file: common/pop_jobs/15_biogenesis_jobs.txt
+  requirement: null
+- id: naval_capacity.job.soldier.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 4
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: soldier
+    name: Soldier
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement: null
+- id: naval_capacity.job.soldier.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: soldier
+    name: Soldier
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_technology = tech_ground_defense_planning'
+- id: naval_capacity.job.soldier.country_naval_cap_add#3
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.5
+  amount_kind: per_unit
+  scaled_by: value:bellicose_naval_cap
+  source:
+    kind: job
+    key: soldier
+    name: Soldier
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: any_owned_leader: is_councilor = yes'
+  - 'owner: any_owned_leader: has_trait = leader_trait_bellicose'
+- id: naval_capacity.job.soldier.country_naval_cap_add#4
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: soldier
+    name: Soldier
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: is_nomadic = yes'
+- id: naval_capacity.job.soldier.country_naval_cap_add#5
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: soldier
+    name: Soldier
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'colony?: has_deposit = d_abandoned_black_needle_base'
+- id: naval_capacity.job.soldier.country_naval_cap_add#6
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: soldier
+    name: Soldier
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - soldier_is_shipwright_trigger = yes
+- id: naval_capacity.job.space_time_anomaly_researcher.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: space_time_anomaly_researcher
+    name: Space-Time Anomaly Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.space_time_anomaly_researcher.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: space_time_anomaly_researcher
+    name: Space-Time Anomaly Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.space_time_anomaly_researcher_gestalt.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: space_time_anomaly_researcher_gestalt
+    name: Space-Time Anomaly Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.space_time_anomaly_researcher_gestalt.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: space_time_anomaly_researcher_gestalt
+    name: Space-Time Anomaly Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.squire.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: squire
+    name: Squire
+    file: common/pop_jobs/03_worker_jobs.txt
+  requirement:
+  - 'owner?: has_technology = tech_ground_defense_planning'
+- id: naval_capacity.job.squire.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.5
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: squire
+    name: Squire
+    file: common/pop_jobs/03_worker_jobs.txt
+  requirement:
+  - 'owner?: any_owned_leader: is_councilor = yes'
+  - 'owner?: any_owned_leader: has_trait = leader_trait_bellicose'
+- id: naval_capacity.job.stratovent_researcher.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.2
+  amount_kind: per_unit
+  scaled_by: colony.modifier:job_researcher_naval_cap_add
+  source:
+    kind: job
+    key: stratovent_researcher
+    name: Vent Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'local_or_sector_governor_has_trait: TRAIT = leader_trait_academia_recruiter'
+- id: naval_capacity.job.stratovent_researcher.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: stratovent_researcher
+    name: Vent Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_crisis_level = crisis_hyperthermia_level_4'
+- id: naval_capacity.job.telepath_drone.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: telepath_drone
+    name: Telepath Drone
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - has_shroud_dlc = no
+  - 'owner?: has_country_flag = eater_covenant_confirmed'
+- id: naval_capacity.job.telepath_drone.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1.5
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: telepath_drone
+    name: Telepath Drone
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - has_shroud_dlc = no
+  - 'owner?: has_country_flag = eater_covenant_rank_1'
+- id: naval_capacity.job.telepath_drone.country_naval_cap_add#3
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2.5
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: telepath_drone
+    name: Telepath Drone
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - has_shroud_dlc = yes
+  - 'owner?: has_covenant_with_the_eater_of_worlds = yes'
+- id: naval_capacity.job.warrior_drone.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 4
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: warrior_drone
+    name: Warrior Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement: null
+- id: naval_capacity.job.warrior_drone.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: warrior_drone
+    name: Warrior Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_technology = tech_ground_defense_planning'
+- id: naval_capacity.job.warrior_drone.country_naval_cap_add#3
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.5
+  amount_kind: per_unit
+  scaled_by: value:bellicose_naval_cap
+  source:
+    kind: job
+    key: warrior_drone
+    name: Warrior Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: any_owned_leader: is_councilor = yes'
+  - 'owner: any_owned_leader: has_trait = leader_trait_bellicose'
+- id: naval_capacity.job.warrior_drone.country_naval_cap_add#4
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: warrior_drone
+    name: Warrior Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'owner?: is_nomadic = yes'
+- id: naval_capacity.job.warrior_drone.country_naval_cap_add#5
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: warrior_drone
+    name: Warrior Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'colony?: has_deposit = d_abandoned_black_needle_base'
+- id: naval_capacity.job.warrior_drone.country_naval_cap_add#6
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: warrior_drone
+    name: Warrior Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - soldier_is_shipwright_trigger = yes
+- id: naval_capacity.megastructure.crisis_sphere_0.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 200
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: crisis_sphere_0
+    name: Aetherophasic Engine Frame
+    file: common/megastructures/12_crisis_sphere.txt
+  requirement:
+  - has_crisis_level = crisis_level_5
+  - 'NOT(any_owned_megastructure: OR(has_megastructure_flag = crisis_sphere ; is_megastructure_type = crisis_sphere_ruined ; is_upgrading = yes))'
+- id: naval_capacity.megastructure.crisis_sphere_1.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: crisis_sphere_1
+    name: Partial Aetherophasic Engine
+    file: common/megastructures/12_crisis_sphere.txt
+  requirement: null
+- id: naval_capacity.megastructure.crisis_sphere_2.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 400
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: crisis_sphere_2
+    name: Partial Aetherophasic Engine
+    file: common/megastructures/12_crisis_sphere.txt
+  requirement: null
+- id: naval_capacity.megastructure.crisis_sphere_3.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: crisis_sphere_3
+    name: Partial Aetherophasic Engine
+    file: common/megastructures/12_crisis_sphere.txt
+  requirement: null
+- id: naval_capacity.megastructure.galactic_crucible_1.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 150
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: galactic_crucible_1
+    name: Galactic Crucible Chassis
+    file: common/megastructures/22_galactic_crucible.txt
+  requirement:
+  - has_crisis_level = crisis_hyperthermia_level_1
+- id: naval_capacity.megastructure.galactic_crucible_2.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 225
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: galactic_crucible_2
+    name: Galactic Crucible Core
+    file: common/megastructures/22_galactic_crucible.txt
+  requirement:
+  - has_crisis_level = crisis_hyperthermia_level_2
+- id: naval_capacity.megastructure.galactic_crucible_3.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: galactic_crucible_3
+    name: Galactic Crucible Hub
+    file: common/megastructures/22_galactic_crucible.txt
+  requirement:
+  - has_country_flag = Hyperthermia_Lv4_project
+- id: naval_capacity.megastructure.galactic_crucible_4.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 375
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: galactic_crucible_4
+    name: Galactic Crucible
+    file: common/megastructures/22_galactic_crucible.txt
+  requirement:
+  - has_country_flag = Hyperthermia_Lv4_unlocked
+- id: naval_capacity.megastructure.shroud_seal.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 10
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: shroud_seal
+    name: Shroud Seal
+    file: common/megastructures/22_shroud_seal.txt
+  requirement:
+  - has_technology = tech_psionic_suppression
+  - 'owner?: has_relic = r_the_lost_patron'
+- id: naval_capacity.megastructure.strategic_coordination_center_1.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 200
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: strategic_coordination_center_1
+    name: 'Strategic Coordination Center: Hull'
+    file: common/megastructures/07_strategic_coordination_center.txt
+  requirement:
+  - has_technology = tech_strategic_coordination
+- id: naval_capacity.megastructure.strategic_coordination_center_2.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 200
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: strategic_coordination_center_2
+    name: 'Strategic Coordination Center: Comms'
+    file: common/megastructures/07_strategic_coordination_center.txt
+  requirement:
+  - has_technology = tech_strategic_coordination
+- id: naval_capacity.megastructure.strategic_coordination_center_3.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: strategic_coordination_center_3
+    name: Strategic Coordination Center
+    file: common/megastructures/07_strategic_coordination_center.txt
+  requirement:
+  - has_technology = tech_strategic_coordination
+- id: naval_capacity.megastructure.strategic_coordination_center_restored.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: megastructure
+    key: strategic_coordination_center_restored
+    name: Strategic Coordination Center
+    file: common/megastructures/07_strategic_coordination_center.txt
+  requirement: null
+- id: naval_capacity.policy.diplomatic_stance.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: policy
+    key: diplomatic_stance
+    name: Diplomatic Stance
+    file: common/policies/00_policies.txt
+  requirement:
+  - OR(is_country_type = default ; is_country_type = fallen_empire ; is_country_type = awakened_fallen_empire ; is_country_type = primitive ; is_country_type = awakened_marauders ; is_country_type = mirrored_country ; is_country_type = exiled)
+  - is_at_war = no
+  - OR(is_country_type = default ; is_country_type = awakened_fallen_empire)
+  - is_nomadic = no
+- id: naval_capacity.policy.diplomatic_stance.country_naval_cap_mult#2
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: policy
+    key: diplomatic_stance
+    name: Diplomatic Stance
+    file: common/policies/00_policies.txt
+  requirement:
+  - OR(is_country_type = default ; is_country_type = fallen_empire ; is_country_type = awakened_fallen_empire ; is_country_type = primitive ; is_country_type = awakened_marauders ; is_country_type = mirrored_country ; is_country_type = exiled)
+  - is_at_war = no
+  - OR(is_country_type = awakened_fallen_empire ; is_country_type = awakened_marauders ; is_country_type = default ; is_country_type = mirrored_country)
+  - is_nomadic = no
+- id: naval_capacity.policy.diplomatic_stance.country_naval_cap_mult#3
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: policy
+    key: diplomatic_stance
+    name: Diplomatic Stance
+    file: common/policies/00_policies.txt
+  requirement:
+  - OR(is_country_type = default ; is_country_type = fallen_empire ; is_country_type = awakened_fallen_empire ; is_country_type = primitive ; is_country_type = awakened_marauders ; is_country_type = mirrored_country ; is_country_type = exiled)
+  - is_at_war = no
+  - is_nomadic = yes
+- id: naval_capacity.policy.diplomatic_stance.country_naval_cap_mult#4
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: policy
+    key: diplomatic_stance
+    name: Diplomatic Stance
+    file: common/policies/00_policies.txt
+  requirement:
+  - OR(is_country_type = default ; is_country_type = fallen_empire ; is_country_type = awakened_fallen_empire ; is_country_type = primitive ; is_country_type = awakened_marauders ; is_country_type = mirrored_country ; is_country_type = exiled)
+  - is_at_war = no
+  - OR(is_country_type = awakened_fallen_empire ; is_country_type = awakened_marauders ; is_country_type = default ; is_country_type = mirrored_country)
+  - is_nomadic = yes
+- id: naval_capacity.relic.r_core_of_the_reckoning.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.25
+  amount_kind: mult
+  scaled_by: value:core_of_the_reckoning_mult
+  source:
+    kind: relic
+    key: r_core_of_the_reckoning
+    name: Core of the Reckoning
+    file: common/relics/relics.txt
+  requirement:
+  - always = yes
+- id: naval_capacity.relic.r_khans_throne.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 200
+  amount_kind: add
+  source:
+    kind: relic
+    key: r_khans_throne
+    name: Khan's Throne
+    file: common/relics/relics.txt
+  requirement:
+  - is_nomadic = yes
+  - NOT(has_origin = origin_heirs_of_the_khan)
+- id: naval_capacity.relic.r_khans_throne.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 400
+  amount_kind: add
+  source:
+    kind: relic
+    key: r_khans_throne
+    name: Khan's Throne
+    file: common/relics/relics.txt
+  requirement:
+  - has_origin = origin_heirs_of_the_khan
+- id: naval_capacity.starbase_building.mercenary_garrison.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 5
+  amount_kind: per_unit
+  source:
+    kind: starbase_building
+    key: mercenary_garrison
+    name: Mercenary Garrison
+    file: common/starbase_buildings/00_starbase_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_homicidal = no'
+  - 'owner: has_country_flag = mercenary_enclave_diplomacy_engaged'
+  - OR(is_normal_starbase = yes ; is_orbital_ring = yes)
+  - 'hidden_trigger: exists = this'
+  - 'owner: is_galactic_community_member = yes'
+  - OR(is_active_resolution = resolution_galacticstudies_advanced_xenostudies ; is_active_resolution = resolution_galacticstudies_ethical_guideline_refactoring ; is_active_resolution = resolution_galacticstudies_extradimensional_experimentation)
+- id: naval_capacity.starbase_module.anchorage.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 5
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: anchorage
+    name: Anchorage
+    file: common/starbase_modules/00_starbase_modules.txt
+  requirement:
+  - is_normal_starbase = yes
+- id: naval_capacity.starbase_module.anchorage.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: anchorage
+    name: Anchorage
+    file: common/starbase_modules/00_starbase_modules.txt
+  requirement:
+  - is_normal_starbase = yes
+  - is_scope_valid = yes
+  - has_starbase_building = naval_logistics_office
+- id: naval_capacity.starbase_module.arkship_docking_bay.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 5
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: arkship_docking_bay
+    name: Docking Bay
+    file: common/starbase_modules/00_arkship_utility_modules.txt
+  requirement:
+  - is_arkship_starbase = yes
+- id: naval_capacity.starbase_module.orbital_ring_anchorage.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 5
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: orbital_ring_anchorage
+    name: Orbital Anchorage
+    file: common/starbase_modules/00_orbital_ring_modules.txt
+  requirement:
+  - is_orbital_ring = yes
+- id: naval_capacity.starbase_module.orbital_ring_anchorage.country_naval_cap_add#2
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: orbital_ring_anchorage
+    name: Orbital Anchorage
+    file: common/starbase_modules/00_orbital_ring_modules.txt
+  requirement:
+  - is_orbital_ring = yes
+  - is_scope_valid = yes
+  - has_starbase_building = naval_logistics_office
+- id: naval_capacity.starbase_module.orbital_ring_anchorage.country_naval_cap_add#3
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 3
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: orbital_ring_anchorage
+    name: Orbital Anchorage
+    file: common/starbase_modules/00_orbital_ring_modules.txt
+  requirement:
+  - is_orbital_ring = yes
+  - exists = planet
+  - 'planet: exists = owner.overlord'
+  - 'planet: has_holding: holding = holding_orbital_assembly_complex'
+  - 'planet: has_holding: owner = owner.overlord'
+- id: naval_capacity.static_modifier.agenda_military_buildup_nomads_finish.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: agenda_military_buildup_nomads_finish
+    name: Military Buildup Agenda
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: naval_capacity.static_modifier.agenda_we_come_in_peace_finish.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: agenda_we_come_in_peace_finish
+    name: We Come in Peace Agenda
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: naval_capacity.static_modifier.agenda_we_come_in_peace_nomads_finish.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: agenda_we_come_in_peace_nomads_finish
+    name: We Come in Peace Agenda
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: naval_capacity.static_modifier.ai_strength.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: ai_strength
+    name: Spare Cycles
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.angered_solarpunk.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 500
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: angered_solarpunk
+    name: Angered Pacifists
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: naval_capacity.static_modifier.champs_of_empire_mil_effect.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: champs_of_empire_mil_effect
+    name: Champions of the Empire
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: naval_capacity.static_modifier.community_champion_counselor.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: community_champion_counselor
+    name: Champions of the Community
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.community_champion_custodian.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: community_champion_custodian
+    name: Champions of the Community
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.community_champion_emperor.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: community_champion_emperor
+    name: Champions of the Community
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.community_champion_regular.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: community_champion_regular
+    name: Champions of the Community
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.covenant_end_of_the_cycle.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: covenant_end_of_the_cycle
+    name: 'Covenant: End of the Cycle'
+    file: common/static_modifiers/05_static_modifiers_utopia.txt
+  requirement: null
+- id: naval_capacity.static_modifier.cybercreed_tithe_navy.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cybercreed_tithe_navy
+    name: The Tithe of the Navy
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: naval_capacity.static_modifier.cybernetic_creed_war_robot_points_modifier.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cybernetic_creed_war_robot_points_modifier
+    name: Elevated Templars
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: naval_capacity.static_modifier.difficulty_admiral.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.75
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: difficulty_admiral
+    name: Difficulty
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.difficulty_cadet_player.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: difficulty_cadet_player
+    name: Difficulty
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.difficulty_captain.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: difficulty_captain
+    name: Difficulty
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.difficulty_civilian_player.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 1.0
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: difficulty_civilian_player
+    name: Difficulty
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.difficulty_commodore.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: difficulty_commodore
+    name: Difficulty
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.difficulty_grand_admiral.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 1.0
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: difficulty_grand_admiral
+    name: Difficulty
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.enclave_modifier.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: enclave_modifier
+    name: Enclave Contact
+    file: common/static_modifiers/25_static_modifiers_nomads.txt
+  requirement: null
+- id: naval_capacity.static_modifier.fallen_empire_base.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: fallen_empire_base
+    name: Base
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.galatron_naval_cap1.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 10
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: galatron_naval_cap1
+    name: Expanded by the Galatron
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: naval_capacity.static_modifier.gdf_naval_cap.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 1000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: gdf_naval_cap
+    name: Galactic Defense Force
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: naval_capacity.static_modifier.gdf_naval_cap_2.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 2000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: gdf_naval_cap_2
+    name: Galactic Defense Force
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: naval_capacity.static_modifier.limit_of_the_cradle.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: limit_of_the_cradle
+    name: Limit of the Cradle
+    file: common/static_modifiers/24_static_modifiers_shroud.txt
+  requirement: null
+- id: naval_capacity.static_modifier.mercenary_enclave_logistic_help.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: mercenary_enclave_logistic_help
+    name: Logistic Support Solutions
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.mercenary_fleet_size_upgrade_1.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 50
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: mercenary_fleet_size_upgrade_1
+    name: Mercenary Fleet Size Upgrade
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.mercenary_fleet_size_upgrade_2.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 75
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: mercenary_fleet_size_upgrade_2
+    name: Mercenary Fleet Size Upgrade II
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.mercenary_fleet_size_upgrade_3.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 100
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: mercenary_fleet_size_upgrade_3
+    name: Mercenary Fleet Size Upgrade III
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.mercenary_fleet_size_upgrade_4.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 125
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: mercenary_fleet_size_upgrade_4
+    name: Mercenary Fleet Size Upgrade IV
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.mercenary_fleet_size_upgrade_5.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 150
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: mercenary_fleet_size_upgrade_5
+    name: Mercenary Fleet Size Upgrade V
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.primal_calling_assimilate_modifier.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 0.3
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: primal_calling_assimilate_modifier
+    name: Wild Consciousness
+    file: common/static_modifiers/21_static_modifiers_grand_archive.txt
+  requirement: null
+- id: naval_capacity.static_modifier.refurbishment_fleet_capacity.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: refurbishment_fleet_capacity
+    name: Expanded Fleet Capacity
+    file: common/static_modifiers/25_static_modifiers_nomads.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_commerce_holistic_asset_coordination.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_commerce_holistic_asset_coordination
+    name: Holistic Asset Coordination
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_commerce_leveraged_privateering.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_commerce_leveraged_privateering
+    name: Leveraged Privateering
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_custodian_galactic_mobilization.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 500
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: resolution_custodian_galactic_mobilization
+    name: Galactic Mobilization
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_custodian_galactic_mobilization_gestalt.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 500
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: resolution_custodian_galactic_mobilization_gestalt
+    name: Galactic Mobilization
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_custodian_gdf_3.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_custodian_gdf_3
+    name: Supranational Defense Force
+    file: common/static_modifiers/13_static_modifiers_nemesis.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_condottieri.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_condottieri
+    name: Neutral Defenders
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_condottieri_merc_naval_cap.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 10
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_condottieri_merc_naval_cap
+    name: Naval Capacity from Resolutions
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_corporate_warlords.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_corporate_warlords
+    name: Corporate Peacekeeping
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_corporate_warlords_merc_naval_cap.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 10
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_corporate_warlords_merc_naval_cap
+    name: Naval Capacity from Resolutions
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_defense_contracts.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_defense_contracts
+    name: Security Contractors
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_defense_contracts_merc_naval_cap.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 10
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_defense_contracts_merc_naval_cap
+    name: Naval Capacity from Resolutions
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_private_support_troops.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_private_support_troops
+    name: High Consequence Protection
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_private_support_troops_merc_naval_cap.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 10
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_private_support_troops_merc_naval_cap
+    name: Naval Capacity from Resolutions
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_security_business.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_security_business
+    name: Galactic Risk Management
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_defenseprivatization_security_business_merc_naval_cap.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 10
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: resolution_defenseprivatization_security_business_merc_naval_cap
+    name: Naval Capacity from Resolutions
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_mutualdefense_naval_weight.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_mutualdefense_naval_weight
+    name: Diplomatic Weight From Fleet Power
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_mutualdefense_the_readied_shield.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_mutualdefense_the_readied_shield
+    name: The Readied Shield
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_rulesofwar_demobilization_initiative.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_rulesofwar_demobilization_initiative
+    name: Demobilization Initiative
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: naval_capacity.static_modifier.resolution_sanctions_military.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_sanctions_military
+    name: Military Sanctions
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: naval_capacity.static_modifier.specialist_scholarium_subject_modifier.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: -0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: specialist_scholarium_subject_modifier
+    name: Scholarium
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: naval_capacity.static_modifier.sponsored_rebels.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 1.0
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: sponsored_rebels
+    name: Sponsored Rebels
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.strategic_coordination_center_modifier.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 300
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: strategic_coordination_center_modifier
+    name: 'Strategic Coordination Center: Hull'
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: naval_capacity.static_modifier.sweet_tooth_blockade.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: -10
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: sweet_tooth_blockade
+    name: Security Blockade
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: naval_capacity.static_modifier.synth_queen_advanced_war_preparations.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: synth_queen_advanced_war_preparations
+    name: Fight for Survival
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: naval_capacity.static_modifier.synth_queen_war_preparations.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: synth_queen_war_preparations
+    name: War on the Horizon
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: naval_capacity.static_modifier.uprising_ai_buff.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 10
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: uprising_ai_buff
+    name: Optimizing Reserves
+    file: common/static_modifiers/01_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.static_modifier.uprising_player_buff.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 10
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: uprising_player_buff
+    name: Naval Capacity
+    file: common/static_modifiers/01_static_modifiers.txt
+  requirement: null
+- id: naval_capacity.technology.tech_doctrine_navy_size_1.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 25
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_doctrine_navy_size_1
+    name: 'Doctrine: Fleet Support'
+    file: common/technology/00_soc_tech.txt
+    tier: 1
+    cost: 1250
+    area: society
+  requirement: null
+- id: naval_capacity.technology.tech_doctrine_navy_size_2.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 50
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_doctrine_navy_size_2
+    name: 'Doctrine: Support Vessels'
+    file: common/technology/00_soc_tech.txt
+    tier: 2
+    cost: 2500
+    area: society
+  requirement:
+  - has_technology = tech_doctrine_navy_size_1
+- id: naval_capacity.technology.tech_doctrine_navy_size_3.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 75
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_doctrine_navy_size_3
+    name: 'Doctrine: Interstellar Logistics'
+    file: common/technology/00_soc_tech.txt
+    tier: 3
+    cost: 4000
+    area: society
+  requirement:
+  - has_technology = tech_doctrine_navy_size_2
+- id: naval_capacity.technology.tech_doctrine_navy_size_4.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 100
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_doctrine_navy_size_4
+    name: 'Doctrine: Fleet Liaisons'
+    file: common/technology/00_soc_tech.txt
+    tier: 4
+    cost: 12000
+    area: society
+  requirement:
+  - has_technology = tech_doctrine_navy_size_3
+- id: naval_capacity.technology.tech_repeatable_naval_cap.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 20
+  amount_kind: add
+  source:
+    kind: technology
+    key: tech_repeatable_naval_cap
+    name: Fleet Management Procedures
+    file: common/technology/00_soc_tech_repeatable.txt
+    tier: 5
+    levels: 5
+    cost: 50000
+    area: society
+  requirement:
+  - has_technology = tech_doctrine_navy_size_4
+- id: naval_capacity.tradition.tr_supremacy_adopt.country_naval_cap_add
+  effect: modifies
+  modifier: country_naval_cap_add
+  amount: 20
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_supremacy_adopt
+    name: Supremacy Traditions
+    file: common/traditions/00_supremacy.txt
+  requirement: null
+- id: naval_capacity.tradition.tr_supremacy_fleet_logistical_corps.country_naval_cap_mult
+  effect: modifies
+  modifier: country_naval_cap_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_supremacy_fleet_logistical_corps
+    name: Fleet Logistics Corps
+    file: common/traditions/00_supremacy.txt
+  requirement: null

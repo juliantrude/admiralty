@@ -1,0 +1,4980 @@
+game_version: v4.5.2
+generator: 1
+quantity: amenities
+facts:
+- id: amenities.building.building_affluence_center.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_affluence_center
+    name: Affluence Center
+    file: common/buildings/13_fallen_empire_buildings.txt
+  requirement:
+  - 'owner?: OR(is_fallen_empire = yes ; has_technology = tech_fe_affluence_2 ; has_country_flag = affluence_emporium_can_build)'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony ; has_modifier = penal_colony)
+  - 'custom_tooltip: fail_text = ancrel.10004.failtext'
+  - 'custom_tooltip: owner?: OR(check_variable: which = affluence_emporium_upgrade_count ; check_variable: value >= 1 ; is_fallen_empire = yes ; has_technology = tech_fe_affluence_2)'
+  - 'custom_tooltip: fail_text = cosmogenesis_aborted_tt'
+  - 'custom_tooltip: NOT(owner?: has_country_flag = cosmogenesis_aborted)'
+- id: amenities.building.building_ancient_control_center.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 15000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_ancient_control_center
+    name: Ancient Control Center
+    file: common/buildings/13_fallen_empire_buildings.txt
+  requirement:
+  - 'owner?: is_fallen_empire_machine = yes'
+- id: amenities.building.building_ancient_hive_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 15000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_ancient_hive_capital
+    name: Venerable Nucleus
+    file: common/buildings/13_fallen_empire_buildings.txt
+  requirement:
+  - 'owner?: is_hive_empire = yes'
+  - 'owner?: is_fallen_empire = yes'
+  - 'owner?: is_wilderness_empire = no'
+- id: amenities.building.building_ancient_palace.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 15000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_ancient_palace
+    name: Ancient Palace
+    file: common/buildings/13_fallen_empire_buildings.txt
+  requirement:
+  - 'owner?: is_fallen_empire = yes'
+  - 'owner?: is_hive_empire = no'
+- id: amenities.building.building_avatar_chamber_1.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 400
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_avatar_chamber_1
+    name: Avatar Cradle
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_wilderness_node
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: amenities.building.building_avatar_chamber_1.planet_amenities_no_happiness_add#2
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 200
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_avatar_chamber_1
+    name: Avatar Cradle
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_wilderness_node
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - has_building = building_avatar_chamber_2
+- id: amenities.building.building_avatar_chamber_1.planet_amenities_no_happiness_add#3
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 400
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_avatar_chamber_1
+    name: Avatar Cradle
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_wilderness_node
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - has_building = building_avatar_chamber_3
+- id: amenities.building.building_avatar_chamber_1.planet_amenities_no_happiness_add#4
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 800
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_avatar_chamber_1
+    name: Avatar Cradle
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_wilderness_node
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - has_building = building_avatar_chamber_4
+- id: amenities.building.building_avatar_chamber_2.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 600
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_avatar_chamber_2
+    name: Avatar Chamber
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_wilderness_node
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - NOR(has_building = building_avatar_chamber_2 ; has_building = building_avatar_chamber_3 ; has_building = building_avatar_chamber_4)
+  - has_upgraded_capital = yes
+- id: amenities.building.building_avatar_chamber_3.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 800
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_avatar_chamber_3
+    name: Avatar Forest
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_wilderness_cluster
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - has_major_upgraded_capital = yes
+- id: amenities.building.building_avatar_chamber_4.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 1200
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_avatar_chamber_4
+    name: Avatar Cortex
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_wilderness_confluence
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - has_fully_upgraded_capital = yes
+- id: amenities.building.building_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_capital
+    name: Planetary Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony ; uses_habitat_capitals = yes ; is_planet_class = pc_cosmogenesis_world)
+  - sapient_pop_amount >= 1000
+- id: amenities.building.building_capital_wilderness.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_capital_wilderness
+    name: Planetary Root Bundle
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value <= 10'
+- id: amenities.building.building_clone_army_clone_vat.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_clone_army_clone_vat
+    name: Ancient Clone Vat
+    file: common/buildings/01_pop_assembly_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: has_origin = origin_clone_army'
+  - 'owner: NOT(has_country_flag = clone_army_fertility_unlocked)'
+  - 'owner: is_cloning_authority = yes'
+  - 'owner: is_megacorp = yes'
+- id: amenities.building.building_clone_vats.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_clone_vats
+    name: Clone Vats
+    file: common/buildings/01_pop_assembly_buildings.txt
+  requirement:
+  - has_technology = tech_cloning
+  - exists = owner
+  - NOT(has_modifier = resort_colony)
+  - 'OR(owner: is_ai = no ; NAND(free_district_slots = 0 ; free_building_slots <= 1 ; free_housing <= 0 ; free_jobs <= 0))'
+  - 'owner: is_cloning_authority = yes'
+  - 'owner: is_megacorp = yes'
+- id: amenities.building.building_colony_shelter.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_colony_shelter
+    name: Reassembled Ship Shelter
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony ; uses_habitat_capitals = yes ; uses_district_set = cosmogenesis_world)
+- id: amenities.building.building_colony_shelter_wilderness.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_colony_shelter_wilderness
+    name: Planetary Tendrils
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+- id: amenities.building.building_communal_housing.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_communal_housing
+    name: Communal Housing
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - exists = owner
+  - 'OR(NOT(is_planet_class = pc_habitat) ; owner: is_void_dweller_empire = yes)'
+  - 'OR(has_carrier_flag = ignore_ai_building_limitations ; owner: is_ai = no ; free_amenities < 500 ; days_passed = 0)'
+  - NOR(has_modifier = slave_colony ; has_modifier = penal_colony)
+  - 'owner: is_regular_empire = yes'
+  - 'owner: has_valid_civic = civic_shared_burden'
+- id: amenities.building.building_communal_housing_large.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 5000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_communal_housing_large
+    name: Utopian Communal Housing
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - has_technology = tech_paradise_dome
+  - exists = owner
+  - has_building = building_communal_housing
+  - 'owner: is_regular_empire = yes'
+  - 'owner: has_valid_civic = civic_shared_burden'
+  - 'OR(NOT(is_planet_class = pc_habitat) ; owner: is_void_dweller_empire = yes)'
+  - NOR(has_modifier = slave_colony ; has_modifier = penal_colony)
+  - has_upgraded_capital = yes
+- id: amenities.building.building_corporate_clinics.job_healthcare_amenities_add
+  effect: modifies
+  modifier: job_healthcare_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_corporate_clinics
+    name: Corporate Clinic
+    file: common/buildings/14_branch_office_buildings.txt
+  requirement:
+  - has_branch_office = yes
+  - 'branch_office_owner: OR(has_valid_civic = civic_private_healthcare_corporate ; has_valid_civic = civic_corporate_toxic_baths ; has_valid_civic = civic_corporate_toxic_baths_individual_machine)'
+  - always = yes
+- id: amenities.building.building_crude_huts.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_crude_huts
+    name: Crude Huts
+    file: common/buildings/11_primitive_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_primitive = yes'
+  - 'owner: is_hive_empire = no'
+  - 'owner: has_country_flag = stone_age'
+- id: amenities.building.building_deployment_post.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_deployment_post
+    name: Deployment Post
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+- id: amenities.building.building_drone_megastorage.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 3000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_drone_megastorage
+    name: Upgraded Drone Storage
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - has_technology = tech_micro_replicators
+  - has_building = building_drone_storage
+  - has_upgraded_capital = yes
+- id: amenities.building.building_drone_storage.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_drone_storage
+    name: Drone Storage
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_machine_empire = yes'
+  - 'OR(has_carrier_flag = ignore_ai_building_limitations ; owner: is_ai = no ; free_amenities < 500 ; days_passed = 0)'
+- id: amenities.building.building_executive_retreat.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: building
+    key: building_executive_retreat
+    name: Executive Retreat
+    file: common/buildings/14_branch_office_buildings.txt
+  requirement:
+  - has_technology = tech_executive_retreat
+  - has_branch_office = yes
+  - 'branch_office_owner: is_legit_or_legal_criminal = yes'
+  - pop_amount >= 2500
+- id: amenities.building.building_expanded_warren.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 3000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_expanded_warren
+    name: Expanded Warren
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - has_technology = tech_housing_2
+  - exists = owner
+  - has_building = building_hive_warren
+  - 'owner: is_wilderness_empire = no'
+  - has_upgraded_capital = yes
+- id: amenities.building.building_fe_dome.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 7500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_fe_dome
+    name: Empyrean Dome
+    file: common/buildings/13_fallen_empire_buildings.txt
+  requirement:
+  - 'owner?: OR(is_fallen_empire = yes ; has_technology = tech_fe_dome_2 ; has_country_flag = fe_sky_dome_can_build)'
+  - NOR(has_modifier = slave_colony ; has_modifier = penal_colony)
+  - 'custom_tooltip: fail_text = ancrel.10004.failtext'
+  - 'custom_tooltip: owner?: OR(check_variable: which = fe_sky_dome_upgrade_count ; check_variable: value >= 1 ; is_fallen_empire = yes ; has_technology = tech_fe_dome_2)'
+- id: amenities.building.building_fe_entertainment_2.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 5000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_fe_entertainment_2
+    name: Omni-Bliss Nexus
+    file: common/buildings/13_fallen_empire_buildings.txt
+  requirement:
+  - 'owner?: OR(is_fallen_empire = yes ; has_technology = tech_fe_entertainment_2 ; has_country_flag = fe_entertainment_1_can_build)'
+  - NOR(has_modifier = slave_colony ; has_modifier = penal_colony)
+  - 'custom_tooltip: fail_text = ancrel.10004.failtext'
+  - 'custom_tooltip: owner?: OR(check_variable: which = fe_entertainment_1_upgrade_count ; check_variable: value >= 1 ; is_fallen_empire = yes ; has_technology = tech_fe_entertainment_2)'
+- id: amenities.building.building_fe_sky_dome.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 3750
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_fe_sky_dome
+    name: Sky Dome
+    file: common/buildings/13_fallen_empire_buildings.txt
+  requirement:
+  - 'owner?: OR(is_fallen_empire = yes ; has_technology = tech_fe_dome_1 ; has_country_flag = fe_sky_dome_can_build)'
+  - NOR(has_modifier = slave_colony ; has_modifier = penal_colony)
+  - 'custom_tooltip: fail_text = ancrel.10004.failtext'
+  - 'custom_tooltip: owner?: OR(check_variable: which = fe_sky_dome_build_count ; check_variable: value >= 1 ; is_fallen_empire = yes ; has_technology = tech_fe_dome_1)'
+- id: amenities.building.building_fe_xeno_zoo.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_fe_xeno_zoo
+    name: Xeno Preserve
+    file: common/buildings/13_fallen_empire_buildings.txt
+  requirement:
+  - 'owner?: is_fallen_empire = yes'
+  - 'owner?: is_xenophile = yes'
+  - 'owner?: is_wilderness_empire = no'
+- id: amenities.building.building_genomic_facility.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_genomic_facility
+    name: Genomic Research Facility
+    file: common/buildings/22_biogenesis_buildings.txt
+  requirement:
+  - 'owner: has_country_flag = genomic_research_facility_unlocked'
+  - 'owner: is_wilderness_empire = no'
+  - exists = owner
+  - 'owner: has_country_flag = cloning_unlock_level_2'
+  - 'owner: is_gestalt = no'
+- id: amenities.building.building_genomic_facility.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_genomic_facility
+    name: Genomic Research Facility
+    file: common/buildings/22_biogenesis_buildings.txt
+  requirement:
+  - 'owner: has_country_flag = genomic_research_facility_unlocked'
+  - 'owner: is_wilderness_empire = no'
+  - exists = owner
+  - 'owner: has_country_flag = cloning_unlock_level_2'
+  - 'owner: is_gestalt = yes'
+- id: amenities.building.building_hab_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_capital
+    name: Habitat Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_1
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+- id: amenities.building.building_hab_fe_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_fe_capital
+    name: Habitat Administration
+    file: common/buildings/13_fallen_empire_buildings.txt
+  requirement:
+  - is_planet_class = pc_habitat
+  - 'owner?: is_fallen_empire = yes'
+  - 'owner?: is_wilderness_empire = no'
+- id: amenities.building.building_hab_major_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 750
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_major_capital
+    name: Habitat Central Control
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_2
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 1000
+- id: amenities.building.building_hab_system_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hab_system_capital
+    name: Habitat System Control
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_habitat_3
+  - uses_habitat_capitals = yes
+  - exists = owner
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 2500
+- id: amenities.building.building_hive_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 800
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_capital
+    name: Hive Core
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+- id: amenities.building.building_hive_crude_huts.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_crude_huts
+    name: Simple Nests
+    file: common/buildings/11_primitive_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_primitive = yes'
+  - 'owner: is_hive_empire = yes'
+  - 'owner: has_country_flag = stone_age'
+- id: amenities.building.building_hive_major_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_major_capital
+    name: Hive Nexus
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_fallen_empire = no'
+  - 'owner: is_wilderness_empire = no'
+  - sapient_pop_amount >= 2500
+- id: amenities.building.building_hive_primitive_capital.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 2500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_primitive_capital
+    name: Continental Nexus
+    file: common/buildings/11_primitive_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_primitive = yes'
+  - 'owner: is_hive_empire = yes'
+  - 'owner: OR(has_country_flag = machine_age ; has_country_flag = industrial_age ; has_country_flag = atomic_age ; has_country_flag = early_space_age)'
+  - 'owner: OR(has_country_flag = machine_age ; has_country_flag = industrial_age)'
+- id: amenities.building.building_hive_primitive_capital.planet_amenities_no_happiness_add#2
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 2500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_primitive_capital
+    name: Continental Nexus
+    file: common/buildings/11_primitive_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_primitive = yes'
+  - 'owner: is_hive_empire = yes'
+  - 'owner: OR(has_country_flag = machine_age ; has_country_flag = industrial_age ; has_country_flag = atomic_age ; has_country_flag = early_space_age)'
+  - 'owner: OR(has_country_flag = atomic_age ; has_country_flag = early_space_age)'
+- id: amenities.building.building_hive_stone_palace.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 2500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_stone_palace
+    name: Stone Hive
+    file: common/buildings/11_primitive_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_primitive = yes'
+  - 'owner: is_hive_empire = yes'
+  - 'owner: OR(has_country_flag = bronze_age ; has_country_flag = iron_age ; has_country_flag = late_medieval_age ; has_country_flag = renaissance_age ; has_country_flag = steam_age)'
+- id: amenities.building.building_hive_warren.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_hive_warren
+    name: Hive Warren
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_hive_empire = yes'
+  - 'owner: is_wilderness_empire = no'
+  - 'OR(has_carrier_flag = ignore_ai_building_limitations ; owner: is_ai = no ; free_amenities < 500 ; days_passed = 0)'
+- id: amenities.building.building_imperial_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 3000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_capital
+    name: Imperial Palace
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_galactic_emperor = yes'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+- id: amenities.building.building_imperial_capital_wilderness.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 3000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_capital_wilderness
+    name: Imperial Complex
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: is_galactic_emperor = yes'
+  - 'owner: is_wilderness_empire = yes'
+  - 'planet: is_capital = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value = 0'
+- id: amenities.building.building_imperial_hive_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 3000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_hive_capital
+    name: Imperial Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: OR(is_hive_empire = yes ; is_country_type = swarm)'
+  - 'owner: is_galactic_emperor = yes'
+  - 'owner: is_wilderness_empire = no'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+- id: amenities.building.building_imperial_machine_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 3000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_imperial_machine_capital
+    name: Imperial Center
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = {}
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_galactic_emperor = yes'
+  - 'planet: is_capital = yes'
+  - sapient_pop_amount >= 5000
+- id: amenities.building.building_instrument_sanctum.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: building
+    key: building_instrument_sanctum
+    name: Sanctum of the Instrument
+    file: common/buildings/12_event_buildings.txt
+  requirement:
+  - exists = owner
+  - 'OR(has_shroud_dlc = no ; owner: has_country_flag = instrument_covenant_rank_1 ; has_shroud_dlc = yes ; owner: has_country_flag = bliss_accord)'
+  - NOR(has_designation = col_resort ; has_modifier = slave_colony)
+  - has_major_upgraded_capital = yes
+  - 'owner: is_gestalt = yes'
+- id: amenities.building.building_junkheap.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_junkheap
+    name: Junk Heap
+    file: common/buildings/12_event_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_country_type = ratlings'
+  - NOT(has_modifier = slave_colony)
+- id: amenities.building.building_lathe_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_lathe_capital
+    name: Processing Unit
+    file: common/buildings/20_machine_age_buildings.txt
+  requirement:
+  - uses_district_set = cosmogenesis_world
+  - exists = owner
+- id: amenities.building.building_lathe_cogitator.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: -5000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_lathe_cogitator
+    name: Synaptic Cogitator
+    file: common/buildings/20_machine_age_buildings.txt
+  requirement:
+  - has_technology = tech_lathe_cogitator
+  - is_planet_class = pc_cosmogenesis_world
+  - exists = owner
+  - 'owner: has_ascension_perk = ap_cosmogenesis'
+- id: amenities.building.building_lathe_life_support.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 5000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_lathe_life_support
+    name: Synaptic Sustainer
+    file: common/buildings/20_machine_age_buildings.txt
+  requirement:
+  - has_technology = tech_lathe_life_support
+  - is_planet_class = pc_cosmogenesis_world
+  - exists = owner
+  - 'owner: has_ascension_perk = ap_cosmogenesis'
+- id: amenities.building.building_lathe_major_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 3000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_lathe_major_capital
+    name: 'Processing Unit: Parallelized'
+    file: common/buildings/20_machine_age_buildings.txt
+  requirement:
+  - uses_district_set = cosmogenesis_world
+  - exists = owner
+  - 'owner: has_ascension_perk = ap_cosmogenesis'
+- id: amenities.building.building_lathe_super_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 5000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_lathe_super_capital
+    name: 'Processing Unit: Vectorial'
+    file: common/buildings/20_machine_age_buildings.txt
+  requirement:
+  - uses_district_set = cosmogenesis_world
+  - exists = owner
+  - 'owner: has_ascension_perk = ap_cosmogenesis'
+- id: amenities.building.building_low_tech_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 700
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_low_tech_capital
+    name: Command Center
+    file: common/buildings/16_first_contact_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_origin = origin_broken_shackles'
+  - OR(has_deposit = d_crashed_slaver_ship ; has_deposit = d_crashed_slaver_ship_memorial)
+- id: amenities.building.building_luxury_residence.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_luxury_residence
+    name: Luxury Residences
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - 'OR(NOT(is_planet_class = pc_habitat) ; exists = owner ; owner: is_void_dweller_empire = yes)'
+  - 'OR(has_carrier_flag = ignore_ai_building_limitations ; owner: is_ai = no ; free_amenities < 500 ; days_passed = 0)'
+  - NOR(has_modifier = slave_colony ; has_modifier = penal_colony)
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: NOT(has_valid_civic = civic_shared_burden)'
+  - NOT(has_building = building_low_tech_capital)
+  - 'owner?: OR(NOT(has_origin = origin_forever_cruise) ; has_country_flag = forever_cruise_over)'
+- id: amenities.building.building_machine_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_capital
+    name: Administrative Array
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_planetary_government
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire ; is_country_type = mechanocalibrator)'
+  - 'owner: is_fallen_empire = no'
+  - uses_habitat_capitals = no
+  - NOT(is_planet_class = pc_cosmogenesis_world)
+  - sapient_pop_amount >= 1000
+- id: amenities.building.building_machine_major_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_major_capital
+    name: Planetary Processor
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - sapient_pop_amount >= 2500
+- id: amenities.building.building_machine_system_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_machine_system_capital
+    name: Primary Nexus
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: OR(is_machine_empire = yes ; is_country_type = ai_empire)'
+  - 'owner: is_fallen_empire = no'
+  - sapient_pop_amount >= 5000
+- id: amenities.building.building_major_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_major_capital
+    name: Planetary Capital
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony)
+  - sapient_pop_amount >= 2500
+- id: amenities.building.building_major_capital_wilderness.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_major_capital_wilderness
+    name: Planetary Root Complex
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_colonial_centralization
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value <= 5'
+- id: amenities.building.building_medical_2.pop_amenities_usage_organic_mult
+  effect: modifies
+  modifier: pop_amenities_usage_organic_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: building
+    key: building_medical_2
+    name: Gene Clinics
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - has_technology = tech_frontier_health
+  - exists = owner
+  - 'owner: is_individual_machine = no'
+  - 'owner: OR(is_regular_empire = yes ; has_origin = origin_fear_of_the_dark ; is_country_type = primitive)'
+  - 'owner: OR(is_ai = no ; has_valid_civic = civic_private_healthcare_corporate ; root: if: unmodelled: limit ; root: if: unmodelled: branch_office_owner ; root: NOT(has_available_jobs = entertainer) ; root: NOT(has_forbidden_jobs = entertainer) ; root: planet_stability < 50 ; root: free_amenities < 0)'
+- id: amenities.building.building_medical_3.pop_amenities_usage_organic_mult
+  effect: modifies
+  modifier: pop_amenities_usage_organic_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: building
+    key: building_medical_3
+    name: Cyto-Revitalization Centers
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - has_technology = tech_frontier_hospital
+  - exists = owner
+  - has_upgraded_capital = yes
+  - 'OR(owner: OR(has_valid_civic = civic_private_healthcare_corporate ; is_ai = no) ; NOT(has_available_jobs = entertainer) ; NOT(has_forbidden_jobs = entertainer) ; planet_stability < 55 ; free_amenities < 5 ; has_branch_office = yes ; branch_office_owner: has_valid_civic = civic_private_healthcare_corporate)'
+- id: amenities.building.building_paradise_dome.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 3000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_paradise_dome
+    name: Paradise Dome
+    file: common/buildings/07_amenity_buildings.txt
+  requirement:
+  - has_technology = tech_paradise_dome
+  - has_building = building_luxury_residence
+  - 'OR(NOT(is_planet_class = pc_habitat) ; exists = owner ; owner: is_void_dweller_empire = yes)'
+  - NOR(has_modifier = slave_colony ; has_modifier = penal_colony)
+  - 'owner?: OR(NOT(has_origin = origin_forever_cruise) ; has_country_flag = forever_cruise_over)'
+  - has_upgraded_capital = yes
+- id: amenities.building.building_primitive_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_primitive_capital
+    name: Regional Capitals
+    file: common/buildings/11_primitive_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_primitive = yes'
+  - 'owner: is_hive_empire = no'
+  - 'owner: OR(has_country_flag = machine_age ; has_country_flag = industrial_age ; has_country_flag = atomic_age ; has_country_flag = early_space_age)'
+  - 'owner: OR(has_country_flag = machine_age ; has_country_flag = industrial_age)'
+- id: amenities.building.building_primitive_capital.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_primitive_capital
+    name: Regional Capitals
+    file: common/buildings/11_primitive_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_primitive = yes'
+  - 'owner: is_hive_empire = no'
+  - 'owner: OR(has_country_flag = machine_age ; has_country_flag = industrial_age ; has_country_flag = atomic_age ; has_country_flag = early_space_age)'
+  - 'owner: OR(has_country_flag = atomic_age ; has_country_flag = early_space_age)'
+- id: amenities.building.building_resort_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_resort_capital
+    name: Resort Administration
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = resort_colony
+- id: amenities.building.building_resort_major_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_resort_major_capital
+    name: Resort Capital-Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = resort_colony
+  - sapient_pop_amount >= 2000
+- id: amenities.building.building_slave_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_slave_capital
+    name: Governor's Palace
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = slave_colony
+- id: amenities.building.building_slave_major_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_slave_major_capital
+    name: Governor's Estates
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_modifier = slave_colony
+  - sapient_pop_amount >= 2000
+- id: amenities.building.building_stone_palace.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_stone_palace
+    name: Stone Palaces
+    file: common/buildings/11_primitive_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_primitive = yes'
+  - 'owner: is_hive_empire = no'
+  - 'owner: OR(has_country_flag = bronze_age ; has_country_flag = iron_age ; has_country_flag = late_medieval_age ; has_country_flag = renaissance_age ; has_country_flag = steam_age)'
+- id: amenities.building.building_system_capital.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_system_capital
+    name: System Capital-Complex
+    file: common/buildings/00_capital_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: is_regular_empire = yes'
+  - 'owner: is_fallen_empire = no'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony)
+  - sapient_pop_amount >= 5000
+- id: amenities.building.building_system_capital_wilderness.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 2000
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_system_capital_wilderness
+    name: Planetary Root Nexus
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_administration
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'num_free_districts: type = any'
+  - 'num_free_districts: value = 0'
+- id: amenities.building.building_waste_reprocessing_center.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_waste_reprocessing_center
+    name: Waste Reprocessing Center
+    file: common/buildings/12_event_buildings.txt
+  requirement:
+  - exists = owner
+  - 'owner: has_country_flag = bought_waste_reprocessing_center'
+  - NOT(has_modifier = slave_colony)
+- id: amenities.building.building_wilderness_storm_relief.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 800
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: building
+    key: building_wilderness_storm_relief
+    name: Storm Relief Center
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_industrial_storm_protection
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'OR(owner: is_ai = no ; solar_system?: system_has_storm_repelling_tech = no)'
+- id: amenities.building.building_wilderness_storm_relief.planet_amenities_no_happiness_add#2
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: building
+    key: building_wilderness_storm_relief
+    name: Storm Relief Center
+    file: common/buildings/21_wilderness_buildings.txt
+  requirement:
+  - has_technology = tech_industrial_storm_protection
+  - exists = owner
+  - 'owner: is_wilderness_empire = yes'
+  - 'OR(owner: is_ai = no ; solar_system?: system_has_storm_repelling_tech = no)'
+  - exists = planet.orbital_defence
+  - 'planet.orbital_defence: exists = starbase'
+  - 'planet.orbital_defence: starbase: has_starbase_building = ring_maintenance_hub'
+- id: amenities.building.holding_communal_housing_outreach.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 750
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: holding_communal_housing_outreach
+    name: Communal Housing Outreach
+    file: common/buildings/15_overlord_holdings.txt
+  requirement:
+  - 'owner.overlord: has_valid_civic = civic_shared_burden'
+  - 'NOT(owner: has_valid_civic = civic_shared_burden)'
+- id: amenities.building.holding_noble_vacation_homes.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: -1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: holding_noble_vacation_homes
+    name: Noble Chateaus
+    file: common/buildings/15_overlord_holdings.txt
+  requirement:
+  - 'owner.overlord: has_valid_civic = civic_aristocratic_elite'
+  - exists = planet.owner
+  - 'planet.owner: is_gestalt = no'
+- id: amenities.building.holding_noble_vacation_homes.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: -1500
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: holding_noble_vacation_homes
+    name: Noble Chateaus
+    file: common/buildings/15_overlord_holdings.txt
+  requirement:
+  - 'owner.overlord: has_valid_civic = civic_aristocratic_elite'
+  - exists = planet.owner
+  - 'planet.owner: is_gestalt = yes'
+- id: amenities.civic.civic_hive_ascetic.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.15
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_hive_ascetic
+    name: Ascetic
+    file: common/governments/civics/02_gestalt_civics.txt
+  requirement:
+  - 'authority: value = auth_hive_mind'
+- id: amenities.civic.civic_machine_built_to_last.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.15
+  amount_kind: mult
+  source:
+    kind: civic
+    key: civic_machine_built_to_last
+    name: Built to Last
+    file: common/governments/civics/02_gestalt_civics.txt
+  requirement:
+  - 'authority: value = auth_machine_intelligence'
+- id: amenities.deposit.d_alien_pets_deposit.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_alien_pets_deposit
+    name: Isolated Valley
+    file: common/deposits/01_planetary_deposits.txt
+  requirement:
+  - can_have_habitable_deposits = yes
+  - NOT(is_planet_class = pc_volcanic)
+  - exists = owner
+  - 'owner: is_guided_sapience_empire = yes'
+- id: amenities.deposit.d_arcane_generator.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_arcane_generator
+    name: Arcane Generator
+    file: common/deposits/07_federations_deposits.txt
+  requirement:
+  - always = no
+- id: amenities.deposit.d_ash_storms.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_ash_storms
+    name: Ash Storms
+    file: common/deposits/15_infernals_deposits.txt
+  requirement:
+  - always = no
+  - exists = owner
+  - 'owner: has_civic = civic_pyrolatry'
+- id: amenities.deposit.d_charged_atmosphere.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_charged_atmosphere
+    name: Charged Atmosphere
+    file: common/deposits/15_infernals_deposits.txt
+  requirement:
+  - always = no
+  - exists = owner
+  - 'owner: has_civic = civic_pyrolatry'
+- id: amenities.deposit.d_devastated_cities.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: -0.3
+  amount_kind: mult
+  source:
+    kind: deposit
+    key: d_devastated_cities
+    name: Devastated Settlements
+    file: common/deposits/15_biogenesis_deposits.txt
+  requirement:
+  - always = no
+- id: amenities.deposit.d_disco_planet.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: deposit
+    key: d_disco_planet
+    name: Party Fever
+    file: common/deposits/07_federations_deposits.txt
+  requirement: null
+- id: amenities.deposit.d_disco_planet2.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: deposit
+    key: d_disco_planet2
+    name: Party Fever
+    file: common/deposits/07_federations_deposits.txt
+  requirement: null
+- id: amenities.deposit.d_large_volcano.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_large_volcano
+    name: Large Volcano
+    file: common/deposits/15_infernals_deposits.txt
+  requirement:
+  - always = no
+  - exists = owner
+  - 'owner: has_civic = civic_pyrolatry'
+- id: amenities.deposit.d_lava_flooding.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_lava_flooding
+    name: Seasonal Lava Flooding
+    file: common/deposits/15_infernals_deposits.txt
+  requirement:
+  - always = no
+  - exists = owner
+  - 'owner: has_civic = civic_pyrolatry'
+- id: amenities.deposit.d_mass_graves.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: -500
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_mass_graves
+    name: Mass Graves
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: amenities.deposit.d_progenitor.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: deposit
+    key: d_progenitor
+    name: Progenitor Nest
+    file: common/deposits/08_overlord_deposits.txt
+  requirement:
+  - always = no
+- id: amenities.deposit.d_progenitor_empty.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: -0.4
+  amount_kind: mult
+  source:
+    kind: deposit
+    key: d_progenitor_empty
+    name: Empty Progenitor Nest
+    file: common/deposits/08_overlord_deposits.txt
+  requirement:
+  - always = no
+- id: amenities.deposit.d_star_mall_promenade.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: deposit
+    key: d_star_mall_promenade
+    name: Promenade
+    file: common/deposits/02_event_planetary_deposits.txt
+  requirement:
+  - exists = owner
+  - 'owner: is_hive_empire = yes'
+- id: amenities.deposit.d_tainted_snowcaps.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: -500
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_tainted_snowcaps
+    name: Tainted Snowcaps
+    file: common/deposits/01_blocker_deposits.txt
+  requirement:
+  - always = no
+- id: amenities.deposit.d_toxic_atmosphere.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  source:
+    kind: deposit
+    key: d_toxic_atmosphere
+    name: Toxic Atmosphere
+    file: common/deposits/15_infernals_deposits.txt
+  requirement:
+  - always = no
+  - exists = owner
+  - 'owner: has_civic = civic_pyrolatry'
+- id: amenities.edict.automated_disinfection.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: edict
+    key: automated_disinfection
+    name: Automated Disinfection
+    file: common/edicts/01_campaigns.txt
+  requirement:
+  - has_astral_planes_dlc = yes
+  - has_country_flag = edict_automated_disinfection
+- id: amenities.edict.drone_overdrive.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: edict
+    key: drone_overdrive
+    name: Drone Overdrive
+    file: common/edicts/00_edicts.txt
+  requirement:
+  - is_gestalt = yes
+  - is_wilderness_empire = no
+  - OR(has_active_tradition = tr_domination_drone_network ; has_active_tradition = tr_domination_wilderness_network)
+- id: amenities.edict.drone_overdrive_wilderness.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: edict
+    key: drone_overdrive_wilderness
+    name: Symbiont Overdrive
+    file: common/edicts/00_edicts.txt
+  requirement:
+  - is_wilderness_empire = yes
+  - OR(has_active_tradition = tr_domination_drone_network ; has_active_tradition = tr_domination_wilderness_network)
+- id: amenities.edict.space_fauna_exhibition.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: edict
+    key: space_fauna_exhibition
+    name: Space Fauna Exhibition
+    file: common/edicts/05_grand_archive_edicts.txt
+  requirement:
+  - has_modifier = primal_calling_exhibit_modifier
+- id: amenities.job.aid_worker.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: aid_worker
+    name: Aid Worker
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.aid_worker_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: aid_worker_drone
+    name: Aid Worker
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.ark_waystation_trader.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: ark_waystation_trader
+    name: Waystation Comptroller
+    file: common/pop_jobs/17_nomads_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_mercantile_commercial_enterprise'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.ark_waystation_trader.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: ark_waystation_trader
+    name: Waystation Comptroller
+    file: common/pop_jobs/17_nomads_jobs.txt
+  requirement:
+  - 'starbase?: has_starbase_building = arkship_trade_hub'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.ark_waystation_trader_gestalt.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: ark_waystation_trader_gestalt
+    name: Trade Coordination Drone
+    file: common/pop_jobs/17_nomads_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.ark_waystation_trader_gestalt.planet_amenities_no_happiness_add#2
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 250
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: ark_waystation_trader_gestalt
+    name: Trade Coordination Drone
+    file: common/pop_jobs/17_nomads_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_synchronicity_integrated_preservation'
+- id: amenities.job.ark_waystation_trader_gestalt.planet_amenities_no_happiness_add#3
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 250
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: ark_waystation_trader_gestalt
+    name: Trade Coordination Drone
+    file: common/pop_jobs/17_nomads_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_virtuality_5'
+- id: amenities.job.artisan.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: artisan
+    name: Artisan
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - artisan_is_pearl_diver_trigger = yes
+  - 'owner?: has_valid_civic = civic_agrarian_idyll'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.augmentor.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: augmentor
+    name: Augmentor
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.augmentor_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: augmentor_drone
+    name: Augmentor Drone
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.bath_attendant.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bath_attendant
+    name: Spa Attendant
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: is_megacorp = no'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bath_attendant_machine.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bath_attendant_machine
+    name: Lubrication Terminal
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement: null
+- id: amenities.job.biologist.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: biologist
+    name: Biologist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: has_active_tradition = tr_discovery_faith_in_science'
+- id: amenities.job.biologist.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 150
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: biologist
+    name: Biologist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'leader?: has_trait = leader_trait_nomadic_caregiver'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.biologist.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: biologist
+    name: Biologist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - biologist_is_ranger_trigger = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.biologist.planet_amenities_add#4
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: biologist
+    name: Biologist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - biologist_is_vent_researcher_trigger = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.biologist.planet_amenities_add#5
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:zoo_keeper_amenity_output
+  source:
+    kind: job
+    key: biologist
+    name: Biologist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - biologist_is_zookeeper_trigger = yes
+- id: amenities.job.broken_shackles_scavenger.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: broken_shackles_scavenger
+    name: Scavenger
+    file: common/pop_jobs/09_first_contact_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 150
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'leader?: has_trait = leader_trait_nomadic_caregiver'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_priest = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_steward = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#4
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_preacher = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#5
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_death_priest = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#6
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_fire_dancer = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#7
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 400
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - OR(bureaucrat_is_pyromancer = yes ; bureaucrat_is_fire_seer = yes ; bureaucrat_is_cremator = yes)
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#8
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_unifier = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#9
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_low_tech_priest = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#10
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_numistic_priest = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#11
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_haruspex = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#12
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - bureaucrat_is_culture_worker = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#13
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - OR(bureaucrat_is_corpse_reader = yes ; bureaucrat_is_corpse_broker = yes)
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.bureaucrat.planet_amenities_add#14
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'colony?: has_active_building = building_league_offices'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.calculator_biologist.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: calculator_biologist
+    name: Biology Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'owner?: has_active_tradition = tr_discovery_faith_in_science'
+- id: amenities.job.calculator_biologist.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 150
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: calculator_biologist
+    name: Biology Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'leader?: has_trait = leader_trait_nomadic_caregiver'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.calculator_engineer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 150
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: calculator_engineer
+    name: Engineering Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'leader?: has_trait = leader_trait_nomadic_caregiver'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.calculator_engineer.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: calculator_engineer
+    name: Engineering Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'owner?: has_active_tradition = tr_discovery_faith_in_science'
+- id: amenities.job.calculator_physicist.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: calculator_physicist
+    name: Physics Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'owner?: has_active_tradition = tr_discovery_faith_in_science'
+- id: amenities.job.calculator_physicist.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 150
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: calculator_physicist
+    name: Physics Subroutine
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'leader?: has_trait = leader_trait_nomadic_caregiver'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.civilian.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 50
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: civilian
+    name: Civilian
+    file: common/pop_jobs/00_other_jobs.txt
+  requirement:
+  - 'owner?: is_pleasure_seeker_empire = no'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.clerk.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: clerk
+    name: Clerk
+    file: common/pop_jobs/03_worker_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.colonist.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: colonist
+    name: Colonist
+    file: common/pop_jobs/03_worker_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.coordinator.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: coordinator
+    name: Coordinator
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'colony: has_active_building = building_league_offices'
+- id: amenities.job.cruise_crew_overseer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: cruise_crew_overseer
+    name: Activity Manager
+    file: common/pop_jobs/17_nomads_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_mercantile_commercial_enterprise'
+- id: amenities.job.cruise_crew_overseer_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 250
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: cruise_crew_overseer_drone
+    name: Activity Management Drone
+    file: common/pop_jobs/17_nomads_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_synchronicity_integrated_preservation'
+- id: amenities.job.cruise_crew_overseer_drone.planet_amenities_no_happiness_add#2
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 250
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: cruise_crew_overseer_drone
+    name: Activity Management Drone
+    file: common/pop_jobs/17_nomads_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_virtuality_5'
+- id: amenities.job.cyberdome_duelist.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: cyberdome_duelist
+    name: Hyper-Gladiator
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.dimensional_portal_researcher.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 600
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: dimensional_portal_researcher
+    name: Dimensional Portal Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_normal'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.dimensional_portal_researcher.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: dimensional_portal_researcher
+    name: Dimensional Portal Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_high'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.dimensional_portal_researcher.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: dimensional_portal_researcher
+    name: Dimensional Portal Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_low'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.dimensional_portal_researcher.planet_amenities_add#4
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: dimensional_portal_researcher
+    name: Dimensional Portal Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_crisis'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.dimensional_portal_researcher_gestalt.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 600
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: dimensional_portal_researcher_gestalt
+    name: Dimensional Portal Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_normal'
+- id: amenities.job.dimensional_portal_researcher_gestalt.planet_amenities_no_happiness_add#2
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 1200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: dimensional_portal_researcher_gestalt
+    name: Dimensional Portal Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_high'
+- id: amenities.job.dimensional_portal_researcher_gestalt.planet_amenities_no_happiness_add#3
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: dimensional_portal_researcher_gestalt
+    name: Dimensional Portal Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_low'
+- id: amenities.job.dimensional_portal_researcher_gestalt.planet_amenities_no_happiness_add#4
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: dimensional_portal_researcher_gestalt
+    name: Dimensional Portal Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_crisis'
+- id: amenities.job.drone_energy_thrall.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: drone_energy_thrall
+    name: Energy Drone
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement: null
+- id: amenities.job.drone_wrangler.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 400
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: drone_wrangler
+    name: Wrangler Drone
+    file: common/pop_jobs/14_grand_archive_jobs.txt
+  requirement:
+  - wrangler_is_symbiosis_integrator_trigger = no
+  - 'colony.owner?: is_gestalt = yes'
+- id: amenities.job.engineer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: engineer
+    name: Engineer
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: has_active_tradition = tr_discovery_faith_in_science'
+- id: amenities.job.engineer.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 150
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: engineer
+    name: Engineer
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'leader?: has_trait = leader_trait_nomadic_caregiver'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.entertainer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1250
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: entertainer
+    name: Entertainer
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.evaluator.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: evaluator
+    name: Evaluator
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement: null
+- id: amenities.job.farmer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: farmer
+    name: Farmer
+    file: common/pop_jobs/03_worker_jobs.txt
+  requirement:
+  - 'owner?: has_valid_civic = civic_agrarian_idyll'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.fe_acolyte_artisan.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: fe_acolyte_artisan
+    name: Acolyte of the Workshop
+    file: common/pop_jobs/07_fallen_empire_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.fe_maintenance_bot.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: fe_maintenance_bot
+    name: Caretaker
+    file: common/pop_jobs/07_fallen_empire_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.fe_overseer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: fe_overseer
+    name: Overseer
+    file: common/pop_jobs/07_fallen_empire_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.fe_sky_cardinal.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_job_weight_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: fe_sky_cardinal
+    name: Sky Cardinal
+    file: common/pop_jobs/07_fallen_empire_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.fe_xeno_keeper.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: fe_xeno_keeper
+    name: Xeno-Keeper
+    file: common/pop_jobs/07_fallen_empire_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.gestation_drone.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: gestation_drone
+    name: Gestation Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.haruspex.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: haruspex
+    name: Haruspex
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.haruspex.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: haruspex
+    name: Haruspex
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'colony?: has_active_building = building_league_offices'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.healthcare.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 750
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: healthcare
+    name: Medical Worker
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - exists = owner
+  - 'owner: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.healthcare.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: healthcare
+    name: Medical Worker
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'colony?: has_branch_office = yes'
+  - 'colony?: has_holding: holding = building_corporate_clinics'
+  - 'colony?: has_holding: owner = branch_office_owner'
+- id: amenities.job.hive_sustenance_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: hive_sustenance_drone
+    name: Sustenance Drone
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.hive_sustenance_drone_lithoid.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: hive_sustenance_drone_lithoid
+    name: Sustenance Drone
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.hunter_gatherer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: hunter_gatherer
+    name: Hunter-Gatherer
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.hunter_gatherer_lithoid.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: hunter_gatherer_lithoid
+    name: Hunter-Gatherer
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.identity_designer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: identity_designer
+    name: Identity Designer
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.identity_designer.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: identity_designer
+    name: Identity Designer
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'owner?: exists = ruler'
+  - 'owner?: ruler: has_trait = leader_trait_legendary_great_inventor'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.identity_designer.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: identity_designer
+    name: Identity Designer
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'owner?: exists = ruler'
+  - 'owner?: ruler: has_trait = leader_trait_legendary_great_inventor_2'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.identity_designer.planet_amenities_add#4
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: identity_designer
+    name: Identity Designer
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'owner?: exists = ruler'
+  - 'owner?: ruler: has_trait = leader_trait_legendary_great_inventor_3'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.identity_designer.planet_amenities_add#5
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: identity_designer
+    name: Identity Designer
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'owner?: has_active_tradition = tr_synthetics_prefabricated_components'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.knight.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: knight
+    name: Knight
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: has_country_flag = toxoids_7090_a'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.knight_commander.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 50000
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: knight_commander
+    name: Lord Commander
+    file: common/pop_jobs/01_ruler_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.livestock_zoo_animal.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: livestock_zoo_animal
+    name: Protected Fauna
+    file: common/pop_jobs/00_other_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.livestock_zoo_animal_lithoid.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: livestock_zoo_animal_lithoid
+    name: Protected Fauna
+    file: common/pop_jobs/00_other_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.livestock_zoo_beast.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: livestock_zoo_beast
+    name: Gladiatorial Xeno
+    file: common/pop_jobs/00_other_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.livestock_zoo_beast_lithoid.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: livestock_zoo_beast_lithoid
+    name: Gladiatorial Xeno
+    file: common/pop_jobs/00_other_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.logistics_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: logistics_drone
+    name: Logistic Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.logistics_drone.planet_amenities_no_happiness_add#2
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 250
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: logistics_drone
+    name: Logistic Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_synchronicity_integrated_preservation'
+- id: amenities.job.logistics_drone.planet_amenities_no_happiness_add#3
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 250
+  amount_kind: per_unit
+  source:
+    kind: job
+    key: logistics_drone
+    name: Logistic Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_virtuality_5'
+- id: amenities.job.low_tech_priest.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: low_tech_priest
+    name: Preacher
+    file: common/pop_jobs/09_first_contact_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.maintenance_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 400
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: maintenance_drone
+    name: Maintenance Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.maintenance_drone.planet_amenities_no_happiness_add#2
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: maintenance_drone
+    name: Maintenance Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'owner?: has_active_tradition = tr_versatility_finish'
+- id: amenities.job.maintenance_drone.planet_amenities_no_happiness_add#3
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: maintenance_drone
+    name: Maintenance Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'colony.orbital_defence?: starbase?: has_starbase_building = ring_maintenance_hub'
+- id: amenities.job.maintenance_drone.planet_amenities_no_happiness_add#4
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: maintenance_drone
+    name: Maintenance Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'ship.starbase?: has_starbase_building = arkship_maintenance_hub'
+- id: amenities.job.maintenance_drone.planet_amenities_no_happiness_add#5
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: maintenance_drone
+    name: Maintenance Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'colony: is_ringworld = yes'
+  - 'colony: has_building = building_alpha_hub'
+- id: amenities.job.maintenance_drone.planet_amenities_no_happiness_add#6
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: maintenance_drone
+    name: Maintenance Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - 'colony: is_planet_class = pc_hive'
+  - 'owner?: has_country_flag = cyber_hive_integrated'
+- id: amenities.job.mortal_initiate.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: mortal_initiate
+    name: Mortal Initiate
+    file: common/pop_jobs/03_worker_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.necro_apprentice.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: necro_apprentice
+    name: Necrophyte
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.overlord_healthcare.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: overlord_healthcare
+    name: Medical Worker
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.overlord_healthcare.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: overlord_healthcare
+    name: Medical Worker
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - 'owner?: has_valid_civic = civic_private_healthcare_corporate'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.overlord_healthcare.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: overlord_healthcare
+    name: Medical Worker
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - 'colony?: has_carrier_flag = has_private_clinics'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.overlord_mortal_initiate.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: overlord_mortal_initiate
+    name: Overlord Mortal Initiate
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.overlord_mortal_initiate_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: overlord_mortal_initiate_drone
+    name: Overlord Mortal Initiate Drone
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.overlord_spawning_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: overlord_spawning_drone
+    name: Spawning Drone
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.overlord_spawning_drone_lithoid.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: overlord_spawning_drone_lithoid
+    name: Spawning Drone
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.overlord_trader.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: overlord_trader
+    name: Overlord Trader
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.overlord_trader_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 1000
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: overlord_trader_drone
+    name: Distribution Drone
+    file: common/pop_jobs/08_overlord_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.physician_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: physician_drone
+    name: Physician Drone
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement: null
+- id: amenities.job.physicist.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: physicist
+    name: Physicist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: has_active_tradition = tr_discovery_faith_in_science'
+- id: amenities.job.physicist.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 150
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: physicist
+    name: Physicist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'leader?: has_trait = leader_trait_nomadic_caregiver'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.physicist.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 600
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: physicist
+    name: Physicist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_normal'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.physicist.planet_amenities_add#4
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: physicist
+    name: Physicist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_high'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.physicist.planet_amenities_add#5
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: physicist
+    name: Physicist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_low'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.physicist.planet_amenities_add#6
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: physicist
+    name: Physicist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'colony?: has_modifier = dportal_trade_crisis'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.politician.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: politician
+    name: Politician
+    file: common/pop_jobs/01_ruler_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.politician.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 400
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: politician
+    name: Politician
+    file: common/pop_jobs/01_ruler_jobs.txt
+  requirement:
+  - OR(politician_is_fire_oracle = yes ; politician_is_blazewright = yes ; politician_is_blazing_harbinger = yes ; politician_is_radiant_priest = yes ; politician_is_pyrocrat = yes ; politician_is_ashbroker = yes)
+- id: amenities.job.politician.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: politician
+    name: Politician
+    file: common/pop_jobs/01_ruler_jobs.txt
+  requirement:
+  - 'owner?: has_origin = origin_cybernetic_creed'
+- id: amenities.job.primitive_bureaucrat.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: primitive_bureaucrat
+    name: Bureaucrat
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.primitive_entertainer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 800
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: primitive_entertainer
+    name: Entertainer
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.primitive_hive_spawning_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 800
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: primitive_hive_spawning_drone
+    name: Spawning Drone
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.primitive_hive_synapse_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: primitive_hive_synapse_drone
+    name: Nascent Synapse Drone
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.primitive_hive_synapse_drone_2.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: primitive_hive_synapse_drone_2
+    name: Synapse Drone
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.primitive_noble.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: primitive_noble
+    name: Feudal Noble
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.primitive_priest.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: primitive_priest
+    name: Cleric
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.primitive_priest_2.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: primitive_priest_2
+    name: Priest
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.production_overseer.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: production_overseer
+    name: Production Overseer
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.puddle_technician.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: puddle_technician
+    name: Puddle Technician
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'owner?: has_valid_civic = civic_agrarian_idyll'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.puddle_technician_drone.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: puddle_technician_drone
+    name: Puddle Technician Drone
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'owner?: has_valid_civic = civic_agrarian_idyll'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.resort_worker.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: resort_worker
+    name: Resort Worker
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_mercantile_commercial_enterprise'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.resort_worker.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.01
+  amount_kind: mult
+  source:
+    kind: job
+    key: resort_worker
+    name: Resort Worker
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement: null
+- id: amenities.job.roboticist.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: roboticist
+    name: Roboticist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: exists = ruler'
+  - 'owner?: ruler: has_trait = leader_trait_legendary_great_inventor'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.roboticist.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: roboticist
+    name: Roboticist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: exists = ruler'
+  - 'owner?: ruler: has_trait = leader_trait_legendary_great_inventor_2'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.roboticist.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: roboticist
+    name: Roboticist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: exists = ruler'
+  - 'owner?: ruler: has_trait = leader_trait_legendary_great_inventor_3'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.roboticist.planet_amenities_add#4
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: roboticist
+    name: Roboticist
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: has_active_tradition = tr_synthetics_prefabricated_components'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.servant.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 400
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: servant
+    name: Servant
+    file: common/pop_jobs/00_other_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.shroud_trader.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: shroud_trader
+    name: Empathic Marketer
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_mercantile_commercial_enterprise'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.shroud_trader.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: shroud_trader
+    name: Empathic Marketer
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - 'colony.orbital_defence.starbase?: has_starbase_building = ring_trade_hub'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.shroud_trader.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: shroud_trader
+    name: Empathic Marketer
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - 'starbase?: has_starbase_building = arkship_trade_hub'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.slave_orderly.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: slave_orderly
+    name: Orderly
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.slave_toiler.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: slave_toiler
+    name: Toiler
+    file: common/pop_jobs/00_other_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.solarpunk_anarchist.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: solarpunk_anarchist
+    name: Content Terraformer
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.spawning_drone.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: spawning_drone
+    name: Spawning Drone
+    file: common/pop_jobs/04_gestalt_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.spe_colonist.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: spe_colonist
+    name: Colonist
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - always = yes
+- id: amenities.job.squire.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: squire
+    name: Squire
+    file: common/pop_jobs/03_worker_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.stratovent_researcher.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult||
+  source:
+    kind: job
+    key: stratovent_researcher
+    name: Vent Researcher
+    file: common/pop_jobs/06_event_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.technophant.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: technophant
+    name: Technophant
+    file: common/pop_jobs/13_machine_age_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.test_subject.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: test_subject
+    name: Test Subject
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.test_subject_drone.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: test_subject_drone
+    name: Test Subject Drone
+    file: common/pop_jobs/16_shroud_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.trader.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 300
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: trader
+    name: Trader
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - trader_is_subterranean = yes
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.trader.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: trader
+    name: Trader
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'owner?: has_tradition = tr_mercantile_commercial_enterprise'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.trader.planet_amenities_add#3
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: trader
+    name: Trader
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'colony.orbital_defence.starbase?: has_starbase_building = ring_trade_hub'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.trader.planet_amenities_add#4
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: trader
+    name: Trader
+    file: common/pop_jobs/02_specialist_jobs.txt
+  requirement:
+  - 'starbase?: has_starbase_building = arkship_trade_hub'
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.wrangler.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 400
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: wrangler
+    name: Wrangler
+    file: common/pop_jobs/14_grand_archive_jobs.txt
+  requirement:
+  - wrangler_is_animal_handler_trigger = no
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.wrangler.planet_amenities_add#2
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: wrangler
+    name: Wrangler
+    file: common/pop_jobs/14_grand_archive_jobs.txt
+  requirement:
+  - OR(wrangler_is_trophy_hunter_trigger = yes ; wrangler_is_beastfighter_trigger = yes)
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.xeno_zoo_animal.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: xeno_zoo_animal
+    name: Conserved Fauna
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.xeno_zoo_animal_lithoid.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: xeno_zoo_animal_lithoid
+    name: Conserved Fauna
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.xeno_zoo_animal_lithoid_nascent.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: xeno_zoo_animal_lithoid_nascent
+    name: Conserved Fauna
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.xeno_zoo_animal_nascent.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: xeno_zoo_animal_nascent
+    name: Conserved Fauna
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.xeno_zoo_beast.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: xeno_zoo_beast
+    name: Gladiatorial Beast
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.xeno_zoo_beast_lithoid.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: xeno_zoo_beast_lithoid
+    name: Gladiatorial Beast
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.xeno_zoo_beast_lithoid_nascent.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: xeno_zoo_beast_lithoid_nascent
+    name: Gladiatorial Beast
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.job.xeno_zoo_beast_nascent.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: per_unit
+  scaled_by: value:scripted_modifier_mult|MODIFIER|pop_job_amenities_mult|
+  source:
+    kind: job
+    key: xeno_zoo_beast_nascent
+    name: Gladiatorial Beast
+    file: common/pop_jobs/05_primitive_jobs.txt
+  requirement:
+  - 'owner?: NOT(has_valid_civic = civic_dystopian_society)'
+- id: amenities.megastructure.dyson_sphere_disco.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.3
+  amount_kind: mult
+  source:
+    kind: megastructure
+    key: dyson_sphere_disco
+    name: Wonder Sphere
+    file: common/megastructures/01_dyson_sphere.txt
+  requirement:
+  - has_nemesis = yes
+  - has_country_flag = can_build_disco_sphere
+- id: amenities.megastructure.dyson_sphere_disco_restored.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.3
+  amount_kind: mult
+  source:
+    kind: megastructure
+    key: dyson_sphere_disco_restored
+    name: Wonder Sphere
+    file: common/megastructures/01_dyson_sphere.txt
+  requirement:
+  - has_nemesis = yes
+  - has_country_flag = can_build_disco_sphere
+- id: amenities.megastructure.mega_art_installation_1.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: megastructure
+    key: mega_art_installation_1
+    name: 'Art Installation: Nascency'
+    file: common/megastructures/08_mega_art_installation.txt
+  requirement:
+  - has_technology = tech_mega_art
+- id: amenities.megastructure.mega_art_installation_2.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: megastructure
+    key: mega_art_installation_2
+    name: 'Art Installation: Maturity'
+    file: common/megastructures/08_mega_art_installation.txt
+  requirement:
+  - has_technology = tech_mega_art
+- id: amenities.megastructure.mega_art_installation_3.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: megastructure
+    key: mega_art_installation_3
+    name: Mega Art Installation
+    file: common/megastructures/08_mega_art_installation.txt
+  requirement:
+  - has_technology = tech_mega_art
+- id: amenities.megastructure.mega_art_installation_4.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: megastructure
+    key: mega_art_installation_4
+    name: 'Mega Art Installation: Perfection'
+    file: common/megastructures/08_mega_art_installation.txt
+  requirement:
+  - has_technology = tech_mega_art
+- id: amenities.megastructure.mega_art_installation_restored.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: megastructure
+    key: mega_art_installation_restored
+    name: Mega Art Installation
+    file: common/megastructures/08_mega_art_installation.txt
+  requirement:
+  - has_ancrel = yes
+- id: amenities.megastructure.mega_art_installation_restored_2.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: megastructure
+    key: mega_art_installation_restored_2
+    name: 'Mega Art Installation: Perfection'
+    file: common/megastructures/08_mega_art_installation.txt
+  requirement:
+  - has_technology = tech_mega_art
+- id: amenities.policy.psionic_choir.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.25
+  amount_kind: mult
+  source:
+    kind: policy
+    key: psionic_choir
+    name: Psionic Choir
+    file: common/policies/04_policies_shroud.txt
+  requirement:
+  - has_shroud_dlc = yes
+  - is_corporeal_authority = yes
+  - has_covenant_with_end_of_the_cycle = no
+  - 'has_patron_relation: patron = the_cradle_of_souls'
+  - 'has_patron_relation: contact = any'
+- id: amenities.relic.r_reality_perforator.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: relic
+    key: r_reality_perforator
+    name: Vultaum Reality Perforator
+    file: common/relics/relics.txt
+  requirement:
+  - always = yes
+- id: amenities.static_modifier.aa_ship_planet_support_1.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: aa_ship_planet_support_1
+    name: Aerospace Adaptation
+    file: common/static_modifiers/23_static_modifiers_biogenesis.txt
+  requirement: null
+- id: amenities.static_modifier.aa_ship_planet_support_2.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: aa_ship_planet_support_2
+    name: Aerospace Adaptation
+    file: common/static_modifiers/23_static_modifiers_biogenesis.txt
+  requirement: null
+- id: amenities.static_modifier.aa_ship_planet_support_3.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.3
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: aa_ship_planet_support_3
+    name: Aerospace Adaptation
+    file: common/static_modifiers/23_static_modifiers_biogenesis.txt
+  requirement: null
+- id: amenities.static_modifier.aa_ship_planet_support_4.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.4
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: aa_ship_planet_support_4
+    name: Aerospace Adaptation
+    file: common/static_modifiers/23_static_modifiers_biogenesis.txt
+  requirement: null
+- id: amenities.static_modifier.agenda_infinite_opportunities_gestalt_finish.planet_amenities_no_happiness_add
+  effect: modifies
+  modifier: planet_amenities_no_happiness_add
+  amount: 1000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: agenda_infinite_opportunities_gestalt_finish
+    name: Infinite Opportunities Agenda
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: amenities.static_modifier.agenda_self_maintenance_finish.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: agenda_self_maintenance_finish
+    name: Self Maintenance Agenda
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: amenities.static_modifier.artifact_find_peaceful_application_amenities.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: artifact_find_peaceful_application_amenities
+    name: Battery Miniaturization
+    file: common/static_modifiers/10_static_modifiers_ancient_relics.txt
+  requirement: null
+- id: amenities.static_modifier.artifact_find_peaceful_application_amenities_hivemind.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: artifact_find_peaceful_application_amenities_hivemind
+    name: Efficient Maintenance
+    file: common/static_modifiers/10_static_modifiers_ancient_relics.txt
+  requirement: null
+- id: amenities.static_modifier.artifact_find_peaceful_application_amenities_machine.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: artifact_find_peaceful_application_amenities_machine
+    name: Battery Miniaturization
+    file: common/static_modifiers/10_static_modifiers_ancient_relics.txt
+  requirement: null
+- id: amenities.static_modifier.artifact_vultaum_research_completed_public.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: artifact_vultaum_research_completed_public
+    name: Deeper Secrets of the Vultaum
+    file: common/static_modifiers/10_static_modifiers_ancient_relics.txt
+  requirement: null
+- id: amenities.static_modifier.artifact_vultaum_research_completed_suppressed.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: artifact_vultaum_research_completed_suppressed
+    name: Secrets of the Vultaum
+    file: common/static_modifiers/10_static_modifiers_ancient_relics.txt
+  requirement: null
+- id: amenities.static_modifier.artist_monument_erected.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: artist_monument_erected
+    name: Art Monument Exhibited
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: amenities.static_modifier.colonial_spirit_gestalt_mod.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: colonial_spirit_gestalt_mod
+    name: Fresh Consciousness
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: amenities.static_modifier.colonial_spirit_mod.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: colonial_spirit_mod
+    name: Colonial Spirit
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: amenities.static_modifier.consecrated_modifier_1.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: consecrated_modifier_1
+    name: Consecrated World Worship
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: amenities.static_modifier.consecrated_modifier_2.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: consecrated_modifier_2
+    name: Consecrated World Worship
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: amenities.static_modifier.consecrated_modifier_3.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: consecrated_modifier_3
+    name: Consecrated World Worship
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: amenities.static_modifier.cosmogenesis_victim.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cosmogenesis_victim
+    name: Aftermath
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.cost_of_freedom_02.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cost_of_freedom_02
+    name: People's Committee
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.cost_of_freedom_03.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cost_of_freedom_03
+    name: State Sanctioned Media
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.cost_of_freedom_04.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cost_of_freedom_04
+    name: Better Late Than Never
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.cost_of_freedom_05.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cost_of_freedom_05
+    name: Information Net Restricted
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.cost_of_freedom_07.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cost_of_freedom_07
+    name: New Stellar Order
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.cost_of_freedom_14.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cost_of_freedom_14
+    name: Cultural Renaissance
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.crisis_conduit_buff.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: crisis_conduit_buff
+    name: Stellar Supervision
+    file: common/static_modifiers/24_static_modifiers_infernals.txt
+  requirement: null
+- id: amenities.static_modifier.crystal_lava_resort.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: crystal_lava_resort
+    name: Crystal Lava Resort
+    file: common/static_modifiers/24_static_modifiers_infernals.txt
+  requirement: null
+- id: amenities.static_modifier.cs_storm_chasers_storm_frenzy_1_gestalt.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cs_storm_chasers_storm_frenzy_1_gestalt
+    name: Storm Frenzy
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: amenities.static_modifier.cs_storm_chasers_storm_frenzy_2_gestalt.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cs_storm_chasers_storm_frenzy_2_gestalt
+    name: Storm Frenzy
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: amenities.static_modifier.cs_storm_chasers_storm_frenzy_3_gestalt.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cs_storm_chasers_storm_frenzy_3_gestalt
+    name: Storm Frenzy
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: amenities.static_modifier.cs_storm_chasers_storm_fruition_gestalt.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cs_storm_chasers_storm_fruition_gestalt
+    name: Storm Fruition
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: amenities.static_modifier.cs_storm_chasers_the_code_gestalt.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cs_storm_chasers_the_code_gestalt
+    name: The Code
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: amenities.static_modifier.cyber_breach_ban.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cyber_breach_ban
+    name: 'Spy Games: Total Ban'
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.cyber_censure_authoritarian.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cyber_censure_authoritarian
+    name: State Driven Sensory Censorship
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.cyber_creed_pilgrimage_allowed.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: cyber_creed_pilgrimage_allowed
+    name: Fellowship Pilgrimage Allowed
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.dancing_fad.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: dancing_fad
+    name: The Dancing Plague
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: amenities.static_modifier.deadly_entertainment.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: deadly_entertainment
+    name: Deadly Engrams
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.decadent_entertainment.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: decadent_entertainment
+    name: Decadent Engrams
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.endbringers_madness_1.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: endbringers_madness_1
+    name: Madness
+    file: common/static_modifiers/24_static_modifiers_shroud.txt
+  requirement: null
+- id: amenities.static_modifier.endorsed_entertainment.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: endorsed_entertainment
+    name: Engram Endorsement
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.engineered_nature.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: engineered_nature
+    name: Engineered Nature
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.entertainment_crackdown.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: entertainment_crackdown
+    name: Engram Crackdown
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.exhibiting_prismatic_ice.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: exhibiting_prismatic_ice
+    name: Prismatic Ice Exhibit
+    file: common/static_modifiers/23_static_modifiers_extreme_frontiers.txt
+  requirement: null
+- id: amenities.static_modifier.fortress_trophy.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1500
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: fortress_trophy
+    name: Chamber from the Fortress
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.free_at_last_broken_shackles.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: free_at_last_broken_shackles
+    name: Free at Last
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.harmonious_tune.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 100
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: harmonious_tune
+    name: Harmonious Tune
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.ice_trauma_insights_colony.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.03
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: ice_trauma_insights_colony
+    name: Frozen Submariners' Legacy
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.illicit_entertainment.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: illicit_entertainment
+    name: Illicit Engrams
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.infernal_library.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: infernal_library
+    name: Underground Architecture
+    file: common/static_modifiers/24_static_modifiers_infernals.txt
+  requirement: null
+- id: amenities.static_modifier.infinite_growth.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: infinite_growth
+    name: Infinite Growth
+    file: common/static_modifiers/23_static_modifiers_biogenesis.txt
+  requirement: null
+- id: amenities.static_modifier.larionessi_planet_modifier.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: larionessi_planet_modifier
+    name: Local Hive
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: amenities.static_modifier.national_pets.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: national_pets
+    name: Unlikely Bond
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.paragon_origin_residential_monument.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 800
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: paragon_origin_residential_monument
+    name: Residential Monument
+    file: common/static_modifiers/16_static_modifiers_paragon.txt
+  requirement: null
+- id: amenities.static_modifier.payback_unified_purpose.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: payback_unified_purpose
+    name: Unified Purpose
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.planet_devastation.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: -1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: planet_devastation
+    name: Planet Devastation
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.planet_growth_discouraged.pop_amenities_usage_organic_mult
+  effect: modifies
+  modifier: pop_amenities_usage_organic_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: planet_growth_discouraged
+    name: Growth Discouraged
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: amenities.static_modifier.planet_luxuries_boost.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: planet_luxuries_boost
+    name: Luxuries Distributed
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: amenities.static_modifier.pop_high_habitability.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: pop_high_habitability
+    name: Planet Habitability
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.pop_low_habitability.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: pop_low_habitability
+    name: Planet Habitability
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.pre_ftl_diplomacy_01.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: pre_ftl_diplomacy_01
+    name: Costume Culture
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.pre_ftl_diplomatic_05.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: pre_ftl_diplomatic_05
+    name: The Market Knows Worst
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.primal_calling_assimilate_modifier.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 4
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: primal_calling_assimilate_modifier
+    name: Wild Consciousness
+    file: common/static_modifiers/21_static_modifiers_grand_archive.txt
+  requirement: null
+- id: amenities.static_modifier.prosp_uni_mod.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: prosp_uni_mod
+    name: Prosperous Unification
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: amenities.static_modifier.prosp_uni_mod_gestalt.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: prosp_uni_mod_gestalt
+    name: Prosperous Unification
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: amenities.static_modifier.psi_fighting_competitions.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: psi_fighting_competitions
+    name: Psi-fighting Competitions
+    file: common/static_modifiers/24_static_modifiers_shroud.txt
+  requirement: null
+- id: amenities.static_modifier.psi_fighting_competitions_gestalt.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: psi_fighting_competitions_gestalt
+    name: Psi-fighting Competitions
+    file: common/static_modifiers/24_static_modifiers_shroud.txt
+  requirement: null
+- id: amenities.static_modifier.psionic_superiority_modifier.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: psionic_superiority_modifier
+    name: Psionic Superiority
+    file: common/static_modifiers/24_static_modifiers_shroud.txt
+  requirement: null
+- id: amenities.static_modifier.radical_image_upheld.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.03
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: radical_image_upheld
+    name: Radical Image Upheld
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.radical_insights.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: radical_insights
+    name: Radical Insights
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.radio_bugs.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: -1000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: radio_bugs
+    name: Radio Bugs
+    file: common/static_modifiers/23_static_modifiers_biogenesis.txt
+  requirement: null
+- id: amenities.static_modifier.refurbishment_allowances_granted.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: refurbishment_allowances_granted
+    name: Reallocated Resources
+    file: common/static_modifiers/25_static_modifiers_nomads.txt
+  requirement: null
+- id: amenities.static_modifier.relay_network_amenities_edict_modifier.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: relay_network_amenities_edict_modifier
+    name: Networked Amenities
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: amenities.static_modifier.relay_network_amenities_gestalt_edict_modifier.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: relay_network_amenities_gestalt_edict_modifier
+    name: Networked Amenities
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: amenities.static_modifier.resolution_ecology_natural_sanctuaries.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: resolution_ecology_natural_sanctuaries
+    name: Natural Sanctuaries
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: amenities.static_modifier.rogue_shaman_03.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: rogue_shaman_03
+    name: Gross National Happiness
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: amenities.static_modifier.sabotage_education_camps_hive_modifier.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: -1000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: sabotage_education_camps_hive_modifier
+    name: Re-Assimilation Nexus
+    file: common/static_modifiers/21_static_modifiers_grand_archive.txt
+  requirement: null
+- id: amenities.static_modifier.sabotage_education_camps_machine_modifier.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: -1000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: sabotage_education_camps_machine_modifier
+    name: Reprogramming Servers
+    file: common/static_modifiers/21_static_modifiers_grand_archive.txt
+  requirement: null
+- id: amenities.static_modifier.sabotage_education_camps_modifier.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: -1000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: sabotage_education_camps_modifier
+    name: Re-Education Camps
+    file: common/static_modifiers/21_static_modifiers_grand_archive.txt
+  requirement: null
+- id: amenities.static_modifier.shattered_frontier_pop_community.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.3
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: shattered_frontier_pop_community
+    name: Survivor of the Psionic Frontier
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: amenities.static_modifier.shattered_frontier_storm_gestalt_mod.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.3
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: shattered_frontier_storm_gestalt_mod
+    name: Storm in Orbit
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: amenities.static_modifier.shooting_stars.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: shooting_stars
+    name: Shooting Stars
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.singularity_situation_05.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: -0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: singularity_situation_05
+    name: Austerity Plan
+    file: common/static_modifiers/18_static_modifiers_first_contact_dlc.txt
+  requirement: null
+- id: amenities.static_modifier.skill_official_background_planet_governor.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 200
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: skill_official_background_planet_governor
+    name: Governing Home Planet
+    file: common/static_modifiers/00_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.solar_storm_aftermath_modifier_severity_1.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: solar_storm_aftermath_modifier_severity_1
+    name: 'Aftermath: Radioactive Lockdown'
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: amenities.static_modifier.solar_storm_aftermath_modifier_severity_2.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.2
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: solar_storm_aftermath_modifier_severity_2
+    name: 'Aftermath: Severely Radioactive Lockdown'
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: amenities.static_modifier.solar_storm_aftermath_modifier_severity_3.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.3
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: solar_storm_aftermath_modifier_severity_3
+    name: 'Aftermath: Extremely Radioactive Lockdown'
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: amenities.static_modifier.specialist_overlord_admirals_bickering_democratic_funding_modifier.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 1000
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: specialist_overlord_admirals_bickering_democratic_funding_modifier
+    name: Civil Funding
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: amenities.static_modifier.specialist_overlord_frustrated_population.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: specialist_overlord_frustrated_population
+    name: Local Conflicts
+    file: common/static_modifiers/16_static_modifiers_overlord.txt
+  requirement: null
+- id: amenities.static_modifier.star_mall_habitat.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: star_mall_habitat
+    name: Star Mall
+    file: common/static_modifiers/02_static_modifiers.txt
+  requirement: null
+- id: amenities.static_modifier.statue_modifier.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: statue_modifier
+    name: Unusual Statue
+    file: common/static_modifiers/25_static_modifiers_nomads.txt
+  requirement: null
+- id: amenities.static_modifier.synth_cravings_pain.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: synth_cravings_pain
+    name: Virtual Battle Arena
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.synth_virtual_world_outlaw.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: synth_virtual_world_outlaw
+    name: Outlawed Virtual Worlds
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.synth_virtual_world_regulate.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: synth_virtual_world_regulate
+    name: Regulated Virtual Worlds
+    file: common/static_modifiers/22_static_modifiers_machine_age.txt
+  requirement: null
+- id: amenities.static_modifier.unplugged_battlefield.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.5
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: unplugged_battlefield
+    name: Battlefield Recoveries
+    file: common/static_modifiers/23_static_modifiers_unplugged.txt
+  requirement: null
+- id: amenities.static_modifier.whisperers_madness_gestalt.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: whisperers_madness_gestalt
+    name: Shroud-Madness
+    file: common/static_modifiers/05_static_modifiers_utopia.txt
+  requirement: null
+- id: amenities.static_modifier.whisperers_psychosis_gestalt.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: 0.15
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: whisperers_psychosis_gestalt
+    name: Shroud-Psychosis
+    file: common/static_modifiers/05_static_modifiers_utopia.txt
+  requirement: null
+- id: amenities.static_modifier.xeno_comedy_envoy.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.25
+  amount_kind: mult
+  source:
+    kind: static_modifier
+    key: xeno_comedy_envoy
+    name: Xeno Comedy
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: amenities.technology.tech_artificial_moral_codes.planet_amenities_mult
+  effect: modifies
+  modifier: planet_amenities_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: technology
+    key: tech_artificial_moral_codes
+    name: Artificial Moral Codes
+    file: common/technology/00_soc_tech.txt
+    tier: 2
+    cost: 3000
+    area: society
+  requirement:
+  - NOT(has_ethic = ethic_gestalt_consciousness)
+- id: amenities.technology.tech_unity_of_purpose.planet_amenities_no_happiness_mult
+  effect: modifies
+  modifier: planet_amenities_no_happiness_mult
+  amount: 0.05
+  amount_kind: mult
+  source:
+    kind: technology
+    key: tech_unity_of_purpose
+    name: Unity of Purpose
+    file: common/technology/00_soc_tech.txt
+    tier: 2
+    cost: 3000
+    area: society
+  requirement:
+  - is_gestalt = yes
+- id: amenities.tradition.tr_cloning_genomic_growth.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_cloning_genomic_growth
+    name: Genomic Growth
+    file: common/traditions/01_cloning.txt
+  requirement: null
+- id: amenities.tradition.tr_cloning_stage_1_swap.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_cloning_stage_1_swap
+    name: Flexible Tradition I
+    file: common/traditions/01_cloning.txt
+  requirement:
+  - has_country_flag = genetic_ascension_stage_1_cloning
+  - NOT(has_country_flag = clone_army_full_potential)
+- id: amenities.tradition.tr_domination_adopt.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.15
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_domination_adopt
+    name: Domination Traditions
+    file: common/traditions/00_domination.txt
+  requirement:
+  - is_gestalt = yes
+- id: amenities.tradition.tr_mutation_stage_1_swap.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_mutation_stage_1_swap
+    name: Flexible Tradition I
+    file: common/traditions/01_mutation.txt
+  requirement:
+  - has_country_flag = genetic_ascension_stage_1_cloning
+  - NOT(has_country_flag = clone_army_full_potential)
+- id: amenities.tradition.tr_purity_stage_1_swap.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_purity_stage_1_swap
+    name: Flexible Tradition I
+    file: common/traditions/01_purity.txt
+  requirement:
+  - has_country_flag = genetic_ascension_stage_1_cloning
+  - NOT(has_country_flag = clone_army_full_potential)
+- id: amenities.tradition.tr_synthetics_maintenance_protocols.pop_amenities_usage_robotic_mult
+  effect: modifies
+  modifier: pop_amenities_usage_robotic_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_synthetics_maintenance_protocols
+    name: Maintenance Protocols
+    file: common/traditions/01_synthetics.txt
+  requirement: null
+- id: amenities.tradition.tr_versatility_finish.pop_amenities_usage_mult
+  effect: modifies
+  modifier: pop_amenities_usage_mult
+  amount: -0.15
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_versatility_finish
+    name: Versatility Traditions Finished
+    file: common/traditions/00_versatility.txt
+  requirement:
+  - is_individual_machine = yes
+- id: amenities.tradition.tr_versatility_spatial_optimization.pop_amenities_usage_no_happiness_mult
+  effect: modifies
+  modifier: pop_amenities_usage_no_happiness_mult
+  amount: -0.1
+  amount_kind: mult
+  source:
+    kind: tradition
+    key: tr_versatility_spatial_optimization
+    name: Spatial Optimization
+    file: common/traditions/00_versatility.txt
+  requirement: null
+- id: amenities.zone.zone_broken_shackles_memorial.planet_amenities_add
+  effect: modifies
+  modifier: planet_amenities_add
+  amount: 500
+  amount_kind: add
+  source:
+    kind: zone
+    key: zone_broken_shackles_memorial
+    name: Unshackled Memorial
+    file: common/zones/02_special_zones.txt
+  requirement:
+  - has_carrier_flag = broken_shackles_memorial_built
