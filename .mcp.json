@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "hlidskjalf": {
-      "command": "uv",
-      "args": ["run", "--quiet", "--project", "${CLAUDE_PLUGIN_ROOT}", "hlidskjalf", "mcp"]
-    }
-  }
-}

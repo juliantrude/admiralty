@@ -1,0 +1,210 @@
+# GOAL
+
+<!--
+  Single source of truth for the /advance-goal loop (driven headless via the
+  one-shot systemd chain, or interactively via `/loop /advance-goal`).
+  The loop reads and rewrites this file every iteration.
+-->
+
+## North star
+
+Build milestones M3 to M8 of Hliðskjálf v1 exactly as specified in `docs/build-plan.md`
+(Campaign Workspace and Setup, Mechanics Graph and Playbook for 4.5.2, Huginn in
+Consulting mode, the graph engine, the Unverified Claim check, and Muninn), on top of the
+finished M0–M2 foundation (extractor in `src/hlidskjalf/extract/`, MCP server in
+`src/hlidskjalf/mcp/`). The build plan, `GLOSSARY.md` and `docs/adr/` are authoritative;
+`CLAUDE.md` holds the repo rules. M9 (Huginn in Coaching mode) is out of scope: Julian
+builds it together with Claude later, because it needs his in-game judgement.
+
+## Definition of Done
+
+- [ ] Each "Done when" criterion of M3, M4, M5, M6, M7 and M8 in `docs/build-plan.md` is
+      met and verified by an automated test or a recorded headless check, except the parts
+      that need Julian (see Working Agreements, "Hold points"). Those parts are listed in
+      `docs/awaiting-julian.md` with exact instructions, and for those parts alone "blocked
+      on Julian" counts as done.
+- [ ] `HLIDSKJALF_PERF_SLACK=1.5 uv run pytest` passes (skips for pending golden values
+      are fine), and `uv run ruff check . && uv run ruff format --check .` is clean.
+- [ ] Every skill and hook named in the build plan's "Shape" for M3–M8 exists in the plugin
+      (`skills/setup`, `skills/huginn-consult`, `skills/muninn`, `skills/review-blocks`,
+      `hooks/` with the Unverified Claim Stop hook) and is wired in the plugin manifest.
+- [ ] `docs/awaiting-julian.md` lists everything waiting for Julian, in German, as short
+      steps he can do without reading code.
+
+## Working Agreements (read every iteration — these override convenience)
+
+**Priority order per iteration:**
+1. If the previous iteration left the test suite red, fix that first.
+2. Then take the next unchecked increment from `## Plan`.
+
+**Git workflow:**
+- Work directly on `main` in this repository. There is no remote: commit locally, never
+  push, never force, never rewrite or amend existing commits, never create other branches.
+- One commit per finished increment, message in English: `M<n>: <what>` plus a short body
+  on why. End every commit message with
+  `Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`.
+- Verification bar before every commit: `HLIDSKJALF_PERF_SLACK=1.5 uv run pytest` green
+  and ruff clean. Never commit with failing tests; never delete or weaken an existing test
+  to make it pass (fix the code, or record the blocker).
+- New Python dependencies only via `uv add`. No system packages, no global config changes.
+
+**Hold points (things only Julian does — never do them yourself):**
+- Golden values: never fill `tests/golden_values.py`, never derive "golden" numbers from
+  our own extractor. Tests that need them skip as pending.
+- Benchmarks: write them as a clearly marked draft plus a readable review page; review by
+  experienced players is Julian's job.
+- Playbook Rules: the three seed rules in the build plan are approved. Any further rule is
+  only proposed in `docs/proposals/playbook.md`, never added to `knowledge/`.
+- Publishing: never publish Artifacts, never upload anything, never send anything outside
+  this machine. M6 ends with a locally verified `engine/index.html`; publishing it once is
+  Julian's step.
+- In-game feel: anything that needs someone playing the game goes to
+  `docs/awaiting-julian.md`.
+When an increment hits a hold point: do every part that does not need Julian, add precise
+steps to `docs/awaiting-julian.md`, note it under `**Blockers:**`, check the increment off
+if only Julian's part remains, and move on to the next increment.
+
+**Out-of-scope systems:**
+- Read-only: the game install (`~/.local/share/Steam/steamapps/common/Stellaris`), the
+  Player's game data (`~/.local/share/Paradox Interactive/Stellaris`, including saves),
+  `~/.claude` and anything outside this repository except `~/.cache/hlidskjalf` and
+  temporary directories.
+- Reference saves live in `tests/fixtures/saves/` (git-ignored, campaigns `vulkan` and
+  `zygerrian`); they contain friends' player names and never enter git or any output
+  that leaves the machine.
+- M0–M2 code may change when M3–M8 need it, but only with tests, and existing tests and
+  the extract schema stay compatible (bump `SCHEMA_VERSION` if a field changes meaning).
+- `GLOSSARY.md` and existing ADRs: do not rewrite. A significant new decision gets a new
+  ADR in `docs/adr/` (short, in the style of the existing ones).
+
+**Etiquette:**
+- Code, docs, commit messages and this file in English, in the domain language of
+  `GLOSSARY.md`; `docs/awaiting-julian.md` in German. Skills speak the Player's language
+  at runtime (the knowledge stays English).
+- Match the existing code style: small deep modules, docstrings that say why, formulas and
+  game-file sources written down next to computed values.
+- Headless end-to-end checks with `claude -p` (as in M2: a test workspace with
+  `campaign.yaml` and an `--mcp-config` pointing at this repo) are allowed, at most two per
+  increment, always with `--strict-mcp-config` and an `--allowedTools` list.
+
+**References:**
+- `docs/build-plan.md` (milestones, Done-when criteria, Appendix A), `GLOSSARY.md`,
+  `docs/adr/`, `CLAUDE.md`.
+- Game files via `hlidskjalf.gamefiles.GameData` (Clausewitz parser with inline scripts,
+  cached per game build); localisation via `hlidskjalf.extract.names.Localisation`.
+- The computed values in `src/hlidskjalf/extract/computed/` are hypotheses pinned by
+  pending golden tests; see their docstrings before building on them.
+- Order rationale: M3 gives the workspace and archive Muninn needs; M4's graph feeds M5;
+  M6 renders M5's Solution Graph; M7 checks M5's Briefings; M8 needs M3's archive and M7.
+
+## Plan
+
+### M3 Campaign Workspace and Campaign Setup
+- [ ] Study the build plan M3 and GLOSSARY (Campaign Workspace, Campaign Setup, Tracked
+      Empire, Fair Play, God Mode); write `docs/plans/M3.md`: workspace layout,
+      `campaign.yaml` schema (extends `hlidskjalf.workspace.config`: players with ally or
+      rival), archive format, CLI shape for the setup skill
+- [ ] Workspace module: create and validate a workspace, read and write `campaign.yaml`
+      (players, relation, mode, knowledge), with tests
+- [ ] Archive: every save the MCP service reads is backed up into the workspace and its
+      extract stored as `archive/<date>.json.zst`; tests show two saves read leave two
+      archived extracts and that Muninn-style reads work after the original save is gone
+- [ ] `hlidskjalf setup` CLI subcommands (list campaigns in the save folder, list empires
+      and players of a save, write `campaign.yaml`) so the skill never hand-writes YAML;
+      workspace `CLAUDE.md` template that loads the right skill per mode; tests
+- [ ] `skills/setup/SKILL.md` (hlidskjalf:setup): the guided conversation from the build
+      plan; verify with one headless `claude -p` run in a fresh temp workspace that it
+      ends with a valid `campaign.yaml` (scripted answers in the prompt)
+
+### M4 Mechanics Graph and Playbook for 4.5.2
+- [ ] Study and plan: `docs/plans/M4.md` with the curated graph schema (Causes, Remedies,
+      Obstacles, ids, links to generated facts, judgement text) and the generator's scope
+- [ ] `tools/gen_mechanics.py`: scan `common/` for producers and costs of the key
+      quantities listed in the build plan, write `knowledge/4.5.2/generated/*.yaml`; tests
+      on known facts (Anchorage +5 naval capacity, Supremacy adoption +20, a naval
+      capacity technology)
+- [ ] JSON Schema for `knowledge/4.5.2/graph/*.yaml` plus a validator
+      (`hlidskjalf graph validate`), with tests
+- [ ] Curated graph, naval capacity domain; test for the M4 criterion: expanding the Goal
+      "more naval capacity" from the graph alone yields Supremacy, Anchorages,
+      naval-capacity technologies and Soldier jobs, each with its Obstacles
+- [ ] Curated graph, economy domains: energy, minerals, food, alloys
+- [ ] Curated graph: Unity and Traditions, influence, research
+- [ ] Curated graph: pop growth, stability, amenities, housing, building and district slots
+- [ ] Playbook seed rules as `knowledge/4.5.2/rules/*.md` (id, date, reason) with a loader
+      and tests: Unity against the next Tradition cost; influence at the cap is waste;
+      unemployed pops before new colonies
+- [ ] Benchmarks draft `knowledge/4.5.2/benchmarks.yaml` (marked draft, with provenance
+      and assumptions) and a readable review page `docs/benchmarks-draft.md`; hold point:
+      review by experienced players goes to `docs/awaiting-julian.md`
+
+### M5 Huginn in Consulting mode
+- [ ] Study and plan: `docs/plans/M5.md` (expansion algorithm, Solution Graph schema,
+      Briefing flow, how Key Actions are ranked)
+- [ ] `expand_graph` in `src/hlidskjalf/graph/`: Obstacles checked against Snapshot
+      numbers, Remedies marked Actionable, Pending or obstructed, depth limit 5 ("too far
+      for this Horizon"), loops returned as Vicious Circles, identical nodes merged,
+      deterministic; tests
+- [ ] Solution Graph JSON Schema and validator (model-added nodes need `source: "model"`),
+      with tests
+- [ ] `expand_graph` as an MCP tool, logged to the turn log like the others; tests
+- [ ] `skills/huginn-consult/SKILL.md` (hlidskjalf:consult): the Briefing flow of the
+      build plan, every number from tool results
+- [ ] Verification: one headless Briefing on the reference mid-game save
+      (`vulkan/2259.12.25.sav`), checked for Playbook Rule ids and for not recommending
+      Unity saved for the next Tradition; correctness by golden values is a hold point
+
+### M6 Graph engine
+- [ ] `engine/index.html`: Cytoscape.js with ELK.js layered layout, exact pinned CDN
+      versions, Goals left, Causes middle, Key Actions right, Vicious Circles coloured,
+      model-added nodes marked, click shows evidence; reads `solution-graph.json`
+- [ ] Determinism test: the JSON-to-elements transform is a pure function tested with node
+      (two Briefings with the same graph data give identical elements and positions);
+      publishing as an Artifact is a hold point
+
+### M7 Unverified Claim check
+- [ ] Study and plan: `docs/plans/M7.md` (turn boundaries in the turn log, what counts as a
+      claim, exemptions, block format)
+- [ ] Claim extraction and normalisation module (thousands separators, "7.4k", German and
+      English decimal marks, rounding to the stated precision, Display Names), with tests
+- [ ] Stop hook script plus `hooks/hooks.json`: reads the turn's tool results from the turn
+      log, blocks unmatched numbers and names, appends to `blocks.jsonl`, exempts quoted
+      Playbook Rules and Player input; test: a planted wrong district count is blocked
+- [ ] `skills/review-blocks/SKILL.md` (developer skill) grouping logged blocks into real
+      errors and false positives with proposed fixes
+- [ ] Verification on the reference Briefings: normal Briefings pass, false positives at
+      most one per Briefing; record the numbers in the log
+
+### M8 Muninn
+- [ ] Study and plan: `docs/plans/M8.md` (epochs from archive diffs and Timeline, analysis
+      structure, Consulting additions)
+- [ ] Epoch detection over archived extracts and Timeline events, tested on the 8-save
+      reference Campaign (`vulkan`, 2200 to 2298)
+- [ ] `skills/muninn/SKILL.md` (hlidskjalf:muninn) over a chosen time frame
+- [ ] Verification: a headless Muninn run over the reference Campaign names its epochs by
+      the Timeline and passes the Unverified Claim check
+
+### Closeout
+- [ ] Final sweep: everything at spec or documented-blocked in `docs/awaiting-julian.md`;
+      DoD checkboxes above updated; README status line updated
+
+## Status
+
+STATUS: READY
+**Next action:** Read `docs/build-plan.md` (M3) and `GLOSSARY.md`, then write
+`docs/plans/M3.md` as the first increment of "M3 Campaign Workspace and Campaign Setup".
+**Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the
+game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
+
+## Budget
+
+<!-- weekly threshold lowered to leave Julian headroom for his own work this week -->
+- session pause threshold: 85%
+- weekly pause threshold: 80%
+
+## Log
+
+<!-- Append-only, dated. One line per iteration. Newest at the bottom. -->
+- 2026-10-24 03:30 — GOAL.md written by Claude from docs/build-plan.md after M0–M2 were
+  built (Julian authorised the hand-off and an unattended start before going to sleep);
+  nothing of M3–M8 started yet

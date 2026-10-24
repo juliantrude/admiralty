@@ -6,5 +6,11 @@
     "name": "Julian Trude"
   },
   "license": "MIT",
-  "keywords": ["stellaris", "coaching", "strategy"]
+  "keywords": ["stellaris", "coaching", "strategy"],
+  "mcpServers": {
+    "hlidskjalf": {
+      "command": "uv",
+      "args": ["run", "--quiet", "--project", "${CLAUDE_PLUGIN_ROOT}", "hlidskjalf", "mcp"]
+    }
+  }
 }
