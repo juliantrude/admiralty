@@ -89,7 +89,7 @@ M6 is complete (see Log).
 
 M7 (plan: `docs/plans/M7.md`):
 - [x] 1. Plan document
-- [ ] 2. Normalisation and extraction (`claims/normalise.py`, `claims/extract.py`)
+- [x] 2. Normalisation and extraction (`claims/normalise.py`, `claims/extract.py`)
 - [ ] 3. Evidence and matching (`claims/evidence.py`, `claims/check.py`, `hlidskjalf claims check`)
 - [ ] 4. The Stop hook (probe real input, `hooks/hooks.json`, `hlidskjalf hook stop`, `blocks.jsonl`, loop guard, `plugin.json`)
 - [ ] 5. `review-blocks` (`claims/blocks.py`, `blocks summary` CLI, skill, `docs/proposals/claims.md`)
@@ -100,8 +100,10 @@ M8: plan increments to be written (see `docs/build-plan.md`).
 ## Status
 
 STATUS: READY
-**Next action:** M7 increment 2: `src/hlidskjalf/claims/normalise.py` and `extract.py` per `docs/plans/M7.md` (number tokens with separators, k/M suffix,
-percent, sign and stated precision; the not-a-claim rules; name spans from bold/code/quotes only) with the pure tests. Note: `-m network` is deselected
+**Next action:** M7 increment 3: `src/hlidskjalf/claims/evidence.py` (index of numbers/strings from the session's turn log entries plus Player input from the
+transcript) and `check.py` (match with `Reading.covers`, ambiguous readings either way, derived sums/percentages within one `Claim.unit`, rule-quote exemption for
+`Claim.quoted`, `within_name` exemption, dates as whole strings, nearest value, reason codes `no_match|near_match|derived_unexplained|name_no_match`) and
+`hlidskjalf claims check --workspace DIR --answer FILE`; matching tests on synthetic turn logs (`tests/test_claims_check.py`). Note: `-m network` is deselected
 by default (`addopts` in `pyproject.toml`); run `uv run pytest -m network` to test the real CDN.
 **Decided in the M7 plan:** derived sums/differences (2 to 4 addends shown in the same item) and percentages are allowed, unexplained totals are blocked;
 evidence window = tool results of the whole session; Stop hook probe of the real input comes first in increment 4.
@@ -293,3 +295,9 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
 - 2026-10-24 — M7 increment 1: `docs/plans/M7.md` written (hook protocol and workspace detection, evidence = session turn log plus Player input, number/name extraction and
   normalisation incl. ambiguous `2.794` read both ways, exemptions, derived-sum decision, matching at stated precision, block/log/loop guard (two blocks then release with notice),
   crash-safe exit, `review-blocks` as proposal-only, tests and 6 increments). Docs only; tests 438 passed / 31 skipped, ruff clean
+- 2026-10-24 — M7 increment 2: `claims/normalise.py` (`Reading` value + step of the last written digit with `covers` = half-up rounding at the stated precision, separator rules incl. `2.794`/`2,794`
+  read both ways, version-shaped tokens are no number, `apply_suffix` k/M, `normalise_name`, `name_forms`) and `claims/extract.py` (`extract_claims` -> `Claim` with kind number/date/name, sentence, line,
+  `unit` = list item/table row/paragraph/heading, `quoted` blockquote flag, sign, percent, `within_name`; not-a-claim rules: list/heading numbering, code spans and fences, links/URLs, versions, bare years
+  2200 to 2500, digits glued to letters; names only from bold/code/quotes/Name-column cells, not whole-line bold, not one lowercase word, not quotes over 8 words, not commands/paths). Decisions: in-game dates
+  are `date` claims matched whole (plan said both "never extracted" and "matched as a whole string"); a number inside a code span name is not extracted (the span is checked as a name). `tests/test_claims_extract.py`
+  (61 tests). Tests 499 passed / 31 skipped, ruff clean
