@@ -72,7 +72,7 @@ document as their first increment.
 M5 (plan: `docs/plans/M5.md`):
 - [x] 1. Plan document
 - [x] 2. `expand_graph` core (`graph/metrics.py`, `graph/expand.py`, `tests/test_expand.py`)
-- [ ] 3. Solution Graph schema, validator and `compose` with `briefing compose` and `graph check-solution` CLI
+- [x] 3. Solution Graph schema, validator and `compose` with `briefing compose` and `graph check-solution` CLI
 - [ ] 4. MCP tool `expand_graph` with turn-log entry, `expansion_id`, catalogue mode
 - [ ] 5. `hlidskjalf:consult` skill (`skills/huginn-consult/`) and its static test
 - [ ] 6. Verification: one headless Briefing on the reference save, numbers recorded in the Log
@@ -82,16 +82,21 @@ M6, M7, M8: plan increments to be written (see `docs/build-plan.md`).
 ## Status
 
 STATUS: READY
-**Next action:** M5 increment 3: Solution Graph, as specified in `docs/plans/M5.md` ("Solution Graph" and increment 3):
-`graph/solution.schema.json`, `graph/solution.py` (`validate_solution_graph(doc, graph, rules) -> list[Problem]`, `compose(expansion,
-overlay)` which reuses `expand.rank_key_actions` and `Candidate`, `SolutionInvalid`), CLI `hlidskjalf briefing compose <expansion.json>
-<overlay.json> --out solution-graph.json` and `hlidskjalf graph check-solution <file>`, `tests/test_solution.py` with good and bad fixtures
-(model node without reason, invented rule id, dangling edge, orphan node, obstructed Key Action, unknown field) plus compose determinism.
-`Expansion.to_dict()` is the expansion JSON (keys: goals, nodes, edges, circles, key_action_candidates, playbook_rules, warnings). The full
-suite takes ~180 s (run it in the background). `hooks/` is still empty; `skills/` is auto-discovered by the plugin.
+**Next action:** M5 increment 4: MCP tool `expand_graph` in `src/hlidskjalf/mcp/server.py`, as specified in `docs/plans/M5.md` ("MCP tool
+`expand_graph`" and increment 4): `expand_graph(goals=[], crisis_goals=[], save=None)`; no goals = catalogue (every Goal with title, domain and
+resolved Symptom metrics); with goals = `Expansion.to_dict()` plus `expansion_id` (the turn-log line number, so `hlidskjalf briefing compose` can
+read the expansion from the workspace; the CLI currently takes an expansion JSON file, add a way to read it by turn-log id, for example
+`--expansion-id N --workspace DIR`); registered through `logged`; errors (`GraphMissing`, `GraphInvalid`, unknown version) as `{"error": ...}`; graph
+loaded once per server by the save's `game_version`; tests in `tests/test_mcp.py` style (tool listed with schema, one turn-log line per call,
+catalogue and expansion on the reference save, unknown Goal and missing pack are errors). `Solution Graph` is done: `compose(expansion, overlay,
+graph)` needs overlay `empire` and `goals.<id>.horizon` for every expanded Goal and a `why` for every remaining Key Action candidate (or an
+`exclude_key_actions` entry), see its docstring. The full suite takes ~180 s (run it in the background). `hooks/` is still empty; `skills/` is
+auto-discovered by the plugin.
 **Open for increment 4 (result size):** one Goal expands to 10 to 22k characters, all 13 Goals together 141k, so a call with 3+ Goals can exceed the
 40k budget that `Expansion.to_dict` only partly enforces (it trims effects to 3, then text of clear Obstacles). Decide in increment 4 whether a compact
-mode is needed (for example `text` only for depth <= 2 and for present or judgement Obstacles, effects only for Remedies).
+mode is needed (for example `text` only for depth <= 2 and for present or judgement Obstacles, effects only for Remedies). Note for the skill
+(increment 5): the overlay must carry a `why` per Key Action candidate, which with many candidates is long; consider making compose accept a default
+or letting the skill exclude candidates in bulk.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
 review of the benchmarks draft (both in `docs/awaiting-julian.md`).
 
@@ -203,3 +208,12 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   nodes, 0 to 4 `too_far`, no circle within depth 5, 1 to 6 Key Action candidates, 10 to 22k characters. A circle that closes only beyond depth 5 is not
   reported (the circle test uses depth_limit 8). No `pending_when` added: no registered metric expresses "jobs that population growth will fill", nothing
   invented. Tests 303 passed / 31 skipped, ruff clean. GOAL.md repaired: the `## Plan` and `## Status` headings had been lost; restored with an M5 checklist
+
+- 2026-10-24 — M5 increment 3: `graph/solution.schema.json` + `graph/solution.py` (`validate_solution_graph`, `compose`, `SolutionInvalid`) and CLI
+  `hlidskjalf briefing compose <expansion.json> <overlay.json> --out` and `hlidskjalf graph check-solution <file>`. Graph nodes carry what the code
+  computed (status, ratings, check_state, evidence strings built from the compared numbers, rule ids); model nodes need id `model.*` and a reason and
+  carry no code-computed field; edges follow the grammar and must exist in the Mechanics Graph between two graph nodes; orphans, dangling ids,
+  invented rule ids, obstructed or evidence-less Key Actions, bad ranks and unknown fields are errors. `compose` prunes with a reason (a present Obstacle
+  cannot be pruned), drops what only hung on pruned nodes (recorded), re-derives circles after pruning, recomputes the Key Action ranking with
+  `rank_key_actions` and requires a `why` per candidate or an `exclude_key_actions` entry (added to the document as `excluded_key_actions`; the
+  overlay also needs `empire`). `tests/test_solution.py` (47 tests incl. the real graph on vulkan mid-save); full suite 350 passed / 31 skipped, ruff clean, `graph validate` clean

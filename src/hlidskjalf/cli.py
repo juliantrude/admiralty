@@ -1,4 +1,5 @@
-"""Command line: hlidskjalf extract | diff | mcp | setup (campaigns, players, write, check) | graph."""
+"""Command line: hlidskjalf extract | diff | mcp | setup (campaigns, players, write, check) | graph |
+briefing."""
 
 from __future__ import annotations
 
@@ -40,10 +41,32 @@ def main(argv: list[str] | None = None) -> int:
     )
     validate.add_argument("--version", default="v4.5.2")
     validate.add_argument("--knowledge-root", type=Path, help="default: knowledge/ of the plugin")
+    check_solution = graph.add_parser(
+        "check-solution", help="validate a solution-graph.json (exit 1 if any error)"
+    )
+    check_solution.add_argument("file", type=Path)
+    check_solution.add_argument(
+        "--knowledge-root", type=Path, help="default: knowledge/ of the plugin"
+    )
+
+    briefing = commands.add_parser("briefing", help="Briefing files").add_subparsers(
+        dest="briefing_command", required=True
+    )
+    compose = briefing.add_parser(
+        "compose", help="build solution-graph.json from an expansion and the model's overlay"
+    )
+    compose.add_argument("expansion", type=Path, help="JSON of expand_graph")
+    compose.add_argument("overlay", type=Path, help="JSON the model wrote")
+    compose.add_argument("--out", type=Path, required=True)
+    compose.add_argument("--knowledge-root", type=Path, help="default: knowledge/ of the plugin")
 
     args = parser.parse_args(argv)
     if args.command == "graph":
+        if args.graph_command == "check-solution":
+            return _check_solution(args)
         return _graph_validate(args)
+    if args.command == "briefing":
+        return _compose(args)
     if args.command == "setup":
         return _setup(args)
     if args.command == "mcp":
@@ -110,6 +133,62 @@ def _graph_validate(args) -> int:
         print(problem)
     print(f"{len(errors)} error(s), {len(problems) - len(errors)} warning(s)")
     return 1 if errors else 0
+
+
+def _read_json(path: Path, what: str):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        raise SystemExit(f"hlidskjalf: cannot read {what} {path}: {error}") from error
+
+
+def _load_graph(version: str, root: Path | None):
+    from hlidskjalf.graph.mechanics import GraphInvalid, GraphMissing, MechanicsGraph
+
+    try:
+        return MechanicsGraph.load(version, root)
+    except (GraphMissing, GraphInvalid) as error:
+        raise SystemExit(f"hlidskjalf: {error}") from error
+
+
+def _check_solution(args) -> int:
+    from hlidskjalf.graph.solution import validate_solution_graph
+
+    doc = _read_json(args.file, "solution graph")
+    version = doc.get("game_version") if isinstance(doc, dict) else None
+    graph = _load_graph(version or "v4.5.2", args.knowledge_root)
+    problems = validate_solution_graph(doc, graph, graph.rules)
+    for problem in problems:
+        print(problem)
+    print(f"{len(problems)} error(s)")
+    return 1 if problems else 0
+
+
+def _compose(args) -> int:
+    from hlidskjalf.graph.solution import SolutionInvalid, compose
+
+    expansion = _read_json(args.expansion, "expansion")
+    overlay = _read_json(args.overlay, "overlay")
+    graph = _load_graph(expansion.get("version", "v4.5.2"), args.knowledge_root)
+    try:
+        doc = compose(expansion, overlay, graph)
+    except SolutionInvalid as error:
+        for problem in error.problems:
+            print(problem, file=sys.stderr)
+        return 1
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    args.out.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    print(
+        json.dumps(
+            {
+                "out": str(args.out),
+                "nodes": len(doc["nodes"]),
+                "key_actions": [a["node"] for a in doc["key_actions"]],
+            },
+            indent=1,
+        )
+    )
+    return 0
 
 
 def _setup(args) -> int:
