@@ -27,7 +27,7 @@ import yaml
 from jsonschema import Draft202012Validator
 
 from hlidskjalf.graph.benchmarks import read_benchmarks
-from hlidskjalf.graph.playbook import read_rules
+from hlidskjalf.graph.playbook import Rule, read_rules
 
 KNOWLEDGE_ROOT = Path(__file__).resolve().parents[3] / "knowledge"
 METRICS_FILE = "metrics.yaml"
@@ -129,6 +129,11 @@ class MechanicsGraph:
 
     def fact(self, fact_id: str) -> dict[str, Any]:
         return self.facts[fact_id]
+
+    @property
+    def rules(self) -> dict[str, Rule]:
+        """The approved Playbook Rules of this pack by id (the loader already checked them)."""
+        return read_rules(self._generated.parent / "rules")[0] if self._generated else {}
 
     def node_facts(self, node_id: str) -> list[dict[str, Any]]:
         """The generated facts a node links to, wildcards expanded, sorted by id."""

@@ -23,6 +23,8 @@ from typing import Any
 
 import yaml
 
+from hlidskjalf.graph.metrics import dig, resolve_metric
+
 DEFAULT_VERSION = "v4.5.2"
 STATUSES = ("draft", "reviewed")
 BASES = ("derived", "reviewed")
@@ -87,10 +89,10 @@ def read_benchmarks(
 def resolve_source(source: dict[str, Any], extract: dict[str, Any], metrics: dict[str, Any]):
     """The figure's value in one Snapshot extract; None when the extract lacks the field."""
     if "metric" in source:
-        return _resolve_metric(metrics[source["metric"]], extract)
+        return resolve_metric(metrics[source["metric"]], extract)
     if "path" in source:
-        return _dig(extract, source["path"])
-    value = _dig(extract, source["count"])
+        return dig(extract, source["path"])
+    value = dig(extract, source["count"])
     return len(value) if isinstance(value, list | dict) else None
 
 
@@ -257,26 +259,6 @@ def _registry(version: str, root: Path | None) -> set[str] | None:
     if not path.is_file():
         return None
     return set((yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("metrics", {}))
-
-
-def _dig(document: dict[str, Any], path: str):
-    value: Any = document
-    for part in path.split("."):
-        if not isinstance(value, dict) or part not in value:
-            return None
-        value = value[part]
-    return value
-
-
-def _resolve_metric(spec: dict[str, Any], extract: dict[str, Any]):
-    if "path" in spec:
-        return _dig(extract, spec["path"])
-    if "sum" in spec:
-        parts = [_dig(extract, path) for path in spec["sum"]]
-        return None if None in parts else sum(parts)
-    ratio = spec["ratio"]
-    top, bottom = _dig(extract, ratio["numerator"]), _dig(extract, ratio["denominator"])
-    return None if top is None or not bottom else top / bottom
 
 
 def _number(value: float) -> str:

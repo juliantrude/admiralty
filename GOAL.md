@@ -61,17 +61,37 @@ builds it together with Claude later, because it needs his in-game judgement.
 - In-game feel: anything that needs someone playing the game goes to
   `docs/awaiting-julian.md`.
 When an increment hits a hold point: do every part that does not need Julian, add precise
-steps to `docs/awaiting-julian.md`, note it in the Blockers line of `## Status
+steps to `docs/awaiting-julian.md`, note it in the Blockers line of `## Status`, and move on.
+
+## Plan
+
+Milestones M3 and M4 are done (see Log). Each milestone starts with its plan document
+`docs/plans/M<n>.md`, whose "Increments" list is the plan for that milestone; M6 to M8 get their plan
+document as their first increment.
+
+M5 (plan: `docs/plans/M5.md`):
+- [x] 1. Plan document
+- [x] 2. `expand_graph` core (`graph/metrics.py`, `graph/expand.py`, `tests/test_expand.py`)
+- [ ] 3. Solution Graph schema, validator and `compose` with `briefing compose` and `graph check-solution` CLI
+- [ ] 4. MCP tool `expand_graph` with turn-log entry, `expansion_id`, catalogue mode
+- [ ] 5. `hlidskjalf:consult` skill (`skills/huginn-consult/`) and its static test
+- [ ] 6. Verification: one headless Briefing on the reference save, numbers recorded in the Log
+
+M6, M7, M8: plan increments to be written (see `docs/build-plan.md`).
+
+## Status
 
 STATUS: READY
-**Next action:** M5 increment 2: `expand_graph` core, as specified in `docs/plans/M5.md` ("Expansion" and increment 2). Move
-`_resolve_metric` from `graph/benchmarks.py` into `graph/metrics.py` as `resolve_metric` (benchmarks imports it, behaviour unchanged), write
-`graph/expand.py` (`expand_graph(graph, goals, extract, crisis_goals=(), depth_limit=5)` -> `Expansion` with `to_dict()`; check states
-present/clear/unknown/judgement; Remedy status actionable/pending/obstructed; BFS depth with `too_far`; Vicious Circles via SCC with break point;
-ranked Key Action candidates; `effects` from linked facts; `playbook_rules` text) and `tests/test_expand.py`. First confirm `svc.document(ref)` has the
-shape of the metric paths (test on the reference save). Add `pending_when` to Remedies only where a registered metric expresses it. Reference-save
-extracts: `Extractor().extract(path, "Plexxi")` (~4 s). The full suite takes ~180 s (run it in the background). `hooks/` is still empty; `skills/` is
-auto-discovered by the plugin.
+**Next action:** M5 increment 3: Solution Graph, as specified in `docs/plans/M5.md` ("Solution Graph" and increment 3):
+`graph/solution.schema.json`, `graph/solution.py` (`validate_solution_graph(doc, graph, rules) -> list[Problem]`, `compose(expansion,
+overlay)` which reuses `expand.rank_key_actions` and `Candidate`, `SolutionInvalid`), CLI `hlidskjalf briefing compose <expansion.json>
+<overlay.json> --out solution-graph.json` and `hlidskjalf graph check-solution <file>`, `tests/test_solution.py` with good and bad fixtures
+(model node without reason, invented rule id, dangling edge, orphan node, obstructed Key Action, unknown field) plus compose determinism.
+`Expansion.to_dict()` is the expansion JSON (keys: goals, nodes, edges, circles, key_action_candidates, playbook_rules, warnings). The full
+suite takes ~180 s (run it in the background). `hooks/` is still empty; `skills/` is auto-discovered by the plugin.
+**Open for increment 4 (result size):** one Goal expands to 10 to 22k characters, all 13 Goals together 141k, so a call with 3+ Goals can exceed the
+40k budget that `Expansion.to_dict` only partly enforces (it trims effects to 3, then text of clear Obstacles). Decide in increment 4 whether a compact
+mode is needed (for example `text` only for depth <= 2 and for present or judgement Obstacles, effects only for Remedies).
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
 review of the benchmarks draft (both in `docs/awaiting-julian.md`).
 
@@ -175,3 +195,11 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   Remedy status actionable/pending/obstructed, Vicious Circles by SCC with break point, mechanical Key Action ranking with Crisis Goals first; Solution
   Graph schema with `source: "model"` rules, validator, `compose` of a model overlay so the model never hand-copies the graph; MCP tool with catalogue
   mode; skill flow and hard rules; verification; 6 increments). Docs only; tests 269 passed / 31 skipped, ruff clean
+- 2026-10-24 — M5 increment 2: `graph/metrics.py` (`dig`, `resolve_metric` moved out of `benchmarks.py`, `Check`, `evaluate`: present / clear / unknown /
+  judgement with the compared numbers) and `graph/expand.py` (`expand_graph`, `Expansion.to_dict` with the 40k budget trim, `Candidate`,
+  `rank_key_actions`; BFS depth limit 5 with `too_far`, clear Obstacles are leaves, Remedy status actionable/pending/obstructed evaluated directly from
+  its Obstacles, iterative Tarjan circles with break point, `serves`/`unlocks`, effects with Display Names, cited rule text); `MechanicsGraph.rules`
+  added. `tests/test_expand.py` (34 tests, synthetic packs plus the real graph on vulkan mid-save). Findings on the reference save: per Goal 11 to 24
+  nodes, 0 to 4 `too_far`, no circle within depth 5, 1 to 6 Key Action candidates, 10 to 22k characters. A circle that closes only beyond depth 5 is not
+  reported (the circle test uses depth_limit 8). No `pending_when` added: no registered metric expresses "jobs that population growth will fill", nothing
+  invented. Tests 303 passed / 31 skipped, ruff clean. GOAL.md repaired: the `## Plan` and `## Status` headings had been lost; restored with an M5 checklist
