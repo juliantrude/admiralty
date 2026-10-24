@@ -27,7 +27,10 @@ CHROMIUM = next(
     None,
 )
 STATE_RE = re.compile(r'<pre id="engine-state"[^>]*>(.*?)</pre>', re.S)
-SCRIPT_TAG_RE = re.compile(r"<script\b[^>]*\bsrc\s*=[^>]*>\s*</script>", re.I)
+SCRIPT_TAG_RE = re.compile(r"<script\b[^>]*\bsrc\s*=\s*\"https?://[^>]*>\s*</script>", re.I)
+ENGINE = ROOT / "engine"
+ENGINE_FILES = ("engine.js", "engine.css")
+GRAPH_SLOT = "<!-- solution-graph -->"
 
 
 class EngineDriverError(RuntimeError):
@@ -49,7 +52,7 @@ def skip_reason() -> str | None:
 
 
 def script_pin_problems(html: str) -> list[str]:
-    """Every `<script src>` must be an exact-version CDN URL with integrity and crossorigin."""
+    """Every external (http/https) `<script src>` must be an exact-version CDN URL with integrity and crossorigin."""
     problems = []
     tags = SCRIPT_TAG_RE.findall(html)
     if not tags:
@@ -80,14 +83,20 @@ def offline_copy(html: str) -> str:
     return SCRIPT_TAG_RE.sub(rewrite, html)
 
 
-def dump_dom(html: str, *, budget_ms: int = 20000, timeout: float = 90) -> str:
-    """Load `html` (CDN tags rewritten to the cache) in headless Chromium and return the final DOM."""
+def dump_dom(
+    html: str, *, files: dict[str, str] | None = None, budget_ms: int = 20000, timeout: float = 90
+) -> str:
+    """Load `html` (CDN tags rewritten to the cache) in headless Chromium and return the final DOM.
+
+    `files` are written next to the page (name -> text), for the page's own script and style."""
     reason = skip_reason()
     if reason:
         raise EngineDriverError(reason)
     with tempfile.TemporaryDirectory(prefix="engine-") as tmp:
         page = Path(tmp) / "page.html"
         page.write_text(offline_copy(html), encoding="utf-8")
+        for name, text in (files or {}).items():
+            (Path(tmp) / name).write_text(text, encoding="utf-8")
         result = subprocess.run(
             [
                 CHROMIUM,
@@ -120,3 +129,26 @@ def read_state(dom: str) -> dict:
 
 def render(html: str, **kwargs) -> dict:
     return read_state(dump_dom(html, **kwargs))
+
+
+def embed_graph(html: str, graph: dict | str | None) -> str:
+    """Put the graph into the page's data source 1 (`<script id="solution-graph">`).
+
+    A dict is dumped as JSON, a str goes in as it is (to test malformed data), None leaves the page
+    without embedded data. `</` is escaped so that no text in the data can close the script element.
+    """
+    if graph is None:
+        return html.replace(GRAPH_SLOT, "")
+    text = graph if isinstance(graph, str) else json.dumps(graph, ensure_ascii=False)
+    tag = (
+        f'<script id="solution-graph" type="application/json">{text.replace("</", "<\\/")}</script>'
+    )
+    return html.replace(GRAPH_SLOT, tag)
+
+
+def render_engine(graph: dict | str | None, *, index: Path | None = None, **kwargs) -> dict:
+    """Render engine/index.html (or `index`) with `graph` embedded and return its `engine-state`."""
+    base = (index or ENGINE / "index.html").parent
+    html = embed_graph((index or ENGINE / "index.html").read_text(encoding="utf-8"), graph)
+    files = {name: (base / name).read_text(encoding="utf-8") for name in ENGINE_FILES}
+    return read_state(dump_dom(html, files=files, **kwargs))

@@ -80,7 +80,7 @@ M5 (plan: `docs/plans/M5.md`):
 M6 (plan: `docs/plans/M6.md`):
 - [x] 1. Plan document
 - [x] 2. Libraries and driver (pinned versions, `tools/fetch_engine_libs.py`, `tests/engine_driver.py`, pins test)
-- [ ] 3. Page core (`engine/index.html`, `engine.js`, `engine.css`: data loading, layered layout, deterministic `engine-state`)
+- [x] 3. Page core (`engine/index.html`, `engine.js`, `engine.css`: data loading, layered layout, deterministic `engine-state`)
 - [ ] 4. Encodings and panel (circles, model nodes, status, legend, header, lists, click panel, textContent only)
 - [ ] 5. Bundle and `briefing view` (`tools/bundle_engine.py`, `engine/dist/index.html`, CLI, "model never writes HTML" static test)
 - [ ] 6. Verification (real Solution Graph screenshot looked at, `-m network` test, `docs/awaiting-julian.md` Artifact section)
@@ -90,11 +90,15 @@ M7, M8: plan increments to be written (see `docs/build-plan.md`).
 ## Status
 
 STATUS: READY
-**Next action:** M6 increment 3 (see `docs/plans/M6.md`): page core. `engine/index.html` (the three pinned `<script>` tags from `engine/pins.json`, same
-tags as `PINNED_TAGS` in `tests/test_engine_driver.py`), `engine.js`, `engine.css`: `loadGraph()` (embedded script, `?data=`, sibling fetch, file picker),
-validation (schema 1, arrays, edge endpoints), ELK layered RIGHT with FIRST/LAST layer constraints, pure-function node sizes, deterministic options,
-`<pre id="engine-state">`. Tests via `tests/engine_driver.py` (`render`, `script_pin_problems` on the real `index.html`): layers, no overlap, identical render
-(also with shuffled nodes/edges), rejects bad data. Note: `.gitignore` has `dist/`, so increment 5 must un-ignore `engine/dist/` (`!engine/dist/`) before committing the bundle.
+**Next action:** M6 increment 4 (see `docs/plans/M6.md`): encodings and panel in `engine/engine.js` / `engine.css`. Circle colours (palette, per circle in circle order,
+members + inner edges, break-point marker), model-node dashed border and "model" badge, Remedy status (actionable solid / pending hatched / obstructed grey), Obstacle
+`check_state` accents, Goal `crisis` heavy outline, text labels so colour is never alone, legend with only the encodings present, header (empire, date, game version,
+counts), ranked Key Action list and `pruned` list below the graph, click panel (type, title, text, status, ratings, check_state, evidence, rule ids, `reason`, serves,
+edges in/out; Key Action `rank`/`serves`/`unlocks`/`why`), textContent only. Extend `engine-state` with the header/legend text, circle colours, panel state; add a
+click seam the driver can call (dispatch the page's own event). Tests in `tests/test_engine_page.py` (fixtures `circle_graph`, `chain_graph` there; add a model-node,
+a pending/obstructed and a `<script>`-in-evidence fixture): circles/model/click/no-HTML. Note: `.gitignore` has `dist/`, so increment 5 must un-ignore `engine/dist/`
+(`!engine/dist/`) before committing the bundle. Known drawing quirk to look at in increment 6: with a Vicious Circle ELK reverses a back edge, so an Obstacle can land
+in the first layer left of its Goal's Causes (seen on the `circle` fixture); acceptable per plan, check on the real graph.
 **Carried into M7 (from M5 verification):** the crude "every number is in a tool result" check flags sums the model computes itself (230.36 = 88 + 74.77 +
 67.59 research); the M7 hook must decide whether derived sums are allowed (e.g. only with the addends shown) rather than copy the regex.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
@@ -250,3 +254,10 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   (`/usr/bin/chromium --headless=new --dump-dom` on a temp copy with CDN tags rewritten to the cache, `render()` reads `<pre id="engine-state">`, `script_pin_problems`,
   `skip_reason`) and `tests/test_engine_driver.py` (13 tests: pins check on good/bad tags, pins.json vs VERSIONS.md, offline copy, stub page runs Cytoscape+ELK headless
   and the state reads back). Tests 378 passed / 31 skipped (205 s), ruff clean
+- 2026-10-24 — M6 increment 3: `engine/index.html` (3 pinned CDN tags + `engine.js`, `<!-- solution-graph -->` slot, hidden `<pre id="engine-state">`), `engine.js`
+  (pure `nodeLabel`/`nodeSize` from the title only, `validateGraph` with the first reason, `loadGraph` embedded > `?data=` > sibling fetch > file picker/drop, elements sorted
+  by id/edge, cytoscape-elk layered RIGHT with `layerConstraint` FIRST for Goals and LAST for Key Actions, fixed ELK options, state = ids/types/rounded positions/sizes/edges,
+  no timing in the state), `engine.css`. Driver: `script_pin_problems`/`offline_copy` now only look at http(s) script tags (the local `engine.js` is allowed; message
+  and existing tests unchanged), `dump_dom(files=)`, `embed_graph`, `render_engine`. `tests/test_engine_page.py` (26 tests: fixtures validate against the schema, pins on
+  the real page, no HTML-inserting API in `engine.js`, layers, no overlap, identical render incl. shuffled input, date/empire change nothing, size function, 8 bad-data
+  cases, non-JSON, no data -> picker). Tests 404 passed / 31 skipped (243 s), ruff clean
