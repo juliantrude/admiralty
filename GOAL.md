@@ -79,7 +79,7 @@ M5 (plan: `docs/plans/M5.md`):
 
 M6 (plan: `docs/plans/M6.md`):
 - [x] 1. Plan document
-- [ ] 2. Libraries and driver (pinned versions, `tools/fetch_engine_libs.py`, `tests/engine_driver.py`, pins test)
+- [x] 2. Libraries and driver (pinned versions, `tools/fetch_engine_libs.py`, `tests/engine_driver.py`, pins test)
 - [ ] 3. Page core (`engine/index.html`, `engine.js`, `engine.css`: data loading, layered layout, deterministic `engine-state`)
 - [ ] 4. Encodings and panel (circles, model nodes, status, legend, header, lists, click panel, textContent only)
 - [ ] 5. Bundle and `briefing view` (`tools/bundle_engine.py`, `engine/dist/index.html`, CLI, "model never writes HTML" static test)
@@ -90,10 +90,11 @@ M7, M8: plan increments to be written (see `docs/build-plan.md`).
 ## Status
 
 STATUS: READY
-**Next action:** M6 increment 2 (see `docs/plans/M6.md`): choose and pin exact versions of Cytoscape.js, ELK.js and cytoscape-elk with SRI hashes
-(`engine/VERSIONS.md`), write `tools/fetch_engine_libs.py` (downloads into git-ignored `tests/fixtures/engine-libs/`, checks hashes), and
-`tests/engine_driver.py` (headless `/usr/bin/chromium --headless=new --no-sandbox --dump-dom` against a temp page with the CDN URLs rewritten to the cache,
-reads `<pre id="engine-state">`; skips when no Chromium). Prove it with a trivial stub page and a pins test.
+**Next action:** M6 increment 3 (see `docs/plans/M6.md`): page core. `engine/index.html` (the three pinned `<script>` tags from `engine/pins.json`, same
+tags as `PINNED_TAGS` in `tests/test_engine_driver.py`), `engine.js`, `engine.css`: `loadGraph()` (embedded script, `?data=`, sibling fetch, file picker),
+validation (schema 1, arrays, edge endpoints), ELK layered RIGHT with FIRST/LAST layer constraints, pure-function node sizes, deterministic options,
+`<pre id="engine-state">`. Tests via `tests/engine_driver.py` (`render`, `script_pin_problems` on the real `index.html`): layers, no overlap, identical render
+(also with shuffled nodes/edges), rejects bad data. Note: `.gitignore` has `dist/`, so increment 5 must un-ignore `engine/dist/` (`!engine/dist/`) before committing the bundle.
 **Carried into M7 (from M5 verification):** the crude "every number is in a tool result" check flags sums the model computes itself (230.36 = 88 + 74.77 +
 67.59 research); the M7 hook must decide whether derived sums are allowed (e.g. only with the addends shown) rather than copy the regex.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
@@ -244,3 +245,8 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   model-node marking, status encodings, click panel with evidence, everything inserted as text; pinned CDN versions with SRI; headless Chromium driver reading an
   `engine-state` JSON, tests for identical render, layers, circles, no injected HTML, bad data, bundle, pins; `briefing view` loopback server; Artifact publishing
   as hold point; 6 increments). Docs only; chromium 154 and CDN reachable on this machine
+- 2026-10-24 — M6 increment 2: `engine/pins.json` (single source of truth: cytoscape 3.34.4, elkjs 0.12.0, cytoscape-elk 2.3.0, jsDelivr URLs, SRI sha384) and
+  `engine/VERSIONS.md`; `tools/fetch_engine_libs.py` (urllib, checks hashes, cache `tests/fixtures/engine-libs/` git-ignored); `tests/engine_driver.py`
+  (`/usr/bin/chromium --headless=new --dump-dom` on a temp copy with CDN tags rewritten to the cache, `render()` reads `<pre id="engine-state">`, `script_pin_problems`,
+  `skip_reason`) and `tests/test_engine_driver.py` (13 tests: pins check on good/bad tags, pins.json vs VERSIONS.md, offline copy, stub page runs Cytoscape+ELK headless
+  and the state reads back). Tests 378 passed / 31 skipped (205 s), ruff clean
