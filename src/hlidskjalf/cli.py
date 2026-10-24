@@ -1,4 +1,4 @@
-"""Command line: hlidskjalf extract <save> [--empire NAME] [--detail]."""
+"""Command line: hlidskjalf extract | diff | mcp | setup (campaigns, players, write, check)."""
 
 from __future__ import annotations
 
@@ -6,9 +6,11 @@ import argparse
 import json
 import sys
 import time
+from pathlib import Path
 
 from hlidskjalf.extract.diff import diff_extracts
 from hlidskjalf.extract.snapshot import Extractor
+from hlidskjalf.workspace.config import KNOWLEDGE, MODES
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -28,7 +30,11 @@ def main(argv: list[str] | None = None) -> int:
     mcp = commands.add_parser("mcp", help="run the MCP server on stdio")
     mcp.add_argument("--workspace", help="Campaign Workspace directory (default: cwd)")
 
+    _add_setup_commands(commands)
+
     args = parser.parse_args(argv)
+    if args.command == "setup":
+        return _setup(args)
     if args.command == "mcp":
         from hlidskjalf.mcp.server import run
 
@@ -45,6 +51,76 @@ def main(argv: list[str] | None = None) -> int:
         )
     json.dump(result, sys.stdout, ensure_ascii=False, indent=1)
     print(f"\n# {time.perf_counter() - start:.2f} s", file=sys.stderr)
+    return 0
+
+
+def _add_setup_commands(commands) -> None:
+    setup = commands.add_parser(
+        "setup", help="Campaign Setup (used by the hlidskjalf:setup skill; JSON on stdout)"
+    ).add_subparsers(dest="setup_command", required=True)
+
+    campaigns = setup.add_parser(
+        "campaigns", help="list the Campaigns in the Stellaris save folder"
+    )
+    campaigns.add_argument("--save-root", help="default: the 'save games' folder of the game")
+
+    players = setup.add_parser("players", help="list the players and empires of a Campaign")
+    players.add_argument("save_dir_or_save", help="Campaign folder (newest save) or one .sav file")
+
+    write = setup.add_parser(
+        "write", help="create the workspace, write campaign.yaml and CLAUDE.md"
+    )
+    write.add_argument("--workspace", required=True)
+    write.add_argument("--save-dir", required=True)
+    write.add_argument("--empire", required=True, help="player name, empire name or country id")
+    write.add_argument("--mode", default="consulting", choices=MODES)
+    write.add_argument("--knowledge", default="fair_play", choices=KNOWLEDGE)
+    write.add_argument("--ally", action="append", default=[], metavar="NAME")
+    write.add_argument("--rival", action="append", default=[], metavar="NAME")
+    write.add_argument("--no-backup", action="store_true", help="do not copy saves into saves/")
+    write.add_argument(
+        "--reset-archive", action="store_true", help="move archive/ aside if the empire changes"
+    )
+
+    check = setup.add_parser("check", help="report problems of a workspace (exit 1 if any)")
+    check.add_argument("--workspace", default=".")
+
+
+def _setup(args) -> int:
+    """Every answer is JSON on stdout; a refused answer is a plain message on stderr, exit 1."""
+    from hlidskjalf.game import save_root
+    from hlidskjalf.workspace import setup
+    from hlidskjalf.workspace.config import SetupMissing
+    from hlidskjalf.workspace.layout import NotAWorkspace
+
+    try:
+        if args.setup_command == "campaigns":
+            root = Path(args.save_root).expanduser() if args.save_root else save_root()
+            result = {"save_root": str(root), "campaigns": setup.list_campaigns(root)}
+        elif args.setup_command == "players":
+            result = setup.describe_save(Path(args.save_dir_or_save))
+        elif args.setup_command == "write":
+            result = setup.write_setup(
+                Path(args.workspace),
+                Path(args.save_dir),
+                args.empire,
+                mode=args.mode,
+                knowledge=args.knowledge,
+                allies=tuple(args.ally),
+                rivals=tuple(args.rival),
+                backup_saves=not args.no_backup,
+                reset_archive=args.reset_archive,
+            )
+        else:
+            problems = setup.check_workspace(Path(args.workspace))
+            json.dump({"ok": not problems, "problems": problems}, sys.stdout, indent=1)
+            print()
+            return 1 if problems else 0
+    except (setup.SetupRefused, SetupMissing, NotAWorkspace, FileNotFoundError) as error:
+        print(f"hlidskjalf setup: {error}", file=sys.stderr)
+        return 1
+    json.dump(result, sys.stdout, ensure_ascii=False, indent=1)
+    print()
     return 0
 
 
