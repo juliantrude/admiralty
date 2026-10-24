@@ -99,3 +99,31 @@ So geht's:
      lesbarer Größe; die Schlüsselmaßnahmen stehen zusätzlich als Liste darunter.
 5. Falls das Artifact das CDN blockiert: sag mir Bescheid, dann binde ich die Bibliotheken
    (rund 1,5 MB) direkt in die Seite ein.
+
+## 4. Muninn: fühlen sich die Epochen richtig an?
+
+Wofür: Muninn teilt eine Kampagne in Epochen ein (Aufbau, Krieg, Plateau ...). Ob die Grenzen
+stimmen und ob die Einteilung dir beim Verstehen hilft, kann nur jemand beurteilen, der die
+Partie gespielt hat. Die Probe auf dem Referenz-Spiel (Plexxi, Konföderation von Vulkan, 8 Saves
+von 2200.01.01 bis 2298.03.16) ergab fünf Epochen. Alle Grenzen sind durch ein Ereignis der
+Timeline oder durch zwei archivierte Daten belegt; ob sie *sinnvoll* sind, ist deine Aufgabe.
+
+So geht's:
+
+1. Die Probe liegt (solange `/tmp` nicht aufgeräumt wurde) in `/tmp/h9/ws/muninn/2200.01.01/epochs.json`
+   und die Antwort in `/tmp/h9/answer.md`. Sonst: einen Campaign Workspace mit mehreren gelesenen Saves
+   anlegen und Muninn fragen: "Wie sind wir hierher gekommen?" (Skill `hlidskjalf:muninn`).
+2. Fünf Epochen: Aufbruch (bis 2230.07.17, Kriegserklärung), Aufrüstung, Krieg und zweite Expansion,
+   Nachkrieg und Flottenaufbau, Plateau. Frage dich:
+   - Stimmen die Grenzen mit deiner Erinnerung überein? Gab es einen Wendepunkt, den Muninn nicht
+     gefunden hat (z. B. eine Entscheidung, die in keinem Save sichtbar ist)?
+   - Sind die Titel treffend, und sind "Gut" und "Schlecht" je Epoche das, was du auch so sehen würdest?
+   - Sind 5 Epochen zu viele oder zu wenige für 98 Jahre?
+3. Wichtige Einschränkung: Zwischen zwei Saves liegen bis zu 25 Jahre. Grenzen "zwischen A und B"
+   sind eine Aussage über die Zeitspanne, kein genaues Datum. Je öfter du während des Spiels Saves
+   liest, desto genauer werden die Grenzen.
+4. Sag mir, was nicht stimmt. Eine Regel für die Einteilung (`REGIME_SERIES` in
+   `src/hlidskjalf/muninn/epochs.py`) ändere ich erst auf deinen Wunsch.
+
+Kleinigkeit, die dir auffallen kann: Muninn hat 8 Warnungen des Anspruchsprüfers erzeugt, die
+Fehlalarme waren (fett gesetzte Satzanfänge); sie stehen als Vorschlag in `docs/proposals/claims.md`.

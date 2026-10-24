@@ -18,3 +18,22 @@ for claims whose value is below 20 also require the claim's sentence to contain 
 present in the same tool result entry. Costs: more false positives on prose such as "3 Ziele".
 Julian decides whether the check should trade recall for that.
 
+
+## Name claims on bold sentence leads and code spans (found in M8 verification)
+
+Kind `name`, reason code `name_no_match`. One headless Muninn run over the reference Campaign (150 claims
+checked on the first pass) was blocked once with 8 findings, all false positives; the rewrite passed with
+149 claims and no finding. Sentences:
+
+- Four bold sentences leading a list item, ending in a full stop: `**Energie ist das Dauerproblem.** In drei von
+  fünf Epochen ...`, `**Die Flotte stößt an ihre Grenze.**` and two more. The M7 rule "bold lead of a line ending in
+  a colon is a label" does not cover them; they are emphasis sentences, not Display Names.
+- Three code spans naming a tool, a command or a tool message: `` `campaign_status` ``, `` `check-epochs` ``,
+  `` `no saves in /tmp/h9/src` ``. The code-span rule treats every span as a name to check.
+- One quoted phrase of the model's own epoch title: „Aufrüstung ohne Wachstum". The title is the model's text, not a
+  tool result.
+
+Proposal, not applied: (1) a bold span that ends in `.`/`!`/`?` or holds more than 6 words is emphasis, not a name;
+(2) a code span that is a snake_case/kebab-case identifier or holds a path is no name; (3) the skill could tell the
+model not to put tool names in the answer at all (they are no help to the Player). Cost of (1): a long real name in
+bold would pass unchecked; Display Names in the reference data are at most 5 words.
