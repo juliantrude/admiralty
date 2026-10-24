@@ -103,6 +103,22 @@ def main(argv: list[str] | None = None) -> int:
     )
     blocks_summary.add_argument("--workspace", type=Path, default=Path.cwd())
 
+    muninn = commands.add_parser("muninn", help="the retrospective").add_subparsers(
+        dest="muninn_command", required=True
+    )
+    check_epochs = muninn.add_parser(
+        "check-epochs",
+        help="check proposed epochs against the Timeline and the archived intervals (JSON, exit 1 on error)",
+    )
+    check_epochs.add_argument("--workspace", type=Path, default=Path.cwd())
+    check_epochs.add_argument("--epochs", type=Path, required=True, help="epochs.json")
+    check_epochs.add_argument(
+        "--since", help="frame start: an in-game date, `last` (default) or `all`"
+    )
+    check_epochs.add_argument(
+        "--until", help="frame end: an in-game date (default: the newest archived)"
+    )
+
     hook = commands.add_parser("hook", help="Claude Code hooks (stdin: the hook event)")
     hook_events = hook.add_subparsers(dest="hook_event", required=True)
     hook_events.add_parser("stop", help="Unverified Claim check on the final answer")
@@ -114,6 +130,8 @@ def main(argv: list[str] | None = None) -> int:
         return stop(sys.stdin, sys.stdout)
     if args.command == "claims":
         return _claims_check(args)
+    if args.command == "muninn":
+        return _check_epochs(args)
     if args.command == "blocks":
         from hlidskjalf.claims.blocks import summarise
 
@@ -243,6 +261,30 @@ def _claims_check(args) -> int:
     json.dump(verdict.to_dict(), sys.stdout, ensure_ascii=False, indent=1)
     print()
     return 0 if verdict.ok else 1
+
+
+def _check_epochs(args) -> int:
+    from hlidskjalf.muninn.epochs import candidates_for_frame, check_epochs
+    from hlidskjalf.muninn.frame import FrameError, load_campaign, resolve_frame
+    from hlidskjalf.workspace.archive import Archive
+
+    epochs = _read_json(args.epochs, "epochs")
+    loaded = load_campaign(Archive(args.workspace))
+    try:
+        frame = resolve_frame(loaded.dates, args.since, args.until)
+    except FrameError as error:
+        print(f"hlidskjalf muninn: {error}", file=sys.stderr)
+        return 1
+    material = candidates_for_frame(loaded, frame)
+    result = check_epochs(epochs, material["candidates"], frame.start, frame.end)
+    json.dump(
+        {"frame": {"from": frame.start, "to": frame.end, "request": frame.request}, **result},
+        sys.stdout,
+        ensure_ascii=False,
+        indent=1,
+    )
+    print()
+    return 1 if result["errors"] else 0
 
 
 def _check_solution(args) -> int:
