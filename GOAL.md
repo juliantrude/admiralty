@@ -61,7 +61,25 @@ builds it together with Claude later, because it needs his in-game judgement.
 - In-game feel: anything that needs someone playing the game goes to
   `docs/awaiting-julian.md`.
 When an increment hits a hold point: do every part that does not need Julian, add precise
-steps to `docs/awaiting-julian.md`, note it in the Blockers line of `## Status
+steps to `docs/awaiting-julian.md`, note it in the Blockers line of `## Status`, and move on.
+
+## Plan
+
+Milestones M3 and M4 are done (see Log). Each milestone starts with its plan document
+`docs/plans/M<n>.md`, whose "Increments" list is the plan for that milestone; M6 to M8 get their plan
+document as their first increment.
+
+M5 (plan: `docs/plans/M5.md`):
+- [x] 1. Plan document
+- [x] 2. `expand_graph` core (`graph/metrics.py`, `graph/expand.py`, `tests/test_expand.py`)
+- [x] 3. Solution Graph schema, validator and `compose` with `briefing compose` and `graph check-solution` CLI
+- [x] 4. MCP tool `expand_graph` with turn-log entry, `expansion_id`, catalogue mode
+- [x] 5. `hlidskjalf:consult` skill (`skills/huginn-consult/`) and its static test
+- [x] 6. Verification: one headless Briefing on the reference save, numbers recorded in the Log
+
+M6, M7, M8: plan increments to be written (see `docs/build-plan.md`).
+
+## Status
 
 STATUS: READY
 **Next action:** M6 increment 1: write the plan document `docs/plans/M6.md` from `docs/build-plan.md` (M6: the graph engine, ending in a locally
@@ -211,3 +229,4 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   (`traditions.next_cost`) and the answer says the Unity is earmarked and not to be spent on edicts. Numbers: 25 of 26 appear in tool results; the one that does not
   (230.36) is the sum of the three research nets, computed by the model. Answer in German like the question, no HTML. Correctness against golden values: hold
   point (`docs/awaiting-julian.md`). Tests unchanged (docs only)
+- 2026-10-24 — GOAL.md repaired (4915ced dropped Working Agreements tail and `## Plan`: `## Status` also occurs inside the Working Agreements prose; anchor edits on the heading line `\n## Status\n`). Restored; M5 checklist now complete
