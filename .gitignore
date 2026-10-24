@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+target/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Reference saves contain friends' player names; keep them local
+tests/fixtures/saves/
+*.sav
