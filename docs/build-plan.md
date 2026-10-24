@@ -43,7 +43,7 @@ Where data lives at runtime:
 | Player Model | `~/.local/share/hlidskjalf/player/` | the Player learns across Campaigns |
 | Mechanics Graph, Playbook | inside the plugin, per game version | ships with the software, maintained by the developer |
 
-Stack: Python 3.12+, uv, the `rust_parser` crate from stellaris-dashboard (MIT) as a git dependency, its `NameRenderer` approach for Display Names, and the official MCP Python SDK.
+Stack: Python 3.14+ (the `rust_parser` crate requires it), uv, the `rust_parser` crate from stellaris-dashboard (MIT) as a git dependency, its `NameRenderer` approach for Display Names, our own Clausewitz parser for the game files (the save parser rejects script syntax), and the official MCP Python SDK (2.x, `MCPServer`).
 
 ## Milestones
 
