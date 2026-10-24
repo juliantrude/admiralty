@@ -1,0 +1,10 @@
+{
+  "name": "hlidskjalf",
+  "version": "0.1.0",
+  "description": "Huginn coaches or consults you while you play Stellaris, Muninn reflects on your campaign afterwards. Reads save files, no game mod required.",
+  "author": {
+    "name": "Julian Trude"
+  },
+  "license": "MIT",
+  "keywords": ["stellaris", "coaching", "strategy"]
+}
