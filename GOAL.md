@@ -100,7 +100,7 @@ if only Julian's part remains, and move on to the next increment.
 ## Plan
 
 ### M3 Campaign Workspace and Campaign Setup
-- [ ] Study the build plan M3 and GLOSSARY (Campaign Workspace, Campaign Setup, Tracked
+- [x] Study the build plan M3 and GLOSSARY (Campaign Workspace, Campaign Setup, Tracked
       Empire, Fair Play, God Mode); write `docs/plans/M3.md`: workspace layout,
       `campaign.yaml` schema (extends `hlidskjalf.workspace.config`: players with ally or
       rival), archive format, CLI shape for the setup skill
@@ -191,8 +191,9 @@ if only Julian's part remains, and move on to the next increment.
 ## Status
 
 STATUS: READY
-**Next action:** Read `docs/build-plan.md` (M3) and `GLOSSARY.md`, then write
-`docs/plans/M3.md` as the first increment of "M3 Campaign Workspace and Campaign Setup".
+**Next action:** Increment 2 of M3 as laid out in `docs/plans/M3.md`: extend
+`workspace/config.py` (`players`, `backup_saves`, validation, `write_config`), add
+`workspace/layout.py` (create/validate workspace), with tests.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the
 game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
 
@@ -208,3 +209,6 @@ game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
 - 2026-10-24 03:30 — GOAL.md written by Claude from docs/build-plan.md after M0–M2 were
   built (Julian authorised the hand-off and an unattended start before going to sleep);
   nothing of M3–M8 started yet
+- 2026-10-24 — M3 plan written (`docs/plans/M3.md`): layout, campaign.yaml v1, archive by in-game
+  date with stdlib `compression.zstd` (no new dependency), `hlidskjalf setup` CLI, CLAUDE.md
+  template; tests 66 passed / 31 skipped, ruff clean
