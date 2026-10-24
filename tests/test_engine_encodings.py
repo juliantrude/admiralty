@@ -285,17 +285,6 @@ def test_header_and_lists_show_counts_key_actions_and_the_pruned_reasons():
     page = Tags(dom)
     assert "".join(page.text["header-text"]) == state["header"]["text"]
     assert "Not useful at this stage." in "".join(page.text["pruned"])
-    assert "Key Actions, ranked" in "".join(page.text["actions-section"])
-
-
-@needs_browser
-def test_a_key_action_in_the_list_selects_its_node():
-    graph = chain_graph()
-    state = driver.render_engine(
-        graph, after_ready="document.querySelector('#key-actions li:nth-child(2)').click()"
-    )
-    assert state["selected"] == ["pop_growth.grow_pops"]
-    assert state["panel"]["rank"] == 2
 
 
 # --- the click panel ----------------------------------------------------------------------------------
@@ -376,7 +365,7 @@ def test_a_second_click_replaces_the_first_and_a_click_on_the_background_clears_
 def test_markup_in_the_data_is_shown_as_text_and_adds_no_element():
     clicks = (
         'HlidskjalfEngine.click("energy.no_spare_pops");'
-        'document.querySelector("#key-actions li").click();'
+        "HlidskjalfEngine.click(document.getElementById('engine-state').dataset.ka || '');"
         'HlidskjalfEngine.click("energy.staff_technicians");'
     )
     baseline = copy.deepcopy(script_graph())
@@ -391,7 +380,13 @@ def test_markup_in_the_data_is_shown_as_text_and_adds_no_element():
     page = Tags(dom)
     assert sorted(page.tags) == sorted(plain.tags)
     assert "<b>Staff</b> technicians" in "".join(page.text["panel-body"])
-    assert "<i>Because</i>" in "".join(page.text["key-actions"])
+    why = Tags(
+        driver.engine_dom(
+            script_graph(),
+            after_ready=f'HlidskjalfEngine.click("{script_graph()["key_actions"][0]["node"]}")',
+        )
+    )
+    assert "<i>Because</i>" in "".join(why.text["panel-body"])
     assert "<u>cut</u>" in "".join(page.text["pruned"])
     state = driver.read_state(dom)
     assert state["panel"]["text"] == "<img src=x onerror=alert(1)>"
@@ -423,13 +418,13 @@ def _chain(graph: dict, start: str) -> set[str]:
 
 
 @needs_browser
-def test_a_click_focuses_the_whole_chain_and_fades_the_rest():
+def test_a_click_shows_only_the_whole_chain_and_hides_the_rest():
     graph = chain_graph()
     target = graph["key_actions"][0]["node"]
     state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
     expected = _chain(graph, target)
     assert set(state["focus"]) == expected
-    assert {n["id"] for n in state["nodes"] if not n["faded"]} == expected
+    assert {n["id"] for n in state["nodes"] if not n["hidden"]} == expected
 
 
 @needs_browser
@@ -440,16 +435,7 @@ def test_a_click_on_the_background_ends_the_focus():
         graph,
         after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()',
     )
-    assert state["focus"] == [] and not any(n["faded"] for n in state["nodes"])
-
-
-@needs_browser
-def test_a_key_action_in_the_list_focuses_its_chain():
-    graph = chain_graph()
-    state = driver.render_engine(
-        graph, after_ready="document.querySelector('#key-actions li:nth-child(2)').click()"
-    )
-    assert set(state["focus"]) == _chain(graph, "pop_growth.grow_pops")
+    assert state["focus"] == [] and not any(n["hidden"] for n in state["nodes"])
 
 
 @needs_browser
@@ -487,60 +473,27 @@ def test_node_size_follows_the_weighted_impact_on_the_goals():
 
 
 @needs_browser
-def test_a_click_opens_the_bubble_at_the_node_without_covering_its_chain():
+def test_the_focused_chain_is_centred_and_the_whole_graph_comes_back():
     graph = chain_graph()
     target = graph["key_actions"][0]["node"]
-    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
-    assert state["bubble"]["node"] == target
-    assert state["bubble"]["covers"] == 0
+    focused = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
+    whole = driver.render_engine(
+        graph, after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()'
+    )
+    assert focused["focus_in_view"] is True
+    assert whole["focus_in_view"] is None
+    assert not any(n["hidden"] for n in whole["nodes"])
 
 
 @needs_browser
-def test_the_bubble_closes_with_the_selection():
+def test_an_edge_click_shows_both_chains_and_the_edge_weight():
     graph = chain_graph()
-    target = graph["key_actions"][0]["node"]
+    edge = next(e for e in graph["edges"] if e["kind"] == "cause")
+    edge |= {"weight": "high", "weight_reason": "Most of the gap."}
     state = driver.render_engine(
-        graph,
-        after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()',
+        graph, after_ready=f'HlidskjalfEngine.clickEdge("{edge["from"]}", "{edge["to"]}")'
     )
-    assert state["bubble"] is None
-
-
-@needs_browser
-def test_the_bubble_takes_the_side_with_the_least_covered_area():
-    script = """
-      const anchor = {x1: 100, y1: 100, x2: 200, y2: 140};
-      const size = {width: 80, height: 60};
-      const chain = {x1: 100, y1: 100, x2: 400, y2: 180};
-      const p = HlidskjalfEngine.placeBubble(
-        HlidskjalfEngine.bubbleCandidates("end", anchor, chain, size), size,
-        [{x1: 210, y1: 60, x2: 400, y2: 180}], [], {x1: 0, y1: 0, x2: 600, y2: 400});
-      document.getElementById("engine-state").textContent =
-        JSON.stringify({side: p.side, covered: p.covered});
-    """
-    state = driver.render_engine(chain_graph(), after_ready=script)
-    assert state == {"side": "above-chain", "covered": 0}
-
-
-@needs_browser
-def test_a_middle_node_gets_the_bubble_above_or_below_the_chain_hiding_no_edge():
-    graph = chain_graph()
-    middle = next(
-        n["id"]
-        for n in graph["nodes"]
-        if any(e["to"] == n["id"] for e in graph["edges"])
-        and any(e["from"] == n["id"] for e in graph["edges"])
-    )
-    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{middle}")')
-    assert state["bubble"]["role"] == "middle"
-    assert state["bubble"]["side"] in ("above-chain", "below-chain")
-    assert state["bubble"]["hides_edge_points"] == 0
-
-
-@needs_browser
-def test_the_ends_of_a_chain_get_the_bubble_where_no_edge_runs():
-    graph = chain_graph()
-    goal = next(n["id"] for n in graph["nodes"] if n["type"] == "goal")
-    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{goal}")')
-    assert state["bubble"]["role"] == "start"
-    assert state["bubble"]["hides_edge_points"] == 0
+    assert state["panel"]["kind"] == "edge"
+    assert state["panel"]["weight"] == "high"
+    assert state["panel"]["weight_reason"] == "Most of the gap."
+    assert {edge["from"], edge["to"]} <= set(state["focus"])

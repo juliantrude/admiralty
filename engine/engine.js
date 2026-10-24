@@ -16,7 +16,8 @@
   const VIEW_PADDING = 30;
   const ICON_SIZE = 22;
   const ICON_SPACE = 30; // icon plus gap on the left of every node
-  const FADED_OPACITY = 0.15;
+  const FOCUS_PADDING = 40;
+  const FOCUS_MAX_ZOOM = 1.4; // a short chain is not blown up beyond this
   const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
   const EDGE_KINDS = ["cause", "remedy", "obstacle"];
   const REQUIRED_ARRAYS = ["nodes", "edges", "circles", "key_actions", "pruned"];
@@ -150,57 +151,6 @@
     if (impact >= 1) return 2;
     if (impact >= 0.55) return 1;
     return 0;
-  }
-
-  const BUBBLE_GAP = 14;
-  const EDGE_SAMPLES = 12; // points per edge when counting how much of an edge the bubble hides
-  const EDGE_PENALTY = 400; // one hidden edge point weighs like a 20 x 20 px patch of a node
-
-  const overlap = (a, b) =>
-    Math.max(0, Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1)) * Math.max(0, Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1));
-  const inside = (box, x, y) => x >= box.x1 && x <= box.x2 && y >= box.y1 && y <= box.y2;
-
-  /**
-   * The candidate places for the bubble, best first, by the node's role in its chain (docs/plans/M6-revision.md):
-   * a node where the chain starts gets the left side, where it ends the right side, so the bubble lies where no edge
-   * runs; a node in the middle gets the space above the whole chain (below if needed), joined by a leader line.
-   */
-  function bubbleCandidates(role, anchor, chain, size) {
-    const cx = (anchor.x1 + anchor.x2) / 2;
-    const cy = (anchor.y1 + anchor.y2) / 2;
-    const left = { side: "left", x: anchor.x1 - BUBBLE_GAP - size.width, y: cy - size.height / 2 };
-    const right = { side: "right", x: anchor.x2 + BUBBLE_GAP, y: cy - size.height / 2 };
-    const over = { side: "above-chain", x: cx - size.width / 2, y: chain.y1 - BUBBLE_GAP - size.height };
-    const under = { side: "below-chain", x: cx - size.width / 2, y: chain.y2 + BUBBLE_GAP };
-    if (role === "start") return [left, over, under, right];
-    if (role === "end") return [right, over, under, left];
-    return [over, under, left, right];
-  }
-
-  /**
-   * Picks the candidate that hides the least of the chain and stays in view: the score adds the area of focused nodes
-   * covered, the hidden points of focused edges and twice the area outside the view; the first of equal scores wins.
-   * Candidates are moved sideways into the view where that alone fixes them. Pure, so it is testable.
-   */
-  function placeBubble(candidates, size, boxes, segments, view) {
-    let best = null;
-    for (const candidate of candidates) {
-      let x = candidate.x;
-      if (candidate.side.endsWith("-chain")) x = Math.min(Math.max(x, view.x1 + 4), view.x2 - 4 - size.width);
-      const box = { x1: x, y1: candidate.y, x2: x + size.width, y2: candidate.y + size.height };
-      const covered = boxes.reduce((sum, other) => sum + overlap(box, other), 0);
-      let hidden = 0;
-      for (const [x1, y1, x2, y2] of segments) {
-        for (let i = 1; i < EDGE_SAMPLES; i++) {
-          const t = i / EDGE_SAMPLES;
-          if (inside(box, x1 + (x2 - x1) * t, y1 + (y2 - y1) * t)) hidden++;
-        }
-      }
-      const outside = size.width * size.height - overlap(box, view);
-      const score = covered + EDGE_PENALTY * hidden + 2 * outside;
-      if (!best || score < best.score - 1e-6) best = { side: candidate.side, x, y: candidate.y, score, covered, hidden };
-    }
-    return best;
   }
 
   /** The chain of a node: everything it can be reached from and everything it reaches, the node included. */
@@ -356,6 +306,16 @@
       panel.circle = circle.id;
       panel.break_point = circle.break_point === id;
     }
+    return panel;
+  }
+
+  function edgePanelOf(doc, from, to) {
+    const edge = doc.edges.find((e) => e.from === from && e.to === to);
+    if (!edge) return null;
+    const title = (nodeId) => (doc.nodes.find((n) => n.id === nodeId) || { title: nodeId }).title;
+    const panel = { kind: "edge", id: `${from}>${to}`, title: `${title(from)} \u2192 ${title(to)}`, edge_kind: edge.kind };
+    if (edge.weight) panel.weight = edge.weight;
+    if (edge.weight_reason) panel.weight_reason = edge.weight_reason;
     return panel;
   }
 
@@ -539,7 +499,7 @@
           badges: node.data("badges"),
           scale: node.data("scale"),
           impact: node.data("impact"),
-          faded: node.hasClass("faded"),
+          hidden: node.hasClass("hidden"),
         };
         for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"]]) {
           if (node.data(field) !== undefined) state[key] = node.data(field);
@@ -573,12 +533,21 @@
       key_actions: [...doc.key_actions]
         .sort((a, b) => a.rank - b.rank)
         .map((a) => ({ rank: a.rank, node: a.node, text: keyActionText(doc, a) })),
+      zoom: round(cy.zoom()),
+      focus_in_view: focusInView(cyInstance),
       pruned: doc.pruned.map((p) => ({ id: p.id, reason: p.reason })),
       selected: [...current.selected].sort(),
       focus: [...current.focus].sort(),
-      bubble: current.bubble || null,
       panel: current.panel,
     };
+  }
+
+  /** Whether the whole focused chain lies inside the visible area (null without a focus). */
+  function focusInView(cyInstance) {
+    if (!current.focus.size) return null;
+    const box = cyInstance.elements().not(".hidden").not(".serves").renderedBoundingBox({ includeLabels: false });
+    const area = cyInstance.container();
+    return box.x1 >= -1 && box.y1 >= -1 && box.x2 <= area.clientWidth + 1 && box.y2 <= area.clientHeight + 1;
   }
 
   function publish() {
@@ -695,7 +664,7 @@
       style: { width: 1, "line-style": "dashed", "line-color": "#5b6573", "target-arrow-color": "#5b6573", display: "none", "curve-style": "unbundled-bezier", "control-point-distances": 60 },
     },
     { selector: "edge.serves.shown", style: { display: "element" } },
-    { selector: ".faded", style: { opacity: FADED_OPACITY } },
+    { selector: ".hidden", style: { display: "none" } },
   ];
 
   // --- DOM: header, legend, lists, panel (text only) ----------------------------------------------
@@ -743,23 +712,11 @@
     }
   }
 
-  function renderLists(doc) {
-    const actions = document.getElementById("key-actions");
-    actions.replaceChildren();
-    for (const action of [...doc.key_actions].sort((a, b) => a.rank - b.rank)) {
-      const item = el("li", "clickable", keyActionText(doc, action).replace(/^\d+\.\s*/, ""));
-      item.value = action.rank;
-      item.tabIndex = 0;
-      item.dataset.node = action.node;
-      item.addEventListener("click", () => selectNode(action.node));
-      actions.append(item);
-    }
-    actions.hidden = doc.key_actions.length === 0;
+  function renderPruned(doc) {
     const pruned = document.getElementById("pruned");
     pruned.replaceChildren();
     for (const entry of doc.pruned) pruned.append(el("li", "", `${entry.id} — ${entry.reason}`));
     document.getElementById("pruned-section").hidden = doc.pruned.length === 0;
-    document.getElementById("actions-section").hidden = doc.key_actions.length === 0;
   }
 
   const refText = (ref) => {
@@ -770,6 +727,12 @@
 
   /** The rows of the panel as [label, [lines]]; the same panel object gives the same rows. */
   function panelRows(panel) {
+    if (panel.kind === "edge") {
+      const rows = [["Type", [`edge into a ${panel.edge_kind}`]]];
+      rows.push(["Weight", [panel.weight || "none (Obstacle edges carry what they block)"]]);
+      if (panel.weight_reason) rows.push(["Why this weight", [panel.weight_reason]]);
+      return rows;
+    }
     if (panel.kind === "circle") {
       const rows = [["Type", ["Vicious Circle"]], ["Members", panel.members.map(refText)]];
       rows.push(["Break point", [panel.break_point ? panel.break_point.title : "none (judgement needed)"]]);
@@ -800,102 +763,17 @@
     return rows;
   }
 
-  /** The node the bubble points at: the selected node, or a Vicious Circle's break point (else its first member). */
-  function bubbleAnchor(panel) {
-    if (!panel) return null;
-    if (panel.kind === "circle") return panel.break_point ? panel.break_point.id : panel.members[0].id;
-    return panel.id;
-  }
-
-  /** How far the view must move so that `box` lies inside it with a margin; zero where it fits already. */
-  function shiftInto(box, view, margin) {
-    const dx = box.x1 < view.x1 + margin ? view.x1 + margin - box.x1 : box.x2 > view.x2 - margin ? view.x2 - margin - box.x2 : 0;
-    const dy = box.y1 < view.y1 + margin ? view.y1 + margin - box.y1 : box.y2 > view.y2 - margin ? view.y2 - margin - box.y2 : 0;
-    return { x: dx, y: dy };
-  }
-
-  /**
-   * Puts the bubble next to its node where it hides the least of the chain; follows pan and zoom. On a new selection
-   * (`makeRoom`), if the place the node's role prefers lies outside the view and the next best place would hide part
-   * of the chain, the view moves so the preferred place is visible instead.
-   */
-  function positionBubble(makeRoom) {
-    const bubble = document.getElementById("panel");
-    const anchorId = current && bubbleAnchor(current.panel);
-    if (!anchorId) {
-      bubble.hidden = true;
-      document.getElementById("leader").hidden = true;
-      current && (current.bubble = null);
-      return;
-    }
-    bubble.hidden = false;
-    const node = cy.getElementById(anchorId);
-    const anchor = node.renderedBoundingBox({ includeLabels: false });
-    const inFocus = (id) => current.focus.size === 0 || current.focus.has(id);
-    const focused = cy.nodes().filter((other) => inFocus(other.id()));
-    const boxes = focused.filter((other) => other.id() !== anchorId).map((other) => other.renderedBoundingBox({ includeLabels: false }));
-    const chain = focused.renderedBoundingBox({ includeLabels: false });
-    const segments = cy
-      .edges()
-      .not(".serves")
-      .filter((edge) => inFocus(edge.source().id()) && inFocus(edge.target().id()))
-      .map((edge) => {
-        const a = edge.renderedSourceEndpoint();
-        const b = edge.renderedTargetEndpoint();
-        return [a.x, a.y, b.x, b.y];
-      });
-    const into = node.incomers("edge").not(".serves").filter((edge) => inFocus(edge.source().id())).length;
-    const out = node.outgoers("edge").not(".serves").filter((edge) => inFocus(edge.target().id())).length;
-    const role = !into ? "start" : !out ? "end" : "middle";
-    const stage = document.getElementById("cy");
-    const view = { x1: 0, y1: 0, x2: stage.clientWidth, y2: stage.clientHeight };
-    const size = { width: bubble.offsetWidth, height: bubble.offsetHeight };
-    const candidates = bubbleCandidates(role, anchor, chain, size);
-    const place = placeBubble(candidates, size, boxes, segments, view);
-    if (makeRoom && (place.covered > 0 || place.hidden > 0)) {
-      const first = candidates[0];
-      const box = { x1: first.x, y1: first.y, x2: first.x + size.width, y2: first.y + size.height };
-      const shift = shiftInto(box, view, 8);
-      const moved = { x1: anchor.x1 + shift.x, y1: anchor.y1 + shift.y, x2: anchor.x2 + shift.x, y2: anchor.y2 + shift.y };
-      if ((shift.x || shift.y) && overlap(moved, view) > 0) {
-        cy.panBy(shift); // the pan event places the bubble again, now with room
-        return;
-      }
-    }
-    bubble.style.left = `${Math.round(place.x)}px`;
-    bubble.style.top = `${Math.round(place.y)}px`;
-    bubble.dataset.side = place.side;
-    drawLeader(place, size, anchor);
-    current.bubble = { node: anchorId, role, side: place.side, covers: Math.round(place.covered), hides_edge_points: place.hidden };
-  }
-
-  /** A dashed line from a bubble above or below the chain to its node, so the eye finds the node. */
-  function drawLeader(place, size, anchor) {
-    const leader = document.getElementById("leader");
-    if (!place.side.endsWith("-chain")) {
-      leader.hidden = true;
-      return;
-    }
-    const x = (anchor.x1 + anchor.x2) / 2;
-    const top = place.side === "above-chain" ? place.y + size.height : anchor.y2;
-    const bottom = place.side === "above-chain" ? anchor.y1 : place.y;
-    leader.hidden = bottom - top < 2;
-    leader.style.left = `${Math.round(x)}px`;
-    leader.style.top = `${Math.round(top)}px`;
-    leader.style.height = `${Math.round(bottom - top)}px`;
-  }
-
   function renderPanel(panel) {
     const box = document.getElementById("panel-body");
     box.replaceChildren();
     if (!panel) {
-      positionBubble();
+      box.append(el("p", "hint", "Click a node or an edge to see its chain and its details. Esc or a click on the background shows the whole graph again."));
       return;
     }
     box.append(el("h2", "", panel.title));
     const list = el("dl");
     for (const [label, lines] of panelRows(panel)) {
-      // one group per row, so the landscape bubble's columns never split a label from its value
+      // one group per row, so the columns never split a label from its value
       const row = el("div", "row");
       row.append(el("dt", "", label));
       const value = el("dd");
@@ -904,7 +782,6 @@
       list.append(row);
     }
     box.append(list);
-    positionBubble(true);
   }
 
   // --- selection ------------------------------------------------------------------------------------
@@ -914,16 +791,53 @@
     cy.edges(".serves").filter((edge) => ids.includes(edge.source().id()) || ids.includes(edge.target().id())).addClass("shown");
   }
 
-  /** Focus: the chains of the selected nodes stay, everything else steps back. No selection, no focus. */
+  /** Focus: only the chains of the selected nodes stay on screen, centred; no selection shows the whole graph. */
   function applyFocus(ids) {
-    cy.elements().removeClass("faded");
+    const token = (current.focusToken = (current.focusToken || 0) + 1);
+    cy.elements().removeClass("hidden");
     current.focus = new Set();
-    if (!ids.length) return;
+    if (!ids.length) {
+      overview();
+      return;
+    }
     for (const id of ids) for (const member of chainOf(current.doc, id)) current.focus.add(member);
-    cy.nodes().filter((node) => !current.focus.has(node.id())).addClass("faded");
+    cy.nodes().filter((node) => !current.focus.has(node.id())).addClass("hidden");
     cy.edges()
       .filter((edge) => !(current.focus.has(edge.source().id()) && current.focus.has(edge.target().id())))
-      .addClass("faded");
+      .addClass("hidden");
+    // The chain gets its own compact layout: in the full layout it is spread out between the hidden nodes.
+    const chain = cy.elements().not(".hidden").not(".serves");
+    const constraint = layerConstraints(current.doc);
+    chain
+      .layout({
+        name: "elk",
+        animate: false,
+        fit: false,
+        elk: ELK_OPTIONS,
+        nodeLayoutOptions: (node) => {
+          const layer = constraint.get(node.id());
+          return layer ? { "elk.layered.layering.layerConstraint": layer } : {};
+        },
+        // ELK runs asynchronously: centre and report only once the chain has its places
+        stop: () => {
+          if (token !== current.focusToken) return; // a newer selection took over meanwhile
+          cy.fit(chain, FOCUS_PADDING);
+          if (cy.zoom() > FOCUS_MAX_ZOOM) {
+            cy.zoom(FOCUS_MAX_ZOOM);
+            cy.center(chain);
+          }
+          publish();
+          document.dispatchEvent(new CustomEvent("engine-focused"));
+        },
+      })
+      .run();
+  }
+
+  /** The whole graph in its own layout: all of it in view when that stays readable, else its top left. */
+  function overview() {
+    if (current.positions) cy.nodes().forEach((node) => node.position(current.positions.get(node.id())));
+    cy.fit(cy.elements().not(".serves"), VIEW_PADDING);
+    readableView();
   }
 
   function applySelection(ids, panel) {
@@ -941,6 +855,13 @@
     applySelection([id], panelOf(current.doc, id));
   }
 
+  /** An edge: the chains of both its ends, and the edge itself with its weight in the details. */
+  function selectEdge(edgeId) {
+    const edge = cy.getElementById(edgeId);
+    const ends = [edge.data("source"), edge.data("target")];
+    applySelection(ends, edgePanelOf(current.doc, ends[0], ends[1]));
+  }
+
   function selectCircle(circleId) {
     const circle = current.doc.circles.find((c) => c.id === circleId);
     applySelection(circle.members, circlePanelOf(current.doc, circleId));
@@ -953,6 +874,10 @@
   /** The seam for the driver: emits the same `tap` event a click on the node produces. */
   function click(id) {
     cy.getElementById(id).emit("tap");
+  }
+
+  function clickEdge(from, to) {
+    cy.getElementById(`${from}>${to}`).emit("tap");
   }
 
   // --- drawing --------------------------------------------------------------------------------------
@@ -992,13 +917,15 @@
     current = { doc, panel: null, selected: new Set(), focus: new Set() };
     renderHeader(doc);
     renderLegend(doc);
-    renderLists(doc);
+    renderPruned(doc);
     renderPanel(null);
     cy.on("tap", "node", (event) => selectNode(event.target.id()));
     cy.on("tap", (event) => {
       if (event.target === cy) clearSelection();
     });
-    cy.on("pan zoom resize", () => positionBubble(false));
+    cy.on("tap", "edge", (event) => {
+      if (!event.target.hasClass("serves")) selectEdge(event.target.id());
+    });
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && current && current.panel) clearSelection();
     });
@@ -1016,6 +943,7 @@
       },
       stop: () => {
         window.engineLayoutMs = Math.round(performance.now() - started);
+        current.positions = new Map(cy.nodes().map((node) => [node.id(), { ...node.position() }]));
         readableView();
         addServesEdges(doc);
         publish();
@@ -1079,7 +1007,7 @@
 
   window.HlidskjalfEngine = {
     nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep,
-    placeBubble, bubbleCandidates,
+    edgePanelOf, clickEdge,
     tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
   };
   start();

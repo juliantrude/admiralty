@@ -5,20 +5,11 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 #header { padding: 8px 16px; border-bottom: 1px solid #d5d9df; }
 #header h1 { margin: 0; font-size: 1.1rem; }
 #header p { margin: 2px 0 0; color: #3b4452; font-size: 0.9rem; }
-#stage { position: relative; height: 70vh; min-height: 420px; overflow: hidden; }
+#stage { position: relative; height: 62vh; min-height: 380px; overflow: hidden; }
 #cy { position: absolute; inset: 0; }
-#panel.bubble { position: absolute; z-index: 10; width: min(620px, 70%); max-height: 45%; overflow-y: auto; box-sizing: border-box; padding: 10px 12px; background: #ffffff; border: 1px solid #8a93a0; border-radius: 10px; box-shadow: 0 4px 16px rgba(27, 31, 36, 0.18); font-size: 0.8rem; }
-#panel.bubble[hidden] { display: none; }
-#panel.bubble::before { content: ""; position: absolute; width: 12px; height: 12px; background: #ffffff; border: 1px solid #8a93a0; transform: rotate(45deg); }
-#panel.bubble[data-side="right"]::before { left: -7px; top: calc(50% - 6px); border-top: none; border-right: none; }
-#panel.bubble[data-side="left"]::before { right: -7px; top: calc(50% - 6px); border-bottom: none; border-left: none; }
-#panel.bubble[data-side="below"]::before { top: -7px; left: calc(50% - 6px); border-bottom: none; border-right: none; }
-#panel.bubble[data-side="above"]::before { bottom: -7px; left: calc(50% - 6px); border-top: none; border-left: none; }
-#panel.bubble[data-side$="-chain"]::before { display: none; }
-#leader { position: absolute; z-index: 9; width: 0; border-left: 2px dashed #5b6573; pointer-events: none; }
-#leader[hidden] { display: none; }
+#panel { box-sizing: border-box; padding: 10px 16px 12px; border-top: 1px solid #d5d9df; background: #ffffff; font-size: 0.85rem; }
 #panel h2 { margin: 0 0 8px; font-size: 1rem; }
-#panel dl { margin: 0; column-count: 2; column-gap: 20px; }
+#panel dl { margin: 0; column-count: 3; column-gap: 24px; column-width: 260px; }
 #panel .row { break-inside: avoid; padding-bottom: 6px; }
 #panel dt { margin-top: 2px; font-weight: 600; color: #3b4452; }
 #panel dd { margin: 2px 0 0; overflow-wrap: anywhere; }
