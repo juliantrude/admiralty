@@ -1,5 +1,5 @@
 """Command line: hlidskjalf extract | diff | mcp | setup (campaigns, players, write, check) | graph |
-briefing | claims | hook."""
+briefing | claims | blocks | hook."""
 
 from __future__ import annotations
 
@@ -93,6 +93,14 @@ def main(argv: list[str] | None = None) -> int:
         help="only turn log entries from this ISO time on (default: the transcript start)",
     )
 
+    blocks = commands.add_parser(
+        "blocks", help="the log of the Unverified Claim check"
+    ).add_subparsers(dest="blocks_command", required=True)
+    blocks_summary = blocks.add_parser(
+        "summary", help="group .hlidskjalf/blocks.jsonl by kind and reason code (JSON)"
+    )
+    blocks_summary.add_argument("--workspace", type=Path, default=Path.cwd())
+
     hook = commands.add_parser("hook", help="Claude Code hooks (stdin: the hook event)")
     hook_events = hook.add_subparsers(dest="hook_event", required=True)
     hook_events.add_parser("stop", help="Unverified Claim check on the final answer")
@@ -104,6 +112,12 @@ def main(argv: list[str] | None = None) -> int:
         return stop(sys.stdin, sys.stdout)
     if args.command == "claims":
         return _claims_check(args)
+    if args.command == "blocks":
+        from hlidskjalf.claims.blocks import summarise
+
+        json.dump(summarise(args.workspace), sys.stdout, ensure_ascii=False, indent=1)
+        print()
+        return 0
     if args.command == "graph":
         if args.graph_command == "check-solution":
             return _check_solution(args)
