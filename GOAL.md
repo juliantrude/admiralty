@@ -74,7 +74,7 @@ M5 (plan: `docs/plans/M5.md`):
 - [x] 2. `expand_graph` core (`graph/metrics.py`, `graph/expand.py`, `tests/test_expand.py`)
 - [x] 3. Solution Graph schema, validator and `compose` with `briefing compose` and `graph check-solution` CLI
 - [x] 4. MCP tool `expand_graph` with turn-log entry, `expansion_id`, catalogue mode
-- [ ] 5. `hlidskjalf:consult` skill (`skills/huginn-consult/`) and its static test
+- [x] 5. `hlidskjalf:consult` skill (`skills/huginn-consult/`) and its static test
 - [ ] 6. Verification: one headless Briefing on the reference save, numbers recorded in the Log
 
 M6, M7, M8: plan increments to be written (see `docs/build-plan.md`).
@@ -82,19 +82,14 @@ M6, M7, M8: plan increments to be written (see `docs/build-plan.md`).
 ## Status
 
 STATUS: READY
-**Next action:** M5 increment 5: skill `hlidskjalf:consult` in `skills/huginn-consult/SKILL.md` (frontmatter `name: consult`) and
-`tests/test_consult_skill.py` (like `tests/test_setup_skill.py`), as specified in `docs/plans/M5.md` ("Skill `hlidskjalf:consult`"): the eight-step
-flow, the hard rules (numbers only from tool results, Unity rule guard sentence for `unity-vs-next-tradition`, no benchmarks while draft, Fair Play, no
-HTML, only the overlay file by hand). The workspace `CLAUDE.md` template (M3) already routes Consulting Campaigns to it: check the name matches. How the
-skill calls things: MCP tool `expand_graph` (no goals = catalogue; with goals = expansion + `expansion_id`), then `uv run --quiet --project
-${CLAUDE_PLUGIN_ROOT} hlidskjalf briefing compose <overlay.json> --expansion-id N --workspace . --out briefings/<date>/solution-graph.json` (the
-expansion file argument is optional now; give exactly one of file or `--expansion-id`) and `hlidskjalf graph check-solution <file>`. Overlay needs
-`empire`, `goals.<id>.horizon` for every expanded Goal, a `why` per remaining Key Action candidate or an `exclude_key_actions` entry.
-**Open for the skill (result size, decided in increment 4):** `Expansion.to_dict` now has a compact step (text only up to depth 2 and for present or
-judgement Obstacles, effects only for Remedies; `compose` takes dropped text from the graph). On the mid-save: 1 Goal 15k characters, 3 Goals 38k (fits),
-6 Goals 66k and 13 Goals 128k (over; the result then carries a warning to expand fewer Goals). One compose takes one expansion, so the skill must expand
-at most three Goals in one call; the plan's "up to three Goals per Horizon" can mean nine, so either the skill keeps to three Goals in total per
-Briefing or a later increment lets `compose` merge several `expansion_id`s (not built; decide while writing the skill and note it in the log).
+**Next action:** M5 increment 6 (verification): one headless Briefing on `vulkan/2259.12.25.sav` as in `docs/plans/M5.md` "Verification" (temp workspace
+in /tmp with a temp `HLIDSKJALF_USER_DIR` and `campaign.yaml` for Plexxi, consulting, fair_play; `claude -p` with `--strict-mcp-config` and `--allowedTools`
+listing the hlidskjalf MCP tools plus the two `uv run ... hlidskjalf briefing compose` / `graph check-solution` commands; at most two runs). Check from the
+turn log and the answer: `expand_graph` called, an existing Playbook Rule id cited, Unity vs `traditions.next_cost` handled, `solution-graph.json` exists and
+validates with every Key Action actionable or pending, every number of the answer in some tool result. Record depth cut counts, nodes per expansion, result
+size and time in the Log; correctness against golden values stays a hold point. If the headless run cannot be done, record why. Then M6 plan (`docs/plans/M6.md`).
+**Decided in increment 5 (result size):** the skill takes three Goals in total per Briefing (one expansion = one `compose`); a second Briefing covers more.
+`compose` merging several `expansion_id`s is not built.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
 review of the benchmarks draft (both in `docs/awaiting-julian.md`).
 
@@ -222,3 +217,8 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   `to_dict` and `compose` now takes node text from the graph (the old clear-Obstacle trim would have broken `compose` with a KeyError); mid-save sizes 1 Goal
   15k, 3 Goals 38k, 6 Goals 66k (warning), 13 Goals 128k (warning). One existing test (`test_a_tight_budget_trims_effects_then_clear_obstacle_text`) got a
   computed budget instead of `budget=1` so it still exercises only its two steps; assertions unchanged. Tests 359 passed / 31 skipped, ruff clean, `graph validate` clean
+
+- 2026-10-24 — M5 increment 5: `skills/huginn-consult/SKILL.md` (name `consult`; the eight steps, overlay example and the two commands, hard rules: numbers only from tool
+  results, Unity guard sentence with `unity-vs-next-tradition` and `traditions.next_cost`, Playbook Rules quoted from results, no benchmarks, Fair Play, no HTML, tool errors
+  stop the step; three Goals in total per Briefing) and `tests/test_consult_skill.py` (frontmatter, tools served, CLI flags exist, overlay example fields equal the
+  compose overlay keys, hard-rule sentences, workspace `CLAUDE.md` routes to `hlidskjalf:consult`). Tests 365 passed / 31 skipped, ruff clean
