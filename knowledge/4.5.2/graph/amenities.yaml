@@ -1,0 +1,153 @@
+version: v4.5.2
+domain: amenities
+# Curated by hand from knowledge/4.5.2/generated/amenities.yaml. Node text carries no figures:
+# every number lives in the generated facts a node links to (docs/plans/M4.md).
+# Amenities are a planet balance (supply against what the pops use), so there is no empire-wide
+# metric for it yet; Obstacles stay judgement-only unless another registered metric decides them.
+goals:
+  - id: amenities.enough
+    title: Amenities that cover what the pops use
+    symptom_metrics: [pops.unemployed]
+    causes: [amenities.too_few_sources, amenities.high_usage]
+
+nodes:
+  - id: amenities.too_few_sources
+    type: cause
+    title: Too few jobs and buildings that give amenities
+    description: >
+      Amenities come from the Entertainer and Medical Worker jobs and from a few buildings. A
+      planet whose pops use more than that supply loses stability and output until the gap closes.
+    remedies: [amenities.staff_amenity_jobs, amenities.amenity_buildings]
+    facts:
+      - amenities.job.entertainer.planet_amenities_add
+      - amenities.job.healthcare.planet_amenities_add
+
+  - id: amenities.high_usage
+    type: cause
+    title: Every pop uses a lot of amenities
+    description: >
+      The amenities a pop uses are scaled by modifiers. Cutting the use is the cheaper way to close
+      a gap, because it needs no job and no building slot.
+    remedies: [amenities.cut_usage, amenities.amenity_techs]
+    facts:
+      - amenities.tradition.tr_cloning_genomic_growth.pop_amenities_usage_mult
+      - amenities.technology.tech_artificial_moral_codes.planet_amenities_mult
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: amenities.staff_amenity_jobs
+    type: remedy
+    title: Staff Entertainer and Medical Worker jobs
+    judgement: >
+      The direct fix on a planet that has the job slots. It takes pops away from producing jobs,
+      so the gain is real only when the shortfall is larger than the lost output.
+    strength: high
+    speed: high
+    cost: low
+    obstacles: [amenities.no_spare_pops, amenities.no_amenity_slot]
+    facts:
+      - amenities.job.entertainer.planet_amenities_add
+      - amenities.job.healthcare.planet_amenities_add
+      - amenities.job.clerk.planet_amenities_add
+
+  - id: amenities.amenity_buildings
+    type: remedy
+    title: Build the buildings that give amenities
+    judgement: >
+      A building gives a fixed block of amenities for one building slot, which beats a few jobs on
+      a large planet. It has a build cost and upkeep and the slot has a price.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [amenities.no_building_slot, amenities.building_locked]
+    facts:
+      - amenities.building.building_luxury_residence.planet_amenities_add
+      - amenities.building.building_paradise_dome.planet_amenities_add
+
+  - id: amenities.cut_usage
+    type: remedy
+    title: Take the modifiers that lower amenity use
+    judgement: >
+      A tradition, an edict or a clinic upgrade lowers the use of every pop on every planet. It
+      scales with the empire and needs no slot, but each costs Unity or a building upgrade.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [amenities.usage_needs_unity]
+    facts:
+      - amenities.tradition.tr_cloning_genomic_growth.pop_amenities_usage_mult
+      - amenities.edict.automated_disinfection.pop_amenities_usage_mult
+      - amenities.building.building_medical_2.pop_amenities_usage_organic_mult
+
+  - id: amenities.amenity_techs
+    type: remedy
+    title: Research the technologies that scale amenities
+    judgement: >
+      A multiplier on the amenities already produced. It helps most where there is a lot of supply
+      already, and it is a small gain next to adding the first jobs.
+    strength: low
+    speed: low
+    cost: medium
+    obstacles: [amenities.tech_empire_type]
+    facts:
+      - amenities.technology.tech_artificial_moral_codes.planet_amenities_mult
+      - amenities.technology.tech_unity_of_purpose.planet_amenities_no_happiness_mult
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: amenities.no_spare_pops
+    type: obstacle
+    title: No unemployed pops to staff amenity jobs
+    description: >
+      A job only counts once a pop works it. With no unemployed pops, a new amenity job pulls a
+      worker away from another job.
+    check:
+      metric: pops.unemployed
+      op: "=="
+      compare_to: 0
+    remedies: [pop_growth.grow_pops]
+
+  - id: amenities.no_amenity_slot
+    type: obstacle
+    title: No free amenity job slot
+    description: >
+      Amenity jobs come from districts and buildings. A planet with no free district or building
+      slot cannot host another one until a slot is freed.
+    check: {judgement_only: true}
+    remedies: [jobs.free_jobs]
+
+  - id: amenities.no_building_slot
+    type: obstacle
+    title: No free building slot for an amenity building
+    description: >
+      An amenity building needs a free building slot on its planet.
+    check: {judgement_only: true}
+    remedies: [slots.more_building_slots]
+
+  - id: amenities.building_locked
+    type: obstacle
+    title: The amenity building is not unlocked
+    description: >
+      The better amenity buildings are unlocked by technologies, and some are limited to certain
+      planet types or governments.
+    check: {judgement_only: true}
+
+  - id: amenities.usage_needs_unity
+    type: obstacle
+    title: Not enough Unity banked for the tradition or edict
+    description: >
+      The tradition and the edict are paid in Unity. While the stockpile is below the cost of the
+      next Tradition, spending it elsewhere delays the tree.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+    remedies: [unity.raise_income]
+
+  - id: amenities.tech_empire_type
+    type: obstacle
+    title: The technology applies to one kind of empire only
+    description: >
+      The two technologies are meant for different kinds of empire, so only one of them can help a
+      given government, and the other has no effect.
+    check: {judgement_only: true}

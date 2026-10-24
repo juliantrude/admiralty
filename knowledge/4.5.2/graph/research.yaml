@@ -116,6 +116,7 @@ nodes:
       metric: pops.unemployed
       op: "=="
       compare_to: 0
+    remedies: [pop_growth.grow_pops]
 
   - id: research.no_researcher_slot
     type: obstacle
@@ -124,6 +125,7 @@ nodes:
       Researcher jobs come from districts and from buildings. A planet with no free district or
       building slot cannot host another one until it grows or a slot is freed.
     check: {judgement_only: true}
+    remedies: [jobs.free_jobs]
 
   - id: research.lab_locked
     type: obstacle
@@ -140,6 +142,7 @@ nodes:
       A lab needs a free building slot on its planet. A planet with every slot taken has to grow or
       give one up first.
     check: {judgement_only: true}
+    remedies: [slots.more_building_slots]
 
   - id: research.speed_tech_prerequisites
     type: obstacle

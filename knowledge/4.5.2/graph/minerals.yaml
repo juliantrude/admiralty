@@ -115,6 +115,7 @@ nodes:
       metric: pops.unemployed
       op: "=="
       compare_to: 0
+    remedies: [pop_growth.grow_pops]
 
   - id: minerals.no_mining_slot
     type: obstacle
@@ -123,6 +124,7 @@ nodes:
       Miner jobs come from mining districts and from buildings. A planet with no free district
       or building slot cannot host another one until it grows or a slot is freed.
     check: {judgement_only: true}
+    remedies: [jobs.free_jobs]
 
   - id: minerals.cannot_pay_district
     type: obstacle

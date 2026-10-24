@@ -1,0 +1,160 @@
+version: v4.5.2
+domain: housing
+# Curated by hand from knowledge/4.5.2/generated/housing.yaml. Node text carries no figures:
+# every number lives in the generated facts a node links to (docs/plans/M4.md).
+# `housing.free_housing` is shared: pop growth lists it as the answer to a planet that is full.
+# Housing and per-planet free housing are planet values, not empire totals, so their Obstacles
+# stay judgement-only until the metrics registry can read a planet list.
+goals:
+  - id: housing.enough
+    title: Housing for every pop
+    symptom_metrics: [pops.unemployed]
+    causes: [housing.too_few_homes, housing.pops_use_more]
+
+nodes:
+  - id: housing.too_few_homes
+    type: cause
+    title: Districts and buildings give too little housing
+    description: >
+      Housing comes from districts, from housing buildings and from the capital. A planet whose
+      pops outnumber its housing stops growing, and pops that cannot be housed go unemployed.
+    remedies: [housing.free_housing, housing.dwelling_buildings, housing.arcologies]
+    facts:
+      - housing.district.district_city.planet_housing_add
+      - housing.building.building_urban_dwellings.planet_housing_add
+
+  - id: housing.pops_use_more
+    type: cause
+    title: Every pop takes up more housing than it should
+    description: >
+      Some modifiers scale the housing each pop uses. With housing already built, a smaller use per
+      pop frees as much room as a new building and has no upkeep.
+    remedies: [housing.cut_usage]
+    facts:
+      - housing.tradition.tr_adaptability_adopt.pop_housing_usage_mult
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: housing.free_housing
+    type: remedy
+    title: Build city districts for housing
+    judgement: >
+      The basic fix on any planet with a free district slot. A district gives housing and also
+      jobs, but it charges upkeep and the slot could have held a producing district instead.
+    strength: high
+    speed: medium
+    cost: medium
+    obstacles: [housing.no_district_slot, housing.district_upkeep]
+    facts:
+      - housing.district.district_city.planet_housing_add
+
+  - id: housing.dwelling_buildings
+    type: remedy
+    title: Build housing buildings
+    judgement: >
+      Housing buildings give a block of housing for a building slot. They are good where district
+      slots are used up but a building slot is still free, and poor where that slot could hold a
+      job-producing building.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [housing.no_building_slot, housing.dwelling_locked]
+    facts:
+      - housing.building.building_urban_dwellings.planet_housing_add
+      - housing.building.building_luxury_residence.planet_housing_add
+
+  - id: housing.arcologies
+    type: remedy
+    title: Convert districts to arcologies
+    judgement: >
+      An arcology replaces a city district with a larger one, so it adds housing without spending
+      a district slot. It needs the matching technology and a city world, and the conversion costs
+      alloys.
+    strength: medium
+    speed: low
+    cost: high
+    obstacles: [housing.arcology_locked, housing.cannot_pay_conversion]
+    facts:
+      - housing.district.district_arcology_urban_1.planet_housing_add
+
+  - id: housing.cut_usage
+    type: remedy
+    title: Take the modifiers that lower housing use per pop
+    judgement: >
+      Free room with no upkeep and no slot, but each one is a tradition or technology that has to
+      be taken for other reasons too, so it is a reason to prefer them, not a plan on its own.
+    strength: low
+    speed: medium
+    cost: low
+    obstacles: [housing.usage_modifier_locked]
+    facts:
+      - housing.tradition.tr_adaptability_adopt.pop_housing_usage_mult
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: housing.no_district_slot
+    type: obstacle
+    title: No free district slot on the planet
+    description: >
+      A city district needs a free district slot. A planet at its district limit has to raise the
+      limit or replace a district first.
+    check: {judgement_only: true}
+    remedies: [slots.more_district_slots]
+
+  - id: housing.district_upkeep
+    type: obstacle
+    title: Energy income cannot carry another district
+    description: >
+      Every district charges energy upkeep. With negative net energy a new district deepens the
+      deficit, so energy has to be fixed first.
+    check:
+      metric: energy.net
+      op: "<="
+      compare_to: 0
+
+  - id: housing.no_building_slot
+    type: obstacle
+    title: No free building slot on the planet
+    description: >
+      A housing building needs a free building slot on its planet.
+    check: {judgement_only: true}
+    remedies: [slots.more_building_slots]
+
+  - id: housing.dwelling_locked
+    type: obstacle
+    title: The housing building is not unlocked
+    description: >
+      The better housing buildings are unlocked by technologies and some need a building that the
+      planet has not built yet.
+    check: {judgement_only: true}
+
+  - id: housing.arcology_locked
+    type: obstacle
+    title: The arcology is not unlocked, or the planet is no city world
+    description: >
+      Arcologies come from a technology and only apply to city worlds, so other planet types
+      cannot use them.
+    check: {judgement_only: true}
+
+  - id: housing.cannot_pay_conversion
+    type: obstacle
+    title: Not enough alloys for the conversion
+    description: >
+      The conversion is paid in alloys. With a low stockpile it has to wait for alloy income.
+    check:
+      metric: alloys.net
+      op: "<="
+      compare_to: 0
+    remedies: [alloys.staff_metallurgists]
+
+  - id: housing.usage_modifier_locked
+    type: obstacle
+    title: The tradition or technology is not taken yet
+    description: >
+      The tradition belongs to a tree that has to be opened and paid in Unity, and a technology
+      has to be researched first.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+    remedies: [unity.raise_income]

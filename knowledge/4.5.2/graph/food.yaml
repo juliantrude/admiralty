@@ -43,6 +43,8 @@ nodes:
     obstacles: [food.no_spare_pops, food.no_farming_slot]
     facts:
       - food.job.farmer.produces_food
+    circle: food_needs_pops
+    break_point: true
 
   - id: food.build_agriculture_districts
     type: remedy
@@ -96,6 +98,8 @@ nodes:
       metric: pops.unemployed
       op: "=="
       compare_to: 0
+    remedies: [pop_growth.grow_pops]
+    circle: food_needs_pops
 
   - id: food.no_farming_slot
     type: obstacle
@@ -104,6 +108,7 @@ nodes:
       Farmer jobs come from agriculture districts and from buildings. A planet with no free
       district or building slot cannot host another one until it grows or a slot is freed.
     check: {judgement_only: true}
+    remedies: [jobs.free_jobs]
 
   - id: food.cannot_pay_district
     type: obstacle

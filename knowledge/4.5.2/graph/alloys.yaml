@@ -98,6 +98,7 @@ nodes:
       metric: pops.unemployed
       op: "=="
       compare_to: 0
+    remedies: [pop_growth.grow_pops]
 
   - id: alloys.minerals_short
     type: obstacle
@@ -130,6 +131,7 @@ nodes:
       Metallurgist jobs come from foundry zones and their buildings. A planet with no free slot
       cannot host another one until it grows or a slot is freed.
     check: {judgement_only: true}
+    remedies: [jobs.free_jobs]
 
   - id: alloys.alloy_tech_prerequisites
     type: obstacle

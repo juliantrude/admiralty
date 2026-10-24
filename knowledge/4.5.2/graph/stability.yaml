@@ -1,0 +1,175 @@
+version: v4.5.2
+domain: stability
+# Curated by hand from knowledge/4.5.2/generated/stability.yaml. Node text carries no figures:
+# every number lives in the generated facts a node links to (docs/plans/M4.md).
+# Stability is a planet value, so Obstacles are judgement-only unless a registered empire-wide
+# metric decides them. Factions and ethics are not scanned by the generator: those Remedies carry
+# judgement text only.
+goals:
+  - id: stability.up
+    title: Stable planets
+    causes: [stability.weak_order, stability.unhappy_pops]
+
+nodes:
+  - id: stability.weak_order
+    type: cause
+    title: Too little order from jobs, buildings and edicts
+    description: >
+      Stability gets flat bonuses from the order-keeping jobs, from a few buildings and from some
+      edicts. A planet with none of them depends on its pops' mood alone.
+    remedies: [stability.staff_order_jobs, stability.order_buildings, stability.stability_edicts]
+    facts:
+      - stability.job.soldier.planet_stability_add
+      - stability.building.building_order_keep.planet_stability_add
+
+  - id: stability.unhappy_pops
+    type: cause
+    title: The pops are unhappy for their own reasons
+    description: >
+      Pops' ethics, their factions and the policies they dislike lower stability on top of what
+      the buildings give. This is the cause that flat bonuses only cover up.
+    remedies: [stability.settle_factions, stability.take_stability_traditions]
+    facts:
+      - stability.tradition.tr_harmony_utopian_dream.planet_stability_add
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: stability.staff_order_jobs
+    type: remedy
+    title: Staff Soldier, Enforcer and Bureaucrat jobs
+    judgement: >
+      The order jobs add stability to their own planet at once. Each takes a pop out of a
+      producing job, so it is cheap when pops are idle and a trade-off when they are not.
+    strength: medium
+    speed: high
+    cost: low
+    obstacles: [stability.no_spare_pops, stability.no_order_slot]
+    facts:
+      - stability.job.soldier.planet_stability_add
+      - stability.job.enforcer.planet_stability_add
+      - stability.job.bureaucrat.planet_stability_add
+
+  - id: stability.order_buildings
+    type: remedy
+    title: Build the buildings that add stability
+    judgement: >
+      A building gives a large flat bonus to its planet for one slot. It is the strongest local
+      fix, and a poor use of the slot on a planet that is already stable.
+    strength: high
+    speed: medium
+    cost: medium
+    obstacles: [stability.no_building_slot, stability.building_locked]
+    facts:
+      - stability.building.building_order_keep.planet_stability_add
+      - stability.building.building_psi_corps.planet_stability_add
+
+  - id: stability.stability_edicts
+    type: remedy
+    title: Run a stability edict
+    judgement: >
+      An edict adds a flat bonus to every planet at once and ends when it is cancelled. The price
+      is Unity every month, which competes with the next Tradition.
+    strength: medium
+    speed: high
+    cost: medium
+    obstacles: [stability.edict_costs_unity]
+    facts:
+      - stability.edict.enhanced_surveillance.planet_stability_add
+      - stability.edict.information_quarantine.planet_stability_add
+
+  - id: stability.take_stability_traditions
+    type: remedy
+    title: Take the traditions that add stability
+    judgement: >
+      A tradition adds stability to every planet permanently and has no upkeep. It is slow, since
+      it sits behind the rest of its tree, so it is a long-term answer rather than a repair.
+    strength: medium
+    speed: low
+    cost: high
+    obstacles: [stability.tradition_needs_unity]
+    facts:
+      - stability.tradition.tr_harmony_utopian_dream.planet_stability_add
+      - stability.tradition.tr_synchronicity_collective_reasoning.planet_stability_add
+
+  - id: stability.settle_factions
+    type: remedy
+    title: Deal with the unhappy factions
+    judgement: >
+      Look at what the largest factions want and which of their demands the empire can meet cheaply.
+      It can end an unhappiness at its root, but it needs the Player's reading of the situation and
+      cannot be priced from the files.
+    strength: medium
+    speed: low
+    cost: low
+    obstacles: [stability.faction_demands_conflict]
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: stability.no_spare_pops
+    type: obstacle
+    title: No unemployed pops to staff order jobs
+    description: >
+      A job only counts once a pop works it. With no unemployed pops, a new order job pulls a
+      worker away from another job.
+    check:
+      metric: pops.unemployed
+      op: "=="
+      compare_to: 0
+    remedies: [pop_growth.grow_pops]
+
+  - id: stability.no_order_slot
+    type: obstacle
+    title: No free order job slot
+    description: >
+      Order jobs come from buildings and districts. A planet with no free slot cannot host another
+      one until a slot is freed.
+    check: {judgement_only: true}
+    remedies: [jobs.free_jobs]
+
+  - id: stability.no_building_slot
+    type: obstacle
+    title: No free building slot for a stability building
+    description: >
+      A stability building needs a free building slot on its planet.
+    check: {judgement_only: true}
+    remedies: [slots.more_building_slots]
+
+  - id: stability.building_locked
+    type: obstacle
+    title: The stability building is not unlocked
+    description: >
+      The stronger buildings are unlocked by technologies, and some also need the planet or the
+      government to be of a fitting type.
+    check: {judgement_only: true}
+
+  - id: stability.edict_costs_unity
+    type: obstacle
+    title: Not enough Unity banked for the edict
+    description: >
+      An edict is bought with Unity and then charges upkeep in Unity. While the stockpile is short
+      of what the next Tradition needs, the edict slows that down.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+    remedies: [unity.raise_income]
+
+  - id: stability.tradition_needs_unity
+    type: obstacle
+    title: Not enough Unity banked for the next Tradition
+    description: >
+      Each Tradition of the tree is paid in Unity. While the stockpile is below the cost of the
+      next one, the tree cannot move forward.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+    remedies: [unity.raise_income]
+
+  - id: stability.faction_demands_conflict
+    type: obstacle
+    title: The factions want things the empire cannot give
+    description: >
+      Factions can want opposite policies or more than the empire is willing to spend. Only the
+      Player can weigh which demand to meet.
+    check: {judgement_only: true}

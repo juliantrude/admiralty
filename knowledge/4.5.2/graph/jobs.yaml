@@ -1,0 +1,36 @@
+version: v4.5.2
+domain: jobs
+# Shared Remedy for every "no free job slot" Obstacle of the economy and progress domains: a job
+# slot is a district or building slot, so the answer lives in the slots domain.
+goals: []
+
+nodes:
+  - id: jobs.free_jobs
+    type: remedy
+    title: Open more job slots
+    judgement: >
+      The general answer when a job can only be added if a slot is free. Slots come from districts
+      and buildings, so this hands over to the slots domain; a slot used for housing or another job
+      is a trade, not a gain.
+    strength: high
+    speed: medium
+    cost: medium
+    obstacles: [jobs.no_district_room, jobs.no_building_room]
+
+  - id: jobs.no_district_room
+    type: obstacle
+    title: The planet has no free district slot
+    description: >
+      A district adds job slots, and each planet only has so many district slots. A planet that is
+      full cannot get another district until something raises its limit.
+    check: {judgement_only: true}
+    remedies: [slots.more_district_slots]
+
+  - id: jobs.no_building_room
+    type: obstacle
+    title: The planet has no free building slot
+    description: >
+      A building adds job slots, and each planet only has so many building slots. A full planet
+      has to open a slot or give one up.
+    check: {judgement_only: true}
+    remedies: [slots.more_building_slots]

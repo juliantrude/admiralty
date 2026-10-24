@@ -1,0 +1,184 @@
+version: v4.5.2
+domain: pop_growth
+# Curated by hand from knowledge/4.5.2/generated/pop_growth.yaml. Node text carries no figures:
+# every number lives in the generated facts a node links to (docs/plans/M4.md).
+# `pop_growth.grow_pops` is shared: it is the Remedy of every "no spare pops" Obstacle of the
+# economy domains. It closes the circle food -> pops -> food with `food.staff_farmers`
+# (food_needs_pops): new Farmers need unemployed pops, and pops only grow while food holds up.
+# Growth speed and machine assembly are two different mechanisms; the Causes keep them apart.
+goals:
+  - id: pop_growth.faster
+    title: Faster pop growth
+    symptom_metrics: [pops.total, pops.unemployed]
+    causes: [pop_growth.slow_rate, pop_growth.no_room, pop_growth.slow_assembly]
+
+nodes:
+  - id: pop_growth.slow_rate
+    type: cause
+    title: The growth rate bonuses are small
+    description: >
+      Biological pops grow at a rate that technologies, edicts, traditions and a few buildings
+      scale. A planet that grows slowly with room and food to spare is missing those multipliers.
+    remedies: [pop_growth.growth_techs, pop_growth.growth_edicts, pop_growth.growth_buildings]
+    facts:
+      - pop_growth.technology.tech_genome_mapping.logistic_growth_mult
+      - pop_growth.edict.healthcare_campaign.logistic_growth_mult
+
+  - id: pop_growth.no_room
+    type: cause
+    title: Growth stalls because no housing is free
+    description: >
+      A planet stops growing once its pops fill the housing it has. The growth rate then does not
+      matter, and the fix is more housing, not faster growth.
+    remedies: [housing.free_housing]
+    facts:
+      - housing.district.district_city.planet_housing_add
+
+  - id: pop_growth.slow_assembly
+    type: cause
+    title: Machine pops are assembled slowly
+    description: >
+      Machine empires do not grow pops; they assemble them, at a rate that other multipliers
+      scale. Biological growth bonuses do nothing for them, so the lever is the assembly rate.
+    remedies: [pop_growth.assembly_boosts]
+    facts:
+      - pop_growth.technology.tech_micro_replicators.planet_pop_assembly_mult
+      - pop_growth.civic.civic_machine_replication.planet_pop_assembly_mult
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: pop_growth.grow_pops
+    type: remedy
+    title: Grow more pops
+    judgement: >
+      The answer whenever a step is blocked only because no pop is idle. It is slow, since a new
+      pop needs time, food and a free home, and it feeds back on food: a hungry empire cannot
+      grow, and a growing one needs more food.
+    strength: high
+    speed: low
+    cost: medium
+    obstacles: [pop_growth.food_deficit, pop_growth.no_free_housing]
+    facts:
+      - pop_growth.technology.tech_genome_mapping.logistic_growth_mult
+      - pop_growth.technology.tech_micro_replicators.planet_pop_assembly_mult
+    circle: food_needs_pops
+
+  - id: pop_growth.growth_techs
+    type: remedy
+    title: Research the growth technologies
+    judgement: >
+      Each technology raises the growth rate of every planet at once and has no upkeep. The gain
+      is a percentage of a slow process, so it matters most for an empire with many growing
+      planets and little else holding growth back.
+    strength: medium
+    speed: low
+    cost: medium
+    obstacles: [pop_growth.growth_tech_locked]
+    facts:
+      - pop_growth.technology.tech_genome_mapping.logistic_growth_mult
+      - pop_growth.technology.tech_universal_marcophage.BIOLOGICAL_logistic_growth_mult
+
+  - id: pop_growth.growth_edicts
+    type: remedy
+    title: Run a growth edict
+    judgement: >
+      A quick, temporary lever: it raises the rate on every planet while it runs and stops when
+      it is cancelled. The price is Unity every month, so it only pays while growth is the real
+      bottleneck.
+    strength: low
+    speed: high
+    cost: medium
+    obstacles: [pop_growth.edict_costs_unity]
+    facts:
+      - pop_growth.edict.healthcare_campaign.logistic_growth_mult
+      - pop_growth.edict.nutritional_plenitude.logistic_growth_mult
+
+  - id: pop_growth.growth_buildings
+    type: remedy
+    title: Build the buildings that speed up growth
+    judgement: >
+      A few buildings add growth on their planet, and the capital building adds it too. They use
+      a building slot and have a build cost, so they belong on planets with room still left to
+      fill.
+    strength: low
+    speed: medium
+    cost: medium
+    obstacles: [pop_growth.no_growth_building_slot]
+    facts:
+      - pop_growth.building.building_clone_vats.bonus_pop_growth
+      - pop_growth.building.building_genomic_facility.logistic_growth_mult
+
+  - id: pop_growth.assembly_boosts
+    type: remedy
+    title: Raise the assembly rate of machine pops
+    judgement: >
+      Assembly has its own technologies, a civic, a tradition and an edict. Together they are the
+      machine answer to growth, and the edict is the quickest of them at a Unity price.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [pop_growth.assembly_locked, pop_growth.edict_costs_unity]
+    facts:
+      - pop_growth.technology.tech_micro_replicators.planet_pop_assembly_mult
+      - pop_growth.technology.tech_self_assembling_components.planet_pop_assembly_mult
+      - pop_growth.tradition.tr_versatility_finish.planet_pop_assembly_mult
+      - pop_growth.edict.robot_campaign.planet_pop_assembly_mult
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: pop_growth.food_deficit
+    type: obstacle
+    title: Food income is negative
+    description: >
+      Pops eat food, and a planet with a food deficit stops growing and can starve. More pops
+      then make the deficit worse, so the food has to come first.
+    check:
+      metric: food.net
+      op: "<"
+      compare_to: 0
+    remedies: [food.staff_farmers]
+    circle: food_needs_pops
+
+  - id: pop_growth.no_free_housing
+    type: obstacle
+    title: The planets have no free housing
+    description: >
+      Pops need housing. Where every planet is full, new pops have no place to appear, so housing
+      has to be added before growth can show.
+    check: {judgement_only: true}
+
+  - id: pop_growth.growth_tech_locked
+    type: obstacle
+    title: The growth technologies are not researched yet
+    description: >
+      The growth technologies sit in the society tree behind earlier ones, so they arrive only
+      with enough research output in that field.
+    check: {judgement_only: true}
+
+  - id: pop_growth.edict_costs_unity
+    type: obstacle
+    title: The edict is paid in Unity
+    description: >
+      An edict is bought with Unity and then charges upkeep in Unity. While the stockpile is short
+      of what the Tradition needs, spending on an edict slows that down.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+    remedies: [unity.raise_income]
+
+  - id: pop_growth.no_growth_building_slot
+    type: obstacle
+    title: No free building slot for a growth building
+    description: >
+      A growth building needs a free building slot on a planet that still has room to grow.
+    check: {judgement_only: true}
+    remedies: [slots.more_building_slots]
+
+  - id: pop_growth.assembly_locked
+    type: obstacle
+    title: The assembly boosts are not unlocked yet
+    description: >
+      The assembly technologies need earlier ones, the tradition needs its whole tree, and the
+      civic is chosen at the start of the game, so each is a long-term decision.
+    check: {judgement_only: true}

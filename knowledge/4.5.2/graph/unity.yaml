@@ -133,6 +133,7 @@ nodes:
       metric: pops.unemployed
       op: "=="
       compare_to: 0
+    remedies: [pop_growth.grow_pops]
 
   - id: unity.no_unity_job_slot
     type: obstacle
@@ -141,6 +142,7 @@ nodes:
       The Unity jobs come from districts and buildings. A planet with no free slot for them cannot
       host another one until it grows or a slot is freed.
     check: {judgement_only: true}
+    remedies: [jobs.free_jobs]
 
   - id: unity.building_locked
     type: obstacle
@@ -157,6 +159,7 @@ nodes:
       A building needs a free slot on its planet. A planet with every slot taken has to grow or give
       one up first.
     check: {judgement_only: true}
+    remedies: [slots.more_building_slots]
 
   - id: unity.unity_tech_prerequisites
     type: obstacle

@@ -130,7 +130,7 @@ if only Julian's part remains, and move on to the next increment.
       naval-capacity technologies and Soldier jobs, each with its Obstacles
 - [x] Curated graph, economy domains: energy, minerals, food, alloys
 - [x] Curated graph: Unity and Traditions, influence, research
-- [ ] Curated graph: pop growth, stability, amenities, housing, building and district slots
+- [x] Curated graph: pop growth, stability, amenities, housing, building and district slots
 - [ ] Playbook seed rules as `knowledge/4.5.2/rules/*.md` (id, date, reason) with a loader
       and tests: Unity against the next Tradition cost; influence at the cap is waste;
       unemployed pops before new colonies
@@ -191,17 +191,15 @@ if only Julian's part remains, and move on to the next increment.
 ## Status
 
 STATUS: READY
-**Next action:** M4 increment 7: curated graph, pop growth, stability, amenities, housing, building and district slots (files
-`pop_growth.yaml`, `stability.yaml`, `amenities.yaml`, `housing.yaml`, `slots.yaml` in `knowledge/4.5.2/graph/`; facts from
-`knowledge/4.5.2/generated/<quantity>.yaml`; building and district slots are `building_slots.yaml` / `district_slots.yaml`). Pattern to copy:
-`knowledge/4.5.2/graph/research.yaml` and `tests/test_progress_graph.py` (Goal -> Causes -> Remedies -> Obstacles, ratings strength/speed/cost,
-a metric `check` wherever the registry has one; add metrics to `metrics.yaml` rather than `judgement_only`; check real fact ids and requirements
-in the generated YAML before linking; no digits in prose). Shared nodes to reuse: `unity.raise_income` as Remedy of any "not enough Unity" Obstacle.
-Each economy/progress domain has its own `<domain>.no_spare_pops` Obstacle (pops.unemployed == 0); this increment may add `jobs.free_jobs` as a shared
-Remedy for them and the energy -> jobs -> pops -> food -> energy circle (one `circle` name on every member). Rule ids a node cites must exist in
-`knowledge/4.5.2/rules/*.md`, which arrives in increment 8; until then do not cite rules from nodes. Influence facts only cover modifier-driven
-sources (councilors and the ruler are not scanned). Note `skills/` is auto-discovered by the plugin; `hooks/` is still empty. The full suite takes ~170 s
-(run it in the background).
+**Next action:** M4 increment 8: Playbook seed rules as `knowledge/4.5.2/rules/*.md` (YAML front matter id/date/reason + Markdown body, format in
+`docs/plans/M4.md` "Playbook Rules") with a loader and tests. Three approved rules only: `unity-vs-next-tradition` (Unity against the next Tradition cost),
+influence at the cap is waste, unemployed pops before new colonies. Check the build plan for the exact ids and wording; the validator already reads rule ids from
+`knowledge/<v>/rules/*.md` (`_rule_ids` in `graph/mechanics.py`), so graph nodes may cite them with `rules:` afterwards: add `rules:` links to fitting nodes
+(e.g. `unity.*` Obstacles, `influence.*`, the `<domain>.no_spare_pops` Obstacles or `pop_growth.grow_pops`) and keep `graph validate` clean. Further rules go only to
+`docs/proposals/playbook.md`. Graph facts: the shared nodes are `unity.raise_income`, `pop_growth.grow_pops`, `jobs.free_jobs` (file `jobs.yaml`, no Goal),
+`housing.free_housing`, `slots.more_building_slots` / `slots.more_district_slots`; circle `food_needs_pops` (break point `food.staff_farmers`). Planet-level values
+(stability, free housing, amenities, district limit) are not in the metrics registry (empire-level paths only), so those Obstacles are judgement-only. Note
+`skills/` is auto-discovered by the plugin; `hooks/` is still empty. The full suite takes ~170 s (run it in the background).
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the
 game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
 
@@ -284,3 +282,8 @@ game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
   linking the Unity cost facts, Colonial Viceroys, staggering projects, Diplomacy tradition, Federation Code) and `research.yaml` (researcher jobs,
   labs, speed technologies, Discovery tree); all Unity-gated Obstacles hand over to `unity.raise_income`. `graph validate` clean;
   `tests/test_progress_graph.py` added; tests 204 passed / 31 skipped, ruff clean
+- 2026-10-24 — M4 increment 7: `pop_growth.yaml`, `housing.yaml`, `amenities.yaml`, `stability.yaml`, `slots.yaml` and `jobs.yaml` (shared Remedy
+  `jobs.free_jobs`, no Goal) in `knowledge/4.5.2/graph/`. Shared `pop_growth.grow_pops` is now the Remedy of every `<domain>.no_spare_pops` Obstacle and
+  `jobs.free_jobs` of every job-slot Obstacle; circle `food_needs_pops` (food.staff_farmers <-> pop_growth.grow_pops) marked, break point on the Farmers
+  Remedy. A first draft with energy-upkeep and Unity back-links folded the whole economy into one unnamed cycle, so those links were dropped (reason in
+  `slots.yaml`). `graph validate` clean; `tests/test_population_graph.py` added; tests 236 passed / 31 skipped, ruff clean

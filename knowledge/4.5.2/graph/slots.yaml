@@ -1,0 +1,143 @@
+version: v4.5.2
+domain: slots
+# Curated by hand from knowledge/4.5.2/generated/district_slots.yaml and building_slots.yaml.
+# Node text carries no figures: every number lives in the generated facts a node links to
+# (docs/plans/M4.md). Slot counts are planet values; the Snapshot's planet list carries the
+# district limit per planet, which the registry cannot read yet, so Obstacles are judgement-only.
+# `slots.tradition_needs_unity` and the two upkeep Obstacles hand over to no Remedy on purpose:
+# job slots, Unity and pops already feed each other, and a link back would fold the economy into
+# one unnamed cycle that M5 could not break anywhere.
+goals:
+  - id: slots.more
+    title: More building and district slots
+    causes: [slots.few_district_slots, slots.few_building_slots]
+
+nodes:
+  - id: slots.few_district_slots
+    type: cause
+    title: The planet's district limit is reached
+    description: >
+      The number of districts a planet can have depends on its size and on bonuses from the
+      capital building, technologies and traditions. A planet at its limit cannot add a district
+      of any kind until the limit rises.
+    remedies: [slots.more_district_slots]
+    facts:
+      - district_slots.building.building_capital.planet_max_districts_add
+      - district_slots.technology.tech_alien_topography.planet_non_artificial_max_districts_add
+
+  - id: slots.few_building_slots
+    type: cause
+    title: The planet has no building slots left
+    description: >
+      Building slots come from the zones of the districts on the planet, so a planet fills them
+      as it gains districts. A planet whose slots hold weak buildings wastes them.
+    remedies: [slots.more_building_slots, slots.replace_weak_buildings]
+    facts:
+      - building_slots.zone.zone_default.max_buildings
+      - building_slots.zone.zone_energy.zone_building_slots_add
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: slots.more_district_slots
+    type: remedy
+    title: Raise the planet's district limit
+    judgement: >
+      Upgrading the capital building, taking the technology and finishing the traditions each add
+      a district slot on every planet of their kind. They are one-time steps with a long reach,
+      and none can be bought on a single planet.
+    strength: medium
+    speed: low
+    cost: high
+    obstacles: [slots.capital_upgrade_locked, slots.tradition_needs_unity, slots.district_tech_locked]
+    facts:
+      - district_slots.building.building_capital.planet_max_districts_add
+      - district_slots.building.building_major_capital.planet_max_districts_add
+      - district_slots.tradition.tr_expansion_finish.planet_non_artificial_max_districts_add
+      - district_slots.technology.tech_alien_topography.planet_non_artificial_max_districts_add
+
+  - id: slots.more_building_slots
+    type: remedy
+    title: Build the districts that open building slots
+    judgement: >
+      Each district opens building slots through its zone, so a new district on a planet with a
+      free district slot adds room for buildings too. It is the cheapest way to more building
+      slots, and it competes with every other use of the district slot.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [slots.no_district_room, slots.district_upkeep]
+    facts:
+      - building_slots.zone.zone_default.max_buildings
+      - building_slots.zone.zone_energy.zone_building_slots_add
+
+  - id: slots.replace_weak_buildings
+    type: remedy
+    title: Replace the weakest building on the planet
+    judgement: >
+      When no slot can be added, a slot held by a weak building is the cheapest one to free. It
+      costs the building that is lost and the build cost of the new one, so it only pays when the
+      swap is clearly better.
+    strength: low
+    speed: high
+    cost: low
+    obstacles: [slots.weak_building_unknown]
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: slots.capital_upgrade_locked
+    type: obstacle
+    title: The capital building is not upgraded yet
+    description: >
+      The capital building adds district slots when it is upgraded, and each upgrade needs a
+      technology and the alloys or other resources it costs.
+    check: {judgement_only: true}
+
+  - id: slots.tradition_needs_unity
+    type: obstacle
+    title: Not enough Unity banked for the next Tradition
+    description: >
+      Each Tradition of the tree is paid in Unity. While the stockpile is below the cost of the
+      next one, the tree cannot move forward.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+
+  - id: slots.district_tech_locked
+    type: obstacle
+    title: The technology is not researched yet
+    description: >
+      The technologies that add district slots sit behind earlier ones and arrive slowly when
+      research is low.
+    check:
+      metric: research.net
+      op: "<="
+      compare_to: 0
+
+  - id: slots.no_district_room
+    type: obstacle
+    title: No free district slot on the planet
+    description: >
+      A new district needs a free district slot. A planet at its limit has to raise the limit or
+      replace a district first.
+    check: {judgement_only: true}
+    remedies: [slots.more_district_slots]
+
+  - id: slots.district_upkeep
+    type: obstacle
+    title: Energy income cannot carry another district
+    description: >
+      Every district charges energy upkeep. With negative net energy a new district deepens the
+      deficit, so energy has to be fixed first.
+    check:
+      metric: energy.net
+      op: "<="
+      compare_to: 0
+
+  - id: slots.weak_building_unknown
+    type: obstacle
+    title: It is not clear which building is the weakest
+    description: >
+      Weighing one building against another needs what each produces on that planet and what the
+      Player wants most. The files do not rank them.
+    check: {judgement_only: true}

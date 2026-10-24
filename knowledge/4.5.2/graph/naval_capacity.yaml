@@ -191,6 +191,7 @@ nodes:
       metric: pops.unemployed
       op: "=="
       compare_to: 0
+    remedies: [pop_growth.grow_pops]
 
   - id: naval_capacity.soldier_jobs_cost_output
     type: obstacle
