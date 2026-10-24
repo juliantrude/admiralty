@@ -73,7 +73,7 @@ M5 (plan: `docs/plans/M5.md`):
 - [x] 1. Plan document
 - [x] 2. `expand_graph` core (`graph/metrics.py`, `graph/expand.py`, `tests/test_expand.py`)
 - [x] 3. Solution Graph schema, validator and `compose` with `briefing compose` and `graph check-solution` CLI
-- [ ] 4. MCP tool `expand_graph` with turn-log entry, `expansion_id`, catalogue mode
+- [x] 4. MCP tool `expand_graph` with turn-log entry, `expansion_id`, catalogue mode
 - [ ] 5. `hlidskjalf:consult` skill (`skills/huginn-consult/`) and its static test
 - [ ] 6. Verification: one headless Briefing on the reference save, numbers recorded in the Log
 
@@ -82,21 +82,19 @@ M6, M7, M8: plan increments to be written (see `docs/build-plan.md`).
 ## Status
 
 STATUS: READY
-**Next action:** M5 increment 4: MCP tool `expand_graph` in `src/hlidskjalf/mcp/server.py`, as specified in `docs/plans/M5.md` ("MCP tool
-`expand_graph`" and increment 4): `expand_graph(goals=[], crisis_goals=[], save=None)`; no goals = catalogue (every Goal with title, domain and
-resolved Symptom metrics); with goals = `Expansion.to_dict()` plus `expansion_id` (the turn-log line number, so `hlidskjalf briefing compose` can
-read the expansion from the workspace; the CLI currently takes an expansion JSON file, add a way to read it by turn-log id, for example
-`--expansion-id N --workspace DIR`); registered through `logged`; errors (`GraphMissing`, `GraphInvalid`, unknown version) as `{"error": ...}`; graph
-loaded once per server by the save's `game_version`; tests in `tests/test_mcp.py` style (tool listed with schema, one turn-log line per call,
-catalogue and expansion on the reference save, unknown Goal and missing pack are errors). `Solution Graph` is done: `compose(expansion, overlay,
-graph)` needs overlay `empire` and `goals.<id>.horizon` for every expanded Goal and a `why` for every remaining Key Action candidate (or an
-`exclude_key_actions` entry), see its docstring. The full suite takes ~180 s (run it in the background). `hooks/` is still empty; `skills/` is
-auto-discovered by the plugin.
-**Open for increment 4 (result size):** one Goal expands to 10 to 22k characters, all 13 Goals together 141k, so a call with 3+ Goals can exceed the
-40k budget that `Expansion.to_dict` only partly enforces (it trims effects to 3, then text of clear Obstacles). Decide in increment 4 whether a compact
-mode is needed (for example `text` only for depth <= 2 and for present or judgement Obstacles, effects only for Remedies). Note for the skill
-(increment 5): the overlay must carry a `why` per Key Action candidate, which with many candidates is long; consider making compose accept a default
-or letting the skill exclude candidates in bulk.
+**Next action:** M5 increment 5: skill `hlidskjalf:consult` in `skills/huginn-consult/SKILL.md` (frontmatter `name: consult`) and
+`tests/test_consult_skill.py` (like `tests/test_setup_skill.py`), as specified in `docs/plans/M5.md` ("Skill `hlidskjalf:consult`"): the eight-step
+flow, the hard rules (numbers only from tool results, Unity rule guard sentence for `unity-vs-next-tradition`, no benchmarks while draft, Fair Play, no
+HTML, only the overlay file by hand). The workspace `CLAUDE.md` template (M3) already routes Consulting Campaigns to it: check the name matches. How the
+skill calls things: MCP tool `expand_graph` (no goals = catalogue; with goals = expansion + `expansion_id`), then `uv run --quiet --project
+${CLAUDE_PLUGIN_ROOT} hlidskjalf briefing compose <overlay.json> --expansion-id N --workspace . --out briefings/<date>/solution-graph.json` (the
+expansion file argument is optional now; give exactly one of file or `--expansion-id`) and `hlidskjalf graph check-solution <file>`. Overlay needs
+`empire`, `goals.<id>.horizon` for every expanded Goal, a `why` per remaining Key Action candidate or an `exclude_key_actions` entry.
+**Open for the skill (result size, decided in increment 4):** `Expansion.to_dict` now has a compact step (text only up to depth 2 and for present or
+judgement Obstacles, effects only for Remedies; `compose` takes dropped text from the graph). On the mid-save: 1 Goal 15k characters, 3 Goals 38k (fits),
+6 Goals 66k and 13 Goals 128k (over; the result then carries a warning to expand fewer Goals). One compose takes one expansion, so the skill must expand
+at most three Goals in one call; the plan's "up to three Goals per Horizon" can mean nine, so either the skill keeps to three Goals in total per
+Briefing or a later increment lets `compose` merge several `expansion_id`s (not built; decide while writing the skill and note it in the log).
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
 review of the benchmarks draft (both in `docs/awaiting-julian.md`).
 
@@ -216,4 +214,11 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   invented rule ids, obstructed or evidence-less Key Actions, bad ranks and unknown fields are errors. `compose` prunes with a reason (a present Obstacle
   cannot be pruned), drops what only hung on pruned nodes (recorded), re-derives circles after pruning, recomputes the Key Action ranking with
   `rank_key_actions` and requires a `why` per candidate or an `exclude_key_actions` entry (added to the document as `excluded_key_actions`; the
-  overlay also needs `empire`). `tests/test_solution.py` (47 tests incl. the real graph on vulkan mid-save); full suite 350 passed / 31 skipped, ruff clean, `graph validate` clean
+  overlay also needs `empire`). `tests/test_solution.py` (47 tests incl. the real graph on vulkan mid-save); full suite 350 passed / 31 skipped, ruff clean, `graph validate` clean- 2026-10-24 — M5 increment 4: MCP tool `expand_graph(goals, crisis_goals, save)` (`mcp/server.py`, `CampaignService.expand_graph` and `.graph`): no goals =
+  catalogue (`graph.expand.catalogue`: id, domain, title, resolved Symptom metrics), with goals = `Expansion.to_dict()` + header warnings + `expansion_id` (the
+  turn-log line number; `log()` returns it and fills the placeholder before writing; `workspace/turnlog.py` holds `TURN_LOG`, line counting and
+  `read_entry`). Graph loaded once per server by the save's `game_version`; no pack for a version, an unknown Goal (lists the known ones) and a bad pack are
+  `{"error": ...}`. CLI `briefing compose` takes `--expansion-id N --workspace DIR` instead of the expansion file. Result size: compact step added to
+  `to_dict` and `compose` now takes node text from the graph (the old clear-Obstacle trim would have broken `compose` with a KeyError); mid-save sizes 1 Goal
+  15k, 3 Goals 38k, 6 Goals 66k (warning), 13 Goals 128k (warning). One existing test (`test_a_tight_budget_trims_effects_then_clear_obstacle_text`) got a
+  computed budget instead of `budget=1` so it still exercises only its two steps; assertions unchanged. Tests 359 passed / 31 skipped, ruff clean, `graph validate` clean

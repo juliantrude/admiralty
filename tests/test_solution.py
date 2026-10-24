@@ -544,6 +544,37 @@ def test_cli_compose_refuses_a_bad_overlay_without_writing(graph, expansion, tmp
     assert not out.exists()
 
 
+def test_compose_takes_dropped_text_from_the_graph(graph, tmp_path):
+    full = expand_graph(graph, ["t.g"], EXTRACT).to_dict()
+    squeezed = expand_graph(graph, ["t.g"], EXTRACT).to_dict(budget=1)
+    assert any("text" not in n for n in squeezed["nodes"])  # the compact form dropped some
+    assert any("over the budget" in w for w in squeezed["warnings"])
+    assert composed(graph, squeezed) == composed(graph, full)
+
+
+def test_cli_compose_reads_the_expansion_from_the_turn_log(graph, expansion, tmp_path, capsys):
+    workspace = tmp_path / "ws"
+    (workspace / ".hlidskjalf").mkdir(parents=True)
+    entries = [
+        {"tool": "economy", "args": {}, "result": {}},
+        {"tool": "expand_graph", "args": {}, "result": expansion},
+    ]
+    log = workspace / ".hlidskjalf" / "turn-log.jsonl"
+    log.write_text("".join(json.dumps(e) + "\n" for e in entries))
+    (tmp_path / "overlay.json").write_text(json.dumps(OVERLAY))
+    out = tmp_path / "solution-graph.json"
+    command = ["briefing", "compose", str(tmp_path / "overlay.json"), "--out", str(out)]
+    command += ["--workspace", str(workspace), "--knowledge-root", str(tmp_path)]
+    assert main([*command, "--expansion-id", "2"]) == 0
+    assert json.loads(out.read_text())["key_actions"][0]["node"] == "t.ok"
+    capsys.readouterr()
+    for wrong in ("1", "9"):  # not an expansion; no such entry
+        with pytest.raises(SystemExit, match="cannot read expansion|not an expansion"):
+            main([*command, "--expansion-id", wrong])
+    with pytest.raises(SystemExit, match="either an expansion file or --expansion-id"):
+        main(command)
+
+
 # --- the real graph on the reference save -----------------------------------------------------
 
 

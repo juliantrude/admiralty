@@ -8,9 +8,10 @@ import pytest
 from conftest import SAVES_DIR, VULKAN, reference_save
 
 from hlidskjalf.extract.diff import diff_extracts
-from hlidskjalf.mcp.service import TURN_LOG, CampaignService
+from hlidskjalf.mcp.service import CampaignService
 from hlidskjalf.workspace.archive import EXTRACT_SUFFIX, Archive, ArchiveCorrupt
 from hlidskjalf.workspace.config import CampaignConfig
+from hlidskjalf.workspace.turnlog import TURN_LOG
 
 
 def doc(date="2259.12.29", **extra):

@@ -275,7 +275,7 @@ def compose(
     nodes: list[dict[str, Any]] = [
         _goal_node(g, goal_settings.get(g["id"], {})) for g in expansion["goals"]
     ]
-    nodes += [_graph_node(n) for n in expansion["nodes"]]
+    nodes += [_graph_node(n, graph) for n in expansion["nodes"]]
     edges = {(e["from"], e["to"]) for e in expansion["edges"]}
 
     pruned: list[dict[str, str]] = []
@@ -427,13 +427,20 @@ def _unit(symptom: dict[str, Any]) -> str:
     return f" {symptom['unit']}" if symptom.get("unit") else ""
 
 
-def _graph_node(node: dict[str, Any]) -> dict[str, Any]:
+def _graph_text(node: dict[str, Any], graph: MechanicsGraph) -> str:
+    source = graph.nodes.get(node["id"], {})
+    return source.get("judgement" if node["type"] == "remedy" else "description", "")
+
+
+def _graph_node(node: dict[str, Any], graph: MechanicsGraph) -> dict[str, Any]:
+    # The expansion drops node text when it is over the size budget; the graph has it.
+    text = node.get("text") or _graph_text(node, graph)
     out: dict[str, Any] = {
         "id": node["id"],
         "type": node["type"],
         "source": "graph",
         "title": node["title"],
-        "text": node["text"],
+        "text": text,
     }
     evidence: list[str] = []
     if node["type"] == "obstacle":

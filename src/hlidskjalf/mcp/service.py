@@ -16,10 +16,12 @@ from typing import Any
 from hlidskjalf.extract import empire as data
 from hlidskjalf.extract.diff import diff_extracts
 from hlidskjalf.extract.snapshot import Extractor, Snapshot
+from hlidskjalf.graph.expand import catalogue, expand_graph
+from hlidskjalf.graph.mechanics import MechanicsGraph
 from hlidskjalf.workspace.archive import Archive
 from hlidskjalf.workspace.config import CampaignConfig
+from hlidskjalf.workspace.turnlog import count_lines, turn_log_path
 
-TURN_LOG = "turn-log.jsonl"
 STALE_AFTER_SECONDS = 10 * 60  # a save older than this in real time: ask for a new one
 
 
@@ -44,6 +46,8 @@ class CampaignService:
         self._lock = threading.RLock()  # the warm-up thread and tool calls share the caches
         self.archive = Archive(config.workspace)
         self._archive_warnings: dict[str, str] = {}  # save file name -> why it was not archived
+        self._graphs: dict[str, MechanicsGraph] = {}  # by game version, loaded on first use
+        self._log_lock = threading.Lock()
 
     def warm_up(self) -> None:
         """Load localisation, game files and the newest save ahead of the first question."""
@@ -234,16 +238,58 @@ class CampaignService:
         b = self.document(self.find(newer))
         return diff_extracts(a, b)
 
+    def graph(self, game_version: str) -> MechanicsGraph:
+        """The Mechanics Graph of the save's game version, loaded once per server. A version
+        without a knowledge pack raises GraphMissing: no silent fallback (ADR 0003)."""
+        with self._lock:
+            if game_version not in self._graphs:
+                self._graphs[game_version] = MechanicsGraph.load(game_version)
+            return self._graphs[game_version]
+
+    def expand_graph(
+        self, goals: list[str] | None = None, crisis_goals: list[str] | None = None,
+        save: str | None = None,
+    ) -> dict[str, Any]:  # fmt: skip
+        doc = self.document(self.find(save))
+        graph = self.graph(doc["header"]["game_version"])
+        if not goals:
+            return {
+                "version": graph.version,
+                "date": doc["header"]["date"],
+                "goals": catalogue(graph, doc),
+                "warnings": doc["header"]["warnings"],
+            }
+        expansion = expand_graph(graph, goals, doc, crisis_goals=crisis_goals or ())
+        if expansion.unknown_goals:
+            known = ", ".join(sorted(graph.goals))
+            raise LookupError(
+                f"unknown Goal(s) {', '.join(expansion.unknown_goals)}. Goals: {known}"
+            )
+        result = expansion.to_dict()
+        result["warnings"] = [*doc["header"]["warnings"], *result["warnings"]]
+        result["expansion_id"] = None  # the turn-log line number, filled in by `log`
+        return result
+
     # --- turn log ---------------------------------------------------------------------------
 
-    def log(self, tool: str, args: dict[str, Any], result: Any) -> None:
-        state = self.config.state_dir
-        state.mkdir(parents=True, exist_ok=True)
-        entry = {
-            "ts": datetime.now(UTC).isoformat(timespec="seconds"),
-            "tool": tool,
-            "args": args,
-            "result": result,
-        }
-        with open(state / TURN_LOG, "a", encoding="utf-8") as handle:
-            handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    def log(
+        self, tool: str, args: dict[str, Any], result: Any, number_key: str | None = None
+    ) -> int:
+        """Append one entry and return its id (line number). A result that already holds
+        `number_key` (as a placeholder) gets the id there before it is written, so the entry
+        and the tool answer agree."""
+        path = turn_log_path(self.config.workspace)
+        with self._log_lock:
+            path.parent.mkdir(parents=True, exist_ok=True)
+            line = count_lines(path) + 1
+            if number_key and isinstance(result, dict) and number_key in result:
+                result[number_key] = line
+            entry = {
+                "ts": datetime.now(UTC).isoformat(timespec="seconds"),
+                "tool": tool,
+                "args": args,
+                "result": result,
+            }
+            with open(path, "a", encoding="utf-8") as handle:
+                handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        return line

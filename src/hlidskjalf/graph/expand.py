@@ -42,6 +42,13 @@ _BEST_FIRST = {"high": 0, "medium": 1, "low": 2}  # strength, speed
 _CHEAPEST_FIRST = {"low": 0, "medium": 1, "high": 2}  # cost
 
 
+_KEEP_TEXT = ("present", "judgement")  # check states whose Obstacle text the model must read
+
+
+def _size(document: dict[str, Any]) -> int:
+    return len(json.dumps(document))
+
+
 @dataclass(frozen=True)
 class Candidate:
     """A Remedy that can be done now (or soon): what it serves, what it unlocks, how it rates."""
@@ -100,15 +107,31 @@ class Expansion:
     effects: dict[str, list[dict[str, Any]]] = field(default_factory=dict, repr=False)
 
     def to_dict(self, budget: int = RESULT_BUDGET) -> dict[str, Any]:
-        """Plain JSON. Over the budget, effects drop to three per node, then the text of clear
-        Obstacles goes (their title and evidence stay)."""
+        """Plain JSON. Over the budget, in steps: effects drop to three per node, the text of
+        clear Obstacles goes (title and evidence stay), then the compact form: text only for
+        nodes up to depth 2 and for present or judgement Obstacles, effects only for Remedies.
+        `compose` takes the text from the graph, so a dropped text costs the model nothing but
+        context. If even that is over, a warning says so."""
         out = self._render(EFFECTS_PER_NODE)
-        if len(json.dumps(out)) > budget:
+        if _size(out) > budget:
             out = self._render(EFFECTS_PER_NODE_TIGHT)
-        if len(json.dumps(out)) > budget:
+        if _size(out) > budget:
             for node in out["nodes"]:
                 if node.get("check", {}).get("state") == "clear":
                     node.pop("text", None)
+        if _size(out) > budget:
+            for node in out["nodes"]:
+                if node["depth"] > 2 and node.get("check", {}).get("state") not in _KEEP_TEXT:
+                    node.pop("text", None)
+                if node["type"] != "remedy":
+                    node["effects"] = []
+                    node.pop("effects_more", None)
+        if _size(out) > budget:
+            out["warnings"] = [
+                *out["warnings"],
+                f"result is {_size(out)} characters, over the budget of {budget}; "
+                "expand fewer Goals per call",
+            ]
         return out
 
     def _render(self, effects_per_node: int) -> dict[str, Any]:
@@ -206,6 +229,20 @@ def expand_graph(
         warnings=warnings,
         effects={nid: _effects(graph, nid) for nid in nodes if graph.node(nid).get("facts")},
     )
+
+
+def catalogue(graph: MechanicsGraph, extract: dict[str, Any]) -> list[dict[str, Any]]:
+    """Every Goal with its title, domain and Symptom metrics resolved on `extract`, in id order:
+    the menu the model picks Goals from before it asks for an expansion."""
+    return [
+        {
+            "id": goal_id,
+            "domain": goal_id.split(".")[0],
+            "title": goal["title"],
+            "symptoms": _goal(graph, goal_id, False, extract)["symptoms"],
+        }
+        for goal_id, goal in sorted(graph.goals.items())
+    ]
 
 
 # --- the walk ----------------------------------------------------------------------------------

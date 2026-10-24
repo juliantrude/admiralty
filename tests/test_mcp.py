@@ -11,8 +11,9 @@ import pytest
 from conftest import SAVES_DIR, VULKAN, reference_save
 
 from hlidskjalf.mcp.server import build_server
-from hlidskjalf.mcp.service import TURN_LOG, CampaignService
+from hlidskjalf.mcp.service import CampaignService
 from hlidskjalf.workspace.config import CampaignConfig, SetupMissing
+from hlidskjalf.workspace.turnlog import TURN_LOG
 
 pytestmark = pytest.mark.saves
 
@@ -106,7 +107,7 @@ def test_tools_log_every_result(tmp_path, save_dir, monkeypatch):
     tools = {t.name: t for t in asyncio.run(server.list_tools())}
     assert set(tools) == {
         "campaign_status", "empire_overview", "planets", "planet", "economy",
-        "military", "progression", "timeline", "compare",
+        "military", "progression", "timeline", "compare", "expand_graph",
     }  # fmt: skip
     assert "svc" not in json.dumps(tools["planet"].input_schema)
 
@@ -120,6 +121,84 @@ def test_tools_log_every_result(tmp_path, save_dir, monkeypatch):
     assert [e["tool"] for e in entries] == ["economy", "planet"]
     assert entries[0]["args"] == {"save": "2259.12.25"}
     assert entries[0]["result"] == economy
+
+
+def graph_server(tmp_path, save_dir, monkeypatch):
+    monkeypatch.setenv("HLIDSKJALF_SAVE_DIR", str(save_dir))
+    monkeypatch.setenv("HLIDSKJALF_EMPIRE", "Plexxi")
+    return build_server(tmp_path)
+
+
+def log_entries(workspace):
+    lines = (workspace / ".hlidskjalf" / TURN_LOG).read_text().splitlines()
+    return [json.loads(line) for line in lines]
+
+
+def test_expand_graph_tool_is_listed_with_its_schema(tmp_path, save_dir, monkeypatch):
+    tools = {
+        t.name: t for t in asyncio.run(graph_server(tmp_path, save_dir, monkeypatch).list_tools())
+    }
+    schema = tools["expand_graph"].input_schema
+    assert set(schema["properties"]) == {"goals", "crisis_goals", "save"}
+    assert not schema.get("required")
+    assert "svc" not in json.dumps(schema)
+
+
+def test_expand_graph_catalogue_then_expansion_with_turn_log_id(tmp_path, save_dir, monkeypatch):
+    server = graph_server(tmp_path, save_dir, monkeypatch)
+    catalogue = call(server, "expand_graph", {"save": "2259.12.25"})
+    assert "expansion_id" not in catalogue and "nodes" not in catalogue
+    goals = {g["id"]: g for g in catalogue["goals"]}
+    assert len(goals) >= 13
+    unity = goals["unity.more"]
+    assert unity["domain"] == "unity" and unity["title"]
+    assert {s["metric"] for s in unity["symptoms"]} == {"unity.net", "traditions.next_cost"}
+    assert all(s["value"] is not None for s in unity["symptoms"])
+
+    expansion = call(
+        server,
+        "expand_graph",
+        {"goals": ["unity.more"], "crisis_goals": ["unity.more"], "save": "2259.12.25"},
+    )
+    assert expansion["goals"][0]["crisis"] is True
+    assert expansion["nodes"] and expansion["key_action_candidates"]
+    assert expansion["date"] == catalogue["date"]
+
+    entries = log_entries(tmp_path)
+    assert [e["tool"] for e in entries] == ["expand_graph", "expand_graph"]
+    assert expansion["expansion_id"] == 2  # the line number of its own turn-log entry
+    assert entries[1]["result"] == expansion
+    assert entries[1]["args"] == {
+        "goals": ["unity.more"],
+        "crisis_goals": ["unity.more"],
+        "save": "2259.12.25",
+    }
+
+
+def test_expand_graph_result_stays_in_budget_for_several_goals(tmp_path, save_dir, monkeypatch):
+    server = graph_server(tmp_path, save_dir, monkeypatch)
+    goals = ["unity.more", "naval_capacity.more", "energy.more"]
+    catalogue = call(server, "expand_graph", {"save": "2259.12.25"})
+    assert set(goals) <= {g["id"] for g in catalogue["goals"]}
+    result = call(server, "expand_graph", {"goals": goals, "save": "2259.12.25"})
+    assert len(json.dumps(result)) <= 41_000, "over the budget: see Expansion.to_dict"
+
+
+def test_expand_graph_errors_are_answers_not_crashes(tmp_path, save_dir, monkeypatch):
+    server = graph_server(tmp_path, save_dir, monkeypatch)
+    unknown = call(server, "expand_graph", {"goals": ["nope.more"], "save": "2259.12.25"})
+    assert "nope.more" in unknown["error"] and "unity.more" in unknown["error"]
+    assert "expansion_id" not in unknown
+    assert [e["result"] for e in log_entries(tmp_path)] == [unknown]
+
+
+def test_expand_graph_without_a_pack_for_the_version_is_an_error(service, monkeypatch):
+    from hlidskjalf.graph.mechanics import GraphMissing
+
+    doc = service.document(service.find("2259.12.25"))
+    monkeypatch.setitem(doc["header"], "game_version", "9.9.9")
+    with pytest.raises(GraphMissing, match="no knowledge pack for v9.9.9"):
+        service.expand_graph(["unity.more"], save="2259.12.25")
 
 
 def test_tools_explain_missing_setup(tmp_path, monkeypatch):

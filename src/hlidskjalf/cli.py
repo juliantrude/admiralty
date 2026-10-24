@@ -55,7 +55,16 @@ def main(argv: list[str] | None = None) -> int:
     compose = briefing.add_parser(
         "compose", help="build solution-graph.json from an expansion and the model's overlay"
     )
-    compose.add_argument("expansion", type=Path, help="JSON of expand_graph")
+    compose.add_argument("expansion", type=Path, nargs="?", help="JSON of expand_graph")
+    compose.add_argument(
+        "--expansion-id",
+        type=int,
+        help="read the expansion from this turn-log entry (the expansion_id of expand_graph) "
+        "instead of a file",
+    )
+    compose.add_argument(
+        "--workspace", type=Path, default=Path.cwd(), help="Campaign Workspace (default: cwd)"
+    )
     compose.add_argument("overlay", type=Path, help="JSON the model wrote")
     compose.add_argument("--out", type=Path, required=True)
     compose.add_argument("--knowledge-root", type=Path, help="default: knowledge/ of the plugin")
@@ -151,6 +160,22 @@ def _load_graph(version: str, root: Path | None):
         raise SystemExit(f"hlidskjalf: {error}") from error
 
 
+def _read_expansion(workspace: Path, expansion_id: int) -> dict:
+    from hlidskjalf.workspace.turnlog import read_entry
+
+    try:
+        entry = read_entry(workspace, expansion_id)
+    except (LookupError, ValueError) as error:
+        raise SystemExit(f"hlidskjalf: cannot read expansion {expansion_id}: {error}") from error
+    result = entry.get("result")
+    if entry.get("tool") != "expand_graph" or not isinstance(result, dict) or "nodes" not in result:
+        raise SystemExit(
+            f"hlidskjalf: turn-log entry {expansion_id} is not an expansion "
+            f"(tool {entry.get('tool')!r}); use the expansion_id of an expand_graph call with goals"
+        )
+    return result
+
+
 def _check_solution(args) -> int:
     from hlidskjalf.graph.solution import validate_solution_graph
 
@@ -167,7 +192,13 @@ def _check_solution(args) -> int:
 def _compose(args) -> int:
     from hlidskjalf.graph.solution import SolutionInvalid, compose
 
-    expansion = _read_json(args.expansion, "expansion")
+    if (args.expansion is None) == (args.expansion_id is None):
+        raise SystemExit("hlidskjalf: give either an expansion file or --expansion-id")
+    expansion = (
+        _read_expansion(args.workspace, args.expansion_id)
+        if args.expansion is None
+        else _read_json(args.expansion, "expansion")
+    )
     overlay = _read_json(args.overlay, "overlay")
     graph = _load_graph(expansion.get("version", "v4.5.2"), args.knowledge_root)
     try:

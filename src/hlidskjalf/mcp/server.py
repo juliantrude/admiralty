@@ -28,6 +28,10 @@ game values yourself. Fair Play: known_empires show only what the Player's intel
 """
 
 
+# Tools whose logged result carries its own turn-log id under this key.
+NUMBERED = {"expand_graph": "expansion_id"}
+
+
 def build_server(workspace: str | Path | None = None, warm_up: bool = False) -> MCPServer:
     root = Path(workspace or Path.cwd())
     server = MCPServer(name="hlidskjalf", instructions=INSTRUCTIONS)
@@ -51,7 +55,12 @@ def build_server(workspace: str | Path | None = None, warm_up: bool = False) -> 
                 result = func(svc, **kwargs)
             except (LookupError, FileNotFoundError, ValueError) as error:
                 result = {"error": str(error)}
-            svc.log(func.__name__, {k: v for k, v in kwargs.items() if v is not None}, result)
+            svc.log(
+                func.__name__,
+                {k: v for k, v in kwargs.items() if v is not None},
+                result,
+                number_key=NUMBERED.get(func.__name__),
+            )
             return result
 
         # The tool's schema must not show the injected service parameter.
@@ -139,6 +148,22 @@ def build_server(workspace: str | Path | None = None, warm_up: bool = False) -> 
         """Diff between two saves of this Campaign (file names or in-game dates; newer
         defaults to the newest): resources, pops, planets gained or lost, wars, Timeline."""
         return svc.compare(older, newer)
+
+    @server.tool()
+    @logged
+    def expand_graph(
+        svc: CampaignService,
+        goals: list[str] | None = None,
+        crisis_goals: list[str] | None = None,
+        save: str | None = None,
+    ) -> dict[str, Any]:
+        """Mechanics Graph for this save. Without goals: the catalogue of every Goal with
+        title, domain and its Symptom metrics resolved. With goals (ids from the catalogue):
+        the expansion into Causes, Remedies and Obstacles, each Obstacle checked against the
+        save, Remedy status, Vicious Circles, ranked Key Action candidates, Playbook Rules,
+        and expansion_id for `hlidskjalf briefing compose`. crisis_goals: the Goals that
+        answer a Crisis (ranked first). Keep to a few Goals per call: results are large."""
+        return svc.expand_graph(goals, crisis_goals, save)
 
     return server
 

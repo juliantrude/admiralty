@@ -12,7 +12,7 @@ import pytest
 import yaml
 from conftest import MID, VULKAN, reference_save
 
-from hlidskjalf.graph.expand import Candidate, expand_graph, rank_key_actions
+from hlidskjalf.graph.expand import Candidate, catalogue, expand_graph, rank_key_actions
 from hlidskjalf.graph.mechanics import MechanicsGraph, validate
 from hlidskjalf.graph.metrics import evaluate, resolve_metric
 
@@ -463,7 +463,9 @@ def test_a_tight_budget_trims_effects_then_clear_obstacle_text(tmp_path):
     ]
     expansion = expand_graph(build(tmp_path, goals, nodes), ["t.g"], EXTRACT)
     assert len(by_id(expansion, "t.c")["effects"]) == 5
-    tight = {n["id"]: n for n in expansion.to_dict(budget=1)["nodes"]}
+    # just under the size with three effects per node: the later, compact steps stay unused
+    budget = len(json.dumps(expansion._render(3))) - 1
+    tight = {n["id"]: n for n in expansion.to_dict(budget=budget)["nodes"]}
     assert len(tight["t.c"]["effects"]) == 3 and tight["t.c"]["effects_more"] == 4
     assert "text" not in tight["t.o"] and "text" in tight["t.r"]
 
@@ -542,3 +544,29 @@ def test_every_goal_expands_on_the_reference_save(reference, real_graph):
         assert out["goals"][0]["symptoms"] is not None
     everything = expand_graph(real_graph, list(real_graph.goals), reference).to_dict()
     assert len(json.dumps(everything)) < 40_000 or True  # measured, not a hard limit
+
+
+def test_catalogue_lists_every_goal_with_resolved_symptoms(tmp_path):
+    goals = [{**goal("g", ["c"]), "symptom_metrics": ["m.a", "m.missing"]}]
+    nodes = [cause("c", remedies=["r"]), remedy("r")]
+    graph = build(tmp_path, goals, nodes)
+    [entry] = catalogue(graph, EXTRACT)
+    assert (entry["id"], entry["domain"], entry["title"]) == ("t.g", "t", "g")
+    assert [(s["metric"], s["value"]) for s in entry["symptoms"]] == [
+        ("m.a", 1),
+        ("m.missing", None),
+    ]
+
+
+def test_compact_form_keeps_what_the_model_must_read(tmp_path):
+    deep = ["c0", "c1", "c2", "c3"]
+    nodes = [
+        cause(n, causes=[deep[i + 1]] if i < 3 else (), remedies=["r"]) for i, n in enumerate(deep)
+    ]
+    nodes += [remedy("r", ["p", "j"]), obstacle("p", PRESENT), obstacle("j", JUDGEMENT)]
+    graph = build(tmp_path, [goal("g", ["c0"])], nodes)
+    expansion = expand_graph(graph, ["t.g"], EXTRACT)
+    compact = {n["id"]: n for n in expansion.to_dict(budget=1)["nodes"]}
+    assert "text" in compact["t.c1"] and "text" not in compact["t.c3"]  # depth 3 and deeper go
+    assert "text" in compact["t.p"] and "text" in compact["t.j"]  # present and judgement stay
+    assert "text" in compact["t.r"]
