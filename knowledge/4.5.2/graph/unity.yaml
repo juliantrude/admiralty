@@ -1,0 +1,186 @@
+version: v4.5.2
+domain: unity
+# Curated by hand from knowledge/4.5.2/generated/unity.yaml. Node text carries no figures:
+# every number lives in the generated facts a node links to (docs/plans/M4.md).
+# `unity.raise_income` is shared: other domains list it as the Remedy of an Obstacle that is
+# only "not enough Unity yet" (see naval_capacity.supremacy_needs_unity).
+goals:
+  - id: unity.more
+    title: Unity income that keeps up with the next Tradition
+    symptom_metrics: [unity.net, traditions.next_cost]
+    causes: [unity.few_producers, unity.weak_multipliers, unity.upkeep_drain]
+
+nodes:
+  - id: unity.few_producers
+    type: cause
+    title: Too few jobs and buildings that produce Unity
+    description: >
+      Unity comes mostly from the Bureaucrat and Politician jobs and from the Unity buildings
+      that tech unlocks. An empire whose Unity income lags the Tradition cost usually has too few
+      staffed Unity jobs for its size.
+    remedies: [unity.raise_income, unity.build_unity_buildings]
+    facts:
+      - unity.job.bureaucrat.produces_unity
+      - unity.job.politician.produces_unity
+
+  - id: unity.weak_multipliers
+    type: cause
+    title: The multipliers on Unity output are small
+    description: >
+      Technologies, ascension perks and civics scale the whole Unity income. With healthy job
+      counts a larger multiplier gains more than another job, and it costs no upkeep.
+    remedies: [unity.research_unity_techs, unity.take_one_vision]
+    facts:
+      - unity.technology.tech_planetary_unification.country_unity_produces_mult
+      - unity.ascension_perk.ap_one_vision.country_unity_produces_mult
+
+  - id: unity.upkeep_drain
+    type: cause
+    title: Edicts and decrees charge Unity upkeep every month
+    description: >
+      Many edicts and decrees are bought with Unity once and then charge an upkeep in Unity for as
+      long as they run. A few running edicts can swallow most of the income that was meant for the
+      next Tradition.
+    remedies: [unity.drop_idle_edicts]
+    facts:
+      - unity.edict.will_to_power.upkeep_unity
+      - unity.edict.grand_fleet.upkeep_unity
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: unity.raise_income
+    type: remedy
+    title: Staff more Bureaucrat and Politician jobs
+    judgement: >
+      The general answer when a step is blocked only because Unity is short. It scales with the
+      empire and has no upkeep of its own, but every pop moved here stops producing something else,
+      so it is cheap with idle pops and a trade-off without them.
+    strength: high
+    speed: high
+    cost: low
+    obstacles: [unity.no_spare_pops, unity.no_unity_job_slot]
+    facts:
+      - unity.job.bureaucrat.produces_unity
+      - unity.job.politician.produces_unity
+
+  - id: unity.build_unity_buildings
+    type: remedy
+    title: Build the Unity buildings
+    judgement: >
+      A flat gain per building that does not need pops beyond the building's own jobs. Each
+      building is gated by a technology and takes a building slot that something else could use,
+      so it pays most on planets with a slot to spare.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [unity.building_locked, unity.no_building_slot]
+    facts:
+      - unity.building.building_heritage_site.produces_unity
+      - unity.building.building_hypercomms_forum.produces_unity
+
+  - id: unity.research_unity_techs
+    type: remedy
+    title: Research the Unity technologies
+    judgement: >
+      Each technology lifts the whole Unity income at once and costs no upkeep. The gain per step is
+      small, and the research competes with every other technology, so it is a slow supplement
+      rather than the main fix.
+    strength: low
+    speed: low
+    cost: medium
+    obstacles: [unity.unity_tech_prerequisites]
+    facts:
+      - unity.technology.tech_planetary_unification.country_unity_produces_mult
+      - unity.technology.tech_repeatable_improved_core_system_cap.country_unity_produces_mult
+
+  - id: unity.take_one_vision
+    type: remedy
+    title: Take the One Vision ascension perk
+    judgement: >
+      The largest single multiplier on the list, but an ascension perk slot is scarce and the other
+      perks compete for it. Worth it when Traditions are the bottleneck for the strategy, not just
+      this Tradition.
+    strength: high
+    speed: medium
+    cost: high
+    obstacles: [unity.no_ascension_slot]
+    facts:
+      - unity.ascension_perk.ap_one_vision.country_unity_produces_mult
+
+  - id: unity.drop_idle_edicts
+    type: remedy
+    title: Let edicts and decrees that no longer pay for themselves lapse
+    judgement: >
+      The fastest saving, since the upkeep stops at once. It loses whatever the edict gave, so keep
+      the ones that fill a real need and drop those left running out of habit.
+    strength: medium
+    speed: high
+    cost: low
+    obstacles: [unity.edict_still_needed]
+    facts:
+      - unity.edict.will_to_power.upkeep_unity
+      - unity.edict.grand_fleet.upkeep_unity
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: unity.no_spare_pops
+    type: obstacle
+    title: No unemployed pops to fill new Unity jobs
+    description: >
+      A job only counts once a pop works it. With no unemployed pops, a new Unity job pulls a
+      worker away from another job.
+    check:
+      metric: pops.unemployed
+      op: "=="
+      compare_to: 0
+
+  - id: unity.no_unity_job_slot
+    type: obstacle
+    title: No free Bureaucrat or Politician job slot
+    description: >
+      The Unity jobs come from districts and buildings. A planet with no free slot for them cannot
+      host another one until it grows or a slot is freed.
+    check: {judgement_only: true}
+
+  - id: unity.building_locked
+    type: obstacle
+    title: The Unity building is not unlocked
+    description: >
+      Each Unity building is unlocked by a technology of the society line, and some also need a
+      branch office or a civic that this empire may not have.
+    check: {judgement_only: true}
+
+  - id: unity.no_building_slot
+    type: obstacle
+    title: No free building slot for another Unity building
+    description: >
+      A building needs a free slot on its planet. A planet with every slot taken has to grow or give
+      one up first.
+    check: {judgement_only: true}
+
+  - id: unity.unity_tech_prerequisites
+    type: obstacle
+    title: The Unity technologies need their prerequisites
+    description: >
+      The Unity technologies sit behind other technologies, and the repeatable one only opens late,
+      so the line has to be researched in order.
+    check:
+      metric: research.net
+      op: "<="
+      compare_to: 0
+
+  - id: unity.no_ascension_slot
+    type: obstacle
+    title: No free ascension perk slot
+    description: >
+      Ascension perks are limited by the slots the empire has unlocked, and every perk taken is a
+      choice against the others.
+    check: {judgement_only: true}
+
+  - id: unity.edict_still_needed
+    type: obstacle
+    title: The edict still serves a purpose
+    description: >
+      An edict that supports a war, a build-up or a growth goal is worth its upkeep while that goal
+      lasts. Dropping it loses the effect at once and buying it again costs Unity.
+    check: {judgement_only: true}

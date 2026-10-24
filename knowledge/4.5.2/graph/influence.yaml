@@ -1,0 +1,202 @@
+version: v4.5.2
+domain: influence
+# Curated by hand from knowledge/4.5.2/generated/influence.yaml. Node text carries no figures:
+# every number lives in the generated facts a node links to (docs/plans/M4.md).
+# The generated facts cover the modifier-driven sources and sinks. Councilors and the ruler are
+# not scanned, so the remedies below are the ones the facts can back.
+goals:
+  - id: influence.positive
+    title: Positive influence income
+    symptom_metrics: [influence.net]
+    causes: [influence.few_sources, influence.big_spending, influence.diplomatic_upkeep]
+
+nodes:
+  - id: influence.few_sources
+    type: cause
+    title: Few steady sources of influence
+    description: >
+      Influence comes from a small set of flat bonuses: ascension perks, decrees, traditions and a
+      few relics and civics. An empire without them lives on the base income alone and runs short as
+      soon as it spends.
+    remedies: [influence.take_force_projection, influence.run_will_to_power, influence.take_colonial_viceroys]
+    facts:
+      - influence.ascension_perk.ap_galactic_force_projection.country_power_projection_influence_produces_add
+      - influence.edict.will_to_power.country_ambition_influence_produces_add
+
+  - id: influence.big_spending
+    type: cause
+    title: Projects and buildings that are paid in influence
+    description: >
+      Megastructures, orbital rings and several starbase modules are bought with influence. A run of
+      them in a short time drains the stockpile even when the monthly income is positive.
+    remedies: [influence.stagger_projects]
+    facts:
+      - influence.megastructure.orbital_ring.cost_influence
+      - influence.megastructure.hyper_relay.cost_influence
+
+  - id: influence.diplomatic_upkeep
+    type: cause
+    title: Diplomatic relations charge influence upkeep
+    description: >
+      Pacts, subjects and federations each charge an upkeep in influence. Their scale grows with the
+      number of relations, and reductions apply to the whole bill at once.
+    remedies: [influence.adopt_diplomacy_tradition, influence.research_federation_code]
+    facts:
+      - influence.tradition.tr_diplomacy_adopt.diplomacy_influence_upkeep_mult
+      - influence.technology.tech_federation_code.diplomacy_influence_upkeep_mult
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: influence.take_force_projection
+    type: remedy
+    title: Take the Galactic Force Projection ascension perk
+    judgement: >
+      A permanent flat gain that costs nothing monthly. An ascension perk slot is scarce, so it is a
+      choice against the other perks and only worth it when influence is the standing bottleneck.
+    strength: medium
+    speed: medium
+    cost: high
+    obstacles: [influence.no_ascension_slot]
+    facts:
+      - influence.ascension_perk.ap_galactic_force_projection.country_power_projection_influence_produces_add
+
+  - id: influence.run_will_to_power
+    type: remedy
+    title: Run the Will to Power decree
+    judgement: >
+      A large flat gain while it runs. The decree is bought in Unity and charges Unity upkeep, so it
+      moves the shortage from influence to Unity. Fits when Unity is plentiful and influence is not.
+    strength: high
+    speed: high
+    cost: medium
+    obstacles: [influence.decree_locked, influence.decree_costs_unity]
+    facts:
+      - influence.edict.will_to_power.country_ambition_influence_produces_add
+      - unity.edict.will_to_power.cost_unity
+      - unity.edict.will_to_power.upkeep_unity
+
+  - id: influence.take_colonial_viceroys
+    type: remedy
+    title: Take the Colonial Viceroys tradition
+    judgement: >
+      A small permanent gain that also moves the Domination tree forward. It is cheap in effort but
+      is a Tradition, so it competes with every other Tradition for the Unity that pays for it.
+    strength: low
+    speed: low
+    cost: medium
+    obstacles: [influence.viceroys_needs_unity]
+    facts:
+      - influence.tradition.tr_domination_colonial_viceroys.country_traditions_influence_produces_add
+
+  - id: influence.stagger_projects
+    type: remedy
+    title: Spread influence-priced projects over time
+    judgement: >
+      Costs nothing but patience. Starting one project at a time keeps the stockpile from hitting
+      zero, which is the case where influence stops being a planning resource and becomes a penalty.
+    strength: medium
+    speed: high
+    cost: low
+    obstacles: [influence.project_cannot_wait]
+    facts:
+      - influence.megastructure.orbital_ring.cost_influence
+      - influence.megastructure.hyper_relay.cost_influence
+
+  - id: influence.adopt_diplomacy_tradition
+    type: remedy
+    title: Adopt the Diplomacy tradition tree
+    judgement: >
+      Cuts the diplomatic upkeep for good, and the larger the web of relations, the more it saves.
+      It is a Tradition, paid in Unity, so it only makes sense for an empire with a standing
+      diplomatic bill.
+    strength: medium
+    speed: low
+    cost: medium
+    obstacles: [influence.diplomacy_needs_unity]
+    facts:
+      - influence.tradition.tr_diplomacy_adopt.diplomacy_influence_upkeep_mult
+
+  - id: influence.research_federation_code
+    type: remedy
+    title: Research Federation Code
+    judgement: >
+      A further cut to the same diplomatic bill, with no upkeep. Useful mainly for federation
+      members, and it competes with other technologies for research output.
+    strength: low
+    speed: low
+    cost: medium
+    obstacles: [influence.federation_code_prerequisites]
+    facts:
+      - influence.technology.tech_federation_code.diplomacy_influence_upkeep_mult
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: influence.no_ascension_slot
+    type: obstacle
+    title: No free ascension perk slot
+    description: >
+      Ascension perks are limited by the slots the empire has unlocked, and every perk taken is a
+      choice against the others. The perk also needs its prerequisite technology.
+    check: {judgement_only: true}
+
+  - id: influence.decree_locked
+    type: obstacle
+    title: The decree is not unlocked yet
+    description: >
+      The ambition decrees open with a late technology, so an empire that has not researched it
+      cannot use them at all.
+    check: {judgement_only: true}
+
+  - id: influence.decree_costs_unity
+    type: obstacle
+    title: Not enough Unity to buy and keep the decree
+    description: >
+      The decree is paid in Unity, once to start it and then every month while it runs. A weak Unity
+      income makes it a bad trade, and the empire is then better off raising Unity first.
+    check:
+      metric: unity.net
+      op: "<="
+      compare_to: 0
+    remedies: [unity.raise_income]
+
+  - id: influence.viceroys_needs_unity
+    type: obstacle
+    title: Not enough Unity banked for the next Tradition
+    description: >
+      A Tradition is paid in Unity. While the stockpile is below the cost of the next one, this step
+      cannot be taken.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+    remedies: [unity.raise_income]
+
+  - id: influence.diplomacy_needs_unity
+    type: obstacle
+    title: Not enough Unity banked to adopt the tradition tree
+    description: >
+      Adopting a tradition tree is paid in Unity. While the stockpile is below the cost of the next
+      Tradition, the tree cannot be adopted.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+    remedies: [unity.raise_income]
+
+  - id: influence.project_cannot_wait
+    type: obstacle
+    title: The project cannot wait for the stockpile to refill
+    description: >
+      Some projects have a deadline, such as a war or a threatened border. Waiting then costs more
+      than the influence it saves.
+    check: {judgement_only: true}
+
+  - id: influence.federation_code_prerequisites
+    type: obstacle
+    title: Federation Code needs its prerequisites
+    description: >
+      The technology sits behind other technologies and is slow while research output is low.
+    check:
+      metric: research.net
+      op: "<="
+      compare_to: 0

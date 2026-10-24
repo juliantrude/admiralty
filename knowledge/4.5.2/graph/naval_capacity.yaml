@@ -136,6 +136,7 @@ nodes:
       metric: unity.stockpile
       op: "<"
       compare_to: {metric: traditions.next_cost}
+    remedies: [unity.raise_income]
 
   - id: naval_capacity.tradition_slot_taken
     type: obstacle

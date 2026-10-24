@@ -1,0 +1,173 @@
+version: v4.5.2
+domain: research
+# Curated by hand from knowledge/4.5.2/generated/research.yaml. Node text carries no figures:
+# every number lives in the generated facts a node links to (docs/plans/M4.md).
+goals:
+  - id: research.more
+    title: More research output
+    symptom_metrics: [research.net]
+    causes: [research.few_researchers, research.weak_labs, research.slow_research_speed]
+
+nodes:
+  - id: research.few_researchers
+    type: cause
+    title: Too few staffed researcher jobs
+    description: >
+      Research comes mainly from the Physicist, Biologist and Engineer jobs, one for each of the
+      three fields. An empire whose research lags usually has too few of them staffed for its size.
+    remedies: [research.staff_researchers]
+    facts:
+      - research.job.physicist.produces_physics_research
+      - research.job.biologist.produces_society_research
+      - research.job.engineer.produces_engineering_research
+
+  - id: research.weak_labs
+    type: cause
+    title: The lab buildings add little per researcher
+    description: >
+      The lab buildings add a bonus for every researcher on the planet. Where many researchers share
+      a planet, an upgraded lab gains more than another researcher.
+    remedies: [research.upgrade_labs]
+    facts:
+      - research.building.building_physics_lab_2.planet_physicists_physics_research_produces_add
+      - research.building.building_biolab_2.planet_biologists_society_research_produces_add
+
+  - id: research.slow_research_speed
+    type: cause
+    title: Technologies are researched slowly for the output there is
+    description: >
+      Output and speed are different levers. A research speed multiplier shortens every technology
+      without adding output, and a tradition can add one for the whole empire.
+    remedies: [research.research_speed_techs, research.finish_discovery]
+    facts:
+      - research.technology.tech_sapient_ai.all_technology_research_speed
+      - research.tradition.tr_discovery_finish.all_technology_research_speed
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: research.staff_researchers
+    type: remedy
+    title: Staff more Physicist, Biologist and Engineer jobs
+    judgement: >
+      The direct fix and the one that scales with the empire. It needs pops and job slots, so it is
+      cheap when pops are idle and a trade-off against other jobs when they are not.
+    strength: high
+    speed: high
+    cost: low
+    obstacles: [research.no_spare_pops, research.no_researcher_slot]
+    facts:
+      - research.job.physicist.produces_physics_research
+      - research.job.biologist.produces_society_research
+      - research.job.engineer.produces_engineering_research
+
+  - id: research.upgrade_labs
+    type: remedy
+    title: Build and upgrade the lab buildings
+    judgement: >
+      Each lab adds output for every researcher of its field on the planet, so it pays most on
+      planets with many researchers. A modest gain per building, with a build cost and a building
+      slot used.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [research.lab_locked, research.no_lab_slot]
+    facts:
+      - research.building.building_physics_lab_2.planet_physicists_physics_research_produces_add
+      - research.building.building_biolab_2.planet_biologists_society_research_produces_add
+      - research.building.building_nanolab_2.planet_engineers_engineering_research_produces_add
+
+  - id: research.research_speed_techs
+    type: remedy
+    title: Research the technologies that raise research speed
+    judgement: >
+      Each one shortens every later technology at once and costs no upkeep. The gain per step is
+      small, and it is a reason to take these early rather than late.
+    strength: low
+    speed: low
+    cost: medium
+    obstacles: [research.speed_tech_prerequisites]
+    facts:
+      - research.technology.tech_sapient_ai.all_technology_research_speed
+      - research.technology.tech_administrative_ai.all_technology_research_speed
+
+  - id: research.finish_discovery
+    type: remedy
+    title: Finish the Discovery tradition tree
+    judgement: >
+      The finishing bonus speeds every technology, and the tree's earlier Traditions help with
+      exploration on the way. It is a chain of Traditions paid in Unity, so it only fits when the
+      Unity income can carry the whole tree.
+    strength: medium
+    speed: low
+    cost: high
+    obstacles: [research.discovery_needs_unity, research.discovery_tree_unfinished]
+    facts:
+      - research.tradition.tr_discovery_finish.all_technology_research_speed
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: research.no_spare_pops
+    type: obstacle
+    title: No unemployed pops to fill new researcher jobs
+    description: >
+      A job only counts once a pop works it. With no unemployed pops, a new researcher job pulls a
+      worker away from another job.
+    check:
+      metric: pops.unemployed
+      op: "=="
+      compare_to: 0
+
+  - id: research.no_researcher_slot
+    type: obstacle
+    title: No free researcher job slot
+    description: >
+      Researcher jobs come from districts and from buildings. A planet with no free district or
+      building slot cannot host another one until it grows or a slot is freed.
+    check: {judgement_only: true}
+
+  - id: research.lab_locked
+    type: obstacle
+    title: The upgraded lab is not unlocked
+    description: >
+      Each lab level is unlocked by the technology of its field, and the higher levels also need an
+      upgraded capital building on the planet.
+    check: {judgement_only: true}
+
+  - id: research.no_lab_slot
+    type: obstacle
+    title: No free building slot for another lab
+    description: >
+      A lab needs a free building slot on its planet. A planet with every slot taken has to grow or
+      give one up first.
+    check: {judgement_only: true}
+
+  - id: research.speed_tech_prerequisites
+    type: obstacle
+    title: The speed technologies need their prerequisites
+    description: >
+      The technologies that raise research speed sit behind other technologies, so the line has to
+      be researched in order, and they come slowly when research output is low.
+    check:
+      metric: research.net
+      op: "<="
+      compare_to: 0
+
+  - id: research.discovery_needs_unity
+    type: obstacle
+    title: Not enough Unity banked for the next Tradition
+    description: >
+      Each Tradition of the tree is paid in Unity. While the stockpile is below the cost of the next
+      one, the tree cannot move forward.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+    remedies: [unity.raise_income]
+
+  - id: research.discovery_tree_unfinished
+    type: obstacle
+    title: The Discovery tree has Traditions left to take
+    description: >
+      The finishing bonus only arrives once every Tradition of the tree is taken, so a tree that was
+      adopted but not completed gives none of it.
+    check: {judgement_only: true}
