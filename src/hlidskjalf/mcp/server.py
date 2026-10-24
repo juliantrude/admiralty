@@ -165,6 +165,23 @@ def build_server(workspace: str | Path | None = None, warm_up: bool = False) -> 
         answer a Crisis (ranked first). Keep to a few Goals per call: results are large."""
         return svc.expand_graph(goals, crisis_goals, save)
 
+    @server.tool()
+    @logged
+    def retrospective(
+        svc: CampaignService,
+        since: str | None = None,
+        until: str | None = None,
+        save: str | None = None,
+    ) -> dict[str, Any]:
+        """Muninn's material for a look back, from the archive of every save that was read:
+        per archived in-game date the series (planets, pops, power, naval capacity, resources,
+        known empires), per interval the changes with percentages and years, the merged Timeline,
+        boundary candidates for epochs (exact from the Timeline, or between two archived dates),
+        finding candidates and, in Consulting, the Goals' Symptoms at both ends of the frame.
+        since: in-game date (YYYY.MM.DD) or "all"; default the last two archived dates.
+        until: in-game date. Dates are moved to archived dates and the result names them."""
+        return svc.retrospective(since, until, save)
+
     return server
 
 

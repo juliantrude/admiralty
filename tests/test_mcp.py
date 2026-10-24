@@ -107,7 +107,7 @@ def test_tools_log_every_result(tmp_path, save_dir, monkeypatch):
     tools = {t.name: t for t in asyncio.run(server.list_tools())}
     assert set(tools) == {
         "campaign_status", "empire_overview", "planets", "planet", "economy",
-        "military", "progression", "timeline", "compare", "expand_graph",
+        "military", "progression", "timeline", "compare", "expand_graph", "retrospective",
     }  # fmt: skip
     assert "svc" not in json.dumps(tools["planet"].input_schema)
 

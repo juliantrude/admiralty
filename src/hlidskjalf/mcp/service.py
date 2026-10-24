@@ -17,7 +17,9 @@ from hlidskjalf.extract import empire as data
 from hlidskjalf.extract.diff import diff_extracts
 from hlidskjalf.extract.snapshot import Extractor, Snapshot
 from hlidskjalf.graph.expand import catalogue, expand_graph
-from hlidskjalf.graph.mechanics import MechanicsGraph
+from hlidskjalf.graph.mechanics import GraphInvalid, GraphMissing, MechanicsGraph
+from hlidskjalf.muninn.frame import load_campaign, resolve_frame
+from hlidskjalf.muninn.result import build_result, goal_symptoms
 from hlidskjalf.workspace.archive import Archive
 from hlidskjalf.workspace.config import CampaignConfig
 from hlidskjalf.workspace.turnlog import count_lines, turn_log_path
@@ -269,6 +271,51 @@ class CampaignService:
         result["warnings"] = [*doc["header"]["warnings"], *result["warnings"]]
         result["expansion_id"] = None  # the turn-log line number, filled in by `log`
         return result
+
+    def retrospective(
+        self, since: str | None = None, until: str | None = None, save: str | None = None
+    ) -> dict[str, Any]:
+        """Muninn's material for a time frame, from the archive. The newest save is read first
+        through the normal path so that it is archived; without any save on disk the archive
+        alone answers. A save older than the newest archived date is read but the frame stays
+        on the archive, and the result warns."""
+        warnings: list[str] = []
+        try:
+            ref = self.find(save)
+        except FileNotFoundError:
+            if save:
+                raise
+            ref = None
+        if ref is not None:
+            read = self.document(ref)["header"]["date"]
+        loaded = load_campaign(self.archive)
+        if ref is None:
+            newest = loaded.dates[-1] if loaded.dates else "none"
+            warnings.append(
+                f"No save in {self.config.save_dir}: the archive alone answers; its newest "
+                f"in-game date is {newest}."
+            )
+        elif loaded.dates and read < loaded.dates[-1]:
+            warnings.append(
+                f"{ref.path.name} (in-game {read}) is older than the newest archived date "
+                f"{loaded.dates[-1]}; the frame ends there. Read the newest save to refresh."
+            )
+        warnings.extend(self._archive_warnings.values())
+        frame = resolve_frame(loaded.dates, since, until)
+        goals = None
+        if self.config.mode == "consulting":
+            goals = self._goal_symptoms(loaded.documents[frame.start], loaded.documents[frame.end])
+        return build_result(
+            loaded, frame, mode=self.config.mode, god_mode=self.config.god_mode, goals=goals,
+            warnings=warnings,
+        )  # fmt: skip
+
+    def _goal_symptoms(self, first: dict[str, Any], last: dict[str, Any]) -> dict[str, Any]:
+        """`goals` of a retrospective; a missing or bad knowledge pack is an error in here only."""
+        try:
+            return goal_symptoms(self.graph(last["header"]["game_version"]), first, last)
+        except (GraphMissing, GraphInvalid) as error:
+            return {"error": str(error)}
 
     # --- turn log ---------------------------------------------------------------------------
 
