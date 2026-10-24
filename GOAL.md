@@ -81,7 +81,7 @@ M6 (plan: `docs/plans/M6.md`):
 - [x] 1. Plan document
 - [x] 2. Libraries and driver (pinned versions, `tools/fetch_engine_libs.py`, `tests/engine_driver.py`, pins test)
 - [x] 3. Page core (`engine/index.html`, `engine.js`, `engine.css`: data loading, layered layout, deterministic `engine-state`)
-- [ ] 4. Encodings and panel (circles, model nodes, status, legend, header, lists, click panel, textContent only)
+- [x] 4. Encodings and panel (circles, model nodes, status, legend, header, lists, click panel, textContent only)
 - [ ] 5. Bundle and `briefing view` (`tools/bundle_engine.py`, `engine/dist/index.html`, CLI, "model never writes HTML" static test)
 - [ ] 6. Verification (real Solution Graph screenshot looked at, `-m network` test, `docs/awaiting-julian.md` Artifact section)
 
@@ -90,15 +90,15 @@ M7, M8: plan increments to be written (see `docs/build-plan.md`).
 ## Status
 
 STATUS: READY
-**Next action:** M6 increment 4 (see `docs/plans/M6.md`): encodings and panel in `engine/engine.js` / `engine.css`. Circle colours (palette, per circle in circle order,
-members + inner edges, break-point marker), model-node dashed border and "model" badge, Remedy status (actionable solid / pending hatched / obstructed grey), Obstacle
-`check_state` accents, Goal `crisis` heavy outline, text labels so colour is never alone, legend with only the encodings present, header (empire, date, game version,
-counts), ranked Key Action list and `pruned` list below the graph, click panel (type, title, text, status, ratings, check_state, evidence, rule ids, `reason`, serves,
-edges in/out; Key Action `rank`/`serves`/`unlocks`/`why`), textContent only. Extend `engine-state` with the header/legend text, circle colours, panel state; add a
-click seam the driver can call (dispatch the page's own event). Tests in `tests/test_engine_page.py` (fixtures `circle_graph`, `chain_graph` there; add a model-node,
-a pending/obstructed and a `<script>`-in-evidence fixture): circles/model/click/no-HTML. Note: `.gitignore` has `dist/`, so increment 5 must un-ignore `engine/dist/`
-(`!engine/dist/`) before committing the bundle. Known drawing quirk to look at in increment 6: with a Vicious Circle ELK reverses a back edge, so an Obstacle can land
-in the first layer left of its Goal's Causes (seen on the `circle` fixture); acceptable per plan, check on the real graph.
+**Next action:** M6 increment 5 (see `docs/plans/M6.md`): `tools/bundle_engine.py` (index.html with `engine.js` and `engine.css` inlined, deterministic, no local paths;
+CDN script tags stay), `engine/dist/index.html` committed (`.gitignore` has `dist/`: add `!engine/dist/` or un-ignore `engine/dist/`; a test fails when the committed bundle is stale),
+CLI `hlidskjalf briefing view <solution-graph.json> [--port N]` (copy bundle + JSON to a temp dir, stdlib `http.server` on 127.0.0.1 only, random free port, prints URL; test: 200 for
+page and JSON, path outside the directory refused, bound to 127.0.0.1), static test "model never writes HTML" (no skill tells the model to write .html/.js/.css; consult skill outputs only
+the overlay and the two CLI commands; `compose` output with tags shown as text through the page is already covered in `tests/test_engine_encodings.py`), and a test that the bundled
+and the unbundled page give the same `engine-state`. Driver note: `engine_dom(after_ready=...)` injects its hook before `<script src="engine.js">`; for the bundle (inline script) make the
+hook insertion work there too (insert before the first inline `<script>` of the engine, or before `</body>`-adjacent marker). Known quirks to look at in increment 6: with a Vicious Circle ELK
+reverses a back edge so an Obstacle can land left of its Goal's Causes; at `fit` the labels of a ~25 node graph are small (font 11 scaled down), check on the real graph whether a minimum
+zoom with scrolling is better; the first Key Action of the unfocused list uses `value=rank`.
 **Carried into M7 (from M5 verification):** the crude "every number is in a tool result" check flags sums the model computes itself (230.36 = 88 + 74.77 +
 67.59 research); the M7 hook must decide whether derived sums are allowed (e.g. only with the addends shown) rather than copy the regex.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
@@ -261,3 +261,14 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   and existing tests unchanged), `dump_dom(files=)`, `embed_graph`, `render_engine`. `tests/test_engine_page.py` (26 tests: fixtures validate against the schema, pins on
   the real page, no HTML-inserting API in `engine.js`, layers, no overlap, identical render incl. shuffled input, date/empire change nothing, size function, 8 bad-data
   cases, non-JSON, no data -> picker). Tests 404 passed / 31 skipped (243 s), ruff clean
+- 2026-10-24 — M6 increment 4: encodings and panel in `engine/engine.js`, `engine.css`, `index.html`. Pure functions `circleInfo` (Okabe-Ito palette without yellow/black, per circle
+  in circle order), `tagOf` (second label line in words: `model`, type, horizon, `CRISIS`, status/check_state, `⚑ break point`), `headerOf`, `legendOf` (only encodings that occur),
+  `panelOf`/`circlePanelOf` (only JSON fields plus edges in/out and Goals served derived from the edges). Node size now comes from title and tag. Circle members and inner edges take the
+  circle colour, break point has a double outline, model nodes dashed, pending Remedy hatched (linear-gradient stripes), obstructed grey, present Obstacle red with red edge, clear muted,
+  unknown/judgement dotted, Crisis Goal heavy outline; Key Action `serves` shown as dashed edges on selection (added after layout, not part of it). Header, legend, ranked Key Action list and
+  `pruned` list are text-only DOM; click seams `HlidskjalfEngine.click(id)` / `clickBackground()` emit the page's own `tap`, the page fires `engine-ready` after layout and `engine-state`
+  gains header, legend, circles, key_actions, pruned, selected, panel. Driver: `engine_dom(after_ready=)`. Tests: `tests/test_engine_encodings.py` (15: circle colours/inner edges, break
+  point, legend circle click, model marker, statuses and exact legend list, header/lists, list click, panel contents, evidence strings unchanged, click replace/clear, markup shown as text
+  with identical element set). Existing test `test_a_different_date_or_empire_does_not_move_a_node` renamed `..._changes_only_the_header` (assertion now: header differs, rest of the
+  state equal; required because the header is now part of the state, as the plan says); the circle fixture's members now hold the whole SCC (obstacles included, as `expand_graph` emits).
+  Screenshot of a merged fixture looked at (no defects in encodings; labels small at fit zoom, noted for increment 6). Tests 419 passed / 31 skipped (268 s), ruff clean

@@ -7,9 +7,10 @@
 (function () {
   const TITLE_MAX = 40;
   const NODE_HEIGHT = 40;
-  const NODE_MIN_WIDTH = 96;
+  const NODE_MIN_WIDTH = 132;
   const NODE_MAX_WIDTH = 320;
   const CHAR_WIDTH = 7;
+  const TAG_CHAR_WIDTH = 6;
   const NODE_PADDING = 20;
   const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
   const EDGE_KINDS = ["cause", "remedy", "obstacle"];
@@ -22,9 +23,175 @@
     return chars.length > TITLE_MAX ? chars.slice(0, TITLE_MAX - 1).join("") + "…" : chars.join("");
   }
 
-  function nodeSize(title) {
-    const width = NODE_PADDING + CHAR_WIDTH * Array.from(nodeLabel(title)).length;
+  /** Size from the visible title and the tag line alone: no DOM measuring, so every machine gets the same layout. */
+  function nodeSize(title, tag) {
+    const titleWidth = CHAR_WIDTH * Array.from(nodeLabel(title)).length;
+    const tagWidth = TAG_CHAR_WIDTH * Array.from(String(tag || "")).length;
+    const width = NODE_PADDING + Math.max(titleWidth, tagWidth);
     return { width: Math.min(NODE_MAX_WIDTH, Math.max(NODE_MIN_WIDTH, width)), height: NODE_HEIGHT };
+  }
+
+  // Colour-blind-safe hues (Okabe-Ito without yellow and black), one per Vicious Circle in circle order.
+  const CIRCLE_PALETTE = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9"];
+  const TYPE_FILL = { goal: "#e8f0fe", cause: "#fff4e0", remedy: "#e6f4ea", obstacle: "#fde8e8" };
+  const TYPE_NAME = { goal: "Goal", cause: "Cause", remedy: "Remedy", obstacle: "Obstacle" };
+  const BORDER = "#5b6573";
+  const CRISIS_BORDER = "#8a1c1c";
+  const PRESENT_RED = "#c0392b";
+
+  /** Circle id -> colour, and node id -> circle, both from circle order in the data. */
+  function circleInfo(doc) {
+    const color = new Map();
+    const circleOf = new Map();
+    doc.circles.forEach((circle, index) => {
+      color.set(circle.id, CIRCLE_PALETTE[index % CIRCLE_PALETTE.length]);
+      for (const member of circle.members) if (!circleOf.has(member)) circleOf.set(member, circle.id);
+    });
+    return { color, circleOf };
+  }
+
+  /** The second label line: type and state in words, so colour is never the only signal. */
+  function tagOf(node, breakPoint) {
+    const parts = [];
+    if (node.source === "model") parts.push("model");
+    parts.push(node.type);
+    if (node.type === "goal") {
+      if (node.horizon) parts.push(node.horizon);
+      if (node.crisis) parts.push("CRISIS");
+    }
+    if (node.type === "remedy" && node.status) parts.push(node.status);
+    if (node.type === "obstacle" && node.check_state) parts.push(node.check_state);
+    if (breakPoint) parts.push("\u2691 break point");
+    return parts.join(" \u00b7 ");
+  }
+
+  function headerOf(doc) {
+    const counts = {
+      nodes: doc.nodes.length,
+      model_nodes: doc.nodes.filter((n) => n.source === "model").length,
+      circles: doc.circles.length,
+      key_actions: doc.key_actions.length,
+      pruned: doc.pruned.length,
+    };
+    const text =
+      `${doc.empire} \u00b7 ${doc.date} \u00b7 ${doc.game_version} \u00b7 ${counts.nodes} nodes ` +
+      `(${counts.model_nodes} model) \u00b7 ${counts.circles} Vicious Circles \u00b7 ` +
+      `${counts.key_actions} Key Actions \u00b7 ${counts.pruned} pruned`;
+    return { empire: doc.empire, date: doc.date, game_version: doc.game_version, counts, text };
+  }
+
+  /** Exactly the encodings that occur in this graph, each with its words. */
+  function legendOf(doc) {
+    const { color } = circleInfo(doc);
+    const entries = [];
+    const types = new Set(doc.nodes.map((n) => n.type));
+    for (const type of NODE_TYPES) {
+      if (types.has(type)) entries.push({ id: `type:${type}`, label: TYPE_NAME[type], fill: TYPE_FILL[type] });
+    }
+    const remedyStatus = { actionable: "solid", pending: "hatched", obstructed: "grey" };
+    for (const status of Object.keys(remedyStatus)) {
+      if (doc.nodes.some((n) => n.type === "remedy" && n.status === status)) {
+        entries.push({
+          id: `status:${status}`,
+          label: `Remedy ${status} (${remedyStatus[status]})`,
+          fill: TYPE_FILL.remedy,
+          hatched: status === "pending",
+          grey: status === "obstructed",
+        });
+      }
+    }
+    const checkLook = {
+      present: "red line into it",
+      clear: "muted",
+      unknown: "dotted border",
+      judgement: "dotted border",
+    };
+    for (const state of Object.keys(checkLook)) {
+      if (doc.nodes.some((n) => n.type === "obstacle" && n.check_state === state)) {
+        entries.push({
+          id: `check:${state}`,
+          label: `Obstacle ${state} (${checkLook[state]})`,
+          fill: TYPE_FILL.obstacle,
+          border: state === "present" ? PRESENT_RED : BORDER,
+          borderStyle: state === "unknown" || state === "judgement" ? "dotted" : "solid",
+          muted: state === "clear",
+        });
+      }
+    }
+    if (doc.nodes.some((n) => n.type === "goal" && n.crisis)) {
+      entries.push({ id: "crisis", label: "Crisis Goal (heavy outline)", fill: TYPE_FILL.goal, border: CRISIS_BORDER, heavy: true });
+    }
+    if (doc.nodes.some((n) => n.source === "model")) {
+      entries.push({ id: "model", label: "Added by the model (dashed border, \u201cmodel\u201d label)", fill: "#ffffff", borderStyle: "dashed" });
+    }
+    for (const circle of doc.circles) {
+      entries.push({
+        id: `circle:${circle.id}`,
+        label: `Vicious Circle ${circle.id} (click selects its members)`,
+        circle: circle.id,
+        border: color.get(circle.id),
+        heavy: true,
+      });
+    }
+    if (doc.circles.some((c) => c.break_point)) {
+      entries.push({ id: "break_point", label: "\u2691 break point of a Vicious Circle (double outline)", fill: "#ffffff", doubleOutline: true });
+    }
+    return entries;
+  }
+
+  /** What the detail panel shows for a node: only fields that are in the JSON, plus links derived from its edges. */
+  function panelOf(doc, id) {
+    const node = doc.nodes.find((n) => n.id === id);
+    if (!node) return null;
+    const title = (nodeId) => (doc.nodes.find((n) => n.id === nodeId) || { title: nodeId }).title;
+    const ref = (nodeId) => ({ id: nodeId, title: title(nodeId) });
+    const panel = { kind: "node", id: node.id, type: node.type, source: node.source, title: node.title };
+    for (const field of ["text", "horizon", "crisis", "status", "ratings", "check_state", "evidence", "rules", "reason"]) {
+      if (node[field] !== undefined) panel[field] = node[field];
+    }
+    const action = doc.key_actions.find((a) => a.node === id);
+    if (action) {
+      panel.rank = action.rank;
+      panel.why = action.why;
+      panel.unlocks = action.unlocks.map(ref);
+      panel.serves = action.serves.map(ref);
+    } else if (node.type !== "goal") {
+      const goals = new Set();
+      const seen = new Set([id]);
+      const queue = [id];
+      while (queue.length) {
+        const current = queue.shift();
+        for (const edge of doc.edges) {
+          if (edge.to !== current || seen.has(edge.from)) continue;
+          seen.add(edge.from);
+          queue.push(edge.from);
+          if (doc.nodes.find((n) => n.id === edge.from).type === "goal") goals.add(edge.from);
+        }
+      }
+      panel.serves = [...goals].sort().map(ref);
+    }
+    const label = (edge, other) => ({ ...ref(other), kind: edge.kind });
+    panel.edges_in = doc.edges.filter((e) => e.to === id).sort(byEdge).map((e) => label(e, e.from));
+    panel.edges_out = doc.edges.filter((e) => e.from === id).sort(byEdge).map((e) => label(e, e.to));
+    const circle = doc.circles.find((c) => c.members.includes(id));
+    if (circle) {
+      panel.circle = circle.id;
+      panel.break_point = circle.break_point === id;
+    }
+    return panel;
+  }
+
+  function circlePanelOf(doc, circleId) {
+    const circle = doc.circles.find((c) => c.id === circleId);
+    if (!circle) return null;
+    const title = (nodeId) => (doc.nodes.find((n) => n.id === nodeId) || { title: nodeId }).title;
+    return {
+      kind: "circle",
+      id: circle.id,
+      title: `Vicious Circle ${circle.id}`,
+      members: circle.members.map((id) => ({ id, title: title(id) })),
+      break_point: circle.break_point ? { id: circle.break_point, title: title(circle.break_point) } : null,
+    };
   }
 
   /** The first reason the document cannot be drawn, or null. */
@@ -69,17 +236,36 @@
 
   /** Cytoscape elements in sorted order, so the input order of the JSON cannot change the layout. */
   function toElements(doc) {
+    const { color, circleOf } = circleInfo(doc);
+    const breakPoints = new Set(doc.circles.map((c) => c.break_point).filter(Boolean));
+    const nodeById = new Map(doc.nodes.map((n) => [n.id, n]));
     const nodes = [...doc.nodes].sort(byId).map((node) => {
-      const size = nodeSize(node.title);
-      return {
-        group: "nodes",
-        data: { id: node.id, type: node.type, label: nodeLabel(node.title), width: size.width, height: size.height },
+      const tag = tagOf(node, breakPoints.has(node.id));
+      const size = nodeSize(node.title, tag);
+      const data = {
+        id: node.id,
+        type: node.type,
+        label: `${nodeLabel(node.title)}\n${tag}`,
+        tag,
+        width: size.width,
+        height: size.height,
+        model: node.source === "model",
+        breakPoint: breakPoints.has(node.id),
       };
+      if (node.type === "remedy") data.status = node.status;
+      if (node.type === "obstacle") data.checkState = node.check_state;
+      if (node.type === "goal") data.crisis = node.crisis === true;
+      if (circleOf.has(node.id)) data.circleColor = color.get(circleOf.get(node.id));
+      return { group: "nodes", data };
     });
-    const edges = [...doc.edges].sort(byEdge).map((edge) => ({
-      group: "edges",
-      data: { id: `${edge.from}>${edge.to}`, source: edge.from, target: edge.to, kind: edge.kind },
-    }));
+    const edges = [...doc.edges].sort(byEdge).map((edge) => {
+      const data = { id: `${edge.from}>${edge.to}`, source: edge.from, target: edge.to, kind: edge.kind };
+      const target = nodeById.get(edge.to);
+      if (edge.kind === "obstacle" && target.check_state) data.accent = target.check_state;
+      const circle = circleOf.get(edge.from);
+      if (circle !== undefined && circle === circleOf.get(edge.to)) data.circleColor = color.get(circle);
+      return { group: "edges", data };
+    });
     return [...nodes, ...edges];
   }
 
@@ -124,6 +310,7 @@
   // --- rendering ----------------------------------------------------------------------------------
 
   let cy = null;
+  let current = null; // { doc, panel, selected: [ids] } of the graph on screen
 
   function writeState(state) {
     document.getElementById("engine-state").textContent = JSON.stringify(state);
@@ -139,27 +326,87 @@
     return { ok: false, error, nodes: [], edges: [] };
   }
 
-  function stateOf(cyInstance) {
+  function stateOf(cyInstance, doc) {
+    const circleColors = new Map(circleInfo(doc).color);
     const nodes = cyInstance
       .nodes()
       .map((node) => {
         const pos = node.position();
-        return {
+        const state = {
           id: node.id(),
           type: node.data("type"),
           x: round(pos.x),
           y: round(pos.y),
           width: node.data("width"),
           height: node.data("height"),
+          tag: node.data("tag"),
+          model: node.data("model"),
+          break_point: node.data("breakPoint"),
+          color: node.data("circleColor") || null,
         };
+        for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"]]) {
+          if (node.data(field) !== undefined) state[key] = node.data(field);
+        }
+        return state;
       })
       .sort(byId);
     const edges = cyInstance
       .edges()
-      .map((edge) => ({ from: edge.data("source"), to: edge.data("target"), kind: edge.data("kind") }))
+      .not(".serves")
+      .map((edge) => ({
+        from: edge.data("source"),
+        to: edge.data("target"),
+        kind: edge.data("kind"),
+        color: edge.data("circleColor") || null,
+      }))
       .sort(byEdge);
-    return { ok: true, error: null, nodes, edges };
+    return {
+      ok: true,
+      error: null,
+      nodes,
+      edges,
+      header: headerOf(doc),
+      legend: legendOf(doc).map((entry) => ({ id: entry.id, label: entry.label })),
+      circles: doc.circles.map((c) => ({
+        id: c.id,
+        color: circleColors.get(c.id),
+        members: [...c.members].sort(),
+        break_point: c.break_point,
+      })),
+      key_actions: [...doc.key_actions]
+        .sort((a, b) => a.rank - b.rank)
+        .map((a) => ({ rank: a.rank, node: a.node, text: keyActionText(doc, a) })),
+      pruned: doc.pruned.map((p) => ({ id: p.id, reason: p.reason })),
+      selected: [...current.selected].sort(),
+      panel: current.panel,
+    };
   }
+
+  function publish() {
+    writeState(stateOf(cy, current.doc));
+  }
+
+  const nodeTitle = (doc, id) => (doc.nodes.find((n) => n.id === id) || { title: id }).title;
+
+  function keyActionText(doc, action) {
+    const goals = action.serves.map((id) => nodeTitle(doc, id)).join(", ");
+    return `${action.rank}. ${nodeTitle(doc, action.node)} — serves ${goals}. ${action.why}`;
+  }
+
+  // --- styling ------------------------------------------------------------------------------------
+
+  function stripes(base, line) {
+    const colors = [];
+    const positions = [];
+    const count = 10;
+    for (let i = 0; i < count; i++) {
+      const shade = i % 2 === 0 ? base : line;
+      colors.push(shade, shade);
+      positions.push(`${(i * 100) / count}%`, `${((i + 1) * 100) / count}%`);
+    }
+    return { colors: colors.join(" "), positions: positions.join(" ") };
+  }
+  const HATCH = stripes(TYPE_FILL.remedy, "#a9cfb4");
 
   const STYLE = [
     {
@@ -169,19 +416,42 @@
         width: "data(width)",
         height: "data(height)",
         label: "data(label)",
+        "text-wrap": "wrap",
         "text-valign": "center",
         "text-halign": "center",
-        "font-size": 12,
+        "font-size": 11,
+        "line-height": 1.25,
         "background-color": "#ffffff",
         "border-width": 1.5,
-        "border-color": "#5b6573",
+        "border-color": BORDER,
         color: "#1b1f24",
       },
     },
-    { selector: 'node[type = "goal"]', style: { "border-width": 2.5, "background-color": "#e8f0fe" } },
-    { selector: 'node[type = "cause"]', style: { "background-color": "#fff4e0" } },
-    { selector: 'node[type = "remedy"]', style: { "background-color": "#e6f4ea" } },
-    { selector: 'node[type = "obstacle"]', style: { "background-color": "#fde8e8" } },
+    { selector: 'node[type = "goal"]', style: { "border-width": 2.5, "background-color": TYPE_FILL.goal } },
+    { selector: 'node[type = "cause"]', style: { "background-color": TYPE_FILL.cause } },
+    { selector: 'node[type = "remedy"]', style: { "background-color": TYPE_FILL.remedy } },
+    { selector: 'node[type = "obstacle"]', style: { "background-color": TYPE_FILL.obstacle } },
+    {
+      selector: 'node[status = "pending"]',
+      style: {
+        "background-fill": "linear-gradient",
+        "background-gradient-direction": "to-bottom-right",
+        "background-gradient-stop-colors": HATCH.colors,
+        "background-gradient-stop-positions": HATCH.positions,
+      },
+    },
+    { selector: 'node[status = "obstructed"]', style: { "background-color": "#d9dce1", color: "#59606b", "border-color": "#8a93a0" } },
+    { selector: 'node[checkState = "present"]', style: { "border-color": PRESENT_RED, "border-width": 2.5 } },
+    { selector: 'node[checkState = "clear"]', style: { opacity: 0.6 } },
+    { selector: 'node[checkState = "unknown"], node[checkState = "judgement"]', style: { "border-style": "dotted", "border-width": 2.5 } },
+    { selector: "node[?crisis]", style: { "border-width": 6, "border-color": CRISIS_BORDER } },
+    { selector: "node[circleColor]", style: { "border-width": 5, "border-color": "data(circleColor)" } },
+    { selector: "node[?model]", style: { "border-style": "dashed" } },
+    {
+      selector: "node[?breakPoint]",
+      style: { "outline-width": 3, "outline-color": "#1b1f24", "outline-style": "solid", "outline-offset": 3 },
+    },
+    { selector: "node:selected", style: { "underlay-color": "#1b1f24", "underlay-opacity": 0.18, "underlay-padding": 8, "underlay-shape": "round-rectangle" } },
     {
       selector: "edge",
       style: {
@@ -193,7 +463,189 @@
         "arrow-scale": 0.9,
       },
     },
+    {
+      selector: 'edge[accent = "present"]',
+      style: { "line-color": PRESENT_RED, "target-arrow-color": PRESENT_RED, width: 2.5 },
+    },
+    { selector: 'edge[accent = "clear"]', style: { opacity: 0.45 } },
+    {
+      selector: 'edge[accent = "unknown"], edge[accent = "judgement"]',
+      style: { "line-style": "dotted", "target-arrow-fill": "hollow" },
+    },
+    {
+      selector: "edge[circleColor]",
+      style: { width: 3.5, "line-color": "data(circleColor)", "target-arrow-color": "data(circleColor)" },
+    },
+    {
+      selector: "edge.serves",
+      style: { width: 1, "line-style": "dashed", "line-color": "#5b6573", "target-arrow-color": "#5b6573", display: "none", "curve-style": "unbundled-bezier", "control-point-distances": 60 },
+    },
+    { selector: "edge.serves.shown", style: { display: "element" } },
   ];
+
+  // --- DOM: header, legend, lists, panel (text only) ----------------------------------------------
+
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function renderHeader(doc) {
+    document.getElementById("header-text").textContent = headerOf(doc).text;
+    document.getElementById("header").hidden = false;
+  }
+
+  function swatchOf(entry) {
+    const swatch = el("span", "swatch");
+    if (entry.fill) swatch.style.background = entry.fill;
+    if (entry.hatched) {
+      swatch.style.background = `repeating-linear-gradient(135deg, ${TYPE_FILL.remedy} 0 3px, #a9cfb4 3px 6px)`;
+    }
+    if (entry.grey) swatch.style.background = "#d9dce1";
+    if (entry.border) swatch.style.borderColor = entry.border;
+    if (entry.borderStyle) swatch.style.borderStyle = entry.borderStyle;
+    if (entry.heavy) swatch.style.borderWidth = "4px";
+    if (entry.muted) swatch.style.opacity = "0.6";
+    if (entry.doubleOutline) swatch.style.outline = "2px solid #1b1f24";
+    return swatch;
+  }
+
+  function renderLegend(doc) {
+    const list = document.getElementById("legend");
+    list.replaceChildren();
+    for (const entry of legendOf(doc)) {
+      const item = el("li");
+      item.dataset.legend = entry.id;
+      item.append(swatchOf(entry), el("span", "legend-text", entry.label));
+      if (entry.circle) {
+        item.classList.add("clickable");
+        item.tabIndex = 0;
+        item.addEventListener("click", () => selectCircle(entry.circle));
+      }
+      list.append(item);
+    }
+  }
+
+  function renderLists(doc) {
+    const actions = document.getElementById("key-actions");
+    actions.replaceChildren();
+    for (const action of [...doc.key_actions].sort((a, b) => a.rank - b.rank)) {
+      const item = el("li", "clickable", keyActionText(doc, action).replace(/^\d+\.\s*/, ""));
+      item.value = action.rank;
+      item.tabIndex = 0;
+      item.dataset.node = action.node;
+      item.addEventListener("click", () => selectNode(action.node));
+      actions.append(item);
+    }
+    actions.hidden = doc.key_actions.length === 0;
+    const pruned = document.getElementById("pruned");
+    pruned.replaceChildren();
+    for (const entry of doc.pruned) pruned.append(el("li", "", `${entry.id} — ${entry.reason}`));
+    document.getElementById("pruned-section").hidden = doc.pruned.length === 0;
+    document.getElementById("actions-section").hidden = doc.key_actions.length === 0;
+  }
+
+  const refText = (ref) => (ref.kind ? `${ref.title} (${ref.kind})` : ref.title);
+
+  /** The rows of the panel as [label, [lines]]; the same panel object gives the same rows. */
+  function panelRows(panel) {
+    if (panel.kind === "circle") {
+      const rows = [["Type", ["Vicious Circle"]], ["Members", panel.members.map(refText)]];
+      rows.push(["Break point", [panel.break_point ? panel.break_point.title : "none (judgement needed)"]]);
+      return rows;
+    }
+    const rows = [["Type", [panel.source === "model" ? `${panel.type} (added by the model)` : panel.type]]];
+    if (panel.text !== undefined) rows.push(["Text", [panel.text]]);
+    if (panel.horizon !== undefined) rows.push(["Horizon", [panel.horizon]]);
+    if (panel.crisis) rows.push(["Crisis", ["yes"]]);
+    if (panel.status !== undefined) rows.push(["Status", [panel.status]]);
+    if (panel.ratings) {
+      rows.push(["Ratings", [`strength ${panel.ratings.strength}`, `speed ${panel.ratings.speed}`, `cost ${panel.ratings.cost}`]]);
+    }
+    if (panel.check_state !== undefined) rows.push(["Check state", [panel.check_state]]);
+    if (panel.evidence !== undefined) rows.push(["Evidence", panel.evidence.length ? panel.evidence : ["none"]]);
+    if (panel.rules !== undefined) rows.push(["Playbook Rules", panel.rules.length ? panel.rules : ["none"]]);
+    if (panel.reason !== undefined) rows.push(["Reason (model)", [panel.reason]]);
+    if (panel.rank !== undefined) rows.push(["Key Action rank", [String(panel.rank)]]);
+    if (panel.why !== undefined) rows.push(["Why", [panel.why]]);
+    if (panel.serves !== undefined) rows.push(["Serves", panel.serves.length ? panel.serves.map(refText) : ["no Goal"]]);
+    if (panel.unlocks !== undefined) rows.push(["Unlocks", panel.unlocks.length ? panel.unlocks.map(refText) : ["nothing"]]);
+    if (panel.circle !== undefined) rows.push(["Vicious Circle", [panel.circle + (panel.break_point ? " (break point)" : "")]]);
+    rows.push(["Edges in", panel.edges_in.length ? panel.edges_in.map(refText) : ["none"]]);
+    rows.push(["Edges out", panel.edges_out.length ? panel.edges_out.map(refText) : ["none"]]);
+    return rows;
+  }
+
+  function renderPanel(panel) {
+    const box = document.getElementById("panel-body");
+    box.replaceChildren();
+    if (!panel) {
+      box.append(el("p", "hint", "Click a node, a Key Action or a Vicious Circle to see its details."));
+      return;
+    }
+    box.append(el("h2", "", panel.title));
+    const list = el("dl");
+    for (const [label, lines] of panelRows(panel)) {
+      list.append(el("dt", "", label));
+      const value = el("dd");
+      for (const line of lines) value.append(el("div", "line", line));
+      list.append(value);
+    }
+    box.append(list);
+  }
+
+  // --- selection ------------------------------------------------------------------------------------
+
+  function showServes(ids) {
+    cy.edges(".serves").removeClass("shown");
+    cy.edges(".serves").filter((edge) => ids.includes(edge.source().id()) || ids.includes(edge.target().id())).addClass("shown");
+  }
+
+  function applySelection(ids, panel) {
+    cy.nodes(":selected").unselect();
+    for (const id of ids) cy.getElementById(id).select();
+    current.selected = new Set(ids);
+    current.panel = panel;
+    showServes(ids);
+    renderPanel(panel);
+    publish();
+  }
+
+  function selectNode(id) {
+    applySelection([id], panelOf(current.doc, id));
+  }
+
+  function selectCircle(circleId) {
+    const circle = current.doc.circles.find((c) => c.id === circleId);
+    applySelection(circle.members, circlePanelOf(current.doc, circleId));
+  }
+
+  function clearSelection() {
+    applySelection([], null);
+  }
+
+  /** The seam for the driver: emits the same `tap` event a click on the node produces. */
+  function click(id) {
+    cy.getElementById(id).emit("tap");
+  }
+
+  // --- drawing --------------------------------------------------------------------------------------
+
+  function addServesEdges(doc) {
+    const edges = [];
+    for (const action of doc.key_actions) {
+      for (const goal of action.serves) {
+        edges.push({
+          group: "edges",
+          classes: "serves",
+          data: { id: `serves:${action.node}>${goal}`, source: action.node, target: goal, kind: "serves" },
+        });
+      }
+    }
+    cy.add(edges);
+  }
 
   function draw(doc) {
     cy = cytoscape({
@@ -203,6 +655,15 @@
       layout: { name: "preset" },
       autoungrabify: true,
       boxSelectionEnabled: false,
+    });
+    current = { doc, panel: null, selected: new Set() };
+    renderHeader(doc);
+    renderLegend(doc);
+    renderLists(doc);
+    renderPanel(null);
+    cy.on("tap", "node", (event) => selectNode(event.target.id()));
+    cy.on("tap", (event) => {
+      if (event.target === cy) clearSelection();
     });
     const constraint = layerConstraints(doc);
     const started = performance.now();
@@ -218,7 +679,9 @@
       },
       stop: () => {
         window.engineLayoutMs = Math.round(performance.now() - started);
-        writeState(stateOf(cy));
+        addServesEdges(doc);
+        publish();
+        document.dispatchEvent(new CustomEvent("engine-ready"));
       },
     }).run();
   }
@@ -271,6 +734,14 @@
     else render(doc);
   }
 
-  window.HlidskjalfEngine = { nodeLabel, nodeSize, validateGraph, toElements, layerConstraints };
+  /** Same seam for the background: a tap on the canvas outside any node. */
+  function clickBackground() {
+    cy.emit("tap");
+  }
+
+  window.HlidskjalfEngine = {
+    nodeLabel, nodeSize, validateGraph, toElements, layerConstraints,
+    tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
+  };
   start();
 })();

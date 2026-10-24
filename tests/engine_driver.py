@@ -146,9 +146,27 @@ def embed_graph(html: str, graph: dict | str | None) -> str:
     return html.replace(GRAPH_SLOT, tag)
 
 
-def render_engine(graph: dict | str | None, *, index: Path | None = None, **kwargs) -> dict:
-    """Render engine/index.html (or `index`) with `graph` embedded and return its `engine-state`."""
+def engine_dom(
+    graph: dict | str | None, *, after_ready: str | None = None, index: Path | None = None, **kwargs
+) -> str:
+    """Render engine/index.html (or `index`) with `graph` embedded and return the final DOM.
+
+    `after_ready` is JavaScript run once, right after the page's first layout (the page's `engine-ready`
+    event), for clicking: it uses the page's own seams, e.g. `HlidskjalfEngine.click("id")`."""
     base = (index or ENGINE / "index.html").parent
     html = embed_graph((index or ENGINE / "index.html").read_text(encoding="utf-8"), graph)
+    if after_ready:
+        hook = (
+            '<script id="driver-hook">document.addEventListener("engine-ready", () => {'
+            f"{after_ready}}}, {{once: true}});</script>"
+        )
+        html = html.replace(
+            '<script src="engine.js"></script>', hook + '<script src="engine.js"></script>'
+        )
     files = {name: (base / name).read_text(encoding="utf-8") for name in ENGINE_FILES}
-    return read_state(dump_dom(html, files=files, **kwargs))
+    return dump_dom(html, files=files, **kwargs)
+
+
+def render_engine(graph: dict | str | None, **kwargs) -> dict:
+    """Render engine/index.html (or `index`) with `graph` embedded and return its `engine-state`."""
+    return read_state(engine_dom(graph, **kwargs))

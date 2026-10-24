@@ -21,7 +21,23 @@
     <p>No <code>solution-graph.json</code> found next to this page. Choose a file or drop it here.</p>
     <input id="picker" type="file" accept=".json,application/json">
   </div>
-  <div id="cy"></div>
+  <header id="header" hidden>
+    <h1>Hliðskjálf — Solution Graph</h1>
+    <p id="header-text"></p>
+  </header>
+  <div id="stage">
+    <div id="cy"></div>
+    <aside id="panel" aria-live="polite"><div id="panel-body"></div></aside>
+  </div>
+  <ul id="legend" aria-label="Legend"></ul>
+  <section id="actions-section" hidden>
+    <h2>Key Actions, ranked</h2>
+    <ol id="key-actions"></ol>
+  </section>
+  <section id="pruned-section" hidden>
+    <h2>Pruned (cut by the model, with the reason)</h2>
+    <ul id="pruned"></ul>
+  </section>
 </main>
 <pre id="engine-state" hidden></pre>
 <!-- solution-graph -->

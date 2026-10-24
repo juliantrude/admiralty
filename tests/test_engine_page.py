@@ -122,7 +122,12 @@ def circle_graph() -> dict:
         "circles": [
             {
                 "id": "food_needs_pops",
-                "members": ["food.staff_farmers", "pop_growth.grow_pops"],
+                "members": [
+                    "food.staff_farmers",
+                    "food.no_spare_pops",
+                    "pop_growth.grow_pops",
+                    "pop_growth.needs_food",
+                ],
                 "break_point": "food.staff_farmers",
             }
         ],
@@ -234,10 +239,14 @@ def test_the_same_data_renders_identically_also_when_nodes_and_edges_are_shuffle
 
 
 @needs_browser
-def test_a_different_date_or_empire_does_not_move_a_node():
+def test_a_different_date_or_empire_changes_only_the_header():
     graph = chain_graph()
     other = copy.deepcopy(graph) | {"date": "2300.01.01", "empire": "Somebody else"}
-    assert driver.render_engine(other) == driver.render_engine(graph)
+    first, second = driver.render_engine(graph), driver.render_engine(other)
+    assert first["header"] != second["header"]
+    assert "Somebody else" in second["header"]["text"] and "2300.01.01" in second["header"]["text"]
+    first.pop("header"), second.pop("header")
+    assert first == second
 
 
 @needs_browser
