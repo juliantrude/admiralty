@@ -7,6 +7,7 @@
   },
   "license": "MIT",
   "keywords": ["stellaris", "coaching", "strategy"],
+  "hooks": "./hooks/hooks.json",
   "mcpServers": {
     "hlidskjalf": {
       "command": "uv",

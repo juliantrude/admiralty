@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv",
+            "args": ["run", "--quiet", "--project", "${CLAUDE_PLUGIN_ROOT}", "hlidskjalf", "hook", "stop"],
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

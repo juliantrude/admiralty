@@ -1,5 +1,5 @@
 """Command line: hlidskjalf extract | diff | mcp | setup (campaigns, players, write, check) | graph |
-briefing | claims."""
+briefing | claims | hook."""
 
 from __future__ import annotations
 
@@ -93,7 +93,15 @@ def main(argv: list[str] | None = None) -> int:
         help="only turn log entries from this ISO time on (default: the transcript start)",
     )
 
+    hook = commands.add_parser("hook", help="Claude Code hooks (stdin: the hook event)")
+    hook_events = hook.add_subparsers(dest="hook_event", required=True)
+    hook_events.add_parser("stop", help="Unverified Claim check on the final answer")
+
     args = parser.parse_args(argv)
+    if args.command == "hook":
+        from hlidskjalf.claims.hook import stop
+
+        return stop(sys.stdin, sys.stdout)
     if args.command == "claims":
         return _claims_check(args)
     if args.command == "graph":
