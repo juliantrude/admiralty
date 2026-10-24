@@ -1,0 +1,199 @@
+version: v4.5.2
+domain: naval_capacity
+# Curated by hand from knowledge/4.5.2/generated/naval_capacity.yaml. Node text carries no figures:
+# every number lives in the generated facts a node links to (docs/plans/M4.md).
+goals:
+  - id: naval_capacity.more
+    title: More naval capacity
+    symptom_metrics: [naval_capacity.fill]
+    causes: [naval_capacity.low_base_sources, naval_capacity.weak_multipliers]
+
+nodes:
+  - id: naval_capacity.low_base_sources
+    type: cause
+    title: Few flat sources of naval capacity
+    description: >
+      Naval capacity is a flat sum of additive sources, scaled afterwards by the multipliers.
+      An empire that is capacity-bound usually leans on too few of those sources: it has not
+      adopted the Supremacy tradition tree, runs few Anchorages, has skipped the fleet doctrine
+      technologies, or staffs no Soldier jobs.
+    remedies:
+      - naval_capacity.adopt_supremacy
+      - naval_capacity.build_anchorages
+      - naval_capacity.build_logistics_offices
+      - naval_capacity.research_fleet_doctrine
+      - naval_capacity.staff_soldier_jobs
+    facts:
+      - naval_capacity.tradition.tr_supremacy_adopt.country_naval_cap_add
+      - naval_capacity.starbase_module.anchorage.country_naval_cap_add
+      - naval_capacity.technology.tech_repeatable_naval_cap.country_naval_cap_add
+      - naval_capacity.job.soldier.country_naval_cap_add
+
+  - id: naval_capacity.weak_multipliers
+    type: cause
+    title: The multipliers on naval capacity are small
+    description: >
+      The flat sum is scaled by an empire-wide multiplier. When the flat sources are already
+      healthy, raising the multiplier gains more than adding another source.
+    remedies: [naval_capacity.fleet_logistics_corps]
+    facts:
+      - naval_capacity.tradition.tr_supremacy_fleet_logistical_corps.country_naval_cap_mult
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: naval_capacity.adopt_supremacy
+    type: remedy
+    title: Adopt the Supremacy tradition tree
+    judgement: >
+      The single largest one-off step. Worth it when the empire is capacity-bound and the Unity
+      is not earmarked for a cheaper Tradition; it also opens the multiplier of the Fleet
+      Logistics Corps.
+    strength: high
+    speed: medium
+    cost: high
+    obstacles: [naval_capacity.supremacy_needs_unity, naval_capacity.tradition_slot_taken]
+    facts:
+      - naval_capacity.tradition.tr_supremacy_adopt.country_naval_cap_add
+
+  - id: naval_capacity.build_anchorages
+    type: remedy
+    title: Build Anchorages on starbases
+    judgement: >
+      Reliable and fast, paid in alloys and an energy upkeep per module. Good on starbases that
+      already have a free module slot; poor value when every slot is promised to something else.
+    strength: medium
+    speed: high
+    cost: medium
+    obstacles: [naval_capacity.anchorage_needs_alloys, naval_capacity.no_free_starbase_slot]
+    facts:
+      - naval_capacity.starbase_module.anchorage.country_naval_cap_add
+      - naval_capacity.starbase_module.orbital_ring_anchorage.country_naval_cap_add
+
+  - id: naval_capacity.build_logistics_offices
+    type: remedy
+    title: Add a Naval Logistics Office to Anchorage starbases
+    judgement: >
+      Raises what each Anchorage on the same starbase gives. Only pays once there are Anchorages
+      to improve, so it follows the Anchorage Remedy rather than replacing it.
+    strength: low
+    speed: low
+    cost: medium
+    obstacles: [naval_capacity.office_needs_technology, naval_capacity.no_free_starbase_slot]
+    facts:
+      - naval_capacity.starbase_module.anchorage.country_naval_cap_add#2
+
+  - id: naval_capacity.research_fleet_doctrine
+    type: remedy
+    title: Research the naval capacity technologies
+    judgement: >
+      The doctrine line gives flat capacity for no upkeep, and its repeatable follow-up keeps
+      giving for several levels. Slow, because it competes with every other Society research
+      for the same research output.
+    strength: medium
+    speed: low
+    cost: medium
+    obstacles: [naval_capacity.doctrine_prerequisites]
+    facts:
+      - naval_capacity.technology.tech_doctrine_navy_size_1.country_naval_cap_add
+      - naval_capacity.technology.tech_repeatable_naval_cap.country_naval_cap_add
+
+  - id: naval_capacity.staff_soldier_jobs
+    type: remedy
+    title: Staff Soldier jobs
+    judgement: >
+      Each filled Soldier job adds capacity, and it needs only pops, not Unity or alloys. Best
+      when pops are idle; when every pop already has a productive job it trades economy for
+      fleet room.
+    strength: low
+    speed: high
+    cost: low
+    obstacles: [naval_capacity.no_spare_pops, naval_capacity.soldier_jobs_cost_output]
+    facts:
+      - naval_capacity.job.soldier.country_naval_cap_add
+
+  - id: naval_capacity.fleet_logistics_corps
+    type: remedy
+    title: Take the Fleet Logistics Corps tradition
+    judgement: >
+      A multiplier on everything the flat sources already give, so it grows in value with the
+      rest of the build. It belongs to the Supremacy tree and is pointless without it.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [naval_capacity.supremacy_needs_unity]
+    facts:
+      - naval_capacity.tradition.tr_supremacy_fleet_logistical_corps.country_naval_cap_mult
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: naval_capacity.supremacy_needs_unity
+    type: obstacle
+    title: Not enough Unity banked for the next Tradition
+    description: >
+      Adopting a tradition tree or taking a Tradition is paid in Unity. While the stockpile is
+      below the cost of the next Tradition, this step cannot be taken.
+    check:
+      metric: unity.stockpile
+      op: "<"
+      compare_to: {metric: traditions.next_cost}
+
+  - id: naval_capacity.tradition_slot_taken
+    type: obstacle
+    title: The tradition trees are already committed elsewhere
+    description: >
+      An empire has only so many tradition tree slots. If they are all spent, Supremacy
+      competes with a tree already adopted, and the Player has to weigh that trade.
+    check: {judgement_only: true}
+
+  - id: naval_capacity.anchorage_needs_alloys
+    type: obstacle
+    title: Alloy income does not carry another module
+    description: >
+      A module is paid in alloys when it is built and costs energy upkeep afterwards. With no
+      positive alloy income the build competes with ships and buildings.
+    check:
+      metric: alloys.net
+      op: "<="
+      compare_to: 0
+
+  - id: naval_capacity.no_free_starbase_slot
+    type: obstacle
+    title: No starbase has a free module or building slot
+    description: >
+      Modules and starbase buildings are limited by the size of the starbase. A starbase must be
+      upgraded, or a lesser module replaced, before another Anchorage or Office fits.
+    check: {judgement_only: true}
+
+  - id: naval_capacity.office_needs_technology
+    type: obstacle
+    title: The Office is not unlocked
+    description: >
+      The Naval Logistics Office is locked behind a fleet tradition technology and also needs an
+      Anchorage on the same starbase.
+    check: {judgement_only: true}
+
+  - id: naval_capacity.doctrine_prerequisites
+    type: obstacle
+    title: The doctrine technologies need their prerequisites first
+    description: >
+      The repeatable technology is only offered after the last doctrine step, and every step
+      needs the one before it, so the whole line has to be researched in order.
+    check: {judgement_only: true}
+
+  - id: naval_capacity.no_spare_pops
+    type: obstacle
+    title: No unemployed pops to fill Soldier jobs
+    description: >
+      A Soldier job only counts once a pop works it. With no unemployed pops, new jobs would
+      pull workers away from other jobs.
+    check:
+      metric: pops.unemployed
+      op: "=="
+      compare_to: 0
+
+  - id: naval_capacity.soldier_jobs_cost_output
+    type: obstacle
+    title: Soldier jobs take pops from productive work
+    description: >
+      A Soldier produces no goods and has upkeep, so filling the job costs economy elsewhere.
+    check: {judgement_only: true}

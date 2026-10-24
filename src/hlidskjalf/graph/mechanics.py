@@ -93,6 +93,30 @@ class MechanicsGraph:
     def node(self, node_id: str) -> dict[str, Any]:
         return self.nodes[node_id]
 
+    def reachable(self, goal_id: str) -> list[str]:
+        """Node ids a Goal expands to, depth-first in file order, each once.
+
+        This is the graph's shape alone, blind to the Snapshot: M5's `expand_graph` adds the
+        Obstacle checks, the depth limit and the Vicious Circles. Visiting each node once is what
+        makes the walk terminate on the legal cycles.
+        """
+        order: list[str] = []
+        seen: set[str] = set()
+
+        def visit(node_id: str) -> None:
+            if node_id in seen:
+                return
+            seen.add(node_id)
+            order.append(node_id)
+            node = self.nodes[node_id]
+            for kind in _LINK_TYPES:
+                for target in node.get(kind, []):
+                    visit(target)
+
+        for cause in self.goals[goal_id]["causes"]:
+            visit(cause)
+        return order
+
     @property
     def facts(self) -> dict[str, dict[str, Any]]:
         """All generated facts by id; read on first use (the files are several MB)."""

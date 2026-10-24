@@ -125,7 +125,7 @@ if only Julian's part remains, and move on to the next increment.
       capacity technology)
 - [x] JSON Schema for `knowledge/4.5.2/graph/*.yaml` plus a validator
       (`hlidskjalf graph validate`), with tests
-- [ ] Curated graph, naval capacity domain; test for the M4 criterion: expanding the Goal
+- [x] Curated graph, naval capacity domain; test for the M4 criterion: expanding the Goal
       "more naval capacity" from the graph alone yields Supremacy, Anchorages,
       naval-capacity technologies and Soldier jobs, each with its Obstacles
 - [ ] Curated graph, economy domains: energy, minerals, food, alloys
@@ -191,17 +191,17 @@ if only Julian's part remains, and move on to the next increment.
 ## Status
 
 STATUS: READY
-**Next action:** M4 increment 4: curated graph, naval capacity domain, as in `docs/plans/M4.md` ("Content outline",
-"Test for the M4 criterion"): `knowledge/4.5.2/graph/naval_capacity.yaml` (Goal `naval_capacity.more`; Remedies for
-Supremacy, Anchorages (+ Naval Logistics Office), naval-capacity technologies, Soldier jobs, each with Obstacles and
-linked fact ids; node text carries no figures) plus `MechanicsGraph.reachable(goal_id)` (plain depth-first walk) and the
-tests: expanding `naval_capacity.more` yields the four Remedies each with at least one Obstacle; every Goal walk
-terminates; every Remedy is reachable from some Goal. Loader and validator are ready: `MechanicsGraph.load/validate`
-in `src/hlidskjalf/graph/mechanics.py`, `uv run hlidskjalf graph validate`, metrics registry
-`knowledge/4.5.2/graph/metrics.yaml` (add metrics there when an Obstacle needs one; a test checks every path against the
-reference extract). Fact ids: `naval_capacity.starbase_module.anchorage.country_naval_cap_add#2` style, look them up in
-`knowledge/4.5.2/generated/naval_capacity.yaml`. Rules ids a node cites must exist in `knowledge/4.5.2/rules/*.md`
-(front matter `id`), which arrives in increment 8; until then do not cite rules from nodes.
+**Next action:** M4 increment 5: curated graph, economy domains energy, minerals, food, alloys (one file each in
+`knowledge/4.5.2/graph/`, ids `<domain>.<slug>`, node text without figures, facts from `knowledge/4.5.2/generated/<domain>.yaml`).
+Pattern to copy: `knowledge/4.5.2/graph/naval_capacity.yaml` (Goal -> Causes -> Remedies -> Obstacles, ratings strength/speed/cost,
+Obstacles with a metric `check` where the registry has one, `judgement_only` sparingly: naval_capacity already uses it five times,
+so prefer registering a metric in `metrics.yaml`; a test checks each registered path against the reference extract). Shared
+cross-domain nodes (`jobs.free_jobs`, `housing.free_housing`, `unity.raise_income`) live in their own domain file once; link to them
+only after that file exists (dangling links are errors). Obstacle `naval_capacity.supremacy_needs_unity` has no Remedies yet: in
+the Unity increment add `unity.raise_income` and link it there. Cycles need one `circle` name on every member (energy -> jobs ->
+pops -> food -> energy). Add a test per domain like `tests/test_naval_capacity_graph.py` (Goal expands, every Remedy has an
+Obstacle). Whole-graph walk tests there already cover new domains automatically. Rule ids a node cites must exist in
+`knowledge/4.5.2/rules/*.md`, which arrives in increment 8; until then do not cite rules from nodes.
 Note `skills/` is auto-discovered by the plugin; `hooks/` is still empty.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the
 game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
@@ -270,3 +270,8 @@ game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
   cycles: unnamed = warning, no exit = error, digits in prose = warning), `hlidskjalf graph validate`,
   registry `knowledge/4.5.2/graph/metrics.yaml` (36 metrics, paths checked against the vulkan mid-save extract).
   Tests in `tests/test_mechanics_graph.py` use temp packs with good and bad fixtures; 173 passed / 31 skipped, ruff clean
+- 2026-10-24 — M4 increment 4: `knowledge/4.5.2/graph/naval_capacity.yaml` (Goal `naval_capacity.more`, 2 Causes, 6 Remedies:
+  Supremacy, Anchorages, Naval Logistics Office, fleet doctrine technologies, Soldier jobs, Fleet Logistics Corps; 8 Obstacles,
+  3 checked against the Snapshot, 5 judgement-only) and `MechanicsGraph.reachable(goal_id)`. `tests/test_naval_capacity_graph.py`:
+  M4 criterion, linked facts resolve to the known figures, no figures in prose, all-goals walk terminates, no orphans, cycle-safe walk.
+  `graph validate` clean; tests 180 passed / 31 skipped, ruff clean
