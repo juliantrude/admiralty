@@ -19,4 +19,5 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 .clickable:hover { text-decoration: underline; }
 section { padding: 4px 16px 12px; }
 section h2 { font-size: 0.95rem; margin: 8px 0 4px; }
+section h2 .hint { font-weight: normal; color: #5b6573; font-size: 0.8rem; }
 section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line-height: 1.5; }

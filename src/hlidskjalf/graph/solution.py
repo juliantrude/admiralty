@@ -44,7 +44,9 @@ _OVERLAY_KEYS = {
     "add_edges",
     "exclude_key_actions",
     "why",
+    "weights",
 }
+_RATINGS = ("high", "medium", "low")
 
 
 class SolutionInvalid(ValueError):
@@ -246,7 +248,10 @@ def compose(
 
     Overlay: `{empire, goals: {id: {horizon, crisis?}}, prune: [{id, reason}], add_nodes: [{id,
     type, title, reason, ...}], add_edges: [{from, to}], exclude_key_actions: [{id, reason}],
-    why: {remedy_id: text}}`. Raises `SolutionInvalid` with every problem found; the result of a
+    why: {remedy_id: text}, weights: [{from, to, weight, reason}]}`. `weights` must give every
+    edge into a Cause (from a Goal or a Cause) a weight, high, medium or low: how much of the
+    problem above this Cause explains, with the reason from the numbers. Edges into a Remedy take
+    the Remedy's strength. The graph engine sizes nodes by these weights. Raises `SolutionInvalid` with every problem found; the result of a
     successful call has passed `validate_solution_graph`.
     """
     rules = graph.rules if rules is None else rules
@@ -327,6 +332,9 @@ def compose(
         for a, b in sorted(edges)
         if a in types and b in types
     ]
+    known = {(e["from"], e["to"]) for e in expansion["edges"]}
+    known |= {(e["from"], e["to"]) for e in overlay.get("add_edges", [])}
+    _weigh(edge_docs, {n["id"]: n for n in ordered}, overlay.get("weights", []), known, error)
     circles = _circles(expansion["circles"], nodes_by_id, edges, graph)
     key_actions, excluded = _key_actions(
         ordered, edges, overlay, graph, error, {p["id"] for p in pruned}
@@ -350,6 +358,39 @@ def compose(
     if problems:
         raise SolutionInvalid(problems)
     return doc
+
+
+def _weigh(
+    edge_docs: list[dict], nodes: dict[str, dict], weights: list[dict], known: set, error
+) -> None:
+    """Weights onto the edges: the model's for edges into a Cause, the Remedy's strength for
+    edges into a Remedy. Every edge into a Cause needs one. A weight on an edge that pruning
+    removed is ignored; one on an edge that never existed, or that leads to no Cause, is an
+    error, so a stale overlay cannot slip through."""
+    given = {(w["from"], w["to"]): w for w in weights}
+    used: set[tuple[str, str]] = set()
+    for edge in edge_docs:
+        key = (edge["from"], edge["to"])
+        if edge["kind"] == "cause":
+            entry = given.get(key)
+            if entry is None:
+                error(
+                    f"weights: no weight for {edge['from']} > {edge['to']}; give high, medium or "
+                    "low and the reason from the numbers"
+                )
+                continue
+            used.add(key)
+            edge["weight"] = entry["weight"]
+            edge["weight_reason"] = entry["reason"]
+        elif edge["kind"] == "remedy":
+            strength = nodes[edge["to"]].get("ratings", {}).get("strength")
+            if strength:
+                edge["weight"] = strength
+    kinds = {(e["from"], e["to"]): e["kind"] for e in edge_docs}
+    for key in sorted(set(given) - used):
+        if key in known and key not in kinds:
+            continue  # the edge went with a pruned node
+        error(f"weights: {key[0]} > {key[1]} is not an edge into a Cause of this graph")
 
 
 def _overlay_shape(overlay: Any) -> list[str]:
@@ -381,6 +422,17 @@ def _overlay_shape(overlay: Any) -> list[str]:
                 found.append(f"{name}: malformed entry {entry!r}")
             elif name == "add_nodes" and not isinstance(entry.get("id"), str):
                 found.append("add_nodes: every node needs an id")
+    for entry in _list(overlay, "weights", found):
+        if (
+            not isinstance(entry, dict)
+            or set(entry) != {"from", "to", "weight", "reason"}
+            or entry["weight"] not in _RATINGS
+            or not isinstance(entry["reason"], str)
+            or not entry["reason"].strip()
+        ):
+            found.append(
+                f"weights: every entry needs from, to, weight (high, medium, low) and a reason: {entry!r}"
+            )
     why = overlay.get("why", {})
     if not isinstance(why, dict) or not all(isinstance(v, str) and v.strip() for v in why.values()):
         found.append("why must map Remedy ids to non-empty text")

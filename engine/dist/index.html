@@ -31,6 +31,7 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 .clickable:hover { text-decoration: underline; }
 section { padding: 4px 16px 12px; }
 section h2 { font-size: 0.95rem; margin: 8px 0 4px; }
+section h2 .hint { font-weight: normal; color: #5b6573; font-size: 0.8rem; }
 section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line-height: 1.5; }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.34.4/dist/cytoscape.min.js" integrity="sha384-lyd1lDWZ623YSUJ/wMQH50y+T81dWKJk7ZoFdYWXQS83b0+QpW0pgdfXEnQnXL/X" crossorigin="anonymous"></script>
@@ -54,7 +55,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
   </div>
   <ul id="legend" aria-label="Legend"></ul>
   <section id="actions-section" hidden>
-    <h2>Key Actions, ranked</h2>
+    <h2>Key Actions, ranked <span class="hint">(click one to focus its chain)</span></h2>
     <ol id="key-actions"></ol>
   </section>
   <section id="pruned-section" hidden>
@@ -81,6 +82,9 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
   const NODE_PADDING = 20;
   const READABLE_ZOOM = 0.8;
   const VIEW_PADDING = 30;
+  const ICON_SIZE = 22;
+  const ICON_SPACE = 30; // icon plus gap on the left of every node
+  const FADED_OPACITY = 0.15;
   const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
   const EDGE_KINDS = ["cause", "remedy", "obstacle"];
   const REQUIRED_ARRAYS = ["nodes", "edges", "circles", "key_actions", "pruned"];
@@ -93,10 +97,10 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
   }
 
   /** Size from the visible title and the tag line alone: no DOM measuring, so every machine gets the same layout. */
-  function nodeSize(title, tag) {
-    const titleWidth = CHAR_WIDTH * Array.from(nodeLabel(title)).length;
+  function nodeSize(title, tag, badges) {
+    const titleWidth = CHAR_WIDTH * Array.from(String(badges || "") + nodeLabel(title)).length;
     const tagWidth = TAG_CHAR_WIDTH * Array.from(String(tag || "")).length;
-    const width = NODE_PADDING + Math.max(titleWidth, tagWidth);
+    const width = NODE_PADDING + ICON_SPACE + Math.max(titleWidth, tagWidth);
     return { width: Math.min(NODE_MAX_WIDTH, Math.max(NODE_MIN_WIDTH, width)), height: NODE_HEIGHT };
   }
 
@@ -134,6 +138,107 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     return parts.join(" \u00b7 ");
   }
 
+  // Negative circled digits for Key Action ranks 1 to 10; beyond that the plain number.
+  const RANK_DIGITS = ["\u2776", "\u2777", "\u2778", "\u2779", "\u277a", "\u277b", "\u277c", "\u277d", "\u277e", "\u277f"];
+  const STATUS_BADGE = { pending: "\u23f1 ", obstructed: "\u{1F6AB} " };
+
+  /** What stands before the title: the Key Action rank, then the Remedy state as a symbol. */
+  function badgesOf(node, rank) {
+    let badges = "";
+    if (rank !== undefined) badges += `${RANK_DIGITS[rank - 1] || "#" + rank} `;
+    if (node.type === "remedy" && STATUS_BADGE[node.status]) badges += STATUS_BADGE[node.status];
+    return badges;
+  }
+
+  // Placeholder icons per node type until a node carries a game icon (docs/plans/M6-revision.md).
+  const TYPE_GLYPH = { goal: "G", cause: "?", remedy: "\u2713", obstacle: "!" };
+  const TYPE_INK = { goal: "#1a56c4", cause: "#a35d00", remedy: "#1e7e34", obstacle: "#b3261e" };
+
+  function placeholderIcon(type) {
+    const svg =
+      `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">` +
+      `<rect x="1" y="1" width="20" height="20" rx="5" fill="${TYPE_INK[type]}"/>` +
+      `<text x="11" y="15.5" font-family="sans-serif" font-size="13" font-weight="700" fill="#fff" ` +
+      `text-anchor="middle">${TYPE_GLYPH[type]}</text></svg>`;
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  }
+
+  /** A node's icon: an embedded image from the data, else the placeholder of its type. Only data URIs of images are used. */
+  function iconOf(node) {
+    if (typeof node.icon === "string" && /^data:image\/(png|svg\+xml)[;,]/.test(node.icon)) return node.icon;
+    return placeholderIcon(node.type);
+  }
+
+  // Impact (docs/plans/M6-revision.md): edge weights multiply along the way from a Goal, the
+  // strongest way counts, and a node that serves several Goals adds them up.
+  const WEIGHT_VALUE = { high: 1, medium: 0.6, low: 0.3 };
+  const DEFAULT_WEIGHT = WEIGHT_VALUE.medium; // graphs composed before weights existed
+  const SCALE_STEPS = [1, 1.25, 1.5];
+
+  function edgeWeight(edge, nodeById) {
+    if (WEIGHT_VALUE[edge.weight] !== undefined) return WEIGHT_VALUE[edge.weight];
+    if (edge.kind === "obstacle") return 1; // clearing an Obstacle is worth what it blocks
+    if (edge.kind === "remedy") {
+      const strength = (nodeById.get(edge.to).ratings || {}).strength;
+      if (WEIGHT_VALUE[strength] !== undefined) return WEIGHT_VALUE[strength];
+    }
+    return DEFAULT_WEIGHT;
+  }
+
+  /** Node id -> impact on all Goals together. Goals are the reference and are left out. */
+  function impactOf(doc) {
+    const nodeById = new Map(doc.nodes.map((n) => [n.id, n]));
+    const edges = [...doc.edges].sort(byEdge);
+    const total = new Map();
+    for (const goal of doc.nodes.filter((n) => n.type === "goal").sort(byId)) {
+      const best = new Map([[goal.id, 1]]);
+      // weights are at most 1, so going round a Vicious Circle never raises a score: the
+      // relaxation settles within as many passes as there are nodes
+      for (let pass = 0; pass < doc.nodes.length; pass++) {
+        let changed = false;
+        for (const edge of edges) {
+          if (!best.has(edge.from)) continue;
+          const score = best.get(edge.from) * edgeWeight(edge, nodeById);
+          if (score > (best.get(edge.to) || 0) + 1e-9) {
+            best.set(edge.to, score);
+            changed = true;
+          }
+        }
+        if (!changed) break;
+      }
+      for (const [id, score] of best) {
+        if (nodeById.get(id).type !== "goal") total.set(id, (total.get(id) || 0) + score);
+      }
+    }
+    return total;
+  }
+
+  /** Size step 0, 1 or 2 from an impact: below a medium way, up to a strong way, beyond. */
+  function scaleStep(impact) {
+    if (impact >= 1) return 2;
+    if (impact >= 0.55) return 1;
+    return 0;
+  }
+
+  /** The chain of a node: everything it can be reached from and everything it reaches, the node included. */
+  function chainOf(doc, id) {
+    const chain = new Set([id]);
+    for (const [from, to] of [["to", "from"], ["from", "to"]]) {
+      const queue = [id];
+      const seen = new Set([id]);
+      while (queue.length) {
+        const current = queue.shift();
+        for (const edge of doc.edges) {
+          if (edge[from] !== current || seen.has(edge[to])) continue;
+          seen.add(edge[to]);
+          chain.add(edge[to]);
+          queue.push(edge[to]);
+        }
+      }
+    }
+    return chain;
+  }
+
   function headerOf(doc) {
     const counts = {
       nodes: doc.nodes.length,
@@ -157,7 +262,11 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     for (const type of NODE_TYPES) {
       if (types.has(type)) entries.push({ id: `type:${type}`, label: TYPE_NAME[type], fill: TYPE_FILL[type] });
     }
-    const remedyStatus = { actionable: "solid", pending: "hatched", obstructed: "grey" };
+    const remedyStatus = {
+      actionable: "green border",
+      pending: "hatched, \u23f1",
+      obstructed: "greyed out, \u{1F6AB}",
+    };
     for (const status of Object.keys(remedyStatus)) {
       if (doc.nodes.some((n) => n.type === "remedy" && n.status === status)) {
         entries.push({
@@ -166,6 +275,8 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
           fill: TYPE_FILL.remedy,
           hatched: status === "pending",
           grey: status === "obstructed",
+          border: status === "actionable" ? "#1e8e3e" : undefined,
+          heavy: status === "actionable",
         });
       }
     }
@@ -186,6 +297,15 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
           muted: state === "clear",
         });
       }
+    }
+    if (doc.nodes.some((n) => n.type !== "goal")) {
+      entries.push({ id: "size", label: "bigger node = more impact on the Goals", fill: "#ffffff" });
+    }
+    if (doc.edges.some((e) => e.weight)) {
+      entries.push({ id: "weight", label: "edge weight: thick high, thin medium, dashed low", fill: "#ffffff" });
+    }
+    if (doc.key_actions.length) {
+      entries.push({ id: "rank", label: "\u2776 \u2777 \u2778 rank of a Key Action", fill: "#ffffff" });
     }
     if (doc.nodes.some((n) => n.type === "goal" && n.crisis)) {
       entries.push({ id: "crisis", label: "Crisis Goal (heavy outline)", fill: TYPE_FILL.goal, border: CRISIS_BORDER, heavy: true });
@@ -239,7 +359,13 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
       }
       panel.serves = [...goals].sort().map(ref);
     }
-    const label = (edge, other) => ({ ...ref(other), kind: edge.kind });
+    const label = (edge, other) => {
+      const out = { ...ref(other), kind: edge.kind };
+      if (edge.weight) out.weight = edge.weight;
+      if (edge.weight_reason) out.weight_reason = edge.weight_reason;
+      return out;
+    };
+    if (node.type !== "goal") panel.impact = round(impactOf(doc).get(id) || 0);
     panel.edges_in = doc.edges.filter((e) => e.to === id).sort(byEdge).map((e) => label(e, e.from));
     panel.edges_out = doc.edges.filter((e) => e.from === id).sort(byEdge).map((e) => label(e, e.to));
     const circle = doc.circles.find((c) => c.members.includes(id));
@@ -308,14 +434,27 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     const { color, circleOf } = circleInfo(doc);
     const breakPoints = new Set(doc.circles.map((c) => c.break_point).filter(Boolean));
     const nodeById = new Map(doc.nodes.map((n) => [n.id, n]));
+    const rankOf = new Map(doc.key_actions.map((a) => [a.node, a.rank]));
+    const impact = impactOf(doc);
     const nodes = [...doc.nodes].sort(byId).map((node) => {
       const tag = tagOf(node, breakPoints.has(node.id));
-      const size = nodeSize(node.title, tag);
+      const badges = badgesOf(node, rankOf.get(node.id));
+      const step = node.type === "goal" ? 0 : scaleStep(impact.get(node.id) || 0);
+      const scale = SCALE_STEPS[step];
+      const base = nodeSize(node.title, tag, badges);
+      const size = { width: Math.round(base.width * scale), height: Math.round(base.height * scale) };
       const data = {
         id: node.id,
         type: node.type,
-        label: `${nodeLabel(node.title)}\n${tag}`,
+        label: `${badges}${nodeLabel(node.title)}\n${tag}`,
         tag,
+        badges,
+        icon: iconOf(node),
+        scale,
+        impact: node.type === "goal" ? null : round(impact.get(node.id) || 0),
+        fontSize: Math.round(11 * scale * 10) / 10,
+        iconSize: Math.round(ICON_SIZE * scale),
+        textShift: Math.round((ICON_SPACE * scale) / 2),
         width: size.width,
         height: size.height,
         model: node.source === "model",
@@ -324,11 +463,13 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
       if (node.type === "remedy") data.status = node.status;
       if (node.type === "obstacle") data.checkState = node.check_state;
       if (node.type === "goal") data.crisis = node.crisis === true;
+      if (rankOf.has(node.id)) data.rank = rankOf.get(node.id);
       if (circleOf.has(node.id)) data.circleColor = color.get(circleOf.get(node.id));
       return { group: "nodes", data };
     });
     const edges = [...doc.edges].sort(byEdge).map((edge) => {
       const data = { id: `${edge.from}>${edge.to}`, source: edge.from, target: edge.to, kind: edge.kind };
+      if (edge.weight) data.weight = edge.weight;
       const target = nodeById.get(edge.to);
       if (edge.kind === "obstacle" && target.check_state) data.accent = target.check_state;
       const circle = circleOf.get(edge.from);
@@ -412,6 +553,10 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
           model: node.data("model"),
           break_point: node.data("breakPoint"),
           color: node.data("circleColor") || null,
+          badges: node.data("badges"),
+          scale: node.data("scale"),
+          impact: node.data("impact"),
+          faded: node.hasClass("faded"),
         };
         for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"]]) {
           if (node.data(field) !== undefined) state[key] = node.data(field);
@@ -447,6 +592,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
         .map((a) => ({ rank: a.rank, node: a.node, text: keyActionText(doc, a) })),
       pruned: doc.pruned.map((p) => ({ id: p.id, reason: p.reason })),
       selected: [...current.selected].sort(),
+      focus: [...current.focus].sort(),
       panel: current.panel,
     };
   }
@@ -488,12 +634,21 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
         "text-wrap": "wrap",
         "text-valign": "center",
         "text-halign": "center",
-        "font-size": 11,
+        "font-size": "data(fontSize)",
         "line-height": 1.25,
         "background-color": "#ffffff",
         "border-width": 1.5,
         "border-color": BORDER,
         color: "#1b1f24",
+        "background-image": "data(icon)",
+        "background-width": "data(iconSize)",
+        "background-height": "data(iconSize)",
+        "background-position-x": 8,
+        "background-position-y": "50%",
+        "background-fit": "none",
+        "background-clip": "none",
+        "background-image-containment": "over",
+        "text-margin-x": "data(textShift)",
       },
     },
     { selector: 'node[type = "goal"]', style: { "border-width": 2.5, "background-color": TYPE_FILL.goal } },
@@ -509,7 +664,11 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
         "background-gradient-stop-positions": HATCH.positions,
       },
     },
-    { selector: 'node[status = "obstructed"]', style: { "background-color": "#d9dce1", color: "#59606b", "border-color": "#8a93a0" } },
+    { selector: 'node[status = "actionable"]', style: { "border-color": "#1e8e3e", "border-width": 3 } },
+    {
+      selector: 'node[status = "obstructed"]',
+      style: { "background-color": "#d9dce1", color: "#59606b", "border-color": "#8a93a0", "border-style": "dashed", opacity: 0.6, "background-image-opacity": 0.45 },
+    },
     { selector: 'node[checkState = "present"]', style: { "border-color": PRESENT_RED, "border-width": 2.5 } },
     { selector: 'node[checkState = "clear"]', style: { opacity: 0.6 } },
     { selector: 'node[checkState = "unknown"], node[checkState = "judgement"]', style: { "border-style": "dotted", "border-width": 2.5 } },
@@ -532,6 +691,8 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
         "arrow-scale": 0.9,
       },
     },
+    { selector: 'edge[weight = "high"]', style: { width: 3 } },
+    { selector: 'edge[weight = "low"]', style: { width: 1, "line-style": "dashed" } },
     {
       selector: 'edge[accent = "present"]',
       style: { "line-color": PRESENT_RED, "target-arrow-color": PRESENT_RED, width: 2.5 },
@@ -550,6 +711,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
       style: { width: 1, "line-style": "dashed", "line-color": "#5b6573", "target-arrow-color": "#5b6573", display: "none", "curve-style": "unbundled-bezier", "control-point-distances": 60 },
     },
     { selector: "edge.serves.shown", style: { display: "element" } },
+    { selector: ".faded", style: { opacity: FADED_OPACITY } },
   ];
 
   // --- DOM: header, legend, lists, panel (text only) ----------------------------------------------
@@ -616,7 +778,11 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     document.getElementById("actions-section").hidden = doc.key_actions.length === 0;
   }
 
-  const refText = (ref) => (ref.kind ? `${ref.title} (${ref.kind})` : ref.title);
+  const refText = (ref) => {
+    let text = ref.kind ? `${ref.title} (${ref.kind}${ref.weight ? ", " + ref.weight : ""})` : ref.title;
+    if (ref.weight_reason) text += ` \u2014 ${ref.weight_reason}`;
+    return text;
+  };
 
   /** The rows of the panel as [label, [lines]]; the same panel object gives the same rows. */
   function panelRows(panel) {
@@ -637,6 +803,9 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     if (panel.evidence !== undefined) rows.push(["Evidence", panel.evidence.length ? panel.evidence : ["none"]]);
     if (panel.rules !== undefined) rows.push(["Playbook Rules", panel.rules.length ? panel.rules : ["none"]]);
     if (panel.reason !== undefined) rows.push(["Reason (model)", [panel.reason]]);
+    if (panel.impact !== undefined) {
+      rows.push(["Impact on the Goals", [`${panel.impact} (sum over Goals of the strongest weighted way)`]]);
+    }
     if (panel.rank !== undefined) rows.push(["Key Action rank", [String(panel.rank)]]);
     if (panel.why !== undefined) rows.push(["Why", [panel.why]]);
     if (panel.serves !== undefined) rows.push(["Serves", panel.serves.length ? panel.serves.map(refText) : ["no Goal"]]);
@@ -672,11 +841,24 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     cy.edges(".serves").filter((edge) => ids.includes(edge.source().id()) || ids.includes(edge.target().id())).addClass("shown");
   }
 
+  /** Focus: the chains of the selected nodes stay, everything else steps back. No selection, no focus. */
+  function applyFocus(ids) {
+    cy.elements().removeClass("faded");
+    current.focus = new Set();
+    if (!ids.length) return;
+    for (const id of ids) for (const member of chainOf(current.doc, id)) current.focus.add(member);
+    cy.nodes().filter((node) => !current.focus.has(node.id())).addClass("faded");
+    cy.edges()
+      .filter((edge) => !(current.focus.has(edge.source().id()) && current.focus.has(edge.target().id())))
+      .addClass("faded");
+  }
+
   function applySelection(ids, panel) {
     cy.nodes(":selected").unselect();
     for (const id of ids) cy.getElementById(id).select();
     current.selected = new Set(ids);
     current.panel = panel;
+    applyFocus(ids);
     showServes(ids);
     renderPanel(panel);
     publish();
@@ -734,7 +916,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
       autoungrabify: true,
       boxSelectionEnabled: false,
     });
-    current = { doc, panel: null, selected: new Set() };
+    current = { doc, panel: null, selected: new Set(), focus: new Set() };
     renderHeader(doc);
     renderLegend(doc);
     renderLists(doc);
@@ -819,7 +1001,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
   }
 
   window.HlidskjalfEngine = {
-    nodeLabel, nodeSize, validateGraph, toElements, layerConstraints,
+    nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep,
     tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
   };
   start();

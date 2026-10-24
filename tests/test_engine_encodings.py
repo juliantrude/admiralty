@@ -243,6 +243,8 @@ def test_status_check_state_and_crisis_are_in_words_and_the_legend_lists_only_wh
         "check:clear",
         "check:unknown",
         "check:judgement",
+        "size",
+        "rank",
         "crisis",
         "model",
     ]
@@ -254,6 +256,8 @@ def test_status_check_state_and_crisis_are_in_words_and_the_legend_lists_only_wh
         "type:obstacle",
         "status:actionable",
         "check:present",
+        "size",
+        "rank",
     ]
     assert all(e["label"].strip() for e in state["legend"])
 
@@ -399,3 +403,84 @@ def test_markup_in_the_data_is_shown_as_text_and_adds_no_element():
     )
     assert SCRIPT_TEXT in "".join(evidence.text["panel-body"])
     assert evidence.tags.count("script") == plain.tags.count("script")
+
+
+# --- focus, ranks, icons (docs/plans/M6-revision.md) ---------------------------------------------------
+
+
+def _chain(graph: dict, start: str) -> set[str]:
+    chain = {start}
+    for here, there in (("to", "from"), ("from", "to")):
+        queue, seen = [start], {start}
+        while queue:
+            current = queue.pop()
+            for edge in graph["edges"]:
+                if edge[here] == current and edge[there] not in seen:
+                    seen.add(edge[there])
+                    chain.add(edge[there])
+                    queue.append(edge[there])
+    return chain
+
+
+@needs_browser
+def test_a_click_focuses_the_whole_chain_and_fades_the_rest():
+    graph = chain_graph()
+    target = graph["key_actions"][0]["node"]
+    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
+    expected = _chain(graph, target)
+    assert set(state["focus"]) == expected
+    assert {n["id"] for n in state["nodes"] if not n["faded"]} == expected
+
+
+@needs_browser
+def test_a_click_on_the_background_ends_the_focus():
+    graph = chain_graph()
+    target = graph["key_actions"][0]["node"]
+    state = driver.render_engine(
+        graph,
+        after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()',
+    )
+    assert state["focus"] == [] and not any(n["faded"] for n in state["nodes"])
+
+
+@needs_browser
+def test_a_key_action_in_the_list_focuses_its_chain():
+    graph = chain_graph()
+    state = driver.render_engine(
+        graph, after_ready="document.querySelector('#key-actions li:nth-child(2)').click()"
+    )
+    assert set(state["focus"]) == _chain(graph, "pop_growth.grow_pops")
+
+
+@needs_browser
+def test_key_actions_carry_their_rank_and_remedy_states_their_symbol():
+    graph = chain_graph()
+    graph["nodes"] = [
+        n | {"status": "obstructed"} if n["id"] == "pop_growth.grow_pops" else n
+        for n in graph["nodes"]
+    ]
+    state = driver.render_engine(graph)
+    nodes = {n["id"]: n for n in state["nodes"]}
+    for action in graph["key_actions"]:
+        assert nodes[action["node"]]["badges"].startswith(chr(0x2775 + action["rank"]))
+    assert "\U0001f6ab" in nodes["pop_growth.grow_pops"]["badges"]
+
+
+@needs_browser
+def test_node_size_follows_the_weighted_impact_on_the_goals():
+    graph = chain_graph()
+    cause_edges = [e for e in graph["edges"] if e["kind"] == "cause"]
+    assert len(cause_edges) >= 2
+    strong, weak = cause_edges[0], cause_edges[1]
+    strong |= {"weight": "high", "weight_reason": "Most of the gap."}
+    weak |= {"weight": "low", "weight_reason": "A small share."}
+    for edge in cause_edges[2:]:
+        edge |= {"weight": "medium", "weight_reason": "Some."}
+    state = driver.render_engine(graph)
+    nodes = {n["id"]: n for n in state["nodes"]}
+    assert nodes[strong["to"]]["scale"] > nodes[weak["to"]]["scale"]
+    assert nodes[strong["to"]]["impact"] == 1
+    assert {n["scale"] for n in state["nodes"] if n["type"] == "goal"} == {1}
+    for edge in graph["edges"]:
+        if edge["kind"] == "obstacle":
+            assert nodes[edge["to"]]["impact"] >= nodes[edge["from"]]["impact"]

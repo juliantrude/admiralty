@@ -47,7 +47,9 @@
       "properties": {
         "from": {"$ref": "#/$defs/id"},
         "to": {"$ref": "#/$defs/id"},
-        "kind": {"enum": ["cause", "remedy", "obstacle"]}
+        "kind": {"enum": ["cause", "remedy", "obstacle"]},
+        "weight": {"$ref": "#/$defs/rating"},
+        "weight_reason": {"$ref": "#/$defs/text"}
       }
     },
     "circle": {

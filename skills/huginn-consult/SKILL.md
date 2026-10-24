@@ -72,9 +72,16 @@ gives it). It is the only file you write by hand.
   "add_nodes": [],
   "add_edges": [],
   "exclude_key_actions": [{"id": "<remedy id>", "reason": "..."}],
-  "why": {"<remedy id>": "why this Key Action, in one sentence"}
+  "why": {"<remedy id>": "why this Key Action, in one sentence"},
+  "weights": [{"from": "<goal or cause id>", "to": "<cause id>", "weight": "high", "reason": "..."}]
 }
 ```
+
+`weights` gives every edge into a Cause (from its Goal or from a parent Cause) a weight: how
+much of the problem above it this Cause explains, high, medium or low, and the reason in one
+sentence from the tool results. Example: Metallurgists already bring most of the alloy income,
+so "too few Metallurgists" is high and "weak multipliers" is low when the alloy techs would add
+only a few percent. The graph sizes its nodes by these weights; `compose` refuses a missing one.
 
 `goals` needs an entry with `horizon` for every expanded Goal. Every remaining Key Action
 candidate needs a `why` or an `exclude_key_actions` entry with a reason.

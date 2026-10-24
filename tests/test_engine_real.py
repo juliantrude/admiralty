@@ -33,6 +33,11 @@ def real_graph():
             c["node"]: "Fixed overlay for the render test."
             for c in expansion["key_action_candidates"]
         },
+        "weights": [
+            {"from": e["from"], "to": e["to"], "weight": "medium", "reason": "Fixed for the test."}
+            for e in expansion["edges"]
+            if any(n["id"] == e["to"] and n["type"] == "cause" for n in expansion["nodes"])
+        ],
     }
     doc = compose(expansion, overlay, mechanics)
     assert validate_solution_graph(doc, mechanics, mechanics.rules) == []

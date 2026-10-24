@@ -25,7 +25,8 @@ from test_expand import (
 from hlidskjalf.cli import main
 from hlidskjalf.graph.expand import expand_graph
 from hlidskjalf.graph.mechanics import MechanicsGraph
-from hlidskjalf.graph.solution import SolutionInvalid, compose, validate_solution_graph
+from hlidskjalf.graph.solution import SolutionInvalid, validate_solution_graph
+from hlidskjalf.graph.solution import compose as compose_exact
 
 NODES = [
     cause("c", remedies=["ok", "blocked", "judged"], rules=["a-rule"]),
@@ -49,7 +50,31 @@ OVERLAY = {
         "t.helper": "Unlocks the blocked Remedy.",
         "t.judged": "Nothing in the numbers stands against it.",
     },
+    "weights": [
+        {"from": "t.g", "to": "t.c", "weight": "high", "reason": "Most of the gap."},
+        {"from": "t.g", "to": "t.d", "weight": "low", "reason": "A small share."},
+    ],
 }
+
+
+def weigh(expansion, overlay):
+    """The overlay with a weight on every edge into a Cause: its own where it gives one for an
+    edge of this expansion, medium otherwise. Tests about something else need not spell them out."""
+    causes = {n["id"] for n in expansion["nodes"] if n["type"] == "cause"}
+    causes |= {n["id"] for n in overlay.get("add_nodes", []) if n.get("type") == "cause"}
+    edges = {(e["from"], e["to"]) for e in expansion["edges"]}
+    edges |= {(e["from"], e["to"]) for e in overlay.get("add_edges", [])}
+    wanted = sorted((a, b) for a, b in edges if b in causes)
+    given = {(w["from"], w["to"]): w for w in overlay.get("weights", [])}
+    weights = [
+        given.get((a, b), {"from": a, "to": b, "weight": "medium", "reason": "Not under test."})
+        for a, b in wanted
+    ]
+    return {**overlay, "weights": weights}
+
+
+def compose(expansion, overlay, graph, *args):
+    return compose_exact(expansion, weigh(expansion, overlay), graph, *args)
 
 
 @pytest.fixture
@@ -258,7 +283,8 @@ def test_a_model_node_is_marked_and_joins_the_graph(graph, expansion):
     added = node(doc, "model.fleet_upkeep")
     assert added["source"] == "model"
     assert added["reason"].startswith("The Mechanics Graph has no")
-    assert {"from": "model.fleet_upkeep", "to": "t.ok", "kind": "remedy"} in doc["edges"]
+    plain = [{k: e[k] for k in ("from", "to", "kind")} for e in doc["edges"]]
+    assert {"from": "model.fleet_upkeep", "to": "t.ok", "kind": "remedy"} in plain
     assert errors(graph, doc) == []
 
 
@@ -609,3 +635,34 @@ def test_the_real_graph_composes_into_a_valid_solution_graph(reference):
     assert {n["id"] for n in doc["nodes"]} == {g["id"] for g in expansion["goals"]} | {
         n["id"] for n in expansion["nodes"]
     }
+
+
+# --- weights (docs/plans/M6-revision.md) ------------------------------------------------------
+
+
+def test_edges_into_causes_carry_the_models_weight_and_into_remedies_the_strength(graph, expansion):
+    doc = composed(graph, expansion)
+    edges = {(e["from"], e["to"]): e for e in doc["edges"]}
+    assert edges[("t.g", "t.c")]["weight"] == "high"
+    assert edges[("t.g", "t.c")]["weight_reason"] == "Most of the gap."
+    assert edges[("t.g", "t.d")]["weight"] == "low"
+    assert edges[("t.c", "t.ok")]["weight"] == "high"
+    assert "weight" not in edges[("t.blocked", "t.o")]
+
+
+def test_a_missing_weight_into_a_cause_is_refused(graph, expansion):
+    weights = [w for w in OVERLAY["weights"] if w["to"] != "t.d"]
+    with pytest.raises(SolutionInvalid) as caught:
+        compose_exact(expansion, overlay(weights=weights), graph)
+    assert "no weight for t.g > t.d" in str(caught.value.problems)
+
+
+def test_a_weight_on_no_cause_edge_or_without_reason_is_refused(graph, expansion):
+    stale = [*OVERLAY["weights"], {"from": "t.c", "to": "t.ok", "weight": "high", "reason": "x"}]
+    for weights, message in (
+        (stale, "t.c > t.ok is not an edge into a Cause"),
+        ([{**OVERLAY["weights"][0], "reason": " "}, OVERLAY["weights"][1]], "every entry needs"),
+    ):
+        with pytest.raises(SolutionInvalid) as caught:
+            compose_exact(expansion, overlay(weights=weights), graph)
+        assert message in str(caught.value.problems)
