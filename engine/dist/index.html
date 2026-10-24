@@ -1,0 +1,817 @@
+<!doctype html>
+<!--
+  Hliðskjálf graph engine: one fixed page that draws one Solution Graph (docs/plans/M6.md).
+  Libraries are pinned in engine/pins.json (exact versions + SRI); see engine/VERSIONS.md.
+  The page takes its data from solution-graph.json and writes nothing but text into the DOM.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hliðskjálf — Solution Graph</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+html, body { margin: 0; font-family: system-ui, sans-serif; color: #1b1f24; background: #fafafa; }
+main { display: flex; flex-direction: column; min-height: 100vh; }
+#error { margin: 0; padding: 12px 16px; background: #fde8e8; color: #8a1c1c; border-bottom: 1px solid #e5a3a3; white-space: pre-wrap; }
+#loader { padding: 16px; }
+#header { padding: 8px 16px; border-bottom: 1px solid #d5d9df; }
+#header h1 { margin: 0; font-size: 1.1rem; }
+#header p { margin: 2px 0 0; color: #3b4452; font-size: 0.9rem; }
+#stage { display: flex; height: 70vh; min-height: 420px; }
+#cy { flex: 1; min-width: 0; }
+#panel { width: 320px; flex: none; overflow-y: auto; box-sizing: border-box; padding: 12px 14px; border-left: 1px solid #d5d9df; background: #ffffff; font-size: 0.85rem; }
+#panel h2 { margin: 0 0 8px; font-size: 1rem; }
+#panel dt { margin-top: 8px; font-weight: 600; color: #3b4452; }
+#panel dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+#panel .hint { color: #5b6573; }
+#legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 0; padding: 8px 16px; border-top: 1px solid #d5d9df; font-size: 0.8rem; }
+#legend li { display: flex; align-items: center; gap: 6px; }
+.swatch { display: inline-block; width: 18px; height: 12px; border: 1.5px solid #5b6573; border-radius: 3px; box-sizing: border-box; }
+.clickable { cursor: pointer; }
+.clickable:hover { text-decoration: underline; }
+section { padding: 4px 16px 12px; }
+section h2 { font-size: 0.95rem; margin: 8px 0 4px; }
+section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line-height: 1.5; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.34.4/dist/cytoscape.min.js" integrity="sha384-lyd1lDWZ623YSUJ/wMQH50y+T81dWKJk7ZoFdYWXQS83b0+QpW0pgdfXEnQnXL/X" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/elkjs@0.12.0/lib/elk.bundled.js" integrity="sha384-ww57TDqx4cGknIavPm0QKO+aygLUR1BLSn2Vhbnt1XdYKWcwLyWTFKX7aZMaKIi2" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/cytoscape-elk@2.3.0/dist/cytoscape-elk.js" integrity="sha384-VCqo69qSTjiAwEkpykDLjsy96VKDH33my5mKmDfk3HhB85Iy4QwZ9R0IXqYuxV1A" crossorigin="anonymous"></script>
+</head>
+<body>
+<main>
+  <p id="error" role="alert" hidden></p>
+  <div id="loader" hidden>
+    <p>No <code>solution-graph.json</code> found next to this page. Choose a file or drop it here.</p>
+    <input id="picker" type="file" accept=".json,application/json">
+  </div>
+  <header id="header" hidden>
+    <h1>Hliðskjálf — Solution Graph</h1>
+    <p id="header-text"></p>
+  </header>
+  <div id="stage">
+    <div id="cy"></div>
+    <aside id="panel" aria-live="polite"><div id="panel-body"></div></aside>
+  </div>
+  <ul id="legend" aria-label="Legend"></ul>
+  <section id="actions-section" hidden>
+    <h2>Key Actions, ranked</h2>
+    <ol id="key-actions"></ol>
+  </section>
+  <section id="pruned-section" hidden>
+    <h2>Pruned (cut by the model, with the reason)</h2>
+    <ul id="pruned"></ul>
+  </section>
+</main>
+<pre id="engine-state" hidden></pre>
+<!-- solution-graph -->
+<script id="engine-script">
+"use strict";
+/*
+ * Hliðskjálf graph engine (docs/plans/M6.md). One fixed program, one data file: a Solution Graph.
+ * Everything from the JSON reaches the DOM through textContent or Cytoscape's canvas, never as HTML.
+ * Layout is deterministic: sorted ids, sizes from the label alone (no DOM measuring), fixed ELK options.
+ */
+(function () {
+  const TITLE_MAX = 40;
+  const NODE_HEIGHT = 40;
+  const NODE_MIN_WIDTH = 132;
+  const NODE_MAX_WIDTH = 320;
+  const CHAR_WIDTH = 7;
+  const TAG_CHAR_WIDTH = 6;
+  const NODE_PADDING = 20;
+  const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
+  const EDGE_KINDS = ["cause", "remedy", "obstacle"];
+  const REQUIRED_ARRAYS = ["nodes", "edges", "circles", "key_actions", "pruned"];
+
+  // --- pure functions -----------------------------------------------------------------------------
+
+  function nodeLabel(title) {
+    const chars = Array.from(String(title));
+    return chars.length > TITLE_MAX ? chars.slice(0, TITLE_MAX - 1).join("") + "…" : chars.join("");
+  }
+
+  /** Size from the visible title and the tag line alone: no DOM measuring, so every machine gets the same layout. */
+  function nodeSize(title, tag) {
+    const titleWidth = CHAR_WIDTH * Array.from(nodeLabel(title)).length;
+    const tagWidth = TAG_CHAR_WIDTH * Array.from(String(tag || "")).length;
+    const width = NODE_PADDING + Math.max(titleWidth, tagWidth);
+    return { width: Math.min(NODE_MAX_WIDTH, Math.max(NODE_MIN_WIDTH, width)), height: NODE_HEIGHT };
+  }
+
+  // Colour-blind-safe hues (Okabe-Ito without yellow and black), one per Vicious Circle in circle order.
+  const CIRCLE_PALETTE = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9"];
+  const TYPE_FILL = { goal: "#e8f0fe", cause: "#fff4e0", remedy: "#e6f4ea", obstacle: "#fde8e8" };
+  const TYPE_NAME = { goal: "Goal", cause: "Cause", remedy: "Remedy", obstacle: "Obstacle" };
+  const BORDER = "#5b6573";
+  const CRISIS_BORDER = "#8a1c1c";
+  const PRESENT_RED = "#c0392b";
+
+  /** Circle id -> colour, and node id -> circle, both from circle order in the data. */
+  function circleInfo(doc) {
+    const color = new Map();
+    const circleOf = new Map();
+    doc.circles.forEach((circle, index) => {
+      color.set(circle.id, CIRCLE_PALETTE[index % CIRCLE_PALETTE.length]);
+      for (const member of circle.members) if (!circleOf.has(member)) circleOf.set(member, circle.id);
+    });
+    return { color, circleOf };
+  }
+
+  /** The second label line: type and state in words, so colour is never the only signal. */
+  function tagOf(node, breakPoint) {
+    const parts = [];
+    if (node.source === "model") parts.push("model");
+    parts.push(node.type);
+    if (node.type === "goal") {
+      if (node.horizon) parts.push(node.horizon);
+      if (node.crisis) parts.push("CRISIS");
+    }
+    if (node.type === "remedy" && node.status) parts.push(node.status);
+    if (node.type === "obstacle" && node.check_state) parts.push(node.check_state);
+    if (breakPoint) parts.push("\u2691 break point");
+    return parts.join(" \u00b7 ");
+  }
+
+  function headerOf(doc) {
+    const counts = {
+      nodes: doc.nodes.length,
+      model_nodes: doc.nodes.filter((n) => n.source === "model").length,
+      circles: doc.circles.length,
+      key_actions: doc.key_actions.length,
+      pruned: doc.pruned.length,
+    };
+    const text =
+      `${doc.empire} \u00b7 ${doc.date} \u00b7 ${doc.game_version} \u00b7 ${counts.nodes} nodes ` +
+      `(${counts.model_nodes} model) \u00b7 ${counts.circles} Vicious Circles \u00b7 ` +
+      `${counts.key_actions} Key Actions \u00b7 ${counts.pruned} pruned`;
+    return { empire: doc.empire, date: doc.date, game_version: doc.game_version, counts, text };
+  }
+
+  /** Exactly the encodings that occur in this graph, each with its words. */
+  function legendOf(doc) {
+    const { color } = circleInfo(doc);
+    const entries = [];
+    const types = new Set(doc.nodes.map((n) => n.type));
+    for (const type of NODE_TYPES) {
+      if (types.has(type)) entries.push({ id: `type:${type}`, label: TYPE_NAME[type], fill: TYPE_FILL[type] });
+    }
+    const remedyStatus = { actionable: "solid", pending: "hatched", obstructed: "grey" };
+    for (const status of Object.keys(remedyStatus)) {
+      if (doc.nodes.some((n) => n.type === "remedy" && n.status === status)) {
+        entries.push({
+          id: `status:${status}`,
+          label: `Remedy ${status} (${remedyStatus[status]})`,
+          fill: TYPE_FILL.remedy,
+          hatched: status === "pending",
+          grey: status === "obstructed",
+        });
+      }
+    }
+    const checkLook = {
+      present: "red line into it",
+      clear: "muted",
+      unknown: "dotted border",
+      judgement: "dotted border",
+    };
+    for (const state of Object.keys(checkLook)) {
+      if (doc.nodes.some((n) => n.type === "obstacle" && n.check_state === state)) {
+        entries.push({
+          id: `check:${state}`,
+          label: `Obstacle ${state} (${checkLook[state]})`,
+          fill: TYPE_FILL.obstacle,
+          border: state === "present" ? PRESENT_RED : BORDER,
+          borderStyle: state === "unknown" || state === "judgement" ? "dotted" : "solid",
+          muted: state === "clear",
+        });
+      }
+    }
+    if (doc.nodes.some((n) => n.type === "goal" && n.crisis)) {
+      entries.push({ id: "crisis", label: "Crisis Goal (heavy outline)", fill: TYPE_FILL.goal, border: CRISIS_BORDER, heavy: true });
+    }
+    if (doc.nodes.some((n) => n.source === "model")) {
+      entries.push({ id: "model", label: "Added by the model (dashed border, \u201cmodel\u201d label)", fill: "#ffffff", borderStyle: "dashed" });
+    }
+    for (const circle of doc.circles) {
+      entries.push({
+        id: `circle:${circle.id}`,
+        label: `Vicious Circle ${circle.id} (click selects its members)`,
+        circle: circle.id,
+        border: color.get(circle.id),
+        heavy: true,
+      });
+    }
+    if (doc.circles.some((c) => c.break_point)) {
+      entries.push({ id: "break_point", label: "\u2691 break point of a Vicious Circle (double outline)", fill: "#ffffff", doubleOutline: true });
+    }
+    return entries;
+  }
+
+  /** What the detail panel shows for a node: only fields that are in the JSON, plus links derived from its edges. */
+  function panelOf(doc, id) {
+    const node = doc.nodes.find((n) => n.id === id);
+    if (!node) return null;
+    const title = (nodeId) => (doc.nodes.find((n) => n.id === nodeId) || { title: nodeId }).title;
+    const ref = (nodeId) => ({ id: nodeId, title: title(nodeId) });
+    const panel = { kind: "node", id: node.id, type: node.type, source: node.source, title: node.title };
+    for (const field of ["text", "horizon", "crisis", "status", "ratings", "check_state", "evidence", "rules", "reason"]) {
+      if (node[field] !== undefined) panel[field] = node[field];
+    }
+    const action = doc.key_actions.find((a) => a.node === id);
+    if (action) {
+      panel.rank = action.rank;
+      panel.why = action.why;
+      panel.unlocks = action.unlocks.map(ref);
+      panel.serves = action.serves.map(ref);
+    } else if (node.type !== "goal") {
+      const goals = new Set();
+      const seen = new Set([id]);
+      const queue = [id];
+      while (queue.length) {
+        const current = queue.shift();
+        for (const edge of doc.edges) {
+          if (edge.to !== current || seen.has(edge.from)) continue;
+          seen.add(edge.from);
+          queue.push(edge.from);
+          if (doc.nodes.find((n) => n.id === edge.from).type === "goal") goals.add(edge.from);
+        }
+      }
+      panel.serves = [...goals].sort().map(ref);
+    }
+    const label = (edge, other) => ({ ...ref(other), kind: edge.kind });
+    panel.edges_in = doc.edges.filter((e) => e.to === id).sort(byEdge).map((e) => label(e, e.from));
+    panel.edges_out = doc.edges.filter((e) => e.from === id).sort(byEdge).map((e) => label(e, e.to));
+    const circle = doc.circles.find((c) => c.members.includes(id));
+    if (circle) {
+      panel.circle = circle.id;
+      panel.break_point = circle.break_point === id;
+    }
+    return panel;
+  }
+
+  function circlePanelOf(doc, circleId) {
+    const circle = doc.circles.find((c) => c.id === circleId);
+    if (!circle) return null;
+    const title = (nodeId) => (doc.nodes.find((n) => n.id === nodeId) || { title: nodeId }).title;
+    return {
+      kind: "circle",
+      id: circle.id,
+      title: `Vicious Circle ${circle.id}`,
+      members: circle.members.map((id) => ({ id, title: title(id) })),
+      break_point: circle.break_point ? { id: circle.break_point, title: title(circle.break_point) } : null,
+    };
+  }
+
+  /** The first reason the document cannot be drawn, or null. */
+  function validateGraph(doc) {
+    if (doc === null || typeof doc !== "object" || Array.isArray(doc)) return "the data is not a JSON object";
+    if (doc.schema !== 1) return `unsupported schema: ${JSON.stringify(doc.schema)} (this page reads schema 1)`;
+    for (const name of REQUIRED_ARRAYS) {
+      if (!Array.isArray(doc[name])) return `"${name}" is missing or not an array`;
+    }
+    const ids = new Set();
+    for (const node of doc.nodes) {
+      if (node === null || typeof node !== "object" || typeof node.id !== "string" || node.id === "") {
+        return "a node has no id";
+      }
+      if (!NODE_TYPES.includes(node.type)) return `node ${node.id}: unknown type ${JSON.stringify(node.type)}`;
+      if (typeof node.title !== "string" || node.title.trim() === "") return `node ${node.id}: no title`;
+      if (ids.has(node.id)) return `node id ${node.id} occurs twice`;
+      ids.add(node.id);
+    }
+    for (const edge of doc.edges) {
+      if (edge === null || typeof edge !== "object") return "an edge is not an object";
+      if (!EDGE_KINDS.includes(edge.kind)) return `edge ${edge.from} -> ${edge.to}: unknown kind ${JSON.stringify(edge.kind)}`;
+      for (const end of ["from", "to"]) {
+        if (!ids.has(edge[end])) return `edge ${edge.from} -> ${edge.to}: "${edge[end]}" is not a node`;
+      }
+    }
+    for (const circle of doc.circles) {
+      for (const member of circle.members || []) {
+        if (!ids.has(member)) return `circle ${circle.id}: "${member}" is not a node`;
+      }
+    }
+    for (const action of doc.key_actions) {
+      if (!ids.has(action.node)) return `Key Action ${action.rank}: "${action.node}" is not a node`;
+    }
+    return null;
+  }
+
+  const byId = (a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
+  const edgeKey = (e) => `${e.from}\u0000${e.to}\u0000${e.kind}`;
+  const byEdge = (a, b) => (edgeKey(a) < edgeKey(b) ? -1 : edgeKey(a) > edgeKey(b) ? 1 : 0);
+  const round = (n) => Math.round(n * 100) / 100;
+
+  /** Cytoscape elements in sorted order, so the input order of the JSON cannot change the layout. */
+  function toElements(doc) {
+    const { color, circleOf } = circleInfo(doc);
+    const breakPoints = new Set(doc.circles.map((c) => c.break_point).filter(Boolean));
+    const nodeById = new Map(doc.nodes.map((n) => [n.id, n]));
+    const nodes = [...doc.nodes].sort(byId).map((node) => {
+      const tag = tagOf(node, breakPoints.has(node.id));
+      const size = nodeSize(node.title, tag);
+      const data = {
+        id: node.id,
+        type: node.type,
+        label: `${nodeLabel(node.title)}\n${tag}`,
+        tag,
+        width: size.width,
+        height: size.height,
+        model: node.source === "model",
+        breakPoint: breakPoints.has(node.id),
+      };
+      if (node.type === "remedy") data.status = node.status;
+      if (node.type === "obstacle") data.checkState = node.check_state;
+      if (node.type === "goal") data.crisis = node.crisis === true;
+      if (circleOf.has(node.id)) data.circleColor = color.get(circleOf.get(node.id));
+      return { group: "nodes", data };
+    });
+    const edges = [...doc.edges].sort(byEdge).map((edge) => {
+      const data = { id: `${edge.from}>${edge.to}`, source: edge.from, target: edge.to, kind: edge.kind };
+      const target = nodeById.get(edge.to);
+      if (edge.kind === "obstacle" && target.check_state) data.accent = target.check_state;
+      const circle = circleOf.get(edge.from);
+      if (circle !== undefined && circle === circleOf.get(edge.to)) data.circleColor = color.get(circle);
+      return { group: "edges", data };
+    });
+    return [...nodes, ...edges];
+  }
+
+  /** ELK layer constraints: Goals first, Key Actions last, everything else in between. */
+  function layerConstraints(doc) {
+    const constraint = new Map();
+    for (const node of doc.nodes) if (node.type === "goal") constraint.set(node.id, "FIRST");
+    for (const action of doc.key_actions) constraint.set(action.node, "LAST");
+    return constraint;
+  }
+
+  const ELK_OPTIONS = {
+    algorithm: "layered",
+    "elk.direction": "RIGHT",
+    "elk.randomSeed": "1",
+    "elk.padding": "[top=20,left=20,bottom=20,right=20]",
+    "elk.spacing.nodeNode": "28",
+    "elk.layered.spacing.nodeNodeBetweenLayers": "90",
+    "elk.layered.considerModelOrder.strategy": "NODES_AND_EDGES",
+    "elk.layered.crossingMinimization.semiInteractive": "false",
+    "elk.edgeRouting": "POLYLINE",
+  };
+
+  // --- loading ------------------------------------------------------------------------------------
+
+  /** Data sources in order: embedded script, ?data=, sibling file. Resolves to a JSON value or undefined. */
+  async function loadGraph() {
+    const embedded = document.getElementById("solution-graph");
+    if (embedded) return JSON.parse(embedded.textContent);
+    const url = new URLSearchParams(location.search).get("data");
+    for (const source of url ? [url, "solution-graph.json"] : ["solution-graph.json"]) {
+      try {
+        const response = await fetch(source);
+        if (response.ok) return await response.json();
+      } catch (_) {
+        // not reachable (file://, sandbox, 404): try the next source
+      }
+    }
+    return undefined;
+  }
+
+  // --- rendering ----------------------------------------------------------------------------------
+
+  let cy = null;
+  let current = null; // { doc, panel, selected: [ids] } of the graph on screen
+
+  function writeState(state) {
+    document.getElementById("engine-state").textContent = JSON.stringify(state);
+  }
+
+  function showError(message) {
+    const box = document.getElementById("error");
+    box.textContent = message;
+    box.hidden = false;
+  }
+
+  function emptyState(error) {
+    return { ok: false, error, nodes: [], edges: [] };
+  }
+
+  function stateOf(cyInstance, doc) {
+    const circleColors = new Map(circleInfo(doc).color);
+    const nodes = cyInstance
+      .nodes()
+      .map((node) => {
+        const pos = node.position();
+        const state = {
+          id: node.id(),
+          type: node.data("type"),
+          x: round(pos.x),
+          y: round(pos.y),
+          width: node.data("width"),
+          height: node.data("height"),
+          tag: node.data("tag"),
+          model: node.data("model"),
+          break_point: node.data("breakPoint"),
+          color: node.data("circleColor") || null,
+        };
+        for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"]]) {
+          if (node.data(field) !== undefined) state[key] = node.data(field);
+        }
+        return state;
+      })
+      .sort(byId);
+    const edges = cyInstance
+      .edges()
+      .not(".serves")
+      .map((edge) => ({
+        from: edge.data("source"),
+        to: edge.data("target"),
+        kind: edge.data("kind"),
+        color: edge.data("circleColor") || null,
+      }))
+      .sort(byEdge);
+    return {
+      ok: true,
+      error: null,
+      nodes,
+      edges,
+      header: headerOf(doc),
+      legend: legendOf(doc).map((entry) => ({ id: entry.id, label: entry.label })),
+      circles: doc.circles.map((c) => ({
+        id: c.id,
+        color: circleColors.get(c.id),
+        members: [...c.members].sort(),
+        break_point: c.break_point,
+      })),
+      key_actions: [...doc.key_actions]
+        .sort((a, b) => a.rank - b.rank)
+        .map((a) => ({ rank: a.rank, node: a.node, text: keyActionText(doc, a) })),
+      pruned: doc.pruned.map((p) => ({ id: p.id, reason: p.reason })),
+      selected: [...current.selected].sort(),
+      panel: current.panel,
+    };
+  }
+
+  function publish() {
+    writeState(stateOf(cy, current.doc));
+  }
+
+  const nodeTitle = (doc, id) => (doc.nodes.find((n) => n.id === id) || { title: id }).title;
+
+  function keyActionText(doc, action) {
+    const goals = action.serves.map((id) => nodeTitle(doc, id)).join(", ");
+    return `${action.rank}. ${nodeTitle(doc, action.node)} — serves ${goals}. ${action.why}`;
+  }
+
+  // --- styling ------------------------------------------------------------------------------------
+
+  function stripes(base, line) {
+    const colors = [];
+    const positions = [];
+    const count = 10;
+    for (let i = 0; i < count; i++) {
+      const shade = i % 2 === 0 ? base : line;
+      colors.push(shade, shade);
+      positions.push(`${(i * 100) / count}%`, `${((i + 1) * 100) / count}%`);
+    }
+    return { colors: colors.join(" "), positions: positions.join(" ") };
+  }
+  const HATCH = stripes(TYPE_FILL.remedy, "#a9cfb4");
+
+  const STYLE = [
+    {
+      selector: "node",
+      style: {
+        shape: "round-rectangle",
+        width: "data(width)",
+        height: "data(height)",
+        label: "data(label)",
+        "text-wrap": "wrap",
+        "text-valign": "center",
+        "text-halign": "center",
+        "font-size": 11,
+        "line-height": 1.25,
+        "background-color": "#ffffff",
+        "border-width": 1.5,
+        "border-color": BORDER,
+        color: "#1b1f24",
+      },
+    },
+    { selector: 'node[type = "goal"]', style: { "border-width": 2.5, "background-color": TYPE_FILL.goal } },
+    { selector: 'node[type = "cause"]', style: { "background-color": TYPE_FILL.cause } },
+    { selector: 'node[type = "remedy"]', style: { "background-color": TYPE_FILL.remedy } },
+    { selector: 'node[type = "obstacle"]', style: { "background-color": TYPE_FILL.obstacle } },
+    {
+      selector: 'node[status = "pending"]',
+      style: {
+        "background-fill": "linear-gradient",
+        "background-gradient-direction": "to-bottom-right",
+        "background-gradient-stop-colors": HATCH.colors,
+        "background-gradient-stop-positions": HATCH.positions,
+      },
+    },
+    { selector: 'node[status = "obstructed"]', style: { "background-color": "#d9dce1", color: "#59606b", "border-color": "#8a93a0" } },
+    { selector: 'node[checkState = "present"]', style: { "border-color": PRESENT_RED, "border-width": 2.5 } },
+    { selector: 'node[checkState = "clear"]', style: { opacity: 0.6 } },
+    { selector: 'node[checkState = "unknown"], node[checkState = "judgement"]', style: { "border-style": "dotted", "border-width": 2.5 } },
+    { selector: "node[?crisis]", style: { "border-width": 6, "border-color": CRISIS_BORDER } },
+    { selector: "node[circleColor]", style: { "border-width": 5, "border-color": "data(circleColor)" } },
+    { selector: "node[?model]", style: { "border-style": "dashed" } },
+    {
+      selector: "node[?breakPoint]",
+      style: { "outline-width": 3, "outline-color": "#1b1f24", "outline-style": "solid", "outline-offset": 3 },
+    },
+    { selector: "node:selected", style: { "underlay-color": "#1b1f24", "underlay-opacity": 0.18, "underlay-padding": 8, "underlay-shape": "round-rectangle" } },
+    {
+      selector: "edge",
+      style: {
+        width: 1.5,
+        "curve-style": "bezier",
+        "line-color": "#8a93a0",
+        "target-arrow-shape": "triangle",
+        "target-arrow-color": "#8a93a0",
+        "arrow-scale": 0.9,
+      },
+    },
+    {
+      selector: 'edge[accent = "present"]',
+      style: { "line-color": PRESENT_RED, "target-arrow-color": PRESENT_RED, width: 2.5 },
+    },
+    { selector: 'edge[accent = "clear"]', style: { opacity: 0.45 } },
+    {
+      selector: 'edge[accent = "unknown"], edge[accent = "judgement"]',
+      style: { "line-style": "dotted", "target-arrow-fill": "hollow" },
+    },
+    {
+      selector: "edge[circleColor]",
+      style: { width: 3.5, "line-color": "data(circleColor)", "target-arrow-color": "data(circleColor)" },
+    },
+    {
+      selector: "edge.serves",
+      style: { width: 1, "line-style": "dashed", "line-color": "#5b6573", "target-arrow-color": "#5b6573", display: "none", "curve-style": "unbundled-bezier", "control-point-distances": 60 },
+    },
+    { selector: "edge.serves.shown", style: { display: "element" } },
+  ];
+
+  // --- DOM: header, legend, lists, panel (text only) ----------------------------------------------
+
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  function renderHeader(doc) {
+    document.getElementById("header-text").textContent = headerOf(doc).text;
+    document.getElementById("header").hidden = false;
+  }
+
+  function swatchOf(entry) {
+    const swatch = el("span", "swatch");
+    if (entry.fill) swatch.style.background = entry.fill;
+    if (entry.hatched) {
+      swatch.style.background = `repeating-linear-gradient(135deg, ${TYPE_FILL.remedy} 0 3px, #a9cfb4 3px 6px)`;
+    }
+    if (entry.grey) swatch.style.background = "#d9dce1";
+    if (entry.border) swatch.style.borderColor = entry.border;
+    if (entry.borderStyle) swatch.style.borderStyle = entry.borderStyle;
+    if (entry.heavy) swatch.style.borderWidth = "4px";
+    if (entry.muted) swatch.style.opacity = "0.6";
+    if (entry.doubleOutline) swatch.style.outline = "2px solid #1b1f24";
+    return swatch;
+  }
+
+  function renderLegend(doc) {
+    const list = document.getElementById("legend");
+    list.replaceChildren();
+    for (const entry of legendOf(doc)) {
+      const item = el("li");
+      item.dataset.legend = entry.id;
+      item.append(swatchOf(entry), el("span", "legend-text", entry.label));
+      if (entry.circle) {
+        item.classList.add("clickable");
+        item.tabIndex = 0;
+        item.addEventListener("click", () => selectCircle(entry.circle));
+      }
+      list.append(item);
+    }
+  }
+
+  function renderLists(doc) {
+    const actions = document.getElementById("key-actions");
+    actions.replaceChildren();
+    for (const action of [...doc.key_actions].sort((a, b) => a.rank - b.rank)) {
+      const item = el("li", "clickable", keyActionText(doc, action).replace(/^\d+\.\s*/, ""));
+      item.value = action.rank;
+      item.tabIndex = 0;
+      item.dataset.node = action.node;
+      item.addEventListener("click", () => selectNode(action.node));
+      actions.append(item);
+    }
+    actions.hidden = doc.key_actions.length === 0;
+    const pruned = document.getElementById("pruned");
+    pruned.replaceChildren();
+    for (const entry of doc.pruned) pruned.append(el("li", "", `${entry.id} — ${entry.reason}`));
+    document.getElementById("pruned-section").hidden = doc.pruned.length === 0;
+    document.getElementById("actions-section").hidden = doc.key_actions.length === 0;
+  }
+
+  const refText = (ref) => (ref.kind ? `${ref.title} (${ref.kind})` : ref.title);
+
+  /** The rows of the panel as [label, [lines]]; the same panel object gives the same rows. */
+  function panelRows(panel) {
+    if (panel.kind === "circle") {
+      const rows = [["Type", ["Vicious Circle"]], ["Members", panel.members.map(refText)]];
+      rows.push(["Break point", [panel.break_point ? panel.break_point.title : "none (judgement needed)"]]);
+      return rows;
+    }
+    const rows = [["Type", [panel.source === "model" ? `${panel.type} (added by the model)` : panel.type]]];
+    if (panel.text !== undefined) rows.push(["Text", [panel.text]]);
+    if (panel.horizon !== undefined) rows.push(["Horizon", [panel.horizon]]);
+    if (panel.crisis) rows.push(["Crisis", ["yes"]]);
+    if (panel.status !== undefined) rows.push(["Status", [panel.status]]);
+    if (panel.ratings) {
+      rows.push(["Ratings", [`strength ${panel.ratings.strength}`, `speed ${panel.ratings.speed}`, `cost ${panel.ratings.cost}`]]);
+    }
+    if (panel.check_state !== undefined) rows.push(["Check state", [panel.check_state]]);
+    if (panel.evidence !== undefined) rows.push(["Evidence", panel.evidence.length ? panel.evidence : ["none"]]);
+    if (panel.rules !== undefined) rows.push(["Playbook Rules", panel.rules.length ? panel.rules : ["none"]]);
+    if (panel.reason !== undefined) rows.push(["Reason (model)", [panel.reason]]);
+    if (panel.rank !== undefined) rows.push(["Key Action rank", [String(panel.rank)]]);
+    if (panel.why !== undefined) rows.push(["Why", [panel.why]]);
+    if (panel.serves !== undefined) rows.push(["Serves", panel.serves.length ? panel.serves.map(refText) : ["no Goal"]]);
+    if (panel.unlocks !== undefined) rows.push(["Unlocks", panel.unlocks.length ? panel.unlocks.map(refText) : ["nothing"]]);
+    if (panel.circle !== undefined) rows.push(["Vicious Circle", [panel.circle + (panel.break_point ? " (break point)" : "")]]);
+    rows.push(["Edges in", panel.edges_in.length ? panel.edges_in.map(refText) : ["none"]]);
+    rows.push(["Edges out", panel.edges_out.length ? panel.edges_out.map(refText) : ["none"]]);
+    return rows;
+  }
+
+  function renderPanel(panel) {
+    const box = document.getElementById("panel-body");
+    box.replaceChildren();
+    if (!panel) {
+      box.append(el("p", "hint", "Click a node, a Key Action or a Vicious Circle to see its details."));
+      return;
+    }
+    box.append(el("h2", "", panel.title));
+    const list = el("dl");
+    for (const [label, lines] of panelRows(panel)) {
+      list.append(el("dt", "", label));
+      const value = el("dd");
+      for (const line of lines) value.append(el("div", "line", line));
+      list.append(value);
+    }
+    box.append(list);
+  }
+
+  // --- selection ------------------------------------------------------------------------------------
+
+  function showServes(ids) {
+    cy.edges(".serves").removeClass("shown");
+    cy.edges(".serves").filter((edge) => ids.includes(edge.source().id()) || ids.includes(edge.target().id())).addClass("shown");
+  }
+
+  function applySelection(ids, panel) {
+    cy.nodes(":selected").unselect();
+    for (const id of ids) cy.getElementById(id).select();
+    current.selected = new Set(ids);
+    current.panel = panel;
+    showServes(ids);
+    renderPanel(panel);
+    publish();
+  }
+
+  function selectNode(id) {
+    applySelection([id], panelOf(current.doc, id));
+  }
+
+  function selectCircle(circleId) {
+    const circle = current.doc.circles.find((c) => c.id === circleId);
+    applySelection(circle.members, circlePanelOf(current.doc, circleId));
+  }
+
+  function clearSelection() {
+    applySelection([], null);
+  }
+
+  /** The seam for the driver: emits the same `tap` event a click on the node produces. */
+  function click(id) {
+    cy.getElementById(id).emit("tap");
+  }
+
+  // --- drawing --------------------------------------------------------------------------------------
+
+  function addServesEdges(doc) {
+    const edges = [];
+    for (const action of doc.key_actions) {
+      for (const goal of action.serves) {
+        edges.push({
+          group: "edges",
+          classes: "serves",
+          data: { id: `serves:${action.node}>${goal}`, source: action.node, target: goal, kind: "serves" },
+        });
+      }
+    }
+    cy.add(edges);
+  }
+
+  function draw(doc) {
+    cy = cytoscape({
+      container: document.getElementById("cy"),
+      elements: toElements(doc),
+      style: STYLE,
+      layout: { name: "preset" },
+      autoungrabify: true,
+      boxSelectionEnabled: false,
+    });
+    current = { doc, panel: null, selected: new Set() };
+    renderHeader(doc);
+    renderLegend(doc);
+    renderLists(doc);
+    renderPanel(null);
+    cy.on("tap", "node", (event) => selectNode(event.target.id()));
+    cy.on("tap", (event) => {
+      if (event.target === cy) clearSelection();
+    });
+    const constraint = layerConstraints(doc);
+    const started = performance.now();
+    cy.layout({
+      name: "elk",
+      animate: false,
+      fit: true,
+      padding: 30,
+      elk: ELK_OPTIONS,
+      nodeLayoutOptions: (node) => {
+        const layer = constraint.get(node.id());
+        return layer ? { "elk.layered.layering.layerConstraint": layer } : {};
+      },
+      stop: () => {
+        window.engineLayoutMs = Math.round(performance.now() - started);
+        addServesEdges(doc);
+        publish();
+        document.dispatchEvent(new CustomEvent("engine-ready"));
+      },
+    }).run();
+  }
+
+  function render(doc) {
+    const problem = validateGraph(doc);
+    if (problem) {
+      showError(`This is not a Solution Graph this page can draw: ${problem}`);
+      writeState(emptyState(problem));
+      return;
+    }
+    draw(doc);
+  }
+
+  function offerPicker() {
+    document.getElementById("loader").hidden = false;
+    writeState(emptyState("no data"));
+    const picker = document.getElementById("picker");
+    const read = (file) => {
+      if (!file) return;
+      file.text().then((text) => {
+        document.getElementById("loader").hidden = true;
+        document.getElementById("error").hidden = true;
+        try {
+          render(JSON.parse(text));
+        } catch (err) {
+          showError(`${file.name} is not valid JSON: ${err.message}`);
+          writeState(emptyState("invalid JSON"));
+        }
+      });
+    };
+    picker.addEventListener("change", () => read(picker.files[0]));
+    document.addEventListener("dragover", (event) => event.preventDefault());
+    document.addEventListener("drop", (event) => {
+      event.preventDefault();
+      read(event.dataTransfer.files[0]);
+    });
+  }
+
+  async function start() {
+    let doc;
+    try {
+      doc = await loadGraph();
+    } catch (err) {
+      showError(`The data is not valid JSON: ${err.message}`);
+      writeState(emptyState("invalid JSON"));
+      return;
+    }
+    if (doc === undefined) offerPicker();
+    else render(doc);
+  }
+
+  /** Same seam for the background: a tap on the canvas outside any node. */
+  function clickBackground() {
+    cy.emit("tap");
+  }
+
+  window.HlidskjalfEngine = {
+    nodeLabel, nodeSize, validateGraph, toElements, layerConstraints,
+    tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
+  };
+  start();
+})();
+</script>
+</body>
+</html>

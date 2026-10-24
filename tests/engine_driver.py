@@ -160,10 +160,18 @@ def engine_dom(
             '<script id="driver-hook">document.addEventListener("engine-ready", () => {'
             f"{after_ready}}}, {{once: true}});</script>"
         )
-        html = html.replace(
-            '<script src="engine.js"></script>', hook + '<script src="engine.js"></script>'
-        )
-    files = {name: (base / name).read_text(encoding="utf-8") for name in ENGINE_FILES}
+        # The unbundled page loads engine.js; the bundle has the same code inline as <script id="engine-script">.
+        for engine_script in ('<script src="engine.js"></script>', '<script id="engine-script">'):
+            if engine_script in html:
+                html = html.replace(engine_script, hook + engine_script)
+                break
+        else:
+            raise EngineDriverError("page has no engine script to hook in before")
+    files = {
+        name: (base / name).read_text(encoding="utf-8")
+        for name in ENGINE_FILES
+        if (base / name).exists()
+    }
     return dump_dom(html, files=files, **kwargs)
 
 

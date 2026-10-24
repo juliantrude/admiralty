@@ -69,13 +69,20 @@ def main(argv: list[str] | None = None) -> int:
     compose.add_argument("--out", type=Path, required=True)
     compose.add_argument("--knowledge-root", type=Path, help="default: knowledge/ of the plugin")
 
+    view = briefing.add_parser(
+        "view",
+        help="look at a solution-graph.json in the browser (local server, publishes nothing)",
+    )
+    view.add_argument("file", type=Path)
+    view.add_argument("--port", type=int, default=0, help="default: a random free port")
+
     args = parser.parse_args(argv)
     if args.command == "graph":
         if args.graph_command == "check-solution":
             return _check_solution(args)
         return _graph_validate(args)
     if args.command == "briefing":
-        return _compose(args)
+        return _view(args) if args.briefing_command == "view" else _compose(args)
     if args.command == "setup":
         return _setup(args)
     if args.command == "mcp":
@@ -219,6 +226,17 @@ def _compose(args) -> int:
             indent=1,
         )
     )
+    return 0
+
+
+def _view(args) -> int:
+    from hlidskjalf.graph.view import ViewUnavailable, serve
+
+    try:
+        serve(args.file, args.port)
+    except (ViewUnavailable, OSError) as error:
+        print(f"hlidskjalf briefing view: {error}", file=sys.stderr)
+        return 1
     return 0
 
 

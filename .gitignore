@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 target/
 dist/
+!engine/dist/
 .pytest_cache/
 .ruff_cache/
 

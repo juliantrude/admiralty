@@ -82,7 +82,7 @@ M6 (plan: `docs/plans/M6.md`):
 - [x] 2. Libraries and driver (pinned versions, `tools/fetch_engine_libs.py`, `tests/engine_driver.py`, pins test)
 - [x] 3. Page core (`engine/index.html`, `engine.js`, `engine.css`: data loading, layered layout, deterministic `engine-state`)
 - [x] 4. Encodings and panel (circles, model nodes, status, legend, header, lists, click panel, textContent only)
-- [ ] 5. Bundle and `briefing view` (`tools/bundle_engine.py`, `engine/dist/index.html`, CLI, "model never writes HTML" static test)
+- [x] 5. Bundle and `briefing view` (`tools/bundle_engine.py`, `engine/dist/index.html`, CLI, "model never writes HTML" static test)
 - [ ] 6. Verification (real Solution Graph screenshot looked at, `-m network` test, `docs/awaiting-julian.md` Artifact section)
 
 M7, M8: plan increments to be written (see `docs/build-plan.md`).
@@ -90,15 +90,13 @@ M7, M8: plan increments to be written (see `docs/build-plan.md`).
 ## Status
 
 STATUS: READY
-**Next action:** M6 increment 5 (see `docs/plans/M6.md`): `tools/bundle_engine.py` (index.html with `engine.js` and `engine.css` inlined, deterministic, no local paths;
-CDN script tags stay), `engine/dist/index.html` committed (`.gitignore` has `dist/`: add `!engine/dist/` or un-ignore `engine/dist/`; a test fails when the committed bundle is stale),
-CLI `hlidskjalf briefing view <solution-graph.json> [--port N]` (copy bundle + JSON to a temp dir, stdlib `http.server` on 127.0.0.1 only, random free port, prints URL; test: 200 for
-page and JSON, path outside the directory refused, bound to 127.0.0.1), static test "model never writes HTML" (no skill tells the model to write .html/.js/.css; consult skill outputs only
-the overlay and the two CLI commands; `compose` output with tags shown as text through the page is already covered in `tests/test_engine_encodings.py`), and a test that the bundled
-and the unbundled page give the same `engine-state`. Driver note: `engine_dom(after_ready=...)` injects its hook before `<script src="engine.js">`; for the bundle (inline script) make the
-hook insertion work there too (insert before the first inline `<script>` of the engine, or before `</body>`-adjacent marker). Known quirks to look at in increment 6: with a Vicious Circle ELK
-reverses a back edge so an Obstacle can land left of its Goal's Causes; at `fit` the labels of a ~25 node graph are small (font 11 scaled down), check on the real graph whether a minimum
-zoom with scrolling is better; the first Key Action of the unfocused list uses `value=rank`.
+**Next action:** M6 increment 6 (see `docs/plans/M6.md`, "Verification"): build a real Solution Graph from the vulkan mid-save (`expand_graph` + `compose` with a fixed overlay,
+as in the M5 verification; temp workspace, temp `HLIDSKJALF_USER_DIR`), render it headless with `engine/dist/index.html` and a screenshot (`chromium --headless=new --screenshot`), look at the PNG
+(Read; do not commit it) and fix visible defects in `engine.js`/`engine.css` (then rerun `tools/bundle_engine.py`; a test fails when the committed bundle is stale). Known quirks to look at:
+with a Vicious Circle ELK reverses a back edge so an Obstacle can land left of its Goal's Causes; at `fit` the labels of a ~25 node graph are small (font 11 scaled down), check whether a minimum
+zoom with scrolling is better; the first Key Action of the unfocused list uses `value=rank`. Then the identical-render test on the real Solution Graph, one `-m network` test against the real CDN
+URLs (register the marker in `pyproject.toml`), and the German Artifact section in `docs/awaiting-julian.md` (where `engine/dist/index.html` is, publish once, upload a `solution-graph.json`, what to
+look for: Goals left, Key Actions right, circle colours, dashed model nodes, click shows evidence). Mention `briefing view` there as the local look. After M6: M7 plan document (first increment).
 **Carried into M7 (from M5 verification):** the crude "every number is in a tool result" check flags sums the model computes itself (230.36 = 88 + 74.77 +
 67.59 research); the M7 hook must decide whether derived sums are allowed (e.g. only with the addends shown) rather than copy the regex.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
@@ -272,3 +270,10 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   with identical element set). Existing test `test_a_different_date_or_empire_does_not_move_a_node` renamed `..._changes_only_the_header` (assertion now: header differs, rest of the
   state equal; required because the header is now part of the state, as the plan says); the circle fixture's members now hold the whole SCC (obstacles included, as `expand_graph` emits).
   Screenshot of a merged fixture looked at (no defects in encodings; labels small at fit zoom, noted for increment 6). Tests 419 passed / 31 skipped (268 s), ruff clean
+- 2026-10-24 — M6 increment 5: `tools/bundle_engine.py` (`bundle()` inlines `engine.css` as `<style>` and `engine.js` as `<script id="engine-script">`, CDN tags stay, refuses `</script`/`</style`/`<!--`
+  inside; `--check` exits 1 when stale), `engine/dist/index.html` committed (`.gitignore`: `!engine/dist/`), `graph/view.py` + `hlidskjalf briefing view <file> [--port N]` (bundle and JSON copied
+  to a temp dir, stdlib `http.server` bound to 127.0.0.1, random free port, prints the URL; unparsable JSON or missing bundle = stderr + exit 1). Driver: `engine_dom` hooks before
+  `<script src="engine.js">` or `<script id="engine-script">` and reads the engine files only when they exist. `tests/test_engine_bundle.py` (16: deterministic, committed bundle not stale, no
+  local path, pins on the bundle, bundler refuses a closing tag, bundled = unbundled `engine-state`, hook in the bundle, view on loopback with 200 for page and JSON, `..` paths refused, bad input,
+  headless browser against the served page, "model never writes HTML": no skill asks to write .html/.js/.css, consult skill only the overlay and the two commands, schema/overlay keys without
+  HTML fields). Tests 435 passed / 31 skipped (275 s), ruff clean
