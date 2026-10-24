@@ -509,11 +509,38 @@ def test_the_bubble_closes_with_the_selection():
 @needs_browser
 def test_the_bubble_takes_the_side_with_the_least_covered_area():
     script = """
+      const anchor = {x1: 100, y1: 100, x2: 200, y2: 140};
+      const size = {width: 80, height: 60};
+      const chain = {x1: 100, y1: 100, x2: 400, y2: 180};
       const p = HlidskjalfEngine.placeBubble(
-        {x1: 100, y1: 100, x2: 200, y2: 140}, {width: 80, height: 60},
-        [{x1: 210, y1: 60, x2: 400, y2: 180}], {x1: 0, y1: 0, x2: 600, y2: 400});
+        HlidskjalfEngine.bubbleCandidates("end", anchor, chain, size), size,
+        [{x1: 210, y1: 60, x2: 400, y2: 180}], [], {x1: 0, y1: 0, x2: 600, y2: 400});
       document.getElementById("engine-state").textContent =
         JSON.stringify({side: p.side, covered: p.covered});
     """
     state = driver.render_engine(chain_graph(), after_ready=script)
-    assert state == {"side": "left", "covered": 0}
+    assert state == {"side": "above-chain", "covered": 0}
+
+
+@needs_browser
+def test_a_middle_node_gets_the_bubble_above_or_below_the_chain_hiding_no_edge():
+    graph = chain_graph()
+    middle = next(
+        n["id"]
+        for n in graph["nodes"]
+        if any(e["to"] == n["id"] for e in graph["edges"])
+        and any(e["from"] == n["id"] for e in graph["edges"])
+    )
+    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{middle}")')
+    assert state["bubble"]["role"] == "middle"
+    assert state["bubble"]["side"] in ("above-chain", "below-chain")
+    assert state["bubble"]["hides_edge_points"] == 0
+
+
+@needs_browser
+def test_the_ends_of_a_chain_get_the_bubble_where_no_edge_runs():
+    graph = chain_graph()
+    goal = next(n["id"] for n in graph["nodes"] if n["type"] == "goal")
+    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{goal}")')
+    assert state["bubble"]["role"] == "start"
+    assert state["bubble"]["hides_edge_points"] == 0

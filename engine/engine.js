@@ -153,39 +153,52 @@
   }
 
   const BUBBLE_GAP = 14;
-  // Candidate sides in order of preference: the right and left keep the reading flow of the graph.
-  const BUBBLE_SIDES = ["right", "left", "below", "above", "below-right", "above-right", "below-left", "above-left"];
+  const EDGE_SAMPLES = 12; // points per edge when counting how much of an edge the bubble hides
+  const EDGE_PENALTY = 400; // one hidden edge point weighs like a 20 x 20 px patch of a node
 
   const overlap = (a, b) =>
     Math.max(0, Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1)) * Math.max(0, Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1));
+  const inside = (box, x, y) => x >= box.x1 && x <= box.x2 && y >= box.y1 && y <= box.y2;
 
   /**
-   * Where the bubble goes: `anchor` is the selected node's box and `boxes` the other focused nodes' boxes, all in screen
-   * pixels; `view` is the visible area. Each side is scored by the area of focused nodes it covers and by how far it
-   * sticks out of the view; the lowest score wins, ties by the order of BUBBLE_SIDES. Pure, so it is testable.
+   * The candidate places for the bubble, best first, by the node's role in its chain (docs/plans/M6-revision.md):
+   * a node where the chain starts gets the left side, where it ends the right side, so the bubble lies where no edge
+   * runs; a node in the middle gets the space above the whole chain (below if needed), joined by a leader line.
    */
-  function placeBubble(anchor, size, boxes, view) {
+  function bubbleCandidates(role, anchor, chain, size) {
     const cx = (anchor.x1 + anchor.x2) / 2;
     const cy = (anchor.y1 + anchor.y2) / 2;
-    const at = {
-      right: [anchor.x2 + BUBBLE_GAP, cy - size.height / 2],
-      left: [anchor.x1 - BUBBLE_GAP - size.width, cy - size.height / 2],
-      below: [cx - size.width / 2, anchor.y2 + BUBBLE_GAP],
-      above: [cx - size.width / 2, anchor.y1 - BUBBLE_GAP - size.height],
-      "below-right": [anchor.x2 + BUBBLE_GAP, anchor.y2 + BUBBLE_GAP],
-      "above-right": [anchor.x2 + BUBBLE_GAP, anchor.y1 - BUBBLE_GAP - size.height],
-      "below-left": [anchor.x1 - BUBBLE_GAP - size.width, anchor.y2 + BUBBLE_GAP],
-      "above-left": [anchor.x1 - BUBBLE_GAP - size.width, anchor.y1 - BUBBLE_GAP - size.height],
-    };
+    const left = { side: "left", x: anchor.x1 - BUBBLE_GAP - size.width, y: cy - size.height / 2 };
+    const right = { side: "right", x: anchor.x2 + BUBBLE_GAP, y: cy - size.height / 2 };
+    const over = { side: "above-chain", x: cx - size.width / 2, y: chain.y1 - BUBBLE_GAP - size.height };
+    const under = { side: "below-chain", x: cx - size.width / 2, y: chain.y2 + BUBBLE_GAP };
+    if (role === "start") return [left, over, under, right];
+    if (role === "end") return [right, over, under, left];
+    return [over, under, left, right];
+  }
+
+  /**
+   * Picks the candidate that hides the least of the chain and stays in view: the score adds the area of focused nodes
+   * covered, the hidden points of focused edges and twice the area outside the view; the first of equal scores wins.
+   * Candidates are moved sideways into the view where that alone fixes them. Pure, so it is testable.
+   */
+  function placeBubble(candidates, size, boxes, segments, view) {
     let best = null;
-    for (const side of BUBBLE_SIDES) {
-      const [x, y] = at[side];
-      const box = { x1: x, y1: y, x2: x + size.width, y2: y + size.height };
+    for (const candidate of candidates) {
+      let x = candidate.x;
+      if (candidate.side.endsWith("-chain")) x = Math.min(Math.max(x, view.x1 + 4), view.x2 - 4 - size.width);
+      const box = { x1: x, y1: candidate.y, x2: x + size.width, y2: candidate.y + size.height };
       const covered = boxes.reduce((sum, other) => sum + overlap(box, other), 0);
-      const area = size.width * size.height;
-      const outside = area - overlap(box, view);
-      const score = covered + 2 * outside;
-      if (!best || score < best.score - 1e-6) best = { side, x, y, score, covered };
+      let hidden = 0;
+      for (const [x1, y1, x2, y2] of segments) {
+        for (let i = 1; i < EDGE_SAMPLES; i++) {
+          const t = i / EDGE_SAMPLES;
+          if (inside(box, x1 + (x2 - x1) * t, y1 + (y2 - y1) * t)) hidden++;
+        }
+      }
+      const outside = size.width * size.height - overlap(box, view);
+      const score = covered + EDGE_PENALTY * hidden + 2 * outside;
+      if (!best || score < best.score - 1e-6) best = { side: candidate.side, x, y: candidate.y, score, covered, hidden };
     }
     return best;
   }
@@ -794,30 +807,82 @@
     return panel.id;
   }
 
-  /** Puts the bubble next to its node where it hides the fewest focused nodes; follows pan and zoom. */
-  function positionBubble() {
+  /** How far the view must move so that `box` lies inside it with a margin; zero where it fits already. */
+  function shiftInto(box, view, margin) {
+    const dx = box.x1 < view.x1 + margin ? view.x1 + margin - box.x1 : box.x2 > view.x2 - margin ? view.x2 - margin - box.x2 : 0;
+    const dy = box.y1 < view.y1 + margin ? view.y1 + margin - box.y1 : box.y2 > view.y2 - margin ? view.y2 - margin - box.y2 : 0;
+    return { x: dx, y: dy };
+  }
+
+  /**
+   * Puts the bubble next to its node where it hides the least of the chain; follows pan and zoom. On a new selection
+   * (`makeRoom`), if the place the node's role prefers lies outside the view and the next best place would hide part
+   * of the chain, the view moves so the preferred place is visible instead.
+   */
+  function positionBubble(makeRoom) {
     const bubble = document.getElementById("panel");
     const anchorId = current && bubbleAnchor(current.panel);
     if (!anchorId) {
       bubble.hidden = true;
+      document.getElementById("leader").hidden = true;
       current && (current.bubble = null);
       return;
     }
     bubble.hidden = false;
     const node = cy.getElementById(anchorId);
     const anchor = node.renderedBoundingBox({ includeLabels: false });
-    const boxes = cy
-      .nodes()
-      .filter((other) => other.id() !== anchorId && (current.focus.size === 0 || current.focus.has(other.id())))
-      .map((other) => other.renderedBoundingBox({ includeLabels: false }));
+    const inFocus = (id) => current.focus.size === 0 || current.focus.has(id);
+    const focused = cy.nodes().filter((other) => inFocus(other.id()));
+    const boxes = focused.filter((other) => other.id() !== anchorId).map((other) => other.renderedBoundingBox({ includeLabels: false }));
+    const chain = focused.renderedBoundingBox({ includeLabels: false });
+    const segments = cy
+      .edges()
+      .not(".serves")
+      .filter((edge) => inFocus(edge.source().id()) && inFocus(edge.target().id()))
+      .map((edge) => {
+        const a = edge.renderedSourceEndpoint();
+        const b = edge.renderedTargetEndpoint();
+        return [a.x, a.y, b.x, b.y];
+      });
+    const into = node.incomers("edge").not(".serves").filter((edge) => inFocus(edge.source().id())).length;
+    const out = node.outgoers("edge").not(".serves").filter((edge) => inFocus(edge.target().id())).length;
+    const role = !into ? "start" : !out ? "end" : "middle";
     const stage = document.getElementById("cy");
     const view = { x1: 0, y1: 0, x2: stage.clientWidth, y2: stage.clientHeight };
     const size = { width: bubble.offsetWidth, height: bubble.offsetHeight };
-    const place = placeBubble(anchor, size, boxes, view);
+    const candidates = bubbleCandidates(role, anchor, chain, size);
+    const place = placeBubble(candidates, size, boxes, segments, view);
+    if (makeRoom && (place.covered > 0 || place.hidden > 0)) {
+      const first = candidates[0];
+      const box = { x1: first.x, y1: first.y, x2: first.x + size.width, y2: first.y + size.height };
+      const shift = shiftInto(box, view, 8);
+      const moved = { x1: anchor.x1 + shift.x, y1: anchor.y1 + shift.y, x2: anchor.x2 + shift.x, y2: anchor.y2 + shift.y };
+      if ((shift.x || shift.y) && overlap(moved, view) > 0) {
+        cy.panBy(shift); // the pan event places the bubble again, now with room
+        return;
+      }
+    }
     bubble.style.left = `${Math.round(place.x)}px`;
     bubble.style.top = `${Math.round(place.y)}px`;
     bubble.dataset.side = place.side;
-    current.bubble = { node: anchorId, side: place.side, covers: Math.round(place.covered) };
+    drawLeader(place, size, anchor);
+    current.bubble = { node: anchorId, role, side: place.side, covers: Math.round(place.covered), hides_edge_points: place.hidden };
+  }
+
+  /** A dashed line from a bubble above or below the chain to its node, so the eye finds the node. */
+  function drawLeader(place, size, anchor) {
+    const leader = document.getElementById("leader");
+    if (!place.side.endsWith("-chain")) {
+      leader.hidden = true;
+      return;
+    }
+    const x = (anchor.x1 + anchor.x2) / 2;
+    const top = place.side === "above-chain" ? place.y + size.height : anchor.y2;
+    const bottom = place.side === "above-chain" ? anchor.y1 : place.y;
+    leader.hidden = bottom - top < 2;
+    leader.style.left = `${Math.round(x)}px`;
+    leader.style.top = `${Math.round(top)}px`;
+    leader.style.height = `${Math.round(bottom - top)}px`;
   }
 
   function renderPanel(panel) {
@@ -836,7 +901,7 @@
       list.append(value);
     }
     box.append(list);
-    positionBubble();
+    positionBubble(true);
   }
 
   // --- selection ------------------------------------------------------------------------------------
@@ -930,7 +995,7 @@
     cy.on("tap", (event) => {
       if (event.target === cy) clearSelection();
     });
-    cy.on("pan zoom resize", () => positionBubble());
+    cy.on("pan zoom resize", () => positionBubble(false));
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && current && current.panel) clearSelection();
     });
@@ -1010,7 +1075,8 @@
   }
 
   window.HlidskjalfEngine = {
-    nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep, placeBubble,
+    nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep,
+    placeBubble, bubbleCandidates,
     tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
   };
   start();
