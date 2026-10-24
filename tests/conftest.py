@@ -16,6 +16,15 @@ import pytest
 
 SAVES_DIR = Path(os.environ.get("HLIDSKJALF_SAVES", Path(__file__).parent / "fixtures" / "saves"))
 
+# Time budgets from the build plan assume a CPU at full clock. On a throttled machine
+# (powersave governor, battery) set HLIDSKJALF_PERF_SLACK=1.5 or so.
+PERF_SLACK = float(os.environ.get("HLIDSKJALF_PERF_SLACK", "1.0"))
+
+
+def budget(seconds: float) -> float:
+    return seconds * PERF_SLACK
+
+
 # The 4.5.2 reference Campaign "Konföderation von Vulkan" (2200–2298).
 VULKAN = "vulkan"
 EARLY, MID, LATE = "2220.04.22.sav", "2259.12.25.sav", "2298.03.11.sav"

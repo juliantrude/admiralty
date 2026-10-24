@@ -7,7 +7,8 @@ Domain language: GLOSSARY.md. Plan and milestones: docs/build-plan.md. Decisions
 
 ```
 uv sync                 # needs cargo on PATH only when rust_parser must be (re)built: ~/.cargo/bin
-uv run pytest           # golden tests skip when reference saves are missing
+uv run pytest           # golden tests skip when reference saves or UI values are missing
+HLIDSKJALF_PERF_SLACK=1.5 uv run pytest   # on a throttled CPU (powersave): stretches time budgets
 uv run ruff check . && uv run ruff format --check .
 ```
 

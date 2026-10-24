@@ -18,6 +18,8 @@ from typing import Any
 _LOC_LINE = re.compile(r'^\s*(?P<key>[^\s:#]+):\d*\s*"(?P<value>.*)"\s*(#.*)?$')
 _VARIABLE = re.compile(r"\$(?P<key>[^$\s|]+?)(\|[^$]*)?\$")
 _COLOUR = re.compile(r"§.")
+_KEY_LIKE = re.compile(r"[A-Za-z0-9_.\-]+")
+_PLAIN_WORD = re.compile(r"[A-Z][a-z'\-]+")
 _ICON = re.compile(r"£[^£\s]+£?")
 
 
@@ -43,7 +45,8 @@ class Localisation:
                     match = _LOC_LINE.match(line)
                     if not match:
                         continue
-                    key, value = match.group("key"), match.group("value")
+                    key = match.group("key")
+                    value = match.group("value").replace("\\n", "\n")
                     if key.startswith("adj_NN"):
                         suffix = key.removeprefix("adj_NN").lstrip("*")
                         adjectives[suffix] = value.split("|")[0]
@@ -140,7 +143,7 @@ class NameBlock:
                 return key
             template = key
         else:
-            template = self._template(key)
+            template = self._template(key, has_variables=bool(variables))
 
         if template == "%ADJ%":
             # "%ADJ%": the first variable is an adjective whose own template gets the
@@ -162,7 +165,7 @@ class NameBlock:
         ]
         return _clean(self._substitute(template, values))
 
-    def _template(self, key: str) -> str:
+    def _template(self, key: str, has_variables: bool = False) -> str:
         if key == "%ADJECTIVE%":
             # "%ADJECTIVE%": the adjective variable inflected by the adj_NN* suffix rules,
             # placed by the language's adj_format ("adj $1$" in English).
@@ -171,6 +174,11 @@ class NameBlock:
             return key
         if key in self.loc.entries:
             template = self.loc.entries[key]
+        elif not _KEY_LIKE.fullmatch(key) or (_PLAIN_WORD.fullmatch(key) and not has_variables):
+            # Text the player typed ("Die Borg", "Vulkan") is sometimes stored without
+            # literal = yes. Spaces or a plain capitalised word without underscores mark
+            # it as typed text; real localisation keys carry underscores or are caps.
+            template = key
         elif key.lstrip("-").isdigit():
             # sequence numbers arrive as bare numeric keys
             template = key

@@ -129,6 +129,23 @@ class GameData:
             self.errors.append((str(path), str(error)))
             return {}
 
+    @cached_property
+    def timeline_texts(self) -> dict[str, str]:
+        """Timeline event id → localisation key of its title. Events add timeline entries
+        with an override_id and override_text = { "text:KEY" } (events/*.txt)."""
+        texts: dict[str, str] = {}
+        pattern = re.compile(r"add_timeline_event\s*=\s*\{(.*?)\n\t*\}", re.DOTALL)
+        for path in sorted((self.install_dir / "events").glob("*.txt")):
+            text = path.read_text(encoding="utf-8-sig", errors="replace")
+            if "add_timeline_event" not in text:
+                continue
+            for body in pattern.findall(text):
+                ident = re.search(r"override_id\s*=\s*(\w+)", body)
+                title = re.search(r'"text:(\w+)"', body)
+                if ident and title:
+                    texts.setdefault(ident.group(1), title.group(1))
+        return texts
+
     def defines(self) -> dict[str, Any]:
         """NDefines flattened: {'NGameplay': {...}, 'NEconomy': {...}, ...}."""
         merged: dict[str, Any] = {}

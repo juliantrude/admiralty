@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gc
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -24,5 +25,13 @@ def load_save(path: str | Path) -> Save:
     with zipfile.ZipFile(path) as archive:
         meta_text = archive.read("meta").decode("utf-8")
     meta = rust_parser.parse_save_from_string(meta_text)
-    gamestate = rust_parser.parse_save_file(str(path))
+    # Building millions of small dicts triggers the cyclic garbage collector over and
+    # over although none of them can form cycles yet; pausing it saves about a quarter.
+    collecting = gc.isenabled()
+    gc.disable()
+    try:
+        gamestate = rust_parser.parse_save_file(str(path))
+    finally:
+        if collecting:
+            gc.enable()
     return Save(path=path, meta=meta, gamestate=gamestate)
