@@ -1,0 +1,707 @@
+# Benchmarks for the Consulting mode (docs/plans/M4.md, "Benchmarks (draft)").
+# status: draft means no Briefing may use a value; experienced players review and set it to reviewed.
+# values: per decade null (no source yet), or {value, basis: derived|reviewed, formula}.
+# observed: refreshed from the reference Campaigns by tools/gen_benchmarks.py (one empire each).
+version: v4.5.2
+status: draft
+decades:
+- 2210
+- 2220
+- 2230
+- 2240
+- 2250
+- 2260
+- 2270
+- 2280
+- 2290
+figures:
+  research_income:
+    label: Research income
+    unit: research per month, physics + society + engineering
+    source:
+      metric: research.income
+    provenance: 'Observed: metric ''research.income'' (metrics.yaml) in the archived extracts of the reference
+      Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody has contributed
+      a figure yet.'
+    assumptions:
+    - Gross monthly income summed over the three research fields.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 68.33
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 170.64
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 230.36
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 290.36
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 335.13
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 372.98
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 480.28
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 303.61
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 397.52
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 438.29
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 630.07
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 699.02
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 1976.7
+  alloys_income:
+    label: Alloys income
+    unit: alloys per month
+    source:
+      metric: alloys.income
+    provenance: 'Observed: metric ''alloys.income'' (metrics.yaml) in the archived extracts of the reference
+      Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody has contributed
+      a figure yet.'
+    assumptions:
+    - Gross monthly income; upkeep and fleet building are not netted out.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 0
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 43.48
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 113.01
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 133.41
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 206.32
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 214.61
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 213.97
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 258.94
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 123.35
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 143.68
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 156.66
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 247.05
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 272.35
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 439.31
+  energy_income:
+    label: Energy income
+    unit: energy per month
+    source:
+      metric: energy.income
+    provenance: 'Observed: metric ''energy.income'' (metrics.yaml) in the archived extracts of the reference
+      Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody has contributed
+      a figure yet.'
+    assumptions:
+    - Gross monthly income; the reviewers may prefer net.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 0
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 320.27
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 629.81
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 755.91
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 1287.65
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 1725.8
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 1824.65
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 1810.82
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 1172.47
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 1599.71
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 1720.4
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 2419.52
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 3121.34
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 6602.92
+  minerals_income:
+    label: Minerals income
+    unit: minerals per month
+    source:
+      metric: minerals.income
+    provenance: 'Observed: metric ''minerals.income'' (metrics.yaml) in the archived extracts of the reference
+      Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody has contributed
+      a figure yet.'
+    assumptions:
+    - Gross monthly income.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 0
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 168
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 322.88
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 413.24
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 534.8
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 662.11
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 667.42
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 723.53
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 658.62
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 716.47
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 774.68
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 807.01
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 993.14
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 1664.12
+  food_income:
+    label: Food income
+    unit: food per month
+    source:
+      metric: food.income
+    provenance: 'Observed: metric ''food.income'' (metrics.yaml) in the archived extracts of the reference
+      Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody has contributed
+      a figure yet.'
+    assumptions:
+    - Gross monthly income; food-hungry species change the useful value a lot.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 0
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 43.83
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 35
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 43.06
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 46.73
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 141.76
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 190.24
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 206.39
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 185.43
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 282.18
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 297.59
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 258.71
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 298.28
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 541.59
+  unity_income:
+    label: Unity income
+    unit: unity per month
+    source:
+      metric: unity.income
+    provenance: 'Observed: metric ''unity.income'' (metrics.yaml) in the archived extracts of the reference
+      Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody has contributed
+      a figure yet.'
+    assumptions:
+    - Gross monthly income, Tradition cost not netted out.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 0
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 63.83
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 74.4
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 120.96
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 124.01
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 119.61
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 120.5
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 128.02
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 181.6
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 199.39
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 237.67
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 209.5
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 303.39
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 600.45
+  influence_income:
+    label: Influence income
+    unit: influence per month
+    source:
+      metric: influence.income
+    provenance: 'Observed: metric ''influence.income'' (metrics.yaml) in the archived extracts of the
+      reference Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody
+      has contributed a figure yet.'
+    assumptions:
+    - Gross monthly income; colonies and upkeep eat most of it, so net is the usual watch.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 0
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 5.98
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 6.4
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 6.5
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 6.37
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 6.5
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 6.5
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 6.6
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 7.65
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 7.58
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 7.79
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 8
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 8.35
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 8.35
+  naval_capacity:
+    label: Naval capacity (maximum)
+    unit: naval capacity
+    source:
+      metric: naval_capacity.max
+    provenance: 'Observed: metric ''naval_capacity.max'' (metrics.yaml) in the archived extracts of the
+      reference Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody
+      has contributed a figure yet.'
+    assumptions:
+    - The extract's maximum, a computed value pinned by pending golden tests.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 50
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 50
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 95
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 198
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 312
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 306
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 306
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 318
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 226
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 260
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 256
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 325
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 377
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 500
+  military_power:
+    label: Fleet power
+    unit: the game's military power score
+    source:
+      path: empire.military_power
+    provenance: 'Observed: extract field ''empire.military_power'' in the archived extracts of the reference
+      Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody has contributed
+      a figure yet.'
+    assumptions:
+    - The in-game military power number, not a count of ships.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 167
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 615
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 2084
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 4701
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 5833
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 11005
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 11362
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 12390
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 5544
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 5717
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 6534
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 8928
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 14319
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 31915
+  pop_count:
+    label: Pop count
+    unit: pops (extract scale)
+    source:
+      metric: pops.total
+    provenance: 'Observed: metric ''pops.total'' (metrics.yaml) in the archived extracts of the reference
+      Campaigns. Benchmark values: open, no game-file formula covers a whole empire and nobody has contributed
+      a figure yet.'
+    assumptions:
+    - The extract may carry pops times 100 (open question for the Player's UI read).
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 4800
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 8128
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 14586
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 19456
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 37678
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 43729
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 45775
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 51111
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 49013
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 53349
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 55609
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 66609
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 81252
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 128102
+  planet_count:
+    label: Planet count
+    unit: planets
+    source:
+      count: planets
+    provenance: 'Observed: extract field ''planets'' in the archived extracts of the reference Campaigns.
+      Benchmark values: open, no game-file formula covers a whole empire and nobody has contributed a
+      figure yet.'
+    assumptions:
+    - Planets the empire owns, as listed in the extract.
+    values:
+      2210: null
+      2220: null
+      2230: null
+      2240: null
+      2250: null
+      2260: null
+      2270: null
+      2280: null
+      2290: null
+    observed:
+    - campaign: vulkan
+      date: 2200.01.01
+      value: 1
+    - campaign: vulkan
+      date: 2220.04.26
+      value: 3
+    - campaign: vulkan
+      date: 2245.01.26
+      value: 5
+    - campaign: vulkan
+      date: 2259.12.29
+      value: 5
+    - campaign: vulkan
+      date: 2273.09.07
+      value: 10
+    - campaign: vulkan
+      date: 2284.09.29
+      value: 11
+    - campaign: vulkan
+      date: 2288.05.04
+      value: 11
+    - campaign: vulkan
+      date: 2298.03.16
+      value: 11
+    - campaign: zygerrian
+      date: 2264.08.12
+      value: 13
+    - campaign: zygerrian
+      date: 2271.08.28
+      value: 13
+    - campaign: zygerrian
+      date: 2275.03.03
+      value: 13
+    - campaign: zygerrian
+      date: 2291.09.30
+      value: 14
+    - campaign: zygerrian
+      date: 2315.03.01
+      value: 16
+    - campaign: zygerrian
+      date: 2363.04.20
+      value: 27

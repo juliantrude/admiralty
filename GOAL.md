@@ -134,7 +134,7 @@ if only Julian's part remains, and move on to the next increment.
 - [x] Playbook seed rules as `knowledge/4.5.2/rules/*.md` (id, date, reason) with a loader
       and tests: Unity against the next Tradition cost; influence at the cap is waste;
       unemployed pops before new colonies
-- [ ] Benchmarks draft `knowledge/4.5.2/benchmarks.yaml` (marked draft, with provenance
+- [x] Benchmarks draft `knowledge/4.5.2/benchmarks.yaml` (marked draft, with provenance
       and assumptions) and a readable review page `docs/benchmarks-draft.md`; hold point:
       review by experienced players goes to `docs/awaiting-julian.md`
 
@@ -191,16 +191,15 @@ if only Julian's part remains, and move on to the next increment.
 ## Status
 
 STATUS: READY
-**Next action:** M4 increment 9 (last of M4): benchmarks draft `knowledge/4.5.2/benchmarks.yaml` (`status: draft`, `provenance` and `assumptions`
-per entry, format in `docs/plans/M4.md` "Benchmarks (draft)": values per decade 2210..2290 for research, alloys, energy, minerals, food, Unity, influence
-income, naval capacity, pop count, planet count; observed values from the vulkan/zygerrian archived extracts go in `observed:`, game-file-derived ones are
-`derived` with the formula, everything else `value: null`, nothing invented) plus a loader/validator and a readable review page `docs/benchmarks-draft.md`
-(generated, says which values are null). Hold point: review by experienced players goes to `docs/awaiting-julian.md` (German). Rules are done: loader
-`graph/playbook.py` (`load_rules`, `read_rules`), 3 approved rules in `knowledge/4.5.2/rules/`, cited via `rules:` on graph nodes; the validator checks rule
-files and `applies_to`. Further rules only in `docs/proposals/playbook.md`. Reference-save extracts: see how `tests/` reads them (git-ignored saves); do not
-put player names into `knowledge/`. `skills/` is auto-discovered by the plugin; `hooks/` is still empty. The full suite takes ~170 s (run it in the background).
-**Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the
-game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
+**Next action:** M5 increment 1: study and plan, write `docs/plans/M5.md` (expansion algorithm, Solution Graph schema, Briefing flow, how Key
+Actions are ranked). Inputs: `docs/build-plan.md` M5 and Appendix A, `docs/plans/M4.md`. Building blocks that exist: `graph/mechanics.py`
+(`MechanicsGraph.load`, `reachable`, `node_facts`, metrics registry with path/sum/ratio specs, Obstacle `check` against Snapshot metrics),
+`graph/playbook.py` (rules cited via `rules:` on nodes), `graph/benchmarks.py` (`resolve_source` resolves a metric spec against an extract;
+a draft benchmarks file is not `usable`, so Briefings must not use benchmark values). Metric resolution for Obstacle checks does not exist
+yet as a shared function (only inside `resolve_source` / test code): M5 needs it. Reference-save extracts: `Extractor().extract(path, "Plexxi")`
+(~4 s). The full suite takes ~180 s (run it in the background). `hooks/` is still empty; `skills/` is auto-discovered by the plugin.
+**Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
+review of the benchmarks draft (both in `docs/awaiting-julian.md`).
 
 ## Budget
 
@@ -292,3 +291,8 @@ game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
   errors and `applies_to` patterns that match no node or Goal (`*` = anything). `rules:` links added to the Unity-spending Remedies and their `*_needs_unity`
   Obstacles, `influence.stagger_projects`, `pop_growth.grow_pops`, `jobs.free_jobs` and every `*.no_spare_pops`. `docs/proposals/playbook.md` created (empty).
   The fixture rule in `tests/test_mechanics_graph.py` was brought to the full rule format (test data, no assertion weakened). Tests 252 passed / 31 skipped, ruff clean
+- 2026-10-24 — M4 increment 9 (M4 complete): `graph/benchmarks.py` (format, `load_benchmarks` refusing malformed files, `usable` only when
+  `status: reviewed`, `resolve_source`, `render_review_page`), `tools/gen_benchmarks.py` (refreshes `observed` from the git-ignored saves, keeps
+  values/status, writes the page), `knowledge/4.5.2/benchmarks.yaml` (11 figures x 9 decades, all benchmark values null: no game-file formula
+  covers a whole empire, nothing invented; observed values from vulkan and zygerrian, no player names) and `docs/benchmarks-draft.md`.
+  `graph validate` now checks the file; `docs/awaiting-julian.md` section 2 (German) holds the review steps. Tests 269 passed / 31 skipped, ruff clean

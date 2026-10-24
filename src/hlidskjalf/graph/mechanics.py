@@ -26,6 +26,7 @@ from typing import Any
 import yaml
 from jsonschema import Draft202012Validator
 
+from hlidskjalf.graph.benchmarks import read_benchmarks
 from hlidskjalf.graph.playbook import read_rules
 
 KNOWLEDGE_ROOT = Path(__file__).resolve().parents[3] / "knowledge"
@@ -245,6 +246,10 @@ def _check(pack: _Pack) -> list[Problem]:
                         f"applies_to: '{pattern}' matches no node or Goal",
                     )
                 )
+    benchmarks = pack.directory / "benchmarks.yaml"
+    if benchmarks.is_file():
+        _, benchmark_errors = read_benchmarks(benchmarks, metrics)
+        problems += [Problem("error", "benchmarks.yaml", m) for m in benchmark_errors]
     file_of = {n["id"]: name for name, doc in pack.graphs for n in doc["nodes"]}
     file_of |= {g["id"]: name for name, doc in pack.graphs for g in doc["goals"]}
 

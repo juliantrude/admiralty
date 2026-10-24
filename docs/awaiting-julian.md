@@ -46,3 +46,27 @@ Zwei offene Fragen, die diese Werte beantworten:
   mit (`COUNT_ADOPTIONS` in `src/hlidskjalf/extract/computed/tradition_cost.py`).
 - Sind Stadt- und Nexus-Distrikte durch die Planetengröße begrenzt? Aktuell geben wir dafür
   nur ein "district_limit" pro Planet aus und lassen das Maximum offen.
+
+## 2. Richtwerte (Benchmarks) von erfahrenen Spielern prüfen lassen
+
+Wofür: Huginn soll später sagen können "für Jahr 2260 ist das wenig". Dafür brauchen wir
+Richtwerte pro Jahrzehnt. Wir haben keine Quelle dafür und erfinden nichts: Alle Richtwerte
+sind noch leer. Ausgefüllt sind nur die Werte, die in unseren Referenz-Saves stehen (ein
+Reich pro Kampagne, also kein Maßstab, nur ein Anhaltspunkt). Solange der Status `draft` ist,
+benutzt kein Briefing die Zahlen.
+
+So geht's:
+
+1. `docs/benchmarks-draft.md` öffnen (eine Tabelle pro Kennzahl, am Ende die Fragen an die
+   Prüfer) und erfahrenen Spielern zeigen.
+2. Fragen: Welche Werte erwartet ihr von einem ordentlichen, nicht optimierten Reich pro
+   Jahrzehnt? Sind das die richtigen Kennzahlen? Brutto oder netto?
+3. Die Antworten mit kurzer Begründung (eigene Partien, Guide, Rechnung) in
+   `knowledge/4.5.2/benchmarks.yaml` unter `values` eintragen, mit `basis: reviewed`, oder mir
+   als Liste schicken, dann trage ich sie ein.
+4. Erst wenn du mit dem Ergebnis zufrieden bist: `status: reviewed` setzen und
+   `uv run python tools/gen_benchmarks.py --page-only` ausführen. Dann dürfen Briefings die
+   Werte nutzen.
+
+Hinweis: Die Bevölkerungszahlen im Save sind vermutlich mit 100 multipliziert (siehe Punkt 1,
+"Bevölkerung der Hauptwelt"). Bis das geklärt ist, taugen für Pops nur Verläufe, keine Absolutwerte.
