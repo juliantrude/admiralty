@@ -186,6 +186,10 @@ def test_the_skill_only_proposes_and_writes_one_file():
     assert "docs/proposals/claims.md" in text
 
 
-def test_the_proposals_file_exists_and_starts_empty():
+def test_the_proposals_file_exists_and_only_proposes():
+    # It started empty (M7 increment 5) and gained its first section in M7 verification:
+    # either the placeholder or sections that say nothing is applied.
     text = (ROOT / "docs" / "proposals" / "claims.md").read_text(encoding="utf-8")
-    assert "_No proposals yet._" in text
+    assert text.startswith("# Proposed changes to the Unverified Claim check")
+    assert "Nothing here\nis applied" in text
+    assert "_No proposals yet._" in text or "\n## " in text

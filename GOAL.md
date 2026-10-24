@@ -97,12 +97,18 @@ M7 (plan: `docs/plans/M7.md`):
 
 M7 is complete (see Log).
 
-M8: plan increments to be written (see `docs/build-plan.md`); its first increment is the plan document `docs/plans/M8.md`.
+M8 (plan: `docs/plans/M8.md`):
+- [x] 1. Plan document
+- [ ] 2. Frame, series, intervals, Timeline merge (`muninn/frame.py`, `muninn/series.py`)
+- [ ] 3. Candidates, findings, `muninn check-epochs` (`muninn/epochs.py`, `muninn/findings.py`, CLI)
+- [ ] 4. MCP tool `retrospective` (service, server, assembly and budget, Fair Play filter, `goals` for Consulting)
+- [ ] 5. `skills/muninn/` and its static test
+- [ ] 6. Verification (reference Campaign from archive only, headless Muninn with the hook live, `docs/awaiting-julian.md` epoch judgement)
 
 ## Status
 
 STATUS: READY
-**Next action:** M8 increment 1: read the M8 section of `docs/build-plan.md` (Muninn), `GLOSSARY.md`, `docs/adr/` and the archive code in `src/hlidskjalf/workspace/archive.py`, then write `docs/plans/M8.md` (design, verification, and an "Increments" list of about 5 to 6 steps, in the style of M5 to M7) and add those increments to the `## Plan` of this file under an `M8 (plan: docs/plans/M8.md)` heading, step 1 ticked. Docs only; commit as `M8: plan for Muninn`. Note: `-m network` is deselected by default.
+**Next action:** M8 increment 2: read `docs/plans/M8.md` ("The time frame", "The tool result", "What the archive holds"), then write `src/hlidskjalf/muninn/frame.py` (resolve `last` / `since` / `all` / `since+until` against `Archive.dates()`, error with fewer than two dates) and `muninn/series.py` (series per archived date, intervals via `diff_extracts` with `change_pct`, Timeline merge across extracts with `timeline_complete`) plus `tests/test_muninn_series.py` on synthetic archives and one reference test over the eight archived dates (skip without saves). Pure functions over archived documents; no MCP yet. Commit as `M8: frame, series and intervals`. Note: `-m network` is deselected by default.
 **Decided in the M7 plan:** derived sums/differences (2 to 4 addends shown in the same item) and percentages are allowed, unexplained totals are blocked;
 evidence window = tool results of the whole session. Hook input probed (see plan, open risks): the loop guard counts blocks in `blocks.jsonl` per `session_id`+`prompt_id` because `stop_hook_active` stays true on every pass.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
@@ -316,3 +322,8 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   positive, rule added: bold lead of a line ending in a colon is a label), the model rewrote and the second pass was clean (57 claims, no findings, no number blocked), `blocks summary`: 1 block, 1 claim.
   Bold compliance: all Display Names the answer used (Technician, Metallurgist, Energy Grid, ...) were bold, bold used only for names and resource labels. Hook added about 0.3 s per pass. Tests 583 passed / 31 skipped,
   ruff clean. `claims check --answer` help text fixed (it takes a file)
+- 2026-10-24 — M8 increment 1: `docs/plans/M8.md` written (code/model division; archive probe on the reference Campaign: header dates differ from file names, extracts hold only the last 20 of 23 Timeline events so
+  Muninn merges the slices of all extracts and reports `timeline_complete`; wars show in Snapshots only while running, so epoch borders are `exact` (Timeline) or `between` two archived dates; time frame `last` = last two
+  archived dates; `retrospective` tool result with series, intervals incl. `change_pct` and `years` so the claim check can verify them, boundary candidates, findings candidates, `goals` for Consulting only;
+  `muninn check-epochs` requires every border to be anchored on a Timeline event or an archived interval; Coaching branch limited to asking for the Player's assessment first; 6 increments). Docs only
+- 2026-10-24 — repaired the red suite left by M7: `test_the_proposals_file_exists_and_starts_empty` expected the empty placeholder, but M7 verification had added the first proposal; renamed `..._and_only_proposes` and now asserts the title, the "nothing is applied" sentence and placeholder-or-section (the file's intended state, not a weakening). Full suite 583 passed / 31 skipped, ruff clean
