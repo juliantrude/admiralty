@@ -83,20 +83,17 @@ M6 (plan: `docs/plans/M6.md`):
 - [x] 3. Page core (`engine/index.html`, `engine.js`, `engine.css`: data loading, layered layout, deterministic `engine-state`)
 - [x] 4. Encodings and panel (circles, model nodes, status, legend, header, lists, click panel, textContent only)
 - [x] 5. Bundle and `briefing view` (`tools/bundle_engine.py`, `engine/dist/index.html`, CLI, "model never writes HTML" static test)
-- [ ] 6. Verification (real Solution Graph screenshot looked at, `-m network` test, `docs/awaiting-julian.md` Artifact section)
+- [x] 6. Verification (real Solution Graph screenshot looked at, `-m network` test, `docs/awaiting-julian.md` Artifact section)
+
+M6 is complete (see Log).
 
 M7, M8: plan increments to be written (see `docs/build-plan.md`).
 
 ## Status
 
 STATUS: READY
-**Next action:** M6 increment 6 (see `docs/plans/M6.md`, "Verification"): build a real Solution Graph from the vulkan mid-save (`expand_graph` + `compose` with a fixed overlay,
-as in the M5 verification; temp workspace, temp `HLIDSKJALF_USER_DIR`), render it headless with `engine/dist/index.html` and a screenshot (`chromium --headless=new --screenshot`), look at the PNG
-(Read; do not commit it) and fix visible defects in `engine.js`/`engine.css` (then rerun `tools/bundle_engine.py`; a test fails when the committed bundle is stale). Known quirks to look at:
-with a Vicious Circle ELK reverses a back edge so an Obstacle can land left of its Goal's Causes; at `fit` the labels of a ~25 node graph are small (font 11 scaled down), check whether a minimum
-zoom with scrolling is better; the first Key Action of the unfocused list uses `value=rank`. Then the identical-render test on the real Solution Graph, one `-m network` test against the real CDN
-URLs (register the marker in `pyproject.toml`), and the German Artifact section in `docs/awaiting-julian.md` (where `engine/dist/index.html` is, publish once, upload a `solution-graph.json`, what to
-look for: Goals left, Key Actions right, circle colours, dashed model nodes, click shows evidence). Mention `briefing view` there as the local look. After M6: M7 plan document (first increment).
+**Next action:** M7 increment 1: write `docs/plans/M7.md` (the Unverified Claim check: `hooks/` Stop hook, `skills/review-blocks`, per `docs/build-plan.md` M7). Read "Carried into M7" below first: decide whether
+derived sums are allowed. Note for the plan: `-m network` is deselected by default (`addopts` in `pyproject.toml`); run `uv run pytest -m network` to test the real CDN.
 **Carried into M7 (from M5 verification):** the crude "every number is in a tool result" check flags sums the model computes itself (230.36 = 88 + 74.77 +
 67.59 research); the M7 hook must decide whether derived sums are allowed (e.g. only with the addends shown) rather than copy the regex.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
@@ -277,3 +274,10 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   local path, pins on the bundle, bundler refuses a closing tag, bundled = unbundled `engine-state`, hook in the bundle, view on loopback with 200 for page and JSON, `..` paths refused, bad input,
   headless browser against the served page, "model never writes HTML": no skill asks to write .html/.js/.css, consult skill only the overlay and the two commands, schema/overlay keys without
   HTML fields). Tests 435 passed / 31 skipped (275 s), ruff clean
+- 2026-10-24 — M6 increment 6 (M6 complete): the M5 headless Solution Graph (50 nodes, 53 edges, validates) rendered from `engine/dist/index.html` and the PNG looked at. Defect: at fit zoom the 11 px labels
+  became ~5 px and unreadable. Fix in `engine.js`: `readableView()` after layout keeps zoom >= 0.8 and starts at the top left of the graph (positions and `engine-state` unchanged; reader drags/wheels; the ranked Key
+  Action list below holds the whole answer). 0.9 pushed the Key Action column off the stage, 0.8 shows Goals to Remedies/Obstacles and the rest by panning. Not defects: Obstacle titles are cut at the node and shown in
+  full in the panel; the first Key Action list item uses `value=rank` on every item on purpose; no Vicious Circle in this graph so back-edge drawing was not exercised on real data. `tests/test_engine_real.py`:
+  real Solution Graph built from the vulkan mid-save (3 Goals, fixed overlay) renders identically, also shuffled; no overlap, Goals left of every Key Action; layout 641 ms of a 20 s budget; one `-m network` test
+  against the real CDN with SRI passed (marker registered, deselected by default via `addopts`). `docs/awaiting-julian.md` section 3 (German, Artifact publishing). Bundle rebuilt. Tests 438 passed / 31 skipped
+  (+1 network), ruff clean. PNG not committed

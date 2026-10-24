@@ -12,6 +12,8 @@
   const CHAR_WIDTH = 7;
   const TAG_CHAR_WIDTH = 6;
   const NODE_PADDING = 20;
+  const READABLE_ZOOM = 0.8;
+  const VIEW_PADDING = 30;
   const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
   const EDGE_KINDS = ["cause", "remedy", "obstacle"];
   const REQUIRED_ARRAYS = ["nodes", "edges", "circles", "key_actions", "pruned"];
@@ -647,6 +649,15 @@
     cy.add(edges);
   }
 
+  /** Fitting a 50 node graph into the stage shrinks the 11 px labels to about 5 px: below this zoom the view starts at the
+   *  top left of the graph at a readable size instead, and the reader pans (drag) or zooms (wheel). Positions are untouched. */
+  function readableView() {
+    if (cy.zoom() >= READABLE_ZOOM) return;
+    const box = cy.elements().boundingBox();
+    cy.zoom(READABLE_ZOOM);
+    cy.pan({ x: VIEW_PADDING - box.x1 * READABLE_ZOOM, y: VIEW_PADDING - box.y1 * READABLE_ZOOM });
+  }
+
   function draw(doc) {
     cy = cytoscape({
       container: document.getElementById("cy"),
@@ -671,7 +682,7 @@
       name: "elk",
       animate: false,
       fit: true,
-      padding: 30,
+      padding: VIEW_PADDING,
       elk: ELK_OPTIONS,
       nodeLayoutOptions: (node) => {
         const layer = constraint.get(node.id());
@@ -679,6 +690,7 @@
       },
       stop: () => {
         window.engineLayoutMs = Math.round(performance.now() - started);
+        readableView();
         addServesEdges(doc);
         publish();
         document.dispatchEvent(new CustomEvent("engine-ready"));

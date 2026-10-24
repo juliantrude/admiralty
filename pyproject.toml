@@ -42,6 +42,8 @@ ignore = ["E501"]  # the formatter wraps code; long formulas in docstrings stay 
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "-m 'not network'"
 markers = [
     "saves: needs the reference saves in tests/fixtures/saves/",
+    "network: loads the pinned engine libraries from the real CDN (deselect with -m 'not network')",
 ]
