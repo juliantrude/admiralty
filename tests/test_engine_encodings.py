@@ -484,3 +484,36 @@ def test_node_size_follows_the_weighted_impact_on_the_goals():
     for edge in graph["edges"]:
         if edge["kind"] == "obstacle":
             assert nodes[edge["to"]]["impact"] >= nodes[edge["from"]]["impact"]
+
+
+@needs_browser
+def test_a_click_opens_the_bubble_at_the_node_without_covering_its_chain():
+    graph = chain_graph()
+    target = graph["key_actions"][0]["node"]
+    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
+    assert state["bubble"]["node"] == target
+    assert state["bubble"]["covers"] == 0
+
+
+@needs_browser
+def test_the_bubble_closes_with_the_selection():
+    graph = chain_graph()
+    target = graph["key_actions"][0]["node"]
+    state = driver.render_engine(
+        graph,
+        after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()',
+    )
+    assert state["bubble"] is None
+
+
+@needs_browser
+def test_the_bubble_takes_the_side_with_the_least_covered_area():
+    script = """
+      const p = HlidskjalfEngine.placeBubble(
+        {x1: 100, y1: 100, x2: 200, y2: 140}, {width: 80, height: 60},
+        [{x1: 210, y1: 60, x2: 400, y2: 180}], {x1: 0, y1: 0, x2: 600, y2: 400});
+      document.getElementById("engine-state").textContent =
+        JSON.stringify({side: p.side, covered: p.covered});
+    """
+    state = driver.render_engine(chain_graph(), after_ready=script)
+    assert state == {"side": "left", "covered": 0}

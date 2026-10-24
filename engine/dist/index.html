@@ -17,9 +17,17 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 #header { padding: 8px 16px; border-bottom: 1px solid #d5d9df; }
 #header h1 { margin: 0; font-size: 1.1rem; }
 #header p { margin: 2px 0 0; color: #3b4452; font-size: 0.9rem; }
-#stage { display: flex; height: 70vh; min-height: 420px; }
-#cy { flex: 1; min-width: 0; }
-#panel { width: 320px; flex: none; overflow-y: auto; box-sizing: border-box; padding: 12px 14px; border-left: 1px solid #d5d9df; background: #ffffff; font-size: 0.85rem; }
+#stage { position: relative; height: 70vh; min-height: 420px; overflow: hidden; }
+#cy { position: absolute; inset: 0; }
+#panel.bubble { position: absolute; z-index: 10; width: 300px; max-height: 60%; overflow-y: auto; box-sizing: border-box; padding: 10px 12px; background: #ffffff; border: 1px solid #8a93a0; border-radius: 10px; box-shadow: 0 4px 16px rgba(27, 31, 36, 0.18); font-size: 0.8rem; }
+#panel.bubble[hidden] { display: none; }
+#panel.bubble::before { content: ""; position: absolute; width: 12px; height: 12px; background: #ffffff; border: 1px solid #8a93a0; transform: rotate(45deg); }
+#panel.bubble[data-side="right"]::before { left: -7px; top: calc(50% - 6px); border-top: none; border-right: none; }
+#panel.bubble[data-side="left"]::before { right: -7px; top: calc(50% - 6px); border-bottom: none; border-left: none; }
+#panel.bubble[data-side="below"]::before { top: -7px; left: calc(50% - 6px); border-bottom: none; border-right: none; }
+#panel.bubble[data-side="above"]::before { bottom: -7px; left: calc(50% - 6px); border-top: none; border-left: none; }
+#panel.bubble[data-side="below-right"]::before, #panel.bubble[data-side="above-right"]::before,
+#panel.bubble[data-side="below-left"]::before, #panel.bubble[data-side="above-left"]::before { display: none; }
 #panel h2 { margin: 0 0 8px; font-size: 1rem; }
 #panel dt { margin-top: 8px; font-weight: 600; color: #3b4452; }
 #panel dd { margin: 2px 0 0; overflow-wrap: anywhere; }
@@ -51,11 +59,11 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
   </header>
   <div id="stage">
     <div id="cy"></div>
-    <aside id="panel" aria-live="polite"><div id="panel-body"></div></aside>
+    <aside id="panel" class="bubble" aria-live="polite" hidden><div id="panel-body"></div></aside>
   </div>
   <ul id="legend" aria-label="Legend"></ul>
   <section id="actions-section" hidden>
-    <h2>Key Actions, ranked <span class="hint">(click one to focus its chain)</span></h2>
+    <h2>Key Actions, ranked <span class="hint">(click one, or a node, to focus its chain and see its details; Esc closes)</span></h2>
     <ol id="key-actions"></ol>
   </section>
   <section id="pruned-section" hidden>
@@ -218,6 +226,44 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     if (impact >= 1) return 2;
     if (impact >= 0.55) return 1;
     return 0;
+  }
+
+  const BUBBLE_GAP = 14;
+  // Candidate sides in order of preference: the right and left keep the reading flow of the graph.
+  const BUBBLE_SIDES = ["right", "left", "below", "above", "below-right", "above-right", "below-left", "above-left"];
+
+  const overlap = (a, b) =>
+    Math.max(0, Math.min(a.x2, b.x2) - Math.max(a.x1, b.x1)) * Math.max(0, Math.min(a.y2, b.y2) - Math.max(a.y1, b.y1));
+
+  /**
+   * Where the bubble goes: `anchor` is the selected node's box and `boxes` the other focused nodes' boxes, all in screen
+   * pixels; `view` is the visible area. Each side is scored by the area of focused nodes it covers and by how far it
+   * sticks out of the view; the lowest score wins, ties by the order of BUBBLE_SIDES. Pure, so it is testable.
+   */
+  function placeBubble(anchor, size, boxes, view) {
+    const cx = (anchor.x1 + anchor.x2) / 2;
+    const cy = (anchor.y1 + anchor.y2) / 2;
+    const at = {
+      right: [anchor.x2 + BUBBLE_GAP, cy - size.height / 2],
+      left: [anchor.x1 - BUBBLE_GAP - size.width, cy - size.height / 2],
+      below: [cx - size.width / 2, anchor.y2 + BUBBLE_GAP],
+      above: [cx - size.width / 2, anchor.y1 - BUBBLE_GAP - size.height],
+      "below-right": [anchor.x2 + BUBBLE_GAP, anchor.y2 + BUBBLE_GAP],
+      "above-right": [anchor.x2 + BUBBLE_GAP, anchor.y1 - BUBBLE_GAP - size.height],
+      "below-left": [anchor.x1 - BUBBLE_GAP - size.width, anchor.y2 + BUBBLE_GAP],
+      "above-left": [anchor.x1 - BUBBLE_GAP - size.width, anchor.y1 - BUBBLE_GAP - size.height],
+    };
+    let best = null;
+    for (const side of BUBBLE_SIDES) {
+      const [x, y] = at[side];
+      const box = { x1: x, y1: y, x2: x + size.width, y2: y + size.height };
+      const covered = boxes.reduce((sum, other) => sum + overlap(box, other), 0);
+      const area = size.width * size.height;
+      const outside = area - overlap(box, view);
+      const score = covered + 2 * outside;
+      if (!best || score < best.score - 1e-6) best = { side, x, y, score, covered };
+    }
+    return best;
   }
 
   /** The chain of a node: everything it can be reached from and everything it reaches, the node included. */
@@ -593,6 +639,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
       pruned: doc.pruned.map((p) => ({ id: p.id, reason: p.reason })),
       selected: [...current.selected].sort(),
       focus: [...current.focus].sort(),
+      bubble: current.bubble || null,
       panel: current.panel,
     };
   }
@@ -816,11 +863,44 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     return rows;
   }
 
+  /** The node the bubble points at: the selected node, or a Vicious Circle's break point (else its first member). */
+  function bubbleAnchor(panel) {
+    if (!panel) return null;
+    if (panel.kind === "circle") return panel.break_point ? panel.break_point.id : panel.members[0].id;
+    return panel.id;
+  }
+
+  /** Puts the bubble next to its node where it hides the fewest focused nodes; follows pan and zoom. */
+  function positionBubble() {
+    const bubble = document.getElementById("panel");
+    const anchorId = current && bubbleAnchor(current.panel);
+    if (!anchorId) {
+      bubble.hidden = true;
+      current && (current.bubble = null);
+      return;
+    }
+    bubble.hidden = false;
+    const node = cy.getElementById(anchorId);
+    const anchor = node.renderedBoundingBox({ includeLabels: false });
+    const boxes = cy
+      .nodes()
+      .filter((other) => other.id() !== anchorId && (current.focus.size === 0 || current.focus.has(other.id())))
+      .map((other) => other.renderedBoundingBox({ includeLabels: false }));
+    const stage = document.getElementById("cy");
+    const view = { x1: 0, y1: 0, x2: stage.clientWidth, y2: stage.clientHeight };
+    const size = { width: bubble.offsetWidth, height: bubble.offsetHeight };
+    const place = placeBubble(anchor, size, boxes, view);
+    bubble.style.left = `${Math.round(place.x)}px`;
+    bubble.style.top = `${Math.round(place.y)}px`;
+    bubble.dataset.side = place.side;
+    current.bubble = { node: anchorId, side: place.side, covers: Math.round(place.covered) };
+  }
+
   function renderPanel(panel) {
     const box = document.getElementById("panel-body");
     box.replaceChildren();
     if (!panel) {
-      box.append(el("p", "hint", "Click a node, a Key Action or a Vicious Circle to see its details."));
+      positionBubble();
       return;
     }
     box.append(el("h2", "", panel.title));
@@ -832,6 +912,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
       list.append(value);
     }
     box.append(list);
+    positionBubble();
   }
 
   // --- selection ------------------------------------------------------------------------------------
@@ -925,6 +1006,10 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     cy.on("tap", (event) => {
       if (event.target === cy) clearSelection();
     });
+    cy.on("pan zoom resize", () => positionBubble());
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && current && current.panel) clearSelection();
+    });
     const constraint = layerConstraints(doc);
     const started = performance.now();
     cy.layout({
@@ -1001,7 +1086,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
   }
 
   window.HlidskjalfEngine = {
-    nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep,
+    nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep, placeBubble,
     tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
   };
   start();
