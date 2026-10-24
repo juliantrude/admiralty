@@ -77,14 +77,23 @@ M5 (plan: `docs/plans/M5.md`):
 - [x] 5. `hlidskjalf:consult` skill (`skills/huginn-consult/`) and its static test
 - [x] 6. Verification: one headless Briefing on the reference save, numbers recorded in the Log
 
-M6, M7, M8: plan increments to be written (see `docs/build-plan.md`).
+M6 (plan: `docs/plans/M6.md`):
+- [x] 1. Plan document
+- [ ] 2. Libraries and driver (pinned versions, `tools/fetch_engine_libs.py`, `tests/engine_driver.py`, pins test)
+- [ ] 3. Page core (`engine/index.html`, `engine.js`, `engine.css`: data loading, layered layout, deterministic `engine-state`)
+- [ ] 4. Encodings and panel (circles, model nodes, status, legend, header, lists, click panel, textContent only)
+- [ ] 5. Bundle and `briefing view` (`tools/bundle_engine.py`, `engine/dist/index.html`, CLI, "model never writes HTML" static test)
+- [ ] 6. Verification (real Solution Graph screenshot looked at, `-m network` test, `docs/awaiting-julian.md` Artifact section)
+
+M7, M8: plan increments to be written (see `docs/build-plan.md`).
 
 ## Status
 
 STATUS: READY
-**Next action:** M6 increment 1: write the plan document `docs/plans/M6.md` from `docs/build-plan.md` (M6: the graph engine, ending in a locally
-verified `engine/index.html`; publishing it is Julian's step). Same shape as `docs/plans/M5.md`: division of labour, design, verification, numbered
-increments with checks. Docs only. Then add the M6 checklist to `## Plan`.
+**Next action:** M6 increment 2 (see `docs/plans/M6.md`): choose and pin exact versions of Cytoscape.js, ELK.js and cytoscape-elk with SRI hashes
+(`engine/VERSIONS.md`), write `tools/fetch_engine_libs.py` (downloads into git-ignored `tests/fixtures/engine-libs/`, checks hashes), and
+`tests/engine_driver.py` (headless `/usr/bin/chromium --headless=new --no-sandbox --dump-dom` against a temp page with the CDN URLs rewritten to the cache,
+reads `<pre id="engine-state">`; skips when no Chromium). Prove it with a trivial stub page and a pins test.
 **Carried into M7 (from M5 verification):** the crude "every number is in a tool result" check flags sums the model computes itself (230.36 = 88 + 74.77 +
 67.59 research); the M7 hook must decide whether derived sums are allowed (e.g. only with the addends shown) rather than copy the regex.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
@@ -230,3 +239,8 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   (230.36) is the sum of the three research nets, computed by the model. Answer in German like the question, no HTML. Correctness against golden values: hold
   point (`docs/awaiting-julian.md`). Tests unchanged (docs only)
 - 2026-10-24 — GOAL.md repaired (4915ced dropped Working Agreements tail and `## Plan`: `## Status` also occurs inside the Working Agreements prose; anchor edits on the heading line `\n## Status\n`). Restored; M5 checklist now complete
+- 2026-10-24 — M6 increment 1: `docs/plans/M6.md` written (one fixed static page fed only by `solution-graph.json`; data sources embedded / `?data=` / sibling fetch /
+  file picker; ELK layered left to right with explicit layer constraints, pure-function node sizes and fixed options for deterministic layout; circle colours,
+  model-node marking, status encodings, click panel with evidence, everything inserted as text; pinned CDN versions with SRI; headless Chromium driver reading an
+  `engine-state` JSON, tests for identical render, layers, circles, no injected HTML, bad data, bundle, pins; `briefing view` loopback server; Artifact publishing
+  as hold point; 6 increments). Docs only; chromium 154 and CDN reachable on this machine
