@@ -7,7 +7,7 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 #header p { margin: 2px 0 0; color: #3b4452; font-size: 0.9rem; }
 #stage { position: relative; height: 70vh; min-height: 420px; overflow: hidden; }
 #cy { position: absolute; inset: 0; }
-#panel.bubble { position: absolute; z-index: 10; width: 300px; max-height: 60%; overflow-y: auto; box-sizing: border-box; padding: 10px 12px; background: #ffffff; border: 1px solid #8a93a0; border-radius: 10px; box-shadow: 0 4px 16px rgba(27, 31, 36, 0.18); font-size: 0.8rem; }
+#panel.bubble { position: absolute; z-index: 10; width: min(620px, 70%); max-height: 45%; overflow-y: auto; box-sizing: border-box; padding: 10px 12px; background: #ffffff; border: 1px solid #8a93a0; border-radius: 10px; box-shadow: 0 4px 16px rgba(27, 31, 36, 0.18); font-size: 0.8rem; }
 #panel.bubble[hidden] { display: none; }
 #panel.bubble::before { content: ""; position: absolute; width: 12px; height: 12px; background: #ffffff; border: 1px solid #8a93a0; transform: rotate(45deg); }
 #panel.bubble[data-side="right"]::before { left: -7px; top: calc(50% - 6px); border-top: none; border-right: none; }
@@ -18,7 +18,9 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 #leader { position: absolute; z-index: 9; width: 0; border-left: 2px dashed #5b6573; pointer-events: none; }
 #leader[hidden] { display: none; }
 #panel h2 { margin: 0 0 8px; font-size: 1rem; }
-#panel dt { margin-top: 8px; font-weight: 600; color: #3b4452; }
+#panel dl { margin: 0; column-count: 2; column-gap: 20px; }
+#panel .row { break-inside: avoid; padding-bottom: 6px; }
+#panel dt { margin-top: 2px; font-weight: 600; color: #3b4452; }
 #panel dd { margin: 2px 0 0; overflow-wrap: anywhere; }
 #panel .hint { color: #5b6573; }
 #legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 0; padding: 8px 16px; border-top: 1px solid #d5d9df; font-size: 0.8rem; }

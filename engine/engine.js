@@ -895,10 +895,13 @@
     box.append(el("h2", "", panel.title));
     const list = el("dl");
     for (const [label, lines] of panelRows(panel)) {
-      list.append(el("dt", "", label));
+      // one group per row, so the landscape bubble's columns never split a label from its value
+      const row = el("div", "row");
+      row.append(el("dt", "", label));
       const value = el("dd");
       for (const line of lines) value.append(el("div", "line", line));
-      list.append(value);
+      row.append(value);
+      list.append(row);
     }
     box.append(list);
     positionBubble(true);
