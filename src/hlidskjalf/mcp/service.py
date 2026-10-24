@@ -16,6 +16,7 @@ from typing import Any
 from hlidskjalf.extract import empire as data
 from hlidskjalf.extract.diff import diff_extracts
 from hlidskjalf.extract.snapshot import Extractor, Snapshot
+from hlidskjalf.workspace.archive import Archive
 from hlidskjalf.workspace.config import CampaignConfig
 
 TURN_LOG = "turn-log.jsonl"
@@ -41,6 +42,8 @@ class CampaignService:
         self._snapshot: tuple[SaveRef, Snapshot] | None = None
         self._documents: OrderedDict[tuple[str, float, bool], dict] = OrderedDict()
         self._lock = threading.RLock()  # the warm-up thread and tool calls share the caches
+        self.archive = Archive(config.workspace)
+        self._archive_warnings: dict[str, str] = {}  # save file name -> why it was not archived
 
     def warm_up(self) -> None:
         """Load localisation, game files and the newest save ahead of the first question."""
@@ -87,10 +90,30 @@ class CampaignService:
         key = (str(ref.path), ref.mtime, planet_detail)
         with self._lock:
             if key not in self._documents:
+                if planet_detail:
+                    self.document(ref)  # every save that is read is archived, compact form
                 self._documents[key] = self.snapshot(ref).document(planet_detail)
+                if not planet_detail:
+                    self._archive(ref, self._documents[key])
                 while len(self._documents) > 32:
                     self._documents.popitem(last=False)
             return self._documents[key]
+
+    def _archive(self, ref: SaveRef, doc: dict[str, Any]) -> None:
+        """Keep the extract (always) and a copy of the save (unless backup_saves is off) in
+        the workspace. Never fails the tool call: a problem goes to the turn log and to the
+        warnings of campaign_status, since a missing archive only hurts Muninn later."""
+        date = doc["header"]["date"]
+        try:
+            self.archive.store(doc, ref.mtime)
+            if self.config.backup_saves:
+                self.archive.backup(ref.path, date, ref.mtime)
+        except (OSError, ValueError, KeyError) as error:
+            message = f"Could not archive {ref.path.name}: {error}"
+            self._archive_warnings[ref.path.name] = message
+            self.log("archive", {"save": ref.path.name}, {"error": message})
+        else:
+            self._archive_warnings.pop(ref.path.name, None)
 
     # --- tools ----------------------------------------------------------------------------
 
@@ -107,7 +130,7 @@ class CampaignService:
             "players": header["players"],
             "mode": self.config.mode,
             "knowledge": self.config.knowledge,
-            "warnings": list(header["warnings"]),
+            "warnings": [*header["warnings"], *self._archive_warnings.values()],
             "saves_available": len(self.saves()),
         }
         if age > STALE_AFTER_SECONDS:
