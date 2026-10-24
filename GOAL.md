@@ -123,7 +123,7 @@ if only Julian's part remains, and move on to the next increment.
       quantities listed in the build plan, write `knowledge/4.5.2/generated/*.yaml`; tests
       on known facts (Anchorage +5 naval capacity, Supremacy adoption +20, a naval
       capacity technology)
-- [ ] JSON Schema for `knowledge/4.5.2/graph/*.yaml` plus a validator
+- [x] JSON Schema for `knowledge/4.5.2/graph/*.yaml` plus a validator
       (`hlidskjalf graph validate`), with tests
 - [ ] Curated graph, naval capacity domain; test for the M4 criterion: expanding the Goal
       "more naval capacity" from the graph alone yields Supremacy, Anchorages,
@@ -191,12 +191,17 @@ if only Julian's part remains, and move on to the next increment.
 ## Status
 
 STATUS: READY
-**Next action:** M4 increment 3: JSON Schema for `knowledge/4.5.2/graph/*.yaml` as specified in
-`docs/plans/M4.md` ("Curated graph" → Schema, "Loader and validator"): `src/hlidskjalf/graph/mechanics.schema.json`,
-metrics registry `knowledge/4.5.2/graph/metrics.yaml`, `MechanicsGraph.load/validate` (dangling links and facts,
-unknown metrics, dead-end Causes, digits-in-prose warning), `hlidskjalf graph validate`, `uv add jsonschema`,
-tests with good and bad fixtures. Generated facts are ready: `knowledge/4.5.2/generated/*.yaml` (load with
-`yaml.CSafeLoader`, 3.5 MB); fact ids look like `naval_capacity.starbase_module.anchorage.country_naval_cap_add#2`.
+**Next action:** M4 increment 4: curated graph, naval capacity domain, as in `docs/plans/M4.md` ("Content outline",
+"Test for the M4 criterion"): `knowledge/4.5.2/graph/naval_capacity.yaml` (Goal `naval_capacity.more`; Remedies for
+Supremacy, Anchorages (+ Naval Logistics Office), naval-capacity technologies, Soldier jobs, each with Obstacles and
+linked fact ids; node text carries no figures) plus `MechanicsGraph.reachable(goal_id)` (plain depth-first walk) and the
+tests: expanding `naval_capacity.more` yields the four Remedies each with at least one Obstacle; every Goal walk
+terminates; every Remedy is reachable from some Goal. Loader and validator are ready: `MechanicsGraph.load/validate`
+in `src/hlidskjalf/graph/mechanics.py`, `uv run hlidskjalf graph validate`, metrics registry
+`knowledge/4.5.2/graph/metrics.yaml` (add metrics there when an Obstacle needs one; a test checks every path against the
+reference extract). Fact ids: `naval_capacity.starbase_module.anchorage.country_naval_cap_add#2` style, look them up in
+`knowledge/4.5.2/generated/naval_capacity.yaml`. Rules ids a node cites must exist in `knowledge/4.5.2/rules/*.md`
+(front matter `id`), which arrives in increment 8; until then do not cite rules from nodes.
 Note `skills/` is auto-discovered by the plugin; `hooks/` is still empty.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the
 game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
@@ -259,3 +264,9 @@ game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
   species traits count for pop growth only, leader traits skipped; building slots come from `zones`.
   Known facts pinned (Supremacy +20, Anchorage +5 / office +3, `tech_repeatable_naval_cap` +20 x5 levels,
   Soldier +4 per job) in `tests/test_mechanics_generator.py`; regeneration test keeps the YAML current; tests 142 passed / 31 skipped, ruff clean
+- 2026-10-24 — M4 increment 3: `graph/mechanics.schema.json` + `metrics.schema.json` (JSON Schema 2020-12 via
+  `uv add jsonschema`), `graph/mechanics.py` (`MechanicsGraph.load/validate`, `GraphInvalid`, lazy cached fact index,
+  wildcard facts, dangling links/facts/rules/metrics, wrong link types, dead-end Causes, id/domain/file checks,
+  cycles: unnamed = warning, no exit = error, digits in prose = warning), `hlidskjalf graph validate`,
+  registry `knowledge/4.5.2/graph/metrics.yaml` (36 metrics, paths checked against the vulkan mid-save extract).
+  Tests in `tests/test_mechanics_graph.py` use temp packs with good and bad fixtures; 173 passed / 31 skipped, ruff clean

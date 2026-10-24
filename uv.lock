@@ -187,6 +187,7 @@ name = "hlidskjalf"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "jsonschema" },
     { name = "mcp" },
     { name = "pyyaml" },
     { name = "rust-parser" },
@@ -200,6 +201,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "jsonschema", specifier = ">=4.26.0" },
     { name = "mcp", specifier = ">=2.3,<3" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "rust-parser", git = "https://github.com/eliasdoehne/stellaris-dashboard?subdirectory=stellarisdashboard%2Fparsing%2Frust_parser&rev=c8e2d47dc30910b7a544e4c0ed1ae99e0db2150d" },

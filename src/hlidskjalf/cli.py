@@ -1,4 +1,4 @@
-"""Command line: hlidskjalf extract | diff | mcp | setup (campaigns, players, write, check)."""
+"""Command line: hlidskjalf extract | diff | mcp | setup (campaigns, players, write, check) | graph."""
 
 from __future__ import annotations
 
@@ -32,7 +32,18 @@ def main(argv: list[str] | None = None) -> int:
 
     _add_setup_commands(commands)
 
+    graph = commands.add_parser("graph", help="the Mechanics Graph").add_subparsers(
+        dest="graph_command", required=True
+    )
+    validate = graph.add_parser(
+        "validate", help="check knowledge/<version>/graph (exit 1 if any error)"
+    )
+    validate.add_argument("--version", default="v4.5.2")
+    validate.add_argument("--knowledge-root", type=Path, help="default: knowledge/ of the plugin")
+
     args = parser.parse_args(argv)
+    if args.command == "graph":
+        return _graph_validate(args)
     if args.command == "setup":
         return _setup(args)
     if args.command == "mcp":
@@ -84,6 +95,21 @@ def _add_setup_commands(commands) -> None:
 
     check = setup.add_parser("check", help="report problems of a workspace (exit 1 if any)")
     check.add_argument("--workspace", default=".")
+
+
+def _graph_validate(args) -> int:
+    from hlidskjalf.graph.mechanics import GraphMissing, validate
+
+    try:
+        problems = validate(args.version, args.knowledge_root)
+    except GraphMissing as error:
+        print(f"hlidskjalf graph: {error}", file=sys.stderr)
+        return 1
+    errors = [p for p in problems if p.severity == "error"]
+    for problem in problems:
+        print(problem)
+    print(f"{len(errors)} error(s), {len(problems) - len(errors)} warning(s)")
+    return 1 if errors else 0
 
 
 def _setup(args) -> int:

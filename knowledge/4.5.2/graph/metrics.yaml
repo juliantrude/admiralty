@@ -1,0 +1,52 @@
+# Metric registry for the Mechanics Graph (docs/plans/M4.md, "Curated graph").
+# name -> where the value lives in the Snapshot extract (dotted path), plus its unit.
+# tests/test_mechanics_graph.py checks every path against the reference extract, so a renamed
+# extract field breaks loudly. Domains that need more metrics add them in their own increment.
+version: v4.5.2
+metrics:
+  energy.stockpile: {path: resources.energy.stockpile, unit: energy}
+  energy.income: {path: resources.energy.income, unit: energy per month}
+  energy.expenses: {path: resources.energy.expenses, unit: energy per month}
+  energy.net: {path: resources.energy.net, unit: energy per month}
+  minerals.stockpile: {path: resources.minerals.stockpile, unit: minerals}
+  minerals.income: {path: resources.minerals.income, unit: minerals per month}
+  minerals.expenses: {path: resources.minerals.expenses, unit: minerals per month}
+  minerals.net: {path: resources.minerals.net, unit: minerals per month}
+  food.stockpile: {path: resources.food.stockpile, unit: food}
+  food.income: {path: resources.food.income, unit: food per month}
+  food.expenses: {path: resources.food.expenses, unit: food per month}
+  food.net: {path: resources.food.net, unit: food per month}
+  alloys.stockpile: {path: resources.alloys.stockpile, unit: alloys}
+  alloys.income: {path: resources.alloys.income, unit: alloys per month}
+  alloys.expenses: {path: resources.alloys.expenses, unit: alloys per month}
+  alloys.net: {path: resources.alloys.net, unit: alloys per month}
+  unity.stockpile: {path: resources.unity.stockpile, unit: unity}
+  unity.income: {path: resources.unity.income, unit: unity per month}
+  unity.expenses: {path: resources.unity.expenses, unit: unity per month}
+  unity.net: {path: resources.unity.net, unit: unity per month}
+  influence.stockpile: {path: resources.influence.stockpile, unit: influence}
+  influence.income: {path: resources.influence.income, unit: influence per month}
+  influence.expenses: {path: resources.influence.expenses, unit: influence per month}
+  influence.net: {path: resources.influence.net, unit: influence per month}
+  research.income:
+    sum: [resources.physics_research.income, resources.society_research.income, resources.engineering_research.income]
+    unit: research per month
+  research.expenses:
+    sum: [resources.physics_research.expenses, resources.society_research.expenses, resources.engineering_research.expenses]
+    unit: research per month
+  research.net:
+    sum: [resources.physics_research.net, resources.society_research.net, resources.engineering_research.net]
+    unit: research per month
+  trade.net: {path: resources.trade.net, unit: trade per month}
+  pops.total: {path: pops.total, unit: pops}
+  pops.unemployed: {path: pops.unemployed, unit: pops}
+  pops.unemployed_share:
+    ratio: {numerator: pops.unemployed, denominator: pops.total}
+    unit: fraction
+  empire.size: {path: empire.empire_size, unit: empire size}
+  naval_capacity.used: {path: naval_capacity.used, unit: naval capacity}
+  naval_capacity.max: {path: naval_capacity.max, unit: naval capacity}
+  naval_capacity.fill:
+    ratio: {numerator: naval_capacity.used, denominator: naval_capacity.max}
+    unit: fraction
+  traditions.next_cost: {path: progression.next_tradition.cost, unit: unity}
