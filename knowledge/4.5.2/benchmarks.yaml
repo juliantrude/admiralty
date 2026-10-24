@@ -37,6 +37,9 @@ figures:
       2290: null
     observed:
     - campaign: vulkan
+      date: 2200.01.01
+      value: 38.1
+    - campaign: vulkan
       date: 2220.04.26
       value: 68.33
     - campaign: vulkan
@@ -44,37 +47,37 @@ figures:
       value: 170.64
     - campaign: vulkan
       date: 2259.12.29
-      value: 230.36
+      value: 230.33
     - campaign: vulkan
       date: 2273.09.07
-      value: 290.36
+      value: 290.32
     - campaign: vulkan
       date: 2284.09.29
-      value: 335.13
+      value: 347.09
     - campaign: vulkan
       date: 2288.05.04
-      value: 372.98
+      value: 372.95
     - campaign: vulkan
       date: 2298.03.16
-      value: 480.28
+      value: 479.09
     - campaign: zygerrian
       date: 2264.08.12
-      value: 303.61
+      value: 305.96
     - campaign: zygerrian
       date: 2271.08.28
-      value: 397.52
+      value: 397.55
     - campaign: zygerrian
       date: 2275.03.03
-      value: 438.29
+      value: 449.22
     - campaign: zygerrian
       date: 2291.09.30
-      value: 630.07
+      value: 630.04
     - campaign: zygerrian
       date: 2315.03.01
-      value: 699.02
+      value: 699.04
     - campaign: zygerrian
       date: 2363.04.20
-      value: 1976.7
+      value: 1976.89
   alloys_income:
     label: Alloys income
     unit: alloys per month
@@ -98,46 +101,46 @@ figures:
     observed:
     - campaign: vulkan
       date: 2200.01.01
-      value: 0
+      value: 21.76
     - campaign: vulkan
       date: 2220.04.26
       value: 43.48
     - campaign: vulkan
       date: 2245.01.26
-      value: 113.01
+      value: 112.99
     - campaign: vulkan
       date: 2259.12.29
       value: 133.41
     - campaign: vulkan
       date: 2273.09.07
-      value: 206.32
+      value: 206.34
     - campaign: vulkan
       date: 2284.09.29
-      value: 214.61
+      value: 214.54
     - campaign: vulkan
       date: 2288.05.04
-      value: 213.97
+      value: 213.95
     - campaign: vulkan
       date: 2298.03.16
-      value: 258.94
+      value: 268.5
     - campaign: zygerrian
       date: 2264.08.12
-      value: 123.35
+      value: 123.36
     - campaign: zygerrian
       date: 2271.08.28
-      value: 143.68
+      value: 143.71
     - campaign: zygerrian
       date: 2275.03.03
-      value: 156.66
+      value: 156.69
     - campaign: zygerrian
       date: 2291.09.30
-      value: 247.05
+      value: 246.99
     - campaign: zygerrian
       date: 2315.03.01
-      value: 272.35
+      value: 272.42
     - campaign: zygerrian
       date: 2363.04.20
-      value: 439.31
+      value: 439.44
   energy_income:
     label: Energy income
     unit: energy per month
@@ -161,46 +164,46 @@ figures:
     observed:
     - campaign: vulkan
       date: 2200.01.01
-      value: 0
+      value: 129.56
     - campaign: vulkan
       date: 2220.04.26
-      value: 320.27
+      value: 320.56
     - campaign: vulkan
       date: 2245.01.26
-      value: 629.81
+      value: 630.93
     - campaign: vulkan
       date: 2259.12.29
-      value: 755.91
+      value: 827.01
     - campaign: vulkan
       date: 2273.09.07
-      value: 1287.65
+      value: 1360.88
     - campaign: vulkan
       date: 2284.09.29
-      value: 1725.8
+      value: 1796.26
     - campaign: vulkan
       date: 2288.05.04
-      value: 1824.65
+      value: 1894.74
     - campaign: vulkan
       date: 2298.03.16
-      value: 1810.82
+      value: 1813.5
     - campaign: zygerrian
       date: 2264.08.12
-      value: 1172.47
+      value: 1173.47
     - campaign: zygerrian
       date: 2271.08.28
-      value: 1599.71
+      value: 1715.62
     - campaign: zygerrian
       date: 2275.03.03
-      value: 1720.4
+      value: 1802.75
     - campaign: zygerrian
       date: 2291.09.30
-      value: 2419.52
+      value: 2551.56
     - campaign: zygerrian
       date: 2315.03.01
-      value: 3121.34
+      value: 3121.78
     - campaign: zygerrian
       date: 2363.04.20
-      value: 6602.92
+      value: 6606.14
   minerals_income:
     label: Minerals income
     unit: minerals per month
@@ -224,46 +227,46 @@ figures:
     observed:
     - campaign: vulkan
       date: 2200.01.01
-      value: 0
+      value: 91.54
     - campaign: vulkan
       date: 2220.04.26
-      value: 168
+      value: 167.99
     - campaign: vulkan
       date: 2245.01.26
-      value: 322.88
+      value: 323.62
     - campaign: vulkan
       date: 2259.12.29
-      value: 413.24
+      value: 413.46
     - campaign: vulkan
       date: 2273.09.07
-      value: 534.8
+      value: 537.46
     - campaign: vulkan
       date: 2284.09.29
-      value: 662.11
+      value: 654.98
     - campaign: vulkan
       date: 2288.05.04
-      value: 667.42
+      value: 667.48
     - campaign: vulkan
       date: 2298.03.16
-      value: 723.53
+      value: 725.83
     - campaign: zygerrian
       date: 2264.08.12
-      value: 658.62
+      value: 658.61
     - campaign: zygerrian
       date: 2271.08.28
-      value: 716.47
+      value: 716.64
     - campaign: zygerrian
       date: 2275.03.03
-      value: 774.68
+      value: 774.79
     - campaign: zygerrian
       date: 2291.09.30
-      value: 807.01
+      value: 808.33
     - campaign: zygerrian
       date: 2315.03.01
-      value: 993.14
+      value: 993.39
     - campaign: zygerrian
       date: 2363.04.20
-      value: 1664.12
+      value: 1664.46
   food_income:
     label: Food income
     unit: food per month
@@ -287,46 +290,46 @@ figures:
     observed:
     - campaign: vulkan
       date: 2200.01.01
-      value: 0
+      value: 35
     - campaign: vulkan
       date: 2220.04.26
-      value: 43.83
+      value: 44.69
     - campaign: vulkan
       date: 2245.01.26
       value: 35
     - campaign: vulkan
       date: 2259.12.29
-      value: 43.06
+      value: 43.37
     - campaign: vulkan
       date: 2273.09.07
-      value: 46.73
+      value: 46.74
     - campaign: vulkan
       date: 2284.09.29
-      value: 141.76
+      value: 218.35
     - campaign: vulkan
       date: 2288.05.04
-      value: 190.24
+      value: 282.49
     - campaign: vulkan
       date: 2298.03.16
-      value: 206.39
+      value: 229.31
     - campaign: zygerrian
       date: 2264.08.12
-      value: 185.43
+      value: 176.61
     - campaign: zygerrian
       date: 2271.08.28
-      value: 282.18
+      value: 281.51
     - campaign: zygerrian
       date: 2275.03.03
-      value: 297.59
+      value: 297.71
     - campaign: zygerrian
       date: 2291.09.30
-      value: 258.71
+      value: 470.67
     - campaign: zygerrian
       date: 2315.03.01
-      value: 298.28
+      value: 408.29
     - campaign: zygerrian
       date: 2363.04.20
-      value: 541.59
+      value: 761.71
   unity_income:
     label: Unity income
     unit: unity per month
@@ -350,46 +353,46 @@ figures:
     observed:
     - campaign: vulkan
       date: 2200.01.01
-      value: 0
+      value: 23.89
     - campaign: vulkan
       date: 2220.04.26
-      value: 63.83
+      value: 63.82
     - campaign: vulkan
       date: 2245.01.26
       value: 74.4
     - campaign: vulkan
       date: 2259.12.29
-      value: 120.96
+      value: 121.02
     - campaign: vulkan
       date: 2273.09.07
-      value: 124.01
+      value: 123.94
     - campaign: vulkan
       date: 2284.09.29
-      value: 119.61
+      value: 119.59
     - campaign: vulkan
       date: 2288.05.04
-      value: 120.5
+      value: 120.52
     - campaign: vulkan
       date: 2298.03.16
-      value: 128.02
+      value: 127.52
     - campaign: zygerrian
       date: 2264.08.12
-      value: 181.6
+      value: 183.49
     - campaign: zygerrian
       date: 2271.08.28
-      value: 199.39
+      value: 199.43
     - campaign: zygerrian
       date: 2275.03.03
-      value: 237.67
+      value: 237.82
     - campaign: zygerrian
       date: 2291.09.30
-      value: 209.5
+      value: 209.44
     - campaign: zygerrian
       date: 2315.03.01
-      value: 303.39
+      value: 304.12
     - campaign: zygerrian
       date: 2363.04.20
-      value: 600.45
+      value: 603.58
   influence_income:
     label: Influence income
     unit: influence per month
@@ -413,7 +416,7 @@ figures:
     observed:
     - campaign: vulkan
       date: 2200.01.01
-      value: 0
+      value: 5.28
     - campaign: vulkan
       date: 2220.04.26
       value: 5.98
@@ -440,7 +443,7 @@ figures:
       value: 7.65
     - campaign: zygerrian
       date: 2271.08.28
-      value: 7.58
+      value: 7.57
     - campaign: zygerrian
       date: 2275.03.03
       value: 7.79

@@ -5,8 +5,9 @@ Formula, from common/defines/00_defines.txt (NGameplay / NEconomy):
     size   = 1 + EMPIRE_SIZE_TRADITION_COST_PENALTY × max(0, empire_size − EMPIRE_SIZE_BASE)
                  × (1 + Σ tradition_cost_empire_size_mult)
     cost   = base × size × (1 + Σ tradition_cost_mult) × galaxy setting 'traditions'
-N is the number of Traditions adopted. Whether the tree adoptions (tr_*_adopt) count is
-the open question this module's golden test settles: COUNT_ADOPTIONS records the choice.
+N counts every entry of the empire's tradition list: tree adoptions (tr_*_adopt) and
+tree completions (tr_*_finish) included. Settled by golden values on 2026-10-24: this
+reproduces 2166, 5063 and 12742 (UI) as 2166, 5063 and 12744 for the vulkan saves.
 tradition_cost_mult and tradition_cost_empire_size_mult come from civics, ascension perks
 and static modifiers (see computed/modifiers.py). empire_size is stored in the save.
 Pinned by golden tests: the Player reads the next Tradition's cost off the Traditions screen.
@@ -20,16 +21,10 @@ from hlidskjalf.extract.computed.modifiers import Ledger
 from hlidskjalf.extract.computed.naval_capacity import _defines
 from hlidskjalf.extract.context import Context, as_list, block, rounded
 
-# Count tree adoptions (tr_<tree>_adopt) as Traditions; completion bonuses never count.
-COUNT_ADOPTIONS = True
-
 
 def adopted_count(traditions: list[str]) -> int:
-    return sum(
-        1
-        for t in traditions
-        if not t.endswith("_finish") and (COUNT_ADOPTIONS or not t.endswith("_adopt"))
-    )
+    """Every entry counts, adoptions and completions included (see module docstring)."""
+    return len(traditions)
 
 
 def next_tradition_cost(ctx: Context, country: dict[str, Any], ledger: Ledger) -> dict[str, Any]:

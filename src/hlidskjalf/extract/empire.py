@@ -23,13 +23,30 @@ def _resource_sort(resource: str) -> tuple[int, str]:
 # --- economy -------------------------------------------------------------------------
 
 
-def economy(ctx: Context, country: dict[str, Any]) -> dict[str, Any]:
-    """Stockpile plus last month's income and expenses per resource and source.
-    'last_month' is the last complete month; 'current_month' is still accumulating."""
-    stockpile = block(block(country["modules"].get("standard_economy_module")).get("resources"))
-    month = block(block(country.get("budget")).get("last_month"))
+# Market trades the empire has set to repeat monthly; the save books them apart from
+# the rest of the budget, but the game's top bar includes them.
+MARKET = "market_monthly_trades"
+
+
+def _month(country: dict[str, Any]) -> tuple[dict, dict]:
+    """Income and expenses by source of the month the top bar projects ('current_month'),
+    with the monthly market trades as one more source. The game recomputes the top bar
+    live after loading, so it can differ from the save by a few units (golden values:
+    up to about 10 energy in 2259 and 2298)."""
+    month = block(block(country.get("budget")).get("current_month"))
     income = _by_resource(block(month.get("income")))
     expenses = _by_resource(block(month.get("expenses")))
+    for resource, amount in _by_resource(block(month.get("trade_income"))).items():
+        income.setdefault(resource, {})[MARKET] = sum(amount.values())
+    for resource, amount in _by_resource(block(month.get("trade_expenses"))).items():
+        expenses.setdefault(resource, {})[MARKET] = sum(amount.values())
+    return income, expenses
+
+
+def economy(ctx: Context, country: dict[str, Any]) -> dict[str, Any]:
+    """Stockpile plus monthly income, expenses and net per resource."""
+    stockpile = block(block(country["modules"].get("standard_economy_module")).get("resources"))
+    income, expenses = _month(country)
     resources = sorted(set(stockpile) | set(income) | set(expenses), key=_resource_sort)
     out = {}
     for resource in resources:
@@ -46,10 +63,9 @@ def economy(ctx: Context, country: dict[str, Any]) -> dict[str, Any]:
 
 
 def economy_by_source(ctx: Context, country: dict[str, Any]) -> dict[str, Any]:
-    month = block(block(country.get("budget")).get("last_month"))
+    income, expenses = _month(country)
     out = {}
-    for side in ("income", "expenses"):
-        by_resource = _by_resource(month.get(side, {}))
+    for side, by_resource in (("income", income), ("expenses", expenses)):
         out[side] = {
             resource: {
                 source: rounded(amount)

@@ -23,12 +23,12 @@ Assumptions:
 | 2230 | _open_ |  | - |
 | 2240 | _open_ |  | vulkan 2245.01.26: 170.6 |
 | 2250 | _open_ |  | - |
-| 2260 | _open_ |  | vulkan 2259.12.29: 230.4<br>zygerrian 2264.08.12: 303.6 |
-| 2270 | _open_ |  | vulkan 2273.09.07: 290.4<br>zygerrian 2271.08.28: 397.5 |
-| 2280 | _open_ |  | vulkan 2284.09.29: 335.1<br>zygerrian 2275.03.03: 438.3 |
-| 2290 | _open_ |  | vulkan 2288.05.04: 373.0<br>zygerrian 2291.09.30: 630.1 |
+| 2260 | _open_ |  | vulkan 2259.12.29: 230.3<br>zygerrian 2264.08.12: 306.0 |
+| 2270 | _open_ |  | vulkan 2273.09.07: 290.3<br>zygerrian 2271.08.28: 397.6 |
+| 2280 | _open_ |  | vulkan 2284.09.29: 347.1<br>zygerrian 2275.03.03: 449.2 |
+| 2290 | _open_ |  | vulkan 2288.05.04: 372.9<br>zygerrian 2291.09.30: 630.0 |
 
-Observed outside the decades: vulkan 2298.03.16: 480.3; zygerrian 2315.03.01: 699.0; zygerrian 2363.04.20: 1,976.7
+Observed outside the decades: vulkan 2200.01.01: 38.1; vulkan 2298.03.16: 479.1; zygerrian 2315.03.01: 699.0; zygerrian 2363.04.20: 1,976.9
 
 ## Alloys income
 
@@ -47,12 +47,12 @@ Assumptions:
 | 2230 | _open_ |  | - |
 | 2240 | _open_ |  | vulkan 2245.01.26: 113.0 |
 | 2250 | _open_ |  | - |
-| 2260 | _open_ |  | vulkan 2259.12.29: 133.4<br>zygerrian 2264.08.12: 123.3 |
+| 2260 | _open_ |  | vulkan 2259.12.29: 133.4<br>zygerrian 2264.08.12: 123.4 |
 | 2270 | _open_ |  | vulkan 2273.09.07: 206.3<br>zygerrian 2271.08.28: 143.7 |
-| 2280 | _open_ |  | vulkan 2284.09.29: 214.6<br>zygerrian 2275.03.03: 156.7 |
-| 2290 | _open_ |  | vulkan 2288.05.04: 214.0<br>zygerrian 2291.09.30: 247.1 |
+| 2280 | _open_ |  | vulkan 2284.09.29: 214.5<br>zygerrian 2275.03.03: 156.7 |
+| 2290 | _open_ |  | vulkan 2288.05.04: 213.9<br>zygerrian 2291.09.30: 247.0 |
 
-Observed outside the decades: vulkan 2200.01.01: 0; vulkan 2298.03.16: 258.9; zygerrian 2315.03.01: 272.4; zygerrian 2363.04.20: 439.3
+Observed outside the decades: vulkan 2200.01.01: 21.8; vulkan 2298.03.16: 268.5; zygerrian 2315.03.01: 272.4; zygerrian 2363.04.20: 439.4
 
 ## Energy income
 
@@ -67,16 +67,16 @@ Assumptions:
 | Decade | Benchmark | Basis | Observed |
 |---|---|---|---|
 | 2210 | _open_ |  | - |
-| 2220 | _open_ |  | vulkan 2220.04.26: 320.3 |
+| 2220 | _open_ |  | vulkan 2220.04.26: 320.6 |
 | 2230 | _open_ |  | - |
-| 2240 | _open_ |  | vulkan 2245.01.26: 629.8 |
+| 2240 | _open_ |  | vulkan 2245.01.26: 630.9 |
 | 2250 | _open_ |  | - |
-| 2260 | _open_ |  | vulkan 2259.12.29: 755.9<br>zygerrian 2264.08.12: 1,172.5 |
-| 2270 | _open_ |  | vulkan 2273.09.07: 1,287.7<br>zygerrian 2271.08.28: 1,599.7 |
-| 2280 | _open_ |  | vulkan 2284.09.29: 1,725.8<br>zygerrian 2275.03.03: 1,720.4 |
-| 2290 | _open_ |  | vulkan 2288.05.04: 1,824.7<br>zygerrian 2291.09.30: 2,419.5 |
+| 2260 | _open_ |  | vulkan 2259.12.29: 827.0<br>zygerrian 2264.08.12: 1,173.5 |
+| 2270 | _open_ |  | vulkan 2273.09.07: 1,360.9<br>zygerrian 2271.08.28: 1,715.6 |
+| 2280 | _open_ |  | vulkan 2284.09.29: 1,796.3<br>zygerrian 2275.03.03: 1,802.8 |
+| 2290 | _open_ |  | vulkan 2288.05.04: 1,894.7<br>zygerrian 2291.09.30: 2,551.6 |
 
-Observed outside the decades: vulkan 2200.01.01: 0; vulkan 2298.03.16: 1,810.8; zygerrian 2315.03.01: 3,121.3; zygerrian 2363.04.20: 6,602.9
+Observed outside the decades: vulkan 2200.01.01: 129.6; vulkan 2298.03.16: 1,813.5; zygerrian 2315.03.01: 3,121.8; zygerrian 2363.04.20: 6,606.1
 
 ## Minerals income
 
@@ -91,16 +91,16 @@ Assumptions:
 | Decade | Benchmark | Basis | Observed |
 |---|---|---|---|
 | 2210 | _open_ |  | - |
-| 2220 | _open_ |  | vulkan 2220.04.26: 168 |
+| 2220 | _open_ |  | vulkan 2220.04.26: 168.0 |
 | 2230 | _open_ |  | - |
-| 2240 | _open_ |  | vulkan 2245.01.26: 322.9 |
+| 2240 | _open_ |  | vulkan 2245.01.26: 323.6 |
 | 2250 | _open_ |  | - |
-| 2260 | _open_ |  | vulkan 2259.12.29: 413.2<br>zygerrian 2264.08.12: 658.6 |
-| 2270 | _open_ |  | vulkan 2273.09.07: 534.8<br>zygerrian 2271.08.28: 716.5 |
-| 2280 | _open_ |  | vulkan 2284.09.29: 662.1<br>zygerrian 2275.03.03: 774.7 |
-| 2290 | _open_ |  | vulkan 2288.05.04: 667.4<br>zygerrian 2291.09.30: 807.0 |
+| 2260 | _open_ |  | vulkan 2259.12.29: 413.5<br>zygerrian 2264.08.12: 658.6 |
+| 2270 | _open_ |  | vulkan 2273.09.07: 537.5<br>zygerrian 2271.08.28: 716.6 |
+| 2280 | _open_ |  | vulkan 2284.09.29: 655.0<br>zygerrian 2275.03.03: 774.8 |
+| 2290 | _open_ |  | vulkan 2288.05.04: 667.5<br>zygerrian 2291.09.30: 808.3 |
 
-Observed outside the decades: vulkan 2200.01.01: 0; vulkan 2298.03.16: 723.5; zygerrian 2315.03.01: 993.1; zygerrian 2363.04.20: 1,664.1
+Observed outside the decades: vulkan 2200.01.01: 91.5; vulkan 2298.03.16: 725.8; zygerrian 2315.03.01: 993.4; zygerrian 2363.04.20: 1,664.5
 
 ## Food income
 
@@ -115,16 +115,16 @@ Assumptions:
 | Decade | Benchmark | Basis | Observed |
 |---|---|---|---|
 | 2210 | _open_ |  | - |
-| 2220 | _open_ |  | vulkan 2220.04.26: 43.8 |
+| 2220 | _open_ |  | vulkan 2220.04.26: 44.7 |
 | 2230 | _open_ |  | - |
 | 2240 | _open_ |  | vulkan 2245.01.26: 35 |
 | 2250 | _open_ |  | - |
-| 2260 | _open_ |  | vulkan 2259.12.29: 43.1<br>zygerrian 2264.08.12: 185.4 |
-| 2270 | _open_ |  | vulkan 2273.09.07: 46.7<br>zygerrian 2271.08.28: 282.2 |
-| 2280 | _open_ |  | vulkan 2284.09.29: 141.8<br>zygerrian 2275.03.03: 297.6 |
-| 2290 | _open_ |  | vulkan 2288.05.04: 190.2<br>zygerrian 2291.09.30: 258.7 |
+| 2260 | _open_ |  | vulkan 2259.12.29: 43.4<br>zygerrian 2264.08.12: 176.6 |
+| 2270 | _open_ |  | vulkan 2273.09.07: 46.7<br>zygerrian 2271.08.28: 281.5 |
+| 2280 | _open_ |  | vulkan 2284.09.29: 218.3<br>zygerrian 2275.03.03: 297.7 |
+| 2290 | _open_ |  | vulkan 2288.05.04: 282.5<br>zygerrian 2291.09.30: 470.7 |
 
-Observed outside the decades: vulkan 2200.01.01: 0; vulkan 2298.03.16: 206.4; zygerrian 2315.03.01: 298.3; zygerrian 2363.04.20: 541.6
+Observed outside the decades: vulkan 2200.01.01: 35; vulkan 2298.03.16: 229.3; zygerrian 2315.03.01: 408.3; zygerrian 2363.04.20: 761.7
 
 ## Unity income
 
@@ -143,12 +143,12 @@ Assumptions:
 | 2230 | _open_ |  | - |
 | 2240 | _open_ |  | vulkan 2245.01.26: 74.4 |
 | 2250 | _open_ |  | - |
-| 2260 | _open_ |  | vulkan 2259.12.29: 121.0<br>zygerrian 2264.08.12: 181.6 |
-| 2270 | _open_ |  | vulkan 2273.09.07: 124.0<br>zygerrian 2271.08.28: 199.4 |
-| 2280 | _open_ |  | vulkan 2284.09.29: 119.6<br>zygerrian 2275.03.03: 237.7 |
-| 2290 | _open_ |  | vulkan 2288.05.04: 120.5<br>zygerrian 2291.09.30: 209.5 |
+| 2260 | _open_ |  | vulkan 2259.12.29: 121.0<br>zygerrian 2264.08.12: 183.5 |
+| 2270 | _open_ |  | vulkan 2273.09.07: 123.9<br>zygerrian 2271.08.28: 199.4 |
+| 2280 | _open_ |  | vulkan 2284.09.29: 119.6<br>zygerrian 2275.03.03: 237.8 |
+| 2290 | _open_ |  | vulkan 2288.05.04: 120.5<br>zygerrian 2291.09.30: 209.4 |
 
-Observed outside the decades: vulkan 2200.01.01: 0; vulkan 2298.03.16: 128.0; zygerrian 2315.03.01: 303.4; zygerrian 2363.04.20: 600.5
+Observed outside the decades: vulkan 2200.01.01: 23.9; vulkan 2298.03.16: 127.5; zygerrian 2315.03.01: 304.1; zygerrian 2363.04.20: 603.6
 
 ## Influence income
 
@@ -172,7 +172,7 @@ Assumptions:
 | 2280 | _open_ |  | vulkan 2284.09.29: 6.5<br>zygerrian 2275.03.03: 7.8 |
 | 2290 | _open_ |  | vulkan 2288.05.04: 6.5<br>zygerrian 2291.09.30: 8 |
 
-Observed outside the decades: vulkan 2200.01.01: 0; vulkan 2298.03.16: 6.6; zygerrian 2315.03.01: 8.3; zygerrian 2363.04.20: 8.3
+Observed outside the decades: vulkan 2200.01.01: 5.3; vulkan 2298.03.16: 6.6; zygerrian 2315.03.01: 8.3; zygerrian 2363.04.20: 8.3
 
 ## Naval capacity (maximum)
 

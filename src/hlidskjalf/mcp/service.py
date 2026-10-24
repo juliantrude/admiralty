@@ -200,7 +200,7 @@ class CampaignService:
             "date": doc["header"]["date"],
             "resources": doc["resources"],
             "by_source": data.economy_by_source(snapshot.ctx, snapshot.country),
-            "note": "Monthly values of the last complete month.",
+            "note": "Monthly values as the top bar projects them, monthly market trades included.",
         }
 
     def military(self, save: str | None = None) -> dict[str, Any]:

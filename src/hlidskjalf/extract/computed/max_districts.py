@@ -10,12 +10,17 @@ Rules, from common/districts/*.txt and its 00_DOCUMENTATION.txt:
 - district_<pool>_max_add comes mostly from deposits (common/deposits, planet_modifier),
   plus resource buildings (common/buildings), planet modifiers (common/static_modifiers)
   and country-wide modifiers that apply to all planets.
-- Types without `is_uncapped` (city, nexus, hive and their specialisations) have no
-  per-type maximum in the files. HYPOTHESIS, pinned by golden tests: they are limited by
-  the planet's district limit,
-      district_limit = (planet_size + Σ planet_max_districts_add) × (1 + Σ planet_max_districts_mult)
-  where blockers (common/deposits, category deposit_cat_blockers*) carry the negative
-  planet_max_districts_add. We report district_limit and leave urban maxima open.
+- Blockers (common/deposits, category deposit_cat_blockers*) carry a negative
+  planet_max_districts_add and keep the deposit they cover as swap_type in the save. The
+  game counts that covered deposit in the per-type maximum already; we report it again
+  as behind_blockers, the places that open once the blocker is cleared.
+- All districts together stay within the planet's district limit
+      district_limit = (planet_size + Σ planet_max_districts_add
+                        [+ Σ planet_non_artificial_max_districts_add on natural planets])
+                       × (1 + Σ planet_max_districts_mult)
+- Types without `is_uncapped` (city, nexus, hive and their specialisations) may each
+  reach the district limit plus one per blocker on the planet (fitted, see below).
+Confirmed by golden values on 2026-10-24 (planet views in the vulkan and zygerrian saves).
 Pinned by golden tests: the Player reads built/max per district type off the planet view.
 """
 
@@ -25,6 +30,10 @@ from typing import Any
 
 from hlidskjalf.extract.computed.modifiers import Ledger, Triggers, add_definition
 from hlidskjalf.extract.context import Context, as_list, block, rounded
+
+# Source prefixes that mark blocker effects in the ledger.
+BLOCKER = "Blocker"
+UNDER_BLOCKER = "Deposit under blocker"
 
 
 def planet_ledger(
@@ -44,9 +53,11 @@ def planet_ledger(
         if b in buildings_table
     ]
     deposits_table = ctx.table("deposit")
-    deposits = [
-        deposits_table[d]["type"] for d in as_list(planet.get("deposits")) if d in deposits_table
-    ]
+    records = [deposits_table[d] for d in as_list(planet.get("deposits")) if d in deposits_table]
+    deposits = [record["type"] for record in records]
+    # A blocker keeps the deposit it covers as swap_type; the game already counts that
+    # deposit's district capacity in the per-type maximum (golden values, 2026-10-24).
+    hidden = [record["swap_type"] for record in records if record.get("swap_type")]
     triggers.local = {
         "planet_class": planet.get("planet_class"),
         "districts": districts,
@@ -57,8 +68,16 @@ def planet_ledger(
     planet_triggered = ("triggered_planet_modifier",)
     deposit_defs = ctx.game.category("deposits")
     for kind in deposits:
+        definition = deposit_defs.get(kind)
+        category = str(definition.get("category", "")) if isinstance(definition, dict) else ""
+        prefix = BLOCKER if "blocker" in category else "Deposit"
         add_definition(
-            ledger, triggers, deposit_defs.get(kind), f"Deposit: {ctx.label(kind)}",
+            ledger, triggers, definition, f"{prefix}: {ctx.label(kind)}",
+            modifier_keys=planet_keys, triggered_keys=planet_triggered,
+        )  # fmt: skip
+    for kind in hidden:
+        add_definition(
+            ledger, triggers, deposit_defs.get(kind), f"{UNDER_BLOCKER}: {ctx.label(kind)}",
             modifier_keys=planet_keys, triggered_keys=planet_triggered,
         )  # fmt: skip
     building_defs = ctx.game.category("buildings")
@@ -101,6 +120,8 @@ def max_districts(
     triggers.local = {"planet_class": planet.get("planet_class"), "districts": set(built)}
     out: dict[str, Any] = {}
     pools_seen: dict[str, float] = {}
+    hidden_by_pool: dict[str, float] = {}
+    behind: dict[str, int] = {}
     candidates = set(built) | {"district_generator", "district_mining", "district_farming"}
     for kind in sorted(candidates):
         definition = definitions.get(kind)
@@ -115,15 +136,40 @@ def max_districts(
             add = ledger.total(f"{pool}_max_add")
             mult = ledger.total(f"{pool}_max_mult")
             pools_seen[pool] = max(0, add * (1 + mult))
+            under = sum(
+                c.amount
+                for c in ledger.contributions(f"{pool}_max_add")
+                if c.certain and c.source.startswith(UNDER_BLOCKER)
+            )
+            hidden_by_pool[pool] = max(0, under * (1 + mult))
         if kind not in built and pools_seen[pool] == 0:
             continue
         out[kind] = int(pools_seen[pool])
+        if hidden_by_pool[pool]:
+            behind[kind] = int(hidden_by_pool[pool])
     triggers.local = {}
+
+    mult = 1 + ledger.total("planet_max_districts_mult")
     add = ledger.total("planet_max_districts_add")
+    blockers = sum(
+        1
+        for c in ledger.contributions("planet_max_districts_add")
+        if c.certain and c.amount < 0 and c.source.startswith(BLOCKER + ":")
+    )
     if not _is_artificial(ctx, planet):
         add += ledger.total("planet_non_artificial_max_districts_add")
-    limit = (planet.get("planet_size", 0) + add) * (1 + ledger.total("planet_max_districts_mult"))
+    size = planet.get("planet_size", 0)
+    limit = (size + add) * mult
+    # Urban types (no is_uncapped trigger): the district limit plus one per blocker. Fitted
+    # to four planet views (golden values): three blockers of -1 give +3, while Prototype
+    # Machinery (-2) on a machine world gives +1, so it is the count, not the penalty.
+    urban_max = int(limit + blockers)
+    for kind in built:
+        definition = definitions.get(kind)
+        if isinstance(definition, dict) and "is_uncapped" not in definition:
+            out[kind] = urban_max
     out["_district_limit"] = rounded(limit, 1)
+    out["_behind_blockers"] = behind
     return out
 
 

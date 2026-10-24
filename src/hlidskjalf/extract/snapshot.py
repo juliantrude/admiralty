@@ -86,8 +86,11 @@ class Snapshot:
             ledger = planet_ledger(self.ctx, self.triggers, self.ledger, planet, colony)
             maxima = max_districts(self.ctx, self.triggers, ledger, planet, colony)
             limit = maxima.pop("_district_limit")
+            behind = maxima.pop("_behind_blockers")
             summary = data.planet_summary(self.ctx, pid, planet, colony, maxima)
             summary["district_limit"] = limit
+            for kind, count in behind.items():
+                summary["districts"][kind]["behind_blockers"] = count
             if detail:
                 summary.update(data.planet_detail(self.ctx, pid, planet, colony))
             out.append(summary)
