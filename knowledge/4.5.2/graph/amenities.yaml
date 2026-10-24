@@ -97,6 +97,7 @@ nodes:
 
   - id: amenities.no_spare_pops
     type: obstacle
+    rules: [unemployed-before-colonies]
     title: No unemployed pops to staff amenity jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new amenity job pulls a
@@ -134,6 +135,7 @@ nodes:
 
   - id: amenities.usage_needs_unity
     type: obstacle
+    rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the tradition or edict
     description: >
       The tradition and the edict are paid in Unity. While the stockpile is below the cost of the

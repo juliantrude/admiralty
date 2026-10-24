@@ -7,6 +7,7 @@ goals: []
 nodes:
   - id: jobs.free_jobs
     type: remedy
+    rules: [unemployed-before-colonies]
     title: Open more job slots
     judgement: >
       The general answer when a job can only be added if a slot is free. Slots come from districts

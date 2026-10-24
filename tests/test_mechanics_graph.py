@@ -98,8 +98,10 @@ def write_pack(tmp_path: Path, graph=GRAPH, metrics=METRICS, extra: dict | None 
             }
         )
     )
-    (version / "rules" / "unity.md").write_text(
-        "---\nid: unity-vs-next-tradition\ndate: 2026-10-24\n---\nJudge Unity against the cost.\n"
+    (version / "rules" / "unity-vs-next-tradition.md").write_text(
+        "---\nid: unity-vs-next-tradition\ndate: 2026-10-24\nstatus: approved\n"
+        'applies_to: ["*"]\nreason: Because.\n---\n'
+        "Judge Unity against the cost.\n"
     )
     if metrics is not None:
         (version / "graph" / "metrics.yaml").write_text(yaml.safe_dump(metrics))

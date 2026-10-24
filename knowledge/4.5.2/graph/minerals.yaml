@@ -107,6 +107,7 @@ nodes:
 
   - id: minerals.no_spare_pops
     type: obstacle
+    rules: [unemployed-before-colonies]
     title: No unemployed pops to fill new Miner jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new Miner job pulls a

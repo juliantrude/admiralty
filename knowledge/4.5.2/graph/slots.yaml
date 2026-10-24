@@ -94,6 +94,7 @@ nodes:
 
   - id: slots.tradition_needs_unity
     type: obstacle
+    rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the next Tradition
     description: >
       Each Tradition of the tree is paid in Unity. While the stockpile is below the cost of the

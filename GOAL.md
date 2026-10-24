@@ -131,7 +131,7 @@ if only Julian's part remains, and move on to the next increment.
 - [x] Curated graph, economy domains: energy, minerals, food, alloys
 - [x] Curated graph: Unity and Traditions, influence, research
 - [x] Curated graph: pop growth, stability, amenities, housing, building and district slots
-- [ ] Playbook seed rules as `knowledge/4.5.2/rules/*.md` (id, date, reason) with a loader
+- [x] Playbook seed rules as `knowledge/4.5.2/rules/*.md` (id, date, reason) with a loader
       and tests: Unity against the next Tradition cost; influence at the cap is waste;
       unemployed pops before new colonies
 - [ ] Benchmarks draft `knowledge/4.5.2/benchmarks.yaml` (marked draft, with provenance
@@ -191,15 +191,14 @@ if only Julian's part remains, and move on to the next increment.
 ## Status
 
 STATUS: READY
-**Next action:** M4 increment 8: Playbook seed rules as `knowledge/4.5.2/rules/*.md` (YAML front matter id/date/reason + Markdown body, format in
-`docs/plans/M4.md` "Playbook Rules") with a loader and tests. Three approved rules only: `unity-vs-next-tradition` (Unity against the next Tradition cost),
-influence at the cap is waste, unemployed pops before new colonies. Check the build plan for the exact ids and wording; the validator already reads rule ids from
-`knowledge/<v>/rules/*.md` (`_rule_ids` in `graph/mechanics.py`), so graph nodes may cite them with `rules:` afterwards: add `rules:` links to fitting nodes
-(e.g. `unity.*` Obstacles, `influence.*`, the `<domain>.no_spare_pops` Obstacles or `pop_growth.grow_pops`) and keep `graph validate` clean. Further rules go only to
-`docs/proposals/playbook.md`. Graph facts: the shared nodes are `unity.raise_income`, `pop_growth.grow_pops`, `jobs.free_jobs` (file `jobs.yaml`, no Goal),
-`housing.free_housing`, `slots.more_building_slots` / `slots.more_district_slots`; circle `food_needs_pops` (break point `food.staff_farmers`). Planet-level values
-(stability, free housing, amenities, district limit) are not in the metrics registry (empire-level paths only), so those Obstacles are judgement-only. Note
-`skills/` is auto-discovered by the plugin; `hooks/` is still empty. The full suite takes ~170 s (run it in the background).
+**Next action:** M4 increment 9 (last of M4): benchmarks draft `knowledge/4.5.2/benchmarks.yaml` (`status: draft`, `provenance` and `assumptions`
+per entry, format in `docs/plans/M4.md` "Benchmarks (draft)": values per decade 2210..2290 for research, alloys, energy, minerals, food, Unity, influence
+income, naval capacity, pop count, planet count; observed values from the vulkan/zygerrian archived extracts go in `observed:`, game-file-derived ones are
+`derived` with the formula, everything else `value: null`, nothing invented) plus a loader/validator and a readable review page `docs/benchmarks-draft.md`
+(generated, says which values are null). Hold point: review by experienced players goes to `docs/awaiting-julian.md` (German). Rules are done: loader
+`graph/playbook.py` (`load_rules`, `read_rules`), 3 approved rules in `knowledge/4.5.2/rules/`, cited via `rules:` on graph nodes; the validator checks rule
+files and `applies_to`. Further rules only in `docs/proposals/playbook.md`. Reference-save extracts: see how `tests/` reads them (git-ignored saves); do not
+put player names into `knowledge/`. `skills/` is auto-discovered by the plugin; `hooks/` is still empty. The full suite takes ~170 s (run it in the background).
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the
 game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
 
@@ -287,3 +286,9 @@ game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
   `jobs.free_jobs` of every job-slot Obstacle; circle `food_needs_pops` (food.staff_farmers <-> pop_growth.grow_pops) marked, break point on the Farmers
   Remedy. A first draft with energy-upkeep and Unity back-links folded the whole economy into one unnamed cycle, so those links were dropped (reason in
   `slots.yaml`). `graph validate` clean; `tests/test_population_graph.py` added; tests 236 passed / 31 skipped, ruff clean
+- 2026-10-24 — M4 increment 8: `graph/playbook.py` (`Rule`, `read_rules` returning rules plus problems, `load_rules` refusing a bad folder with
+  `RulesInvalid`; only `status: approved`, id = file name, ISO date, non-empty applies_to/reason/body) and the three seed rules in
+  `knowledge/4.5.2/rules/` (`unity-vs-next-tradition`, `influence-at-cap-is-waste`, `unemployed-before-colonies`). The graph validator now reports rule file
+  errors and `applies_to` patterns that match no node or Goal (`*` = anything). `rules:` links added to the Unity-spending Remedies and their `*_needs_unity`
+  Obstacles, `influence.stagger_projects`, `pop_growth.grow_pops`, `jobs.free_jobs` and every `*.no_spare_pops`. `docs/proposals/playbook.md` created (empty).
+  The fixture rule in `tests/test_mechanics_graph.py` was brought to the full rule format (test data, no assertion weakened). Tests 252 passed / 31 skipped, ruff clean

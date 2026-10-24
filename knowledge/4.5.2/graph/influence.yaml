@@ -62,6 +62,7 @@ nodes:
 
   - id: influence.run_will_to_power
     type: remedy
+    rules: [unity-vs-next-tradition]
     title: Run the Will to Power decree
     judgement: >
       A large flat gain while it runs. The decree is bought in Unity and charges Unity upkeep, so it
@@ -77,6 +78,7 @@ nodes:
 
   - id: influence.take_colonial_viceroys
     type: remedy
+    rules: [unity-vs-next-tradition]
     title: Take the Colonial Viceroys tradition
     judgement: >
       A small permanent gain that also moves the Domination tree forward. It is cheap in effort but
@@ -90,6 +92,7 @@ nodes:
 
   - id: influence.stagger_projects
     type: remedy
+    rules: [influence-at-cap-is-waste]
     title: Spread influence-priced projects over time
     judgement: >
       Costs nothing but patience. Starting one project at a time keeps the stockpile from hitting
@@ -104,6 +107,7 @@ nodes:
 
   - id: influence.adopt_diplomacy_tradition
     type: remedy
+    rules: [unity-vs-next-tradition]
     title: Adopt the Diplomacy tradition tree
     judgement: >
       Cuts the diplomatic upkeep for good, and the larger the web of relations, the more it saves.
@@ -149,6 +153,7 @@ nodes:
 
   - id: influence.decree_costs_unity
     type: obstacle
+    rules: [unity-vs-next-tradition]
     title: Not enough Unity to buy and keep the decree
     description: >
       The decree is paid in Unity, once to start it and then every month while it runs. A weak Unity
@@ -161,6 +166,7 @@ nodes:
 
   - id: influence.viceroys_needs_unity
     type: obstacle
+    rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the next Tradition
     description: >
       A Tradition is paid in Unity. While the stockpile is below the cost of the next one, this step
@@ -173,6 +179,7 @@ nodes:
 
   - id: influence.diplomacy_needs_unity
     type: obstacle
+    rules: [unity-vs-next-tradition]
     title: Not enough Unity banked to adopt the tradition tree
     description: >
       Adopting a tradition tree is paid in Unity. While the stockpile is below the cost of the next

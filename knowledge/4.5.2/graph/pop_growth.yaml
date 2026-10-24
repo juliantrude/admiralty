@@ -49,6 +49,7 @@ nodes:
 
   - id: pop_growth.grow_pops
     type: remedy
+    rules: [unemployed-before-colonies]
     title: Grow more pops
     judgement: >
       The answer whenever a step is blocked only because no pop is idle. It is slow, since a new

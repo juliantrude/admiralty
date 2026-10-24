@@ -26,6 +26,8 @@ from typing import Any
 import yaml
 from jsonschema import Draft202012Validator
 
+from hlidskjalf.graph.playbook import read_rules
+
 KNOWLEDGE_ROOT = Path(__file__).resolve().parents[3] / "knowledge"
 METRICS_FILE = "metrics.yaml"
 DEFAULT_VERSION = "v4.5.2"
@@ -206,18 +208,6 @@ def _matching(ids, pattern: str) -> list[str]:
     return sorted(i for i in ids if fnmatch.fnmatchcase(i, pattern))
 
 
-def _rule_ids(rules_dir: Path) -> set[str]:
-    """Playbook Rule ids from the front matter of knowledge/<version>/rules/*.md."""
-    ids: set[str] = set()
-    for path in sorted(rules_dir.glob("*.md")) if rules_dir.is_dir() else ():
-        text = path.read_text(encoding="utf-8")
-        if text.startswith("---\n") and "\n---" in text:
-            front = yaml.safe_load(text[4 : text.index("\n---", 4)]) or {}
-            if isinstance(front, dict) and isinstance(front.get("id"), str):
-                ids.add(front["id"])
-    return ids
-
-
 # --- checking --------------------------------------------------------------------------------
 
 
@@ -241,7 +231,20 @@ def _check(pack: _Pack) -> list[Problem]:
     nodes, goals = _index(pack, problems)
     metrics = set((pack.metrics or {}).get("metrics", {}))
     facts = _fact_ids(pack.directory / "generated")
-    rules = _rule_ids(pack.directory / "rules")
+    rules, rule_errors = read_rules(pack.directory / "rules")
+    for message in rule_errors:
+        file, _, text = message.partition(": ")
+        problems.append(Problem("error", f"rules/{file}", text))
+    for rule in rules.values():
+        for pattern in rule.applies_to:
+            if pattern != "*" and not (_matching(nodes, pattern) or _matching(goals, pattern)):
+                problems.append(
+                    Problem(
+                        "error",
+                        f"rules/{rule.file}",
+                        f"applies_to: '{pattern}' matches no node or Goal",
+                    )
+                )
     file_of = {n["id"]: name for name, doc in pack.graphs for n in doc["nodes"]}
     file_of |= {g["id"]: name for name, doc in pack.graphs for g in doc["goals"]}
 

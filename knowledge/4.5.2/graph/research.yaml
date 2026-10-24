@@ -108,6 +108,7 @@ nodes:
 
   - id: research.no_spare_pops
     type: obstacle
+    rules: [unemployed-before-colonies]
     title: No unemployed pops to fill new researcher jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new researcher job pulls a
@@ -157,6 +158,7 @@ nodes:
 
   - id: research.discovery_needs_unity
     type: obstacle
+    rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the next Tradition
     description: >
       Each Tradition of the tree is paid in Unity. While the stockpile is below the cost of the next

@@ -90,6 +90,7 @@ nodes:
 
   - id: food.no_spare_pops
     type: obstacle
+    rules: [unemployed-before-colonies]
     title: No unemployed pops to fill new Farmer jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new Farmer job pulls a

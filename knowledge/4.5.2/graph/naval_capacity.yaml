@@ -43,6 +43,7 @@ nodes:
 
   - id: naval_capacity.adopt_supremacy
     type: remedy
+    rules: [unity-vs-next-tradition]
     title: Adopt the Supremacy tradition tree
     judgement: >
       The single largest one-off step. Worth it when the empire is capacity-bound and the Unity
@@ -128,6 +129,7 @@ nodes:
 
   - id: naval_capacity.supremacy_needs_unity
     type: obstacle
+    rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the next Tradition
     description: >
       Adopting a tradition tree or taking a Tradition is paid in Unity. While the stockpile is
@@ -183,6 +185,7 @@ nodes:
 
   - id: naval_capacity.no_spare_pops
     type: obstacle
+    rules: [unemployed-before-colonies]
     title: No unemployed pops to fill Soldier jobs
     description: >
       A Soldier job only counts once a pop works it. With no unemployed pops, new jobs would
