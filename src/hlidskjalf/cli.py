@@ -1,5 +1,5 @@
 """Command line: hlidskjalf extract | diff | mcp | setup (campaigns, players, write, check) | graph |
-briefing."""
+briefing | claims."""
 
 from __future__ import annotations
 
@@ -76,7 +76,26 @@ def main(argv: list[str] | None = None) -> int:
     view.add_argument("file", type=Path)
     view.add_argument("--port", type=int, default=0, help="default: a random free port")
 
+    claims = commands.add_parser("claims", help="the Unverified Claim check").add_subparsers(
+        dest="claims_command", required=True
+    )
+    claims_check = claims.add_parser(
+        "check",
+        help="check an answer against the turn log (exit 1 if any claim is unverified)",
+    )
+    claims_check.add_argument("--workspace", type=Path, default=Path.cwd())
+    claims_check.add_argument("--answer", type=Path, required=True, help="the answer as text")
+    claims_check.add_argument(
+        "--transcript", type=Path, help="Claude Code transcript: the Player's messages count too"
+    )
+    claims_check.add_argument(
+        "--since",
+        help="only turn log entries from this ISO time on (default: the transcript start)",
+    )
+
     args = parser.parse_args(argv)
+    if args.command == "claims":
+        return _claims_check(args)
     if args.command == "graph":
         if args.graph_command == "check-solution":
             return _check_solution(args)
@@ -181,6 +200,25 @@ def _read_expansion(workspace: Path, expansion_id: int) -> dict:
             f"(tool {entry.get('tool')!r}); use the expansion_id of an expand_graph call with goals"
         )
     return result
+
+
+def _claims_check(args) -> int:
+    from datetime import datetime
+
+    from hlidskjalf.claims.check import check_answer
+    from hlidskjalf.claims.evidence import build_evidence, read_transcript, read_turn_log
+
+    try:
+        answer = args.answer.read_text(encoding="utf-8")
+        since = datetime.fromisoformat(args.since) if args.since else None
+    except (OSError, ValueError) as error:
+        raise SystemExit(f"hlidskjalf claims: {error}") from error
+    started, player = read_transcript(args.transcript) if args.transcript else (None, [])
+    evidence = build_evidence(read_turn_log(args.workspace, since or started), player)
+    verdict = check_answer(answer, evidence)
+    json.dump(verdict.to_dict(), sys.stdout, ensure_ascii=False, indent=1)
+    print()
+    return 0 if verdict.ok else 1
 
 
 def _check_solution(args) -> int:

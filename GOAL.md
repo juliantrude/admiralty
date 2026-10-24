@@ -90,7 +90,7 @@ M6 is complete (see Log).
 M7 (plan: `docs/plans/M7.md`):
 - [x] 1. Plan document
 - [x] 2. Normalisation and extraction (`claims/normalise.py`, `claims/extract.py`)
-- [ ] 3. Evidence and matching (`claims/evidence.py`, `claims/check.py`, `hlidskjalf claims check`)
+- [x] 3. Evidence and matching (`claims/evidence.py`, `claims/check.py`, `hlidskjalf claims check`)
 - [ ] 4. The Stop hook (probe real input, `hooks/hooks.json`, `hlidskjalf hook stop`, `blocks.jsonl`, loop guard, `plugin.json`)
 - [ ] 5. `review-blocks` (`claims/blocks.py`, `blocks summary` CLI, skill, `docs/proposals/claims.md`)
 - [ ] 6. Verification (bold Display Names in consult skill, planted district count, reference Briefings, headless run)
@@ -100,11 +100,7 @@ M8: plan increments to be written (see `docs/build-plan.md`).
 ## Status
 
 STATUS: READY
-**Next action:** M7 increment 3: `src/hlidskjalf/claims/evidence.py` (index of numbers/strings from the session's turn log entries plus Player input from the
-transcript) and `check.py` (match with `Reading.covers`, ambiguous readings either way, derived sums/percentages within one `Claim.unit`, rule-quote exemption for
-`Claim.quoted`, `within_name` exemption, dates as whole strings, nearest value, reason codes `no_match|near_match|derived_unexplained|name_no_match`) and
-`hlidskjalf claims check --workspace DIR --answer FILE`; matching tests on synthetic turn logs (`tests/test_claims_check.py`). Note: `-m network` is deselected
-by default (`addopts` in `pyproject.toml`); run `uv run pytest -m network` to test the real CDN.
+**Next action:** M7 increment 4, the Stop hook: first probe the real hook input (a throwaway Stop hook that dumps stdin; headless `claude -p` in a temp workspace) and record the shape in `docs/plans/M7.md` open risks; then `hooks/hooks.json`, `hlidskjalf hook stop` (workspace detection by walking up from `cwd` to `campaign.yaml` + `.hlidskjalf/`; evidence window = `read_transcript` start; answer from input or last assistant text block), block output `{"decision":"block","reason":...}` with the reason text (list of claims, nearest value, "show the addends or quote the tool's figure" for numbers, instruction not to mention the check), `blocks.jsonl`, loop guard (block at most twice, then release with `systemMessage`), crash-safe exit 0 + `hook-errors.log`, `plugin.json`; tests drive the script with stdin. Available from increment 3: `claims.evidence.{build_evidence,read_turn_log,read_transcript}`, `claims.check.check_answer -> Verdict/Unverified` (`to_dict()`), CLI `hlidskjalf claims check`. Note: `-m network` is deselected by default.
 **Decided in the M7 plan:** derived sums/differences (2 to 4 addends shown in the same item) and percentages are allowed, unexplained totals are blocked;
 evidence window = tool results of the whole session; Stop hook probe of the real input comes first in increment 4.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
@@ -301,3 +297,4 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   2200 to 2500, digits glued to letters; names only from bold/code/quotes/Name-column cells, not whole-line bold, not one lowercase word, not quotes over 8 words, not commands/paths). Decisions: in-game dates
   are `date` claims matched whole (plan said both "never extracted" and "matched as a whole string"); a number inside a code span name is not extracted (the span is checked as a name). `tests/test_claims_extract.py`
   (61 tests). Tests 499 passed / 31 skipped, ruff clean
+- 2026-10-24 — M7 increment 3: `claims/evidence.py` (`build_evidence`: sorted absolute numbers from JSON numbers and numbers in strings, list-of-records lengths count as numbers, dates, all strings case-folded as whole-word name text plus rule ids from `playbook_rules`, rule texts for the blockquote exemption; errors are no evidence; `read_turn_log(since)`, `read_transcript` giving the first timestamp and the Player's own text messages without tool results, meta messages and system reminders) and `claims/check.py` (`check_answer` -> `Verdict`/`Unverified` with reason codes; derived sums/differences of 2 to 4 backed numbers of the same unit and percentage quotients by interval arithmetic over every operand's rounding; ambiguous readings either way; numbers inside a marked name stand with the name; quoted-rule exemption when the results hold rules). Decisions: `derived_unexplained` means the unit shows 2+ backed numbers but none explains the total (a data-wide search for hidden addends would match nearly any number by coincidence), so an unexplained total without shown addends reports `no_match`/`near_match`, and the block reason in increment 4 must say "show the addends or quote the tool's figure" for every number finding; names also match inside longer evidence texts as whole words. CLI `hlidskjalf claims check --workspace --answer [--transcript] [--since]` (JSON, exit 1 on any finding). `tests/test_claims_check.py` (41 tests on synthetic turn logs). Tests 540 passed / 31 skipped, ruff clean
