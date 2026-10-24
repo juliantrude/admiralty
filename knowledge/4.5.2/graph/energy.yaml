@@ -1,0 +1,149 @@
+version: v4.5.2
+domain: energy
+# Curated by hand from knowledge/4.5.2/generated/energy.yaml. Node text carries no figures:
+# every number lives in the generated facts a node links to (docs/plans/M4.md).
+goals:
+  - id: energy.more
+    title: Positive energy income
+    symptom_metrics: [energy.net]
+    causes: [energy.few_producers, energy.weak_multipliers, energy.heavy_upkeep]
+
+nodes:
+  - id: energy.few_producers
+    type: cause
+    title: Too few jobs that produce energy
+    description: >
+      Energy comes mainly from Technician jobs, topped up by buildings that add output per
+      Technician. An empire whose income is short usually has too few staffed Technician jobs
+      for the upkeep it carries.
+    remedies: [energy.staff_technicians, energy.upgrade_generator_buildings]
+    facts:
+      - energy.job.technician.produces_energy
+
+  - id: energy.weak_multipliers
+    type: cause
+    title: The multipliers on energy output are small
+    description: >
+      The per-job output is scaled by technology multipliers. With healthy job counts, a larger
+      multiplier gains more than another job.
+    remedies: [energy.research_power_techs]
+    facts:
+      - energy.technology.tech_power_plant_2.planet_technician_energy_produces_mult
+      - energy.technology.tech_repeatable_improved_tile_energy_output.planet_jobs_energy_produces_mult
+
+  - id: energy.heavy_upkeep
+    type: cause
+    title: Upkeep eats the energy income
+    description: >
+      Districts, buildings and jobs each charge an energy upkeep. Growth in any of them lowers
+      net income even when output is unchanged.
+    remedies: [energy.trim_upkeep]
+    facts:
+      - energy.district.district_city.upkeep_energy
+      - energy.district.district_generator.upkeep_energy
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: energy.staff_technicians
+    type: remedy
+    title: Staff more Technician jobs
+    judgement: >
+      The direct fix and the one that scales with the empire. It needs pops and job slots, so
+      it is cheap when pops are idle and a trade-off against other jobs when they are not.
+    strength: high
+    speed: high
+    cost: low
+    obstacles: [energy.no_spare_pops, energy.no_generator_slot]
+    facts:
+      - energy.job.technician.produces_energy
+
+  - id: energy.upgrade_generator_buildings
+    type: remedy
+    title: Build and upgrade the generator buildings
+    judgement: >
+      Each building adds output for every Technician on the planet, so it pays most on planets
+      that already have many Technicians. A modest gain per building, with a build cost and its
+      own upkeep.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [energy.generator_building_locked, energy.no_generator_slot]
+    facts:
+      - energy.building.building_energy_grid.planet_technician_energy_produces_add
+      - energy.building.building_energy_nexus.planet_technician_energy_produces_add
+
+  - id: energy.research_power_techs
+    type: remedy
+    title: Research the power plant technologies
+    judgement: >
+      Each step lifts every Technician at once and costs no upkeep. Slow, because it competes
+      with every other technology for the same research output.
+    strength: medium
+    speed: low
+    cost: medium
+    obstacles: [energy.power_tech_prerequisites]
+    facts:
+      - energy.technology.tech_power_plant_2.planet_technician_energy_produces_mult
+      - energy.technology.tech_power_plant_4.planet_technician_energy_produces_mult
+      - energy.technology.tech_repeatable_improved_tile_energy_output.planet_jobs_energy_produces_mult
+
+  - id: energy.trim_upkeep
+    type: remedy
+    title: Trim buildings and districts that cost more energy than they return
+    judgement: >
+      Worth doing only for upkeep that buys nothing the Player needs. It saves energy at once but
+      loses whatever the building or district gave, so it is a judgement per planet.
+    strength: low
+    speed: high
+    cost: low
+    obstacles: [energy.upkeep_buys_something]
+    facts:
+      - energy.district.district_city.upkeep_energy
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: energy.no_spare_pops
+    type: obstacle
+    title: No unemployed pops to fill new Technician jobs
+    description: >
+      A job only counts once a pop works it. With no unemployed pops, a new Technician job pulls
+      a worker away from another job.
+    check:
+      metric: pops.unemployed
+      op: "=="
+      compare_to: 0
+
+  - id: energy.no_generator_slot
+    type: obstacle
+    title: No free generator district or building slot
+    description: >
+      Technician jobs come from generator districts and from buildings. A planet with no free
+      district or building slot cannot host another one until it grows or a slot is freed.
+    check: {judgement_only: true}
+
+  - id: energy.generator_building_locked
+    type: obstacle
+    title: The generator building is not unlocked
+    description: >
+      The upgraded generator buildings are unlocked by power plant technologies, and the higher
+      one also needs an upgraded capital building on the planet.
+    check: {judgement_only: true}
+
+  - id: energy.power_tech_prerequisites
+    type: obstacle
+    title: The power plant technologies need their prerequisites
+    description: >
+      Each power plant technology requires the one before it, and the repeatable one only opens
+      after the later steps, so the line has to be researched in order.
+    check:
+      metric: research.net
+      op: "<="
+      compare_to: 0
+
+  - id: energy.upkeep_buys_something
+    type: obstacle
+    title: The upkeep pays for something the empire uses
+    description: >
+      A district or building that costs energy usually houses pops or jobs. Removing it also
+      removes its housing, amenities or output, which can cost more than the energy saved.
+    check: {judgement_only: true}

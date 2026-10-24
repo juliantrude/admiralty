@@ -128,7 +128,7 @@ if only Julian's part remains, and move on to the next increment.
 - [x] Curated graph, naval capacity domain; test for the M4 criterion: expanding the Goal
       "more naval capacity" from the graph alone yields Supremacy, Anchorages,
       naval-capacity technologies and Soldier jobs, each with its Obstacles
-- [ ] Curated graph, economy domains: energy, minerals, food, alloys
+- [x] Curated graph, economy domains: energy, minerals, food, alloys
 - [ ] Curated graph: Unity and Traditions, influence, research
 - [ ] Curated graph: pop growth, stability, amenities, housing, building and district slots
 - [ ] Playbook seed rules as `knowledge/4.5.2/rules/*.md` (id, date, reason) with a loader
@@ -191,17 +191,16 @@ if only Julian's part remains, and move on to the next increment.
 ## Status
 
 STATUS: READY
-**Next action:** M4 increment 5: curated graph, economy domains energy, minerals, food, alloys (one file each in
-`knowledge/4.5.2/graph/`, ids `<domain>.<slug>`, node text without figures, facts from `knowledge/4.5.2/generated/<domain>.yaml`).
-Pattern to copy: `knowledge/4.5.2/graph/naval_capacity.yaml` (Goal -> Causes -> Remedies -> Obstacles, ratings strength/speed/cost,
-Obstacles with a metric `check` where the registry has one, `judgement_only` sparingly: naval_capacity already uses it five times,
-so prefer registering a metric in `metrics.yaml`; a test checks each registered path against the reference extract). Shared
-cross-domain nodes (`jobs.free_jobs`, `housing.free_housing`, `unity.raise_income`) live in their own domain file once; link to them
-only after that file exists (dangling links are errors). Obstacle `naval_capacity.supremacy_needs_unity` has no Remedies yet: in
-the Unity increment add `unity.raise_income` and link it there. Cycles need one `circle` name on every member (energy -> jobs ->
-pops -> food -> energy). Add a test per domain like `tests/test_naval_capacity_graph.py` (Goal expands, every Remedy has an
-Obstacle). Whole-graph walk tests there already cover new domains automatically. Rule ids a node cites must exist in
-`knowledge/4.5.2/rules/*.md`, which arrives in increment 8; until then do not cite rules from nodes.
+**Next action:** M4 increment 6: curated graph, Unity and Traditions, influence, research (files `unity.yaml`,
+`influence.yaml`, `research.yaml` in `knowledge/4.5.2/graph/`; facts from `knowledge/4.5.2/generated/<domain>.yaml`; unity.yaml
+holds the shared node `unity.raise_income`). Pattern to copy: `knowledge/4.5.2/graph/energy.yaml` and `tests/test_economy_graph.py`
+(Goal -> Causes -> Remedies -> Obstacles, ratings strength/speed/cost, a metric `check` wherever the registry has one; add metrics
+to `metrics.yaml` rather than `judgement_only`; check real fact amounts and requirements in the generated YAML before linking,
+e.g. a `cost_food` fact on a district was a wooden-planet variant, the real cost is the `cost_minerals` fact). Link
+`unity.raise_income` as Remedy of Obstacle `naval_capacity.supremacy_needs_unity` (it has none yet). Cycles need one `circle` name on
+every member. Each economy domain has its own `<domain>.no_spare_pops` Obstacle (pops.unemployed == 0); the pop growth increment
+may add `jobs.free_jobs` as a shared Remedy for them and the energy -> jobs -> pops -> food -> energy circle. Rule ids a node cites
+must exist in `knowledge/4.5.2/rules/*.md`, which arrives in increment 8; until then do not cite rules from nodes.
 Note `skills/` is auto-discovered by the plugin; `hooks/` is still empty.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the
 game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
@@ -275,3 +274,8 @@ game UI for `tests/golden_values.py` (see `docs/awaiting-julian.md`).
   3 checked against the Snapshot, 5 judgement-only) and `MechanicsGraph.reachable(goal_id)`. `tests/test_naval_capacity_graph.py`:
   M4 criterion, linked facts resolve to the known figures, no figures in prose, all-goals walk terminates, no orphans, cycle-safe walk.
   `graph validate` clean; tests 180 passed / 31 skipped, ruff clean
+- 2026-10-24 — M4 increment 5: economy domains `energy.yaml`, `minerals.yaml`, `food.yaml`, `alloys.yaml` in
+  `knowledge/4.5.2/graph/` (one Goal each; Causes few producers / weak multipliers / heavy upkeep; Remedies staffing the producer
+  job, districts and buildings, technologies, minerals decree; Obstacles checked against pops.unemployed, stockpiles, net income,
+  research.net, the rest judgement-only). alloys Obstacles `minerals_short` and `energy_short` link to the minerals and energy
+  Remedies. `graph validate` clean; `tests/test_economy_graph.py` added; tests 191 passed / 31 skipped, ruff clean

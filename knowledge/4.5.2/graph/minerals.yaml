@@ -1,0 +1,166 @@
+version: v4.5.2
+domain: minerals
+# Curated by hand from knowledge/4.5.2/generated/minerals.yaml. Node text carries no figures.
+goals:
+  - id: minerals.more
+    title: More mineral income
+    symptom_metrics: [minerals.net]
+    causes: [minerals.few_miners, minerals.weak_multipliers]
+
+nodes:
+  - id: minerals.few_miners
+    type: cause
+    title: Too few staffed Miner jobs
+    description: >
+      Minerals come mainly from Miner jobs on mining districts. An empire that is short of
+      minerals usually has too few staffed Miner jobs for what it builds and what its
+      Metallurgist jobs consume.
+    remedies: [minerals.staff_miners, minerals.build_mining_districts]
+    facts:
+      - minerals.job.miner.produces_minerals
+      - minerals.job.foundry.upkeep_minerals
+
+  - id: minerals.weak_multipliers
+    type: cause
+    title: The multipliers on mineral output are small
+    description: >
+      Mining output is scaled by technology and by buildings that add output per Miner. With
+      healthy job counts, a larger multiplier gains more than another job.
+    remedies:
+      - minerals.research_mining_techs
+      - minerals.build_purification
+      - minerals.use_omnifarious_acquisition
+    facts:
+      - minerals.technology.tech_mining_2.planet_miners_minerals_produces_mult
+      - minerals.technology.tech_repeatable_improved_tile_mineral_output.planet_jobs_minerals_produces_mult
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: minerals.staff_miners
+    type: remedy
+    title: Staff more Miner jobs
+    judgement: >
+      The direct fix. It needs pops and open job slots, so it is cheap when pops are idle and a
+      trade-off against other jobs when they are not.
+    strength: high
+    speed: high
+    cost: low
+    obstacles: [minerals.no_spare_pops, minerals.no_mining_slot]
+    facts:
+      - minerals.job.miner.produces_minerals
+
+  - id: minerals.build_mining_districts
+    type: remedy
+    title: Build mining districts
+    judgement: >
+      Adds the job slots that Miners fill, and is paid in minerals. Good on planets with mining
+      deposits and a free district slot, wasted on planets where a better district would fit.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [minerals.cannot_pay_district, minerals.no_mining_slot]
+    facts:
+      - minerals.district.district_mining.cost_minerals
+
+  - id: minerals.research_mining_techs
+    type: remedy
+    title: Research the mining technologies
+    judgement: >
+      Each step lifts every Miner at once and costs no upkeep. Slow, because it competes with
+      every other technology for the same research output.
+    strength: medium
+    speed: low
+    cost: medium
+    obstacles: [minerals.mining_tech_prerequisites]
+    facts:
+      - minerals.technology.tech_mining_2.planet_miners_minerals_produces_mult
+      - minerals.technology.tech_repeatable_improved_tile_mineral_output.planet_jobs_minerals_produces_mult
+
+  - id: minerals.build_purification
+    type: remedy
+    title: Build the mineral purification buildings
+    judgement: >
+      Each building adds output for every Miner on the planet, so it pays most on planets with
+      many Miners. The hub tier also needs an upgraded capital building.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [minerals.purification_locked, minerals.no_mining_slot]
+    facts:
+      - minerals.building.building_mineral_purification_plant.planet_miners_minerals_produces_add
+      - minerals.building.building_mineral_purification_hub.planet_miners_minerals_produces_add
+
+  - id: minerals.use_omnifarious_acquisition
+    type: remedy
+    title: Enact the Omnifarious Acquisition decree
+    judgement: >
+      A flat empire-wide multiplier for as long as the decree runs. Weigh it against the other
+      uses of the decree slot and what keeping it costs.
+    strength: medium
+    speed: high
+    cost: medium
+    obstacles: [minerals.decree_locked]
+    facts:
+      - minerals.edict.omnifarious_acquisition.country_minerals_produces_mult
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: minerals.no_spare_pops
+    type: obstacle
+    title: No unemployed pops to fill new Miner jobs
+    description: >
+      A job only counts once a pop works it. With no unemployed pops, a new Miner job pulls a
+      worker away from another job.
+    check:
+      metric: pops.unemployed
+      op: "=="
+      compare_to: 0
+
+  - id: minerals.no_mining_slot
+    type: obstacle
+    title: No free mining district or building slot
+    description: >
+      Miner jobs come from mining districts and from buildings. A planet with no free district
+      or building slot cannot host another one until it grows or a slot is freed.
+    check: {judgement_only: true}
+
+  - id: minerals.cannot_pay_district
+    type: obstacle
+    title: The mineral stockpile is empty
+    description: >
+      A district is paid in minerals when it is built. With nothing in the stockpile the build
+      has to wait for income.
+    check:
+      metric: minerals.stockpile
+      op: "<="
+      compare_to: 0
+
+  - id: minerals.mining_tech_prerequisites
+    type: obstacle
+    title: The mining technologies need their prerequisites
+    description: >
+      Each mining technology requires the one before it, and the repeatable one only opens after
+      the purification line, so the line has to be researched in order.
+    check:
+      metric: research.net
+      op: "<="
+      compare_to: 0
+
+  - id: minerals.purification_locked
+    type: obstacle
+    title: The purification building is not unlocked
+    description: >
+      The purification buildings are unlocked by purification technologies, and the hub also
+      needs an upgraded capital building on the planet.
+    check: {judgement_only: true}
+
+  - id: minerals.decree_locked
+    type: obstacle
+    title: The decree is not available
+    description: >
+      The decree is unlocked by an ascension technology and a decree is paid for with influence,
+      so it is out of reach until both are in place.
+    check:
+      metric: influence.stockpile
+      op: "<="
+      compare_to: 0

@@ -1,0 +1,137 @@
+version: v4.5.2
+domain: food
+# Curated by hand from knowledge/4.5.2/generated/food.yaml. Node text carries no figures.
+goals:
+  - id: food.positive
+    title: Positive food income
+    symptom_metrics: [food.net]
+    causes: [food.few_farmers, food.weak_multipliers]
+
+nodes:
+  - id: food.few_farmers
+    type: cause
+    title: Too few staffed Farmer jobs
+    description: >
+      Food comes mainly from Farmer jobs on agriculture districts, and every pop eats. An empire
+      whose food income is negative has grown its pop count faster than its Farmer jobs.
+    remedies: [food.staff_farmers, food.build_agriculture_districts]
+    facts:
+      - food.job.farmer.produces_food
+
+  - id: food.weak_multipliers
+    type: cause
+    title: The multipliers on food output are small
+    description: >
+      Farming output is scaled by technology and by buildings that add output per Farmer. With
+      healthy job counts, a larger multiplier gains more than another job.
+    remedies: [food.research_farming_techs, food.build_processing]
+    facts:
+      - food.technology.tech_eco_simulation.planet_farmers_food_produces_mult
+      - food.technology.tech_repeatable_improved_tile_food_output.planet_jobs_food_produces_mult
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: food.staff_farmers
+    type: remedy
+    title: Staff more Farmer jobs
+    judgement: >
+      The direct fix. It needs pops and open job slots; when pops are idle it costs nothing, and
+      when they are not it trades another job for food.
+    strength: high
+    speed: high
+    cost: low
+    obstacles: [food.no_spare_pops, food.no_farming_slot]
+    facts:
+      - food.job.farmer.produces_food
+
+  - id: food.build_agriculture_districts
+    type: remedy
+    title: Build agriculture districts
+    judgement: >
+      Adds the job slots that Farmers fill. Best on planets with farmable land and a free
+      district slot, and not worth it where the district competes with housing or industry.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [food.cannot_pay_district, food.no_farming_slot]
+    facts:
+      - minerals.district.district_farming.cost_minerals
+
+  - id: food.research_farming_techs
+    type: remedy
+    title: Research the farming technologies
+    judgement: >
+      Each step lifts every Farmer at once and costs no upkeep. Slow, because it competes with
+      every other technology for the same research output.
+    strength: medium
+    speed: low
+    cost: medium
+    obstacles: [food.farming_tech_prerequisites]
+    facts:
+      - food.technology.tech_eco_simulation.planet_farmers_food_produces_mult
+      - food.technology.tech_repeatable_improved_tile_food_output.planet_jobs_food_produces_mult
+
+  - id: food.build_processing
+    type: remedy
+    title: Build the food processing buildings
+    judgement: >
+      The building adds output for every Farmer on the planet, so it pays most on planets with
+      many Farmers. It needs an upgraded capital building and a technology first.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [food.processing_locked, food.no_farming_slot]
+    facts:
+      - food.building.building_food_processing_center.planet_farmers_food_produces_add
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: food.no_spare_pops
+    type: obstacle
+    title: No unemployed pops to fill new Farmer jobs
+    description: >
+      A job only counts once a pop works it. With no unemployed pops, a new Farmer job pulls a
+      worker away from another job.
+    check:
+      metric: pops.unemployed
+      op: "=="
+      compare_to: 0
+
+  - id: food.no_farming_slot
+    type: obstacle
+    title: No free agriculture district or building slot
+    description: >
+      Farmer jobs come from agriculture districts and from buildings. A planet with no free
+      district or building slot cannot host another one until it grows or a slot is freed.
+    check: {judgement_only: true}
+
+  - id: food.cannot_pay_district
+    type: obstacle
+    title: The mineral stockpile is empty
+    description: >
+      An agriculture district is paid for when it is built. With nothing in the mineral
+      stockpile the build has to wait for income.
+    check:
+      metric: minerals.stockpile
+      op: "<="
+      compare_to: 0
+    remedies: [minerals.staff_miners]
+
+  - id: food.farming_tech_prerequisites
+    type: obstacle
+    title: The farming technologies need their prerequisites
+    description: >
+      Each farming technology requires the one before it, and the repeatable one only opens
+      after the gene crops line, so the line has to be researched in order.
+    check:
+      metric: research.net
+      op: "<="
+      compare_to: 0
+
+  - id: food.processing_locked
+    type: obstacle
+    title: The processing building is not unlocked
+    description: >
+      The food processing buildings are unlocked by food processing technologies, and the centre
+      also needs an upgraded capital building on the planet.
+    check: {judgement_only: true}

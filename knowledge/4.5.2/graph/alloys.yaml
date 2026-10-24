@@ -1,0 +1,150 @@
+version: v4.5.2
+domain: alloys
+# Curated by hand from knowledge/4.5.2/generated/alloys.yaml. Node text carries no figures.
+goals:
+  - id: alloys.more
+    title: More alloy income
+    symptom_metrics: [alloys.net]
+    causes: [alloys.few_metallurgists, alloys.weak_multipliers]
+
+nodes:
+  - id: alloys.few_metallurgists
+    type: cause
+    title: Too few staffed Metallurgist jobs
+    description: >
+      Alloys come from Metallurgist jobs, which turn minerals into alloys and sit in foundry
+      zones. An empire short of alloys has too few staffed Metallurgist jobs, or has them but
+      cannot feed them.
+    remedies: [alloys.staff_metallurgists, alloys.build_foundry_zones]
+    facts:
+      - alloys.job.foundry.produces_alloys
+      - minerals.job.foundry.upkeep_minerals
+
+  - id: alloys.weak_multipliers
+    type: cause
+    title: The multipliers on alloy output are small
+    description: >
+      Alloy output per Metallurgist is raised by technology and by buildings. With healthy job
+      counts, a larger bonus gains more than another job.
+    remedies: [alloys.research_alloy_techs, alloys.build_production_ministry]
+    facts:
+      - alloys.technology.tech_supreme_alloy.planet_metallurgists_alloys_produces_add
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: alloys.staff_metallurgists
+    type: remedy
+    title: Staff more Metallurgist jobs
+    judgement: >
+      The direct fix. Every Metallurgist consumes minerals to make alloys, so it needs a mineral
+      surplus as well as pops, and it takes the pops away from other jobs when none are idle.
+    strength: high
+    speed: high
+    cost: medium
+    obstacles: [alloys.no_spare_pops, alloys.minerals_short, alloys.no_foundry_slot]
+    facts:
+      - alloys.job.foundry.produces_alloys
+      - minerals.job.foundry.upkeep_minerals
+
+  - id: alloys.build_foundry_zones
+    type: remedy
+    title: Build foundry zones
+    judgement: >
+      Adds the job slots that Metallurgists fill, and is paid in alloys up front. Worth it on
+      planets with a free zone slot; the building upkeep in energy comes on top.
+    strength: medium
+    speed: medium
+    cost: medium
+    obstacles: [alloys.energy_short, alloys.no_foundry_slot]
+    facts:
+      - alloys.zone.zone_foundry.cost_alloys
+
+  - id: alloys.research_alloy_techs
+    type: remedy
+    title: Research the alloy technologies
+    judgement: >
+      Lifts every Metallurgist at once and costs no upkeep. Slow, because it competes with every
+      other technology for the same research output.
+    strength: medium
+    speed: low
+    cost: medium
+    obstacles: [alloys.alloy_tech_prerequisites]
+    facts:
+      - alloys.technology.tech_supreme_alloy.planet_metallurgists_alloys_produces_add
+
+  - id: alloys.build_production_ministry
+    type: remedy
+    title: Build the production ministry building
+    judgement: >
+      Adds output for every Metallurgist in the empire, so it pays more the bigger the foundry
+      base is. The matching building differs between regular and gestalt empires.
+    strength: medium
+    speed: low
+    cost: high
+    obstacles: [alloys.ministry_locked]
+    facts:
+      - alloys.building.building_ministry_production.planet_metallurgists_alloys_produces_add
+      - alloys.building.building_production_center.planet_metallurgists_alloys_produces_add
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: alloys.no_spare_pops
+    type: obstacle
+    title: No unemployed pops to fill new Metallurgist jobs
+    description: >
+      A job only counts once a pop works it. With no unemployed pops, a new Metallurgist job
+      pulls a worker away from another job.
+    check:
+      metric: pops.unemployed
+      op: "=="
+      compare_to: 0
+
+  - id: alloys.minerals_short
+    type: obstacle
+    title: The mineral income cannot feed more foundries
+    description: >
+      Metallurgists consume minerals to make alloys. With no mineral surplus, a new foundry job
+      only moves the shortage from alloys to minerals.
+    check:
+      metric: minerals.net
+      op: "<="
+      compare_to: 0
+    remedies: [minerals.staff_miners, minerals.research_mining_techs]
+
+  - id: alloys.energy_short
+    type: obstacle
+    title: The energy income cannot carry more buildings
+    description: >
+      Foundry buildings and the jobs in them cost energy upkeep. With no energy surplus a new
+      foundry zone drives energy negative.
+    check:
+      metric: energy.net
+      op: "<="
+      compare_to: 0
+    remedies: [energy.staff_technicians, energy.research_power_techs]
+
+  - id: alloys.no_foundry_slot
+    type: obstacle
+    title: No free zone or building slot for foundries
+    description: >
+      Metallurgist jobs come from foundry zones and their buildings. A planet with no free slot
+      cannot host another one until it grows or a slot is freed.
+    check: {judgement_only: true}
+
+  - id: alloys.alloy_tech_prerequisites
+    type: obstacle
+    title: The alloy technologies need their prerequisites
+    description: >
+      The alloy technologies sit deep in the industry line and need the earlier steps first.
+    check:
+      metric: research.net
+      op: "<="
+      compare_to: 0
+
+  - id: alloys.ministry_locked
+    type: obstacle
+    title: The ministry building is not unlocked
+    description: >
+      The production ministry is unlocked by a late industry technology and needs a major
+      upgraded capital building on the planet.
+    check: {judgement_only: true}
