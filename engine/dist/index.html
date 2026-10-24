@@ -84,6 +84,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
   const ICON_SPACE = 30; // icon plus gap on the left of every node
   const FOCUS_PADDING = 40;
   const FOCUS_MAX_ZOOM = 1.4; // a short chain is not blown up beyond this
+  const ANIMATION_MS = 500;
   const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
   const EDGE_KINDS = ["cause", "remedy", "obstacle"];
   const REQUIRED_ARRAYS = ["nodes", "edges", "circles", "key_actions", "pruned"];
@@ -217,6 +218,48 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
     if (impact >= 1) return 2;
     if (impact >= 0.55) return 1;
     return 0;
+  }
+
+  const COLUMN_GAP = 70;
+  const ROW_GAP = 22;
+
+  /** Overlapping intervals [lo, hi] merged into bands, in order: [{lo, hi, newLo}] once placed. */
+  function bands(intervals, gap) {
+    const sorted = [...intervals].sort((a, b) => a.lo - b.lo || a.hi - b.hi);
+    const merged = [];
+    for (const { lo, hi } of sorted) {
+      const last = merged[merged.length - 1];
+      if (last && lo <= last.hi) last.hi = Math.max(last.hi, hi);
+      else merged.push({ lo, hi });
+    }
+    let next = 0;
+    for (const band of merged) {
+      band.newLo = next;
+      next += band.hi - band.lo + gap;
+    }
+    return merged;
+  }
+
+  /**
+   * Where the nodes of a focused chain go: the chain keeps the shape it has in the full layout and only loses the gaps
+   * that hidden nodes leave. Columns are the merged x-extents of the chain's nodes, rows the merged y-extents; each
+   * keeps its order and each node its offset inside its column and row, so nothing that did not overlap before can
+   * overlap now. `boxes` maps id -> {x, y, width, height} (centre positions). Pure, so it is testable.
+   */
+  function compactChain(boxes) {
+    const ids = Object.keys(boxes).sort();
+    const xBands = bands(ids.map((id) => ({ lo: boxes[id].x - boxes[id].width / 2, hi: boxes[id].x + boxes[id].width / 2 })), COLUMN_GAP);
+    const yBands = bands(ids.map((id) => ({ lo: boxes[id].y - boxes[id].height / 2, hi: boxes[id].y + boxes[id].height / 2 })), ROW_GAP);
+    const shift = (value, list) => {
+      const band = list.find((b) => value >= b.lo - 1e-6 && value <= b.hi + 1e-6);
+      return band.newLo + (value - band.lo);
+    };
+    const out = {};
+    for (const id of ids) {
+      const b = boxes[id];
+      out[id] = { x: round(shift(b.x, xBands)), y: round(shift(b.y, yBands)) };
+    }
+    return out;
   }
 
   /** The chain of a node: everything it can be reached from and everything it reaches, the node included. */
@@ -858,52 +901,116 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
   }
 
   /** Focus: only the chains of the selected nodes stay on screen, centred; no selection shows the whole graph. */
+  const reducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // window.hlidskjalfAnimationMs overrides the duration: the test driver sets 0, since headless Chromium does not run
+  // animation frames reliably and the end state is what the tests check.
+  const animationMs = () =>
+    typeof window.hlidskjalfAnimationMs === "number" ? window.hlidskjalfAnimationMs : reducedMotion() ? 0 : ANIMATION_MS;
+
+  /** Zoom and pan that put the box (model coordinates) in the middle of the graph area, readable but not blown up. */
+  function viewFor(box, padding, maxZoom) {
+    const area = cy.container();
+    const width = Math.max(1, box.x2 - box.x1);
+    const height = Math.max(1, box.y2 - box.y1);
+    const zoom = Math.min(maxZoom, (area.clientWidth - 2 * padding) / width, (area.clientHeight - 2 * padding) / height);
+    return {
+      zoom,
+      pan: {
+        x: area.clientWidth / 2 - ((box.x1 + box.x2) / 2) * zoom,
+        y: area.clientHeight / 2 - ((box.y1 + box.y2) / 2) * zoom,
+      },
+    };
+  }
+
+  function boxOf(positions, nodes) {
+    const box = { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity };
+    nodes.forEach((node) => {
+      const p = positions[node.id()];
+      box.x1 = Math.min(box.x1, p.x - node.data("width") / 2);
+      box.x2 = Math.max(box.x2, p.x + node.data("width") / 2);
+      box.y1 = Math.min(box.y1, p.y - node.data("height") / 2);
+      box.y2 = Math.max(box.y2, p.y + node.data("height") / 2);
+    });
+    return box;
+  }
+
+  /**
+   * Focus as one movement (docs/plans/M6-revision.md): what leaves the chain fades out, the chain's nodes glide from
+   * their places in the full layout to the compacted ones and the view follows, so the eye keeps its bearings. No
+   * selection plays it backwards. A newer selection cancels an older movement midway.
+   */
   function applyFocus(ids) {
+    if (!current.positions) return; // the first layout is still running
     const token = (current.focusToken = (current.focusToken || 0) + 1);
-    cy.elements().removeClass("hidden");
+    const ms = animationMs();
+    cy.elements().stop(true, false);
+    cy.stop(true, false);
     current.focus = new Set();
-    if (!ids.length) {
-      overview();
-      return;
-    }
     for (const id of ids) for (const member of chainOf(current.doc, id)) current.focus.add(member);
-    cy.nodes().filter((node) => !current.focus.has(node.id())).addClass("hidden");
-    cy.edges()
-      .filter((edge) => !(current.focus.has(edge.source().id()) && current.focus.has(edge.target().id())))
-      .addClass("hidden");
-    // The chain gets its own compact layout: in the full layout it is spread out between the hidden nodes.
-    const chain = cy.elements().not(".hidden").not(".serves");
-    const constraint = layerConstraints(current.doc);
-    chain
-      .layout({
-        name: "elk",
-        animate: false,
-        fit: false,
-        elk: ELK_OPTIONS,
-        nodeLayoutOptions: (node) => {
-          const layer = constraint.get(node.id());
-          return layer ? { "elk.layered.layering.layerConstraint": layer } : {};
-        },
-        // ELK runs asynchronously: centre and report only once the chain has its places
-        stop: () => {
-          if (token !== current.focusToken) return; // a newer selection took over meanwhile
-          cy.fit(chain, FOCUS_PADDING);
-          if (cy.zoom() > FOCUS_MAX_ZOOM) {
-            cy.zoom(FOCUS_MAX_ZOOM);
-            cy.center(chain);
-          }
+    const keep = (node) => !ids.length || current.focus.has(node.id());
+    const keepEdge = (edge) => keep(edge.source()) && keep(edge.target());
+    const nodes = cy.nodes().filter(keep);
+    const leaving = cy.nodes().not(nodes).union(cy.edges().not(".serves").filter((e) => !keepEdge(e)));
+    const staying = nodes.union(cy.edges().not(".serves").filter(keepEdge));
+
+    let targets;
+    if (ids.length) {
+      const boxes = {};
+      nodes.forEach((node) => {
+        const p = current.positions.get(node.id());
+        boxes[node.id()] = { x: p.x, y: p.y, width: node.data("width"), height: node.data("height") };
+      });
+      targets = compactChain(boxes);
+    } else {
+      targets = Object.fromEntries([...current.positions].map(([id, p]) => [id, p]));
+    }
+    const view = ids.length
+      ? viewFor(boxOf(targets, nodes), FOCUS_PADDING, FOCUS_MAX_ZOOM)
+      : overviewView(targets);
+
+    const returning = staying.filter(".hidden");
+    returning.style("opacity", 0); // what comes back fades in from nothing
+    staying.removeClass("hidden");
+    staying.animate({ style: { opacity: 1 } }, { duration: ms });
+    leaving.animate(
+      { style: { opacity: 0 } },
+      { duration: ms, complete: () => token === current.focusToken && leaving.addClass("hidden") }
+    );
+    nodes.forEach((node) => node.animate({ position: targets[node.id()] }, { duration: ms }));
+    cy.animate(
+      { zoom: view.zoom, pan: view.pan },
+      {
+        duration: ms,
+        complete: () => {
+          if (token !== current.focusToken) return;
+          leaving.addClass("hidden"); // the fade may finish a frame later; the state must not wait for it
+          staying.forEach((element) => element.removeStyle("opacity"));
           publish();
           document.dispatchEvent(new CustomEvent("engine-focused"));
         },
-      })
-      .run();
+      }
+    );
+    if (!ms) {
+      // no motion wanted: land at once
+      cy.elements().stop(true, false);
+      cy.stop(true, false);
+      nodes.forEach((node) => node.position(targets[node.id()]));
+      leaving.addClass("hidden");
+      staying.forEach((element) => element.removeStyle("opacity"));
+      cy.viewport(view);
+      publish();
+    }
   }
 
-  /** The whole graph in its own layout: all of it in view when that stays readable, else its top left. */
-  function overview() {
-    if (current.positions) cy.nodes().forEach((node) => node.position(current.positions.get(node.id())));
-    cy.fit(cy.elements().not(".serves"), VIEW_PADDING);
-    readableView();
+  /** The whole graph's view: all of it when that stays readable, else its top left at the readable zoom. */
+  function overviewView(positions) {
+    const box = boxOf(positions, cy.nodes());
+    const fit = viewFor(box, VIEW_PADDING, Infinity);
+    if (fit.zoom >= READABLE_ZOOM) return fit;
+    return {
+      zoom: READABLE_ZOOM,
+      pan: { x: VIEW_PADDING - box.x1 * READABLE_ZOOM, y: VIEW_PADDING - box.y1 * READABLE_ZOOM },
+    };
   }
 
   function applySelection(ids, panel) {
@@ -1073,7 +1180,7 @@ section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line
 
   window.HlidskjalfEngine = {
     nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep,
-    edgePanelOf, clickEdge,
+    edgePanelOf, clickEdge, compactChain,
     tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
   };
   start();

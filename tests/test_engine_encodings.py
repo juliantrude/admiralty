@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import itertools
 import json
 from html.parser import HTMLParser
 from importlib import resources
@@ -497,3 +498,42 @@ def test_an_edge_click_shows_both_chains_and_the_edge_weight():
     assert state["panel"]["weight"] == "high"
     assert state["panel"]["weight_reason"] == "Most of the gap."
     assert {edge["from"], edge["to"]} <= set(state["focus"])
+
+
+def _no_overlap(nodes):
+    for a, b in itertools.combinations(nodes, 2):
+        apart_x = abs(a["x"] - b["x"]) >= (a["width"] + b["width"]) / 2 - 0.5
+        apart_y = abs(a["y"] - b["y"]) >= (a["height"] + b["height"]) / 2 - 0.5
+        assert apart_x or apart_y, (a["id"], b["id"])
+
+
+def _same_order(before, after, axis):
+    ids = sorted(after)
+    for a, b in itertools.combinations(ids, 2):
+        if before[a][axis] < before[b][axis] - 0.5:
+            assert after[a][axis] <= after[b][axis] + 0.5, (axis, a, b)
+
+
+@needs_browser
+@pytest.mark.parametrize("target_index", [0, 1])
+def test_the_focused_chain_keeps_its_shape_and_nothing_overlaps(target_index):
+    graph = chain_graph()
+    whole = {n["id"]: n for n in driver.render_engine(graph)["nodes"]}
+    target = graph["key_actions"][target_index]["node"]
+    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
+    shown = {n["id"]: n for n in state["nodes"] if not n["hidden"]}
+    assert set(shown) == set(state["focus"])
+    _no_overlap(list(shown.values()))
+    _same_order(whole, shown, "x")
+    _same_order(whole, shown, "y")
+
+
+@needs_browser
+def test_after_the_focus_the_whole_graph_returns_to_its_own_layout():
+    graph = chain_graph()
+    whole = {n["id"]: (n["x"], n["y"]) for n in driver.render_engine(graph)["nodes"]}
+    target = graph["key_actions"][0]["node"]
+    back = driver.render_engine(
+        graph, after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()'
+    )
+    assert {n["id"]: (n["x"], n["y"]) for n in back["nodes"]} == whole
