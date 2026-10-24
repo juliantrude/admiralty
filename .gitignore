@@ -9,3 +9,6 @@ dist/
 # Reference saves contain friends' player names; keep them local
 tests/fixtures/saves/
 *.sav
+
+# Claude Code worktrees of parallel sessions
+.claude/worktrees/
