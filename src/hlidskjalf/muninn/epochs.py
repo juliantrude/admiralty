@@ -147,6 +147,23 @@ def check_epochs(
     return {"errors": errors, "warnings": warnings}
 
 
+def place_events(epochs: list[dict[str, Any]], events: list[dict[str, Any]]) -> list[dict]:
+    """Each Timeline event under the epoch its date falls in (`from` inclusive, `to` exclusive,
+    the last epoch inclusive at both ends), so the answer never files an event by guesswork:
+    a `between` border is an interval, but an event's date is exact."""
+    placed = [{"epoch": e["title"], "from": e["from"], "to": e["to"], "events": []} for e in epochs]
+    for event in events:
+        for number, epoch in enumerate(epochs):
+            last = number == len(epochs) - 1
+            if epoch["from"] <= event["date"] and (event["date"] < epoch["to"] or last):
+                entry = f"{event['date']} {event['event']}"
+                if event.get("involves"):
+                    entry += f" ({', '.join(event['involves'])})"
+                placed[number]["events"].append(entry)
+                break
+    return placed
+
+
 def _label(number: int, epoch: dict[str, Any]) -> str:
     return f"epoch {number} ({epoch['title']!r})"
 

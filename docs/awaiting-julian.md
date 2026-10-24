@@ -43,8 +43,8 @@ So geht's:
    `uv run python tools/gen_benchmarks.py --page-only` ausführen. Dann dürfen Briefings die
    Werte nutzen.
 
-Hinweis: Die Bevölkerungszahlen im Save sind vermutlich mit 100 multipliziert (siehe Punkt 1,
-"Bevölkerung der Hauptwelt"). Bis das geklärt ist, taugen für Pops nur Verläufe, keine Absolutwerte.
+Hinweis: Die Bevölkerungszahlen im Save sind die Werte, die das Spiel anzeigt (5513 erscheint als
+"5.5k", siehe Punkt 1). Absolutwerte für Pops sind also brauchbar.
 
 ## 3. Lösungsgraph als Artifact veröffentlichen (einmalig)
 

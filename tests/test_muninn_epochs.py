@@ -554,3 +554,20 @@ def test_the_cli_refuses_an_unreadable_epochs_file(tmp_path):
                 str(tmp_path / "none.json"),
             ]
         )
+
+
+def test_events_are_placed_by_their_date_not_by_a_between_border():
+    from hlidskjalf.muninn.epochs import place_events
+
+    epochs = [
+        {"title": "Aufbau", "from": "2200.01.01", "to": "2259.12.29"},
+        {"title": "Krieg", "from": "2259.12.29", "to": "2298.03.16"},
+    ]
+    events = [
+        {"date": "2259.10.09", "event": "A World Reborn", "involves": ["Thrish IV"]},
+        {"date": "2259.12.29", "event": "War Declared"},
+        {"date": "2298.03.16", "event": "Last Day"},
+    ]
+    placed = place_events(epochs, events)
+    assert placed[0]["events"] == ["2259.10.09 A World Reborn (Thrish IV)"]
+    assert placed[1]["events"] == ["2259.12.29 War Declared", "2298.03.16 Last Day"]

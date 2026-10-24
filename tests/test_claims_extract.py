@@ -384,3 +384,16 @@ def test_a_number_in_a_code_span_name_is_not_extracted_at_all():
 def test_the_empty_and_the_number_free_answer_have_no_claims():
     assert extract_claims("") == []
     assert extract_claims("Mehr Schiffe wären gut.\n\nGruß") == []
+
+
+def test_a_bold_sentence_is_emphasis_not_a_name():
+    answer = (
+        "- **Energie ist das Dauerproblem.** In drei Epochen fehlte **Energy Credits**.\n"
+        "- **Die Flotte stößt an ihre Grenze, und keiner baut nach** bei **Anchorage**."
+    )
+    assert names(answer) == ["Energy Credits", "Anchorage"]
+
+
+def test_code_identifiers_and_paths_are_no_names():
+    answer = "Ich habe `campaign_status` und `check-epochs` gerufen, `no saves in /tmp/x`, aber `Anchorage`."
+    assert names(answer) == ["Anchorage"]

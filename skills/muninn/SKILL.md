@@ -68,7 +68,8 @@ Player Model write in this skill), and you say nothing about Predictions.
    ```
 
    and fix the file until it is clean (it prints the problems and exits with 1). Read the
-   warnings too: a long epoch with a candidate inside is usually a missed epoch.
+   warnings too: a long epoch with a candidate inside is usually a missed epoch. Once clean,
+   it lists `events_by_epoch`: file every Timeline event under exactly that epoch.
 4. **Per epoch.** Under one heading per epoch: what happened (the Timeline events and the
    intervals inside it), what went well, what went badly. Take both from `findings` and
    `intervals`; the findings are candidates, not verdicts, so you decide which are good or bad
@@ -97,6 +98,8 @@ Player Model write in this skill), and you say nothing about Predictions.
 - **Fair Play.** If `campaign.yaml` says `knowledge: fair_play`, state only what the tools
   return about the Tracked Empire and what the Player could see in the game; do not guess at
   hidden facts of other empires.
+- **No tool or command names in the answer.** The Player needs the game, not the plumbing:
+  never write `campaign_status`, CLI commands or file paths into what you tell them.
 - **No HTML.** You never write HTML; the retrospective is your answer in the conversation. The
   only file you write is `epochs.json`.
 - **Borders have anchors.** No epoch border without a Timeline event or two archived dates that

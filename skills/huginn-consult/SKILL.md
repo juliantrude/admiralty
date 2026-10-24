@@ -107,6 +107,8 @@ Never edit `solution-graph.json`; change the overlay and compose again.
 - **Fair Play.** If `campaign.yaml` says `knowledge: fair_play`, state only what the tools
   return about the Tracked Empire and what the Player can see in the game; do not guess at
   hidden facts of other empires.
+- **No tool or command names in the answer.** The Player needs the game, not the plumbing:
+  never write `campaign_status`, CLI commands or file paths into what you tell them.
 - **No HTML.** You never write HTML; the Briefing is your answer in the conversation, and the
   Solution Graph is rendered later by other means. The only files you write are the overlay
   and, through the command, `solution-graph.json`.

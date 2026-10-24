@@ -264,7 +264,7 @@ def _claims_check(args) -> int:
 
 
 def _check_epochs(args) -> int:
-    from hlidskjalf.muninn.epochs import candidates_for_frame, check_epochs
+    from hlidskjalf.muninn.epochs import candidates_for_frame, check_epochs, place_events
     from hlidskjalf.muninn.frame import FrameError, load_campaign, resolve_frame
     from hlidskjalf.workspace.archive import Archive
 
@@ -277,6 +277,8 @@ def _check_epochs(args) -> int:
         return 1
     material = candidates_for_frame(loaded, frame)
     result = check_epochs(epochs, material["candidates"], frame.start, frame.end)
+    if not result["errors"]:
+        result["events_by_epoch"] = place_events(epochs, material["timeline"]["events"])
     json.dump(
         {"frame": {"from": frame.start, "to": frame.end, "request": frame.request}, **result},
         sys.stdout,

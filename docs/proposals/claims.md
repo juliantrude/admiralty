@@ -9,6 +9,9 @@ sentences, whether it is a real error or a false positive, and the proposed chan
 
 ## Known blind spot: small whole numbers match anywhere in the tool results (found in M7 verification)
 
+**Decided 2026-10-24 (Julian): not applied.** The blind spot stays; recall is not traded for more
+false positives on prose.
+
 Kind `number`, would-be reason `no_match`. Not blocked, so not seen in `blocks.jsonl`; found by
 planting. On the reference mid-save a wrong sentence "6 Nexus-Distrikte der ersten Stufe" passes
 because some other planet's data contains a 6: the evidence is a flat set of numbers from the whole
@@ -20,6 +23,10 @@ Julian decides whether the check should trade recall for that.
 
 
 ## Name claims on bold sentence leads and code spans (found in M8 verification)
+
+**Decided 2026-10-24 (Julian): applied.** All three parts are in: bold sentences and code
+identifiers are no names (`src/hlidskjalf/claims/extract.py`), and the consult and muninn skills
+forbid tool and command names in the answer. The quoted epoch title stays a known false positive.
 
 Kind `name`, reason code `name_no_match`. One headless Muninn run over the reference Campaign (150 claims
 checked on the first pass) was blocked once with 8 findings, all false positives; the rewrite passed with

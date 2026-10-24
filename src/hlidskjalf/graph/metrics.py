@@ -44,7 +44,8 @@ def resolve_metric(spec: dict[str, Any], extract: dict[str, Any]):
         return None if None in parts else sum(parts)
     ratio = spec["ratio"]
     top, bottom = dig(extract, ratio["numerator"]), dig(extract, ratio["denominator"])
-    return None if top is None or not bottom else top / bottom
+    # rounded: a ratio is shown to the Player, and 1.0062893081761006 helps nobody
+    return None if top is None or not bottom else round(top / bottom, 3)
 
 
 @dataclass(frozen=True)

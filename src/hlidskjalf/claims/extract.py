@@ -13,8 +13,9 @@ number stays a claim), numbers in fenced code blocks, link targets and URLs, ver
 Names: only spans the answer marks as a thing. `**bold**`, `` `code` ``, quoted text (`"..."`,
 `„..."`, `“..."`, `«...»`) and the cells of a table column headed Name. Not extracted: bold that is a
 whole line (headings, labels), a label ending in a colon (`**Gesperrt:**`), a bold figure
-with its unit (`**-130.92 Energy Credits**`), a single lowercase word, a quote longer than eight words (running
-prose), a code span that is a command, path or file name. Capitalised words in running text are
+with its unit (`**-130.92 Energy Credits**`), a bold sentence (ends in `.`/`!`/`?` or has more than
+six words), a single lowercase word, a quote longer than eight words (running prose), a code span
+that is a command, path, file name or snake_case/kebab-case identifier. Capitalised words in running text are
 never names: in German every noun is capitalised.
 
 Claims carry what the check needs without re-reading the text: `unit` (list item, table row or
@@ -77,6 +78,10 @@ _FILE_EXTENSION = re.compile(
     r"\.(?:yaml|yml|json|jsonl|md|py|html|js|css|log|sav|toml|txt|zst)$", re.IGNORECASE
 )
 _MAX_NAME_WORDS = 8
+# Display Names in the reference data have at most 5 words; a longer bold span is a sentence.
+_MAX_BOLD_NAME_WORDS = 6
+# snake_case or kebab-case: lowercase words joined by _ or -, as tool and command names are.
+_IDENTIFIER = re.compile(r"[a-z][a-z0-9]*(?:[_-][a-z0-9]+)+")
 _YEARS = range(2200, 2501)
 
 
@@ -332,6 +337,8 @@ def _is_name(span: _Span, line: str, body_start: int) -> bool:
             return False  # the bold lead of a line that introduces a list, a label as well
         if _QUANTITY.fullmatch(text):
             return False  # bold figure with its unit; the number itself is checked as a number
+        if text.endswith((".", "!", "?")) or len(text.split()) > _MAX_BOLD_NAME_WORDS:
+            return False  # a bold sentence is emphasis ("**Energie ist das Dauerproblem.**")
     if span.via == "quote" and len(text.split()) > _MAX_NAME_WORDS:
         return False
     if _LOWERCASE_WORD.fullmatch(text):
@@ -340,6 +347,8 @@ def _is_name(span: _Span, line: str, body_start: int) -> bool:
         first = text.split()[0]
         if first in _COMMANDS or "/" in text or _FILE_EXTENSION.search(text):
             return False
+        if _IDENTIFIER.fullmatch(text):
+            return False  # a tool or command name (`campaign_status`, `check-epochs`)
     return True
 
 
