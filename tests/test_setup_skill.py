@@ -1,0 +1,28 @@
+"""The hlidskjalf:setup skill is prose; these tests pin what it promises about the CLI."""
+
+import re
+from pathlib import Path
+
+from hlidskjalf.cli import KNOWLEDGE, MODES
+
+SKILL = Path(__file__).parent.parent / "skills" / "setup" / "SKILL.md"
+
+
+def test_frontmatter_names_the_skill():
+    text = SKILL.read_text()
+    assert text.startswith("---\nname: setup\n")
+    assert re.search(r"^description: .{40,}", text, re.MULTILINE)
+
+
+def test_every_option_the_skill_passes_exists_in_the_cli():
+    text = SKILL.read_text()
+    for mode in MODES:
+        assert mode in text
+    for knowledge in KNOWLEDGE:
+        assert knowledge in text
+    for flag in ("--workspace", "--save-dir", "--empire", "--ally", "--rival", "--reset-archive"):
+        assert flag in text
+
+
+def test_skill_never_hands_out_yaml_writing():
+    assert "never write or edit `campaign.yaml`" in SKILL.read_text()
