@@ -61,35 +61,14 @@ builds it together with Claude later, because it needs his in-game judgement.
 - In-game feel: anything that needs someone playing the game goes to
   `docs/awaiting-julian.md`.
 When an increment hits a hold point: do every part that does not need Julian, add precise
-steps to `docs/awaiting-julian.md`, note it in the Blockers line of `## Status`, and move on.
-
-## Plan
-
-Milestones M3 and M4 are done (see Log). Each milestone starts with its plan document
-`docs/plans/M<n>.md`, whose "Increments" list is the plan for that milestone; M6 to M8 get their plan
-document as their first increment.
-
-M5 (plan: `docs/plans/M5.md`):
-- [x] 1. Plan document
-- [x] 2. `expand_graph` core (`graph/metrics.py`, `graph/expand.py`, `tests/test_expand.py`)
-- [x] 3. Solution Graph schema, validator and `compose` with `briefing compose` and `graph check-solution` CLI
-- [x] 4. MCP tool `expand_graph` with turn-log entry, `expansion_id`, catalogue mode
-- [x] 5. `hlidskjalf:consult` skill (`skills/huginn-consult/`) and its static test
-- [ ] 6. Verification: one headless Briefing on the reference save, numbers recorded in the Log
-
-M6, M7, M8: plan increments to be written (see `docs/build-plan.md`).
-
-## Status
+steps to `docs/awaiting-julian.md`, note it in the Blockers line of `## Status
 
 STATUS: READY
-**Next action:** M5 increment 6 (verification): one headless Briefing on `vulkan/2259.12.25.sav` as in `docs/plans/M5.md` "Verification" (temp workspace
-in /tmp with a temp `HLIDSKJALF_USER_DIR` and `campaign.yaml` for Plexxi, consulting, fair_play; `claude -p` with `--strict-mcp-config` and `--allowedTools`
-listing the hlidskjalf MCP tools plus the two `uv run ... hlidskjalf briefing compose` / `graph check-solution` commands; at most two runs). Check from the
-turn log and the answer: `expand_graph` called, an existing Playbook Rule id cited, Unity vs `traditions.next_cost` handled, `solution-graph.json` exists and
-validates with every Key Action actionable or pending, every number of the answer in some tool result. Record depth cut counts, nodes per expansion, result
-size and time in the Log; correctness against golden values stays a hold point. If the headless run cannot be done, record why. Then M6 plan (`docs/plans/M6.md`).
-**Decided in increment 5 (result size):** the skill takes three Goals in total per Briefing (one expansion = one `compose`); a second Briefing covers more.
-`compose` merging several `expansion_id`s is not built.
+**Next action:** M6 increment 1: write the plan document `docs/plans/M6.md` from `docs/build-plan.md` (M6: the graph engine, ending in a locally
+verified `engine/index.html`; publishing it is Julian's step). Same shape as `docs/plans/M5.md`: division of labour, design, verification, numbered
+increments with checks. Docs only. Then add the M6 checklist to `## Plan`.
+**Carried into M7 (from M5 verification):** the crude "every number is in a tool result" check flags sums the model computes itself (230.36 = 88 + 74.77 +
+67.59 research); the M7 hook must decide whether derived sums are allowed (e.g. only with the addends shown) rather than copy the regex.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
 review of the benchmarks draft (both in `docs/awaiting-julian.md`).
 
@@ -222,3 +201,13 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   results, Unity guard sentence with `unity-vs-next-tradition` and `traditions.next_cost`, Playbook Rules quoted from results, no benchmarks, Fair Play, no HTML, tool errors
   stop the step; three Goals in total per Briefing) and `tests/test_consult_skill.py` (frontmatter, tools served, CLI flags exist, overlay example fields equal the
   compose overlay keys, hard-rule sentences, workspace `CLAUDE.md` routes to `hlidskjalf:consult`). Tests 365 passed / 31 skipped, ruff clean
+- 2026-10-24 — M5 increment 6 (M5 complete): headless Briefing, `claude -p` in a temp workspace (`/tmp/h6/ws`, temp `HLIDSKJALF_USER_DIR`, Plexxi, consulting,
+  fair_play, plugin via `--plugin-dir`, `--strict-mcp-config`, the nine MCP tools plus the two CLI commands allowed). Run 1: the skill's stale-save guard fired
+  (reference save 286 min old) and it refused to brief, as designed. Run 2 on a fresh copy of `2259.12.25.sav` (fixture untouched): 13 turns, 80 s wall,
+  `campaign_status`, `empire_overview`, `economy`, `progression`, `military`, `expand_graph` (catalogue 2.5k chars), `expand_graph` for energy.more,
+  alloys.more, research.more; Write overlay; `compose` (50 nodes) and `check-solution` (0 errors) on the first try. Expansion: 47 nodes (24 Obstacles, 15 Remedies,
+  8 Causes), 4 cut at depth 5 (`too_far`), 0 circles, 39k characters (3 Goals; the extract budget warning was not hit), 3 mod warnings relayed. Solution Graph:
+  9 Key Actions, all `actionable`; rules cited `unemployed-before-colonies` and `unity-vs-next-tradition` (both exist); Unity 2794.45 < next Tradition 4384
+  (`traditions.next_cost`) and the answer says the Unity is earmarked and not to be spent on edicts. Numbers: 25 of 26 appear in tool results; the one that does not
+  (230.36) is the sum of the three research nets, computed by the model. Answer in German like the question, no HTML. Correctness against golden values: hold
+  point (`docs/awaiting-julian.md`). Tests unchanged (docs only)
