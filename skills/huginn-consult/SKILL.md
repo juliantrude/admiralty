@@ -94,6 +94,9 @@ Never edit `solution-graph.json`; change the overlay and compose again.
 - **Every number comes from a tool result.** Never from memory, never calculated by you, never
   rounded into a different figure. Display Names exactly as the tools return them; if a tool
   returns no name for something, leave the thing out rather than writing a raw key.
+- **Mark every Display Name in bold** (`**Anchorage**`) in the answer. The answer is checked
+  against the tool results, and only marked names can be checked. Use bold for nothing else: no
+  emphasis, no labels (write those as plain text or headings).
 - **Unity.** A Remedy that spends Unity is judged against `traditions.next_cost` (Playbook Rule
   `unity-vs-next-tradition`): when the Unity stockpile is below the cost of the next Tradition,
   the Briefing does not recommend spending it elsewhere, and says why, citing the rule id.

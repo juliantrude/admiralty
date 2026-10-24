@@ -93,14 +93,16 @@ M7 (plan: `docs/plans/M7.md`):
 - [x] 3. Evidence and matching (`claims/evidence.py`, `claims/check.py`, `hlidskjalf claims check`)
 - [x] 4. The Stop hook (probe real input, `hooks/hooks.json`, `hlidskjalf hook stop`, `blocks.jsonl`, loop guard, `plugin.json`)
 - [x] 5. `review-blocks` (`claims/blocks.py`, `blocks summary` CLI, skill, `docs/proposals/claims.md`)
-- [ ] 6. Verification (bold Display Names in consult skill, planted district count, reference Briefings, headless run)
+- [x] 6. Verification (bold Display Names in consult skill, planted district count, reference Briefings, headless run)
 
-M8: plan increments to be written (see `docs/build-plan.md`).
+M7 is complete (see Log).
+
+M8: plan increments to be written (see `docs/build-plan.md`); its first increment is the plan document `docs/plans/M8.md`.
 
 ## Status
 
 STATUS: READY
-**Next action:** M7 increment 6, verification: (a) the consult skill must ask for bold Display Names (check what `skills/huginn-consult/SKILL.md` says about marking names, add the sentence if missing, with a static test); (b) planted wrong district count blocked on the real vulkan mid-save Briefing; (c) replay the recorded reference Briefings with `hlidskjalf claims check` and count false positives (at most one each; fix in the check, never loosen a test); (d) one headless `claude -p` Briefing in a temp workspace as in M5 (`/tmp/h6` pattern, temp `HLIDSKJALF_USER_DIR`, `--plugin-dir`) with the hook live, count blocks, run `hlidskjalf blocks summary` on its log; numbers in the Log. Then M7 is complete; M8 plan document is the next increment. Available: `claims/blocks.py` (`summarise`), `hlidskjalf blocks summary`, `skills/review-blocks/`, `docs/proposals/claims.md`. Note: `-m network` is deselected by default.
+**Next action:** M8 increment 1: read the M8 section of `docs/build-plan.md` (Muninn), `GLOSSARY.md`, `docs/adr/` and the archive code in `src/hlidskjalf/workspace/archive.py`, then write `docs/plans/M8.md` (design, verification, and an "Increments" list of about 5 to 6 steps, in the style of M5 to M7) and add those increments to the `## Plan` of this file under an `M8 (plan: docs/plans/M8.md)` heading, step 1 ticked. Docs only; commit as `M8: plan for Muninn`. Note: `-m network` is deselected by default.
 **Decided in the M7 plan:** derived sums/differences (2 to 4 addends shown in the same item) and percentages are allowed, unexplained totals are blocked;
 evidence window = tool results of the whole session. Hook input probed (see plan, open risks): the loop guard counts blocks in `blocks.jsonl` per `session_id`+`prompt_id` because `stop_hook_active` stays true on every pass.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
@@ -305,3 +307,12 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   (exec form, `claude plugin validate` clean of hook warnings), `plugin.json` `hooks` key (Claude Code loads the standard file once). Live check with `--plugin-dir` in a temp workspace: a planted `42`
   was blocked, blocked again, released on the third pass (3 lines in `blocks.jsonl`); hook latency ~0.26 s. `tests/test_claims_hook.py` (25 tests). Tests 565 passed / 31 skipped, ruff clean
 - 2026-10-24 — M7 increment 5: `claims/blocks.py` (`summarise`: block lines flattened into claims, grouped by kind and reason code largest first with count and up to 20 examples holding the answer sentence, `nearest`, session/prompt; released blocks listed apart; unreadable lines counted, no log = zero blocks), CLI `hlidskjalf blocks summary --workspace DIR` (JSON), `skills/review-blocks/SKILL.md` (developer skill: classify each group real error / false positive / unclear, one section per group into `docs/proposals/claims.md`, proposes only, writes nothing else), `docs/proposals/claims.md` (empty). `tests/test_claims_blocks.py` (13: grouping on a fixture log, released, unreadable lines, cap, CLI, skill frontmatter, commands, reason codes and summary fields named, proposal-only rules). Tests 578 passed / 31 skipped, ruff clean
+- 2026-10-24 — M7 increment 6 (M7 complete): (a) `skills/huginn-consult/SKILL.md` now says "Mark every Display Name in bold" and to use bold for nothing else (static test extended). (b) `tests/test_claims_real.py`: the
+  real `planets` result of the vulkan mid-save as evidence; "17 Distrikte" (limit 17) passes, a planted "19 Distrikte" is blocked (`derived_unexplained`, nearest 18). Blind spot found by planting: a wrong
+  small integer (6) passes because some other planet holds a 6; recorded in `docs/proposals/claims.md`, not changed. (c) Replay of the one recorded Briefing (M5 run 2, 5.4k chars): 47 claims, 7 false positives
+  before, all names: a bold figure with unit (`**-130.92 Energy Credits pro Monat**`), four bold labels with a colon (`**Gesperrt:**`), two bold emphasis phrases (`**Job-Slots öffnen**`). Check fixed in
+  `claims/extract.py` (colon label and bold figure are no names; two tests), numbers had no finding; the two emphasis phrases are the old skill's habit, now forbidden by the skill. After the fixes: 2 on the old
+  text. (d) Live headless `claude -p` Briefing (`/tmp/h8`, hook live, `--plugin-dir`, temp user dir): 13 turns, 117 s, 59 claims checked, 1 block (a bold list lead `**Nicht mit Zahlen geprüft** (...):`, false
+  positive, rule added: bold lead of a line ending in a colon is a label), the model rewrote and the second pass was clean (57 claims, no findings, no number blocked), `blocks summary`: 1 block, 1 claim.
+  Bold compliance: all Display Names the answer used (Technician, Metallurgist, Energy Grid, ...) were bold, bold used only for names and resource labels. Hook added about 0.3 s per pass. Tests 583 passed / 31 skipped,
+  ruff clean. `claims check --answer` help text fixed (it takes a file)

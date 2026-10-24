@@ -12,7 +12,8 @@ number stays a claim), numbers in fenced code blocks, link targets and URLs, ver
 
 Names: only spans the answer marks as a thing. `**bold**`, `` `code` ``, quoted text (`"..."`,
 `„..."`, `“..."`, `«...»`) and the cells of a table column headed Name. Not extracted: bold that is a
-whole line (headings, labels), a single lowercase word, a quote longer than eight words (running
+whole line (headings, labels), a label ending in a colon (`**Gesperrt:**`), a bold figure
+with its unit (`**-130.92 Energy Credits**`), a single lowercase word, a quote longer than eight words (running
 prose), a code span that is a command, path or file name. Capitalised words in running text are
 never names: in German every noun is capitalised.
 
@@ -66,6 +67,8 @@ _QUOTED = re.compile(r'"([^"\n]+?)"|„([^“”"\n]+?)[“”"]|“([^”\n]+?)
 _PURE_NUMBER = re.compile(r"[+\-−–]?\d(?:[\d.,]*\d)?\s?(?:%|[kKM])?")
 _LOWERCASE_WORD = re.compile(r"[a-zäöüß]+")
 _WHOLE_LINE_BOLD = re.compile(r"(?:\*\*[^*]+\*\*|__[^_]+__)[:.]?")
+_BULLET = re.compile(r"^\s*(?:[-*+•]|\d+[.)])\s+|^\s*#{1,6}\s+")
+_QUANTITY = re.compile(r"[+\-−–]?\d[\d.,]*\s?(?:%|[kKM])?(?:\s.*)?")
 _SENTENCE_BREAK = re.compile(r"(?<=[.!?])\s+(?=\S)")
 _TABLE_SEPARATOR = re.compile(r"^\s*\|?\s*:?-{2,}:?\s*(?:\|\s*:?-{2,}:?\s*)*\|?\s*$")
 _NAME_HEADERS = {"name", "names", "namen"}
@@ -323,6 +326,12 @@ def _is_name(span: _Span, line: str, body_start: int) -> bool:
         body = _HEADING.sub("", line[body_start:]).strip()
         if _WHOLE_LINE_BOLD.fullmatch(body):
             return False
+        if span.text.rstrip().endswith(":"):
+            return False  # a label ("**Diplomatie:** ..."), not a thing
+        if body.endswith(":") and not _BULLET.sub("", line[body_start : span.start]).strip():
+            return False  # the bold lead of a line that introduces a list, a label as well
+        if _QUANTITY.fullmatch(text):
+            return False  # bold figure with its unit; the number itself is checked as a number
     if span.via == "quote" and len(text.split()) > _MAX_NAME_WORDS:
         return False
     if _LOWERCASE_WORD.fullmatch(text):

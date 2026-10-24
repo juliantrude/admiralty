@@ -59,6 +59,7 @@ def test_skill_keeps_the_hard_rules():
     assert "Fair Play" in text
     assert "Every number comes from a tool result" in text
     assert "Three Goals in total" in text
+    assert "Mark every Display Name in bold" in text
 
 
 def test_the_workspace_claude_md_routes_to_this_skill(tmp_path):

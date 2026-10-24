@@ -329,6 +329,25 @@ def test_a_bold_number_is_a_number_not_a_name():
     assert [c.kind for c in claims] == ["number"]
 
 
+def test_a_bold_label_with_its_colon_inside_is_no_name_but_a_name_before_a_colon_is():
+    answer = "- **Gesperrt:** weil die Unity fehlt\n- **Anchorage**: gibt Kapazität"
+    assert names(answer) == ["Anchorage"]
+
+
+def test_the_bold_lead_of_a_line_that_introduces_a_list_is_a_label():
+    answer = (
+        "- **Nicht mit Zahlen geprüft** (bitte im Spiel ansehen):\n- ob **Anchorage** frei ist:"
+    )
+    assert names(answer) == ["Anchorage"]
+
+
+def test_a_bold_figure_with_its_unit_is_no_name():
+    claims = extract_claims(
+        "Das Netto ist **−130.92 Energy Credits pro Monat**, also **12 Schiffe**."
+    )
+    assert [c.kind for c in claims] == ["number", "number"]
+
+
 def test_markup_inside_a_name_is_stripped_and_duplicates_collapse():
     claims = [c for c in extract_claims("**Naval Logistics Office**: ok `Naval Logistics Office`")]
     assert [(c.kind, c.text) for c in claims] == [("name", "Naval Logistics Office")]

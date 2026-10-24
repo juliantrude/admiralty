@@ -84,7 +84,9 @@ def main(argv: list[str] | None = None) -> int:
         help="check an answer against the turn log (exit 1 if any claim is unverified)",
     )
     claims_check.add_argument("--workspace", type=Path, default=Path.cwd())
-    claims_check.add_argument("--answer", type=Path, required=True, help="the answer as text")
+    claims_check.add_argument(
+        "--answer", type=Path, required=True, help="file holding the answer text"
+    )
     claims_check.add_argument(
         "--transcript", type=Path, help="Claude Code transcript: the Player's messages count too"
     )
