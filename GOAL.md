@@ -87,15 +87,24 @@ M6 (plan: `docs/plans/M6.md`):
 
 M6 is complete (see Log).
 
-M7, M8: plan increments to be written (see `docs/build-plan.md`).
+M7 (plan: `docs/plans/M7.md`):
+- [x] 1. Plan document
+- [ ] 2. Normalisation and extraction (`claims/normalise.py`, `claims/extract.py`)
+- [ ] 3. Evidence and matching (`claims/evidence.py`, `claims/check.py`, `hlidskjalf claims check`)
+- [ ] 4. The Stop hook (probe real input, `hooks/hooks.json`, `hlidskjalf hook stop`, `blocks.jsonl`, loop guard, `plugin.json`)
+- [ ] 5. `review-blocks` (`claims/blocks.py`, `blocks summary` CLI, skill, `docs/proposals/claims.md`)
+- [ ] 6. Verification (bold Display Names in consult skill, planted district count, reference Briefings, headless run)
+
+M8: plan increments to be written (see `docs/build-plan.md`).
 
 ## Status
 
 STATUS: READY
-**Next action:** M7 increment 1: write `docs/plans/M7.md` (the Unverified Claim check: `hooks/` Stop hook, `skills/review-blocks`, per `docs/build-plan.md` M7). Read "Carried into M7" below first: decide whether
-derived sums are allowed. Note for the plan: `-m network` is deselected by default (`addopts` in `pyproject.toml`); run `uv run pytest -m network` to test the real CDN.
-**Carried into M7 (from M5 verification):** the crude "every number is in a tool result" check flags sums the model computes itself (230.36 = 88 + 74.77 +
-67.59 research); the M7 hook must decide whether derived sums are allowed (e.g. only with the addends shown) rather than copy the regex.
+**Next action:** M7 increment 2: `src/hlidskjalf/claims/normalise.py` and `extract.py` per `docs/plans/M7.md` (number tokens with separators, k/M suffix,
+percent, sign and stated precision; the not-a-claim rules; name spans from bold/code/quotes only) with the pure tests. Note: `-m network` is deselected
+by default (`addopts` in `pyproject.toml`); run `uv run pytest -m network` to test the real CDN.
+**Decided in the M7 plan:** derived sums/differences (2 to 4 addends shown in the same item) and percentages are allowed, unexplained totals are blocked;
+evidence window = tool results of the whole session; Stop hook probe of the real input comes first in increment 4.
 **Blockers:** none for the loop. Waiting for Julian (not blocking): golden values from the game UI for `tests/golden_values.py`, and expert
 review of the benchmarks draft (both in `docs/awaiting-julian.md`).
 
@@ -281,3 +290,6 @@ review of the benchmarks draft (both in `docs/awaiting-julian.md`).
   real Solution Graph built from the vulkan mid-save (3 Goals, fixed overlay) renders identically, also shuffled; no overlap, Goals left of every Key Action; layout 641 ms of a 20 s budget; one `-m network` test
   against the real CDN with SRI passed (marker registered, deselected by default via `addopts`). `docs/awaiting-julian.md` section 3 (German, Artifact publishing). Bundle rebuilt. Tests 438 passed / 31 skipped
   (+1 network), ruff clean. PNG not committed
+- 2026-10-24 — M7 increment 1: `docs/plans/M7.md` written (hook protocol and workspace detection, evidence = session turn log plus Player input, number/name extraction and
+  normalisation incl. ambiguous `2.794` read both ways, exemptions, derived-sum decision, matching at stated precision, block/log/loop guard (two blocks then release with notice),
+  crash-safe exit, `review-blocks` as proposal-only, tests and 6 increments). Docs only; tests 438 passed / 31 skipped, ruff clean
