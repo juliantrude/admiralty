@@ -94,6 +94,7 @@
         "source": {"const": "graph"},
         "title": {"$ref": "#/$defs/text"},
         "text": {"$ref": "#/$defs/text"},
+        "icon": {"type": "string", "pattern": "^data:image/png;base64,"},
         "horizon": {"enum": ["short", "medium", "long"]},
         "crisis": {"type": "boolean"},
         "status": {"enum": ["actionable", "pending", "obstructed"]},

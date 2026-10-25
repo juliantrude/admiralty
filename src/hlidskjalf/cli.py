@@ -302,6 +302,18 @@ def _check_solution(args) -> int:
     return 1 if problems else 0
 
 
+def _embed_icons(doc: dict, version: str) -> int:
+    """Game icons from the Player's install; without an install the page shows placeholders."""
+    from hlidskjalf.game import GameEnvironment
+    from hlidskjalf.graph.icons import embed_icons
+
+    try:
+        install = GameEnvironment.detect().install_dir
+    except FileNotFoundError:
+        return 0
+    return embed_icons(doc, install, version)
+
+
 def _compose(args) -> int:
     from hlidskjalf.graph.solution import SolutionInvalid, compose
 
@@ -320,6 +332,7 @@ def _compose(args) -> int:
         for problem in error.problems:
             print(problem, file=sys.stderr)
         return 1
+    icons = _embed_icons(doc, expansion.get("version", "v4.5.2"))
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     print(
@@ -327,6 +340,7 @@ def _compose(args) -> int:
             {
                 "out": str(args.out),
                 "nodes": len(doc["nodes"]),
+                "icons": icons,
                 "key_actions": [a["node"] for a in doc["key_actions"]],
             },
             indent=1,

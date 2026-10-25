@@ -34,4 +34,9 @@ def load_save(path: str | Path) -> Save:
     finally:
         if collecting:
             gc.enable()
+    # The gamestate holds millions of plain dicts and lists without cycles. Left to the cyclic
+    # collector, every full collection walks all of them again, which made extracts slow in a
+    # process that keeps other saves alive (the test suite, the MCP server). Freezing moves them
+    # out of the collector's sight; reference counting still frees them when they are dropped.
+    gc.freeze()
     return Save(path=path, meta=meta, gamestate=gamestate)
