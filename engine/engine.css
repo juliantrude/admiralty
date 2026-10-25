@@ -1,23 +1,95 @@
-html, body { margin: 0; font-family: system-ui, sans-serif; color: #1b1f24; background: #fafafa; }
+/*
+ * Hliðskjálf graph engine theme. Dark ("Stellaris") is the default; [data-theme="light"] switches.
+ * Colours are tokens on :root; engine.js keeps the canvas colours of the graph itself in step (THEMES).
+ */
+:root {
+  --font: "Exo 2", "Rajdhani", "Segoe UI", system-ui, sans-serif;
+  --bg: #070d16;
+  --bg-glow: #12304a;
+  --panel: rgba(12, 26, 40, 0.92);
+  --panel-solid: #0c1a28;
+  --line: #24506a;
+  --line-strong: #3fb6c6;
+  --text: #d5e6ef;
+  --muted: #8fa9b8;
+  --accent: #5fd6d0;
+  --title: #e8c97a;
+  --chip: #102638;
+  --error-bg: #3a1418;
+  --error-text: #ffb4b4;
+  --stars: radial-gradient(1px 1px at 12% 18%, #ffffff55, transparent),
+    radial-gradient(1px 1px at 68% 32%, #ffffff44, transparent),
+    radial-gradient(1px 1px at 38% 74%, #ffffff33, transparent),
+    radial-gradient(1.5px 1.5px at 84% 64%, #9fe8ff44, transparent),
+    radial-gradient(1px 1px at 22% 88%, #ffffff33, transparent);
+}
+:root[data-theme="light"] {
+  --bg: #eef3f7;
+  --bg-glow: #d7e7f1;
+  --panel: rgba(255, 255, 255, 0.95);
+  --panel-solid: #ffffff;
+  --line: #b9ccd8;
+  --line-strong: #1c7f8c;
+  --text: #13232f;
+  --muted: #4d6575;
+  --accent: #0f7d86;
+  --title: #7a5a12;
+  --chip: #e6eef4;
+  --error-bg: #fde8e8;
+  --error-text: #8a1c1c;
+  --stars: none;
+}
+
+html, body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--stars), radial-gradient(ellipse at 30% 0%, var(--bg-glow) 0%, var(--bg) 60%) fixed, var(--bg);
+}
 main { display: flex; flex-direction: column; min-height: 100vh; }
-#error { margin: 0; padding: 12px 16px; background: #fde8e8; color: #8a1c1c; border-bottom: 1px solid #e5a3a3; white-space: pre-wrap; }
+#error { margin: 0; padding: 12px 16px; background: var(--error-bg); color: var(--error-text); border-bottom: 1px solid var(--line); white-space: pre-wrap; }
 #loader { padding: 16px; }
-#header { padding: 8px 16px; border-bottom: 1px solid #d5d9df; }
-#header h1 { margin: 0; font-size: 1.1rem; }
-#header p { margin: 2px 0 0; color: #3b4452; font-size: 0.9rem; }
-#stage { display: flex; height: 70vh; min-height: 420px; }
+
+/* Panels with the game's cut corners and thin glowing frame */
+.frame {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
+#header { display: flex; align-items: center; gap: 16px; margin: 10px 12px 0; padding: 8px 16px; }
+#header .titles { flex: 1; min-width: 0; }
+#header h1 { margin: 0; font-size: 1.15rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--title); }
+#header p { margin: 2px 0 0; color: var(--muted); font-size: 0.85rem; letter-spacing: 0.02em; }
+#theme-toggle {
+  font: inherit; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); background: var(--chip); border: 1px solid var(--line-strong); padding: 5px 12px; cursor: pointer;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+#theme-toggle:hover { background: var(--line); }
+
+#stage { display: flex; gap: 10px; height: 70vh; min-height: 420px; margin: 10px 12px 0; }
 #cy { flex: 1; min-width: 0; }
-#panel { width: 320px; flex: none; overflow-y: auto; box-sizing: border-box; padding: 12px 14px; border-left: 1px solid #d5d9df; background: #ffffff; font-size: 0.85rem; }
-#panel h2 { margin: 0 0 8px; font-size: 1rem; }
-#panel dt { margin-top: 8px; font-weight: 600; color: #3b4452; }
+#panel { width: 320px; flex: none; overflow-y: auto; box-sizing: border-box; padding: 12px 14px; font-size: 0.85rem; }
+#panel h2 { margin: 0 0 8px; font-size: 1rem; font-weight: 600; color: var(--title); letter-spacing: 0.04em; }
+#panel dt { margin-top: 8px; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
 #panel dd { margin: 2px 0 0; overflow-wrap: anywhere; }
-#panel .hint { color: #5b6573; }
-#legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 0; padding: 8px 16px; border-top: 1px solid #d5d9df; font-size: 0.8rem; }
+#panel .hint { color: var(--muted); }
+
+#legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 10px 12px 0; padding: 8px 16px; font-size: 0.78rem; color: var(--muted); }
 #legend li { display: flex; align-items: center; gap: 6px; }
-.swatch { display: inline-block; width: 18px; height: 12px; border: 1.5px solid #5b6573; border-radius: 3px; box-sizing: border-box; }
+.swatch { display: inline-block; width: 18px; height: 12px; border: 1.5px solid var(--line-strong); box-sizing: border-box; clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px); }
 .clickable { cursor: pointer; }
-.clickable:hover { text-decoration: underline; }
-section { padding: 4px 16px 12px; }
-section h2 { font-size: 0.95rem; margin: 8px 0 4px; }
-section h2 .hint { font-weight: normal; color: #5b6573; font-size: 0.8rem; }
-section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line-height: 1.5; }
+.clickable:hover { color: var(--accent); }
+
+section { margin: 10px 12px 12px; padding: 6px 16px 12px; }
+section h2 { font-size: 0.85rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--title); margin: 8px 0 6px; }
+section h2 .hint { font-weight: normal; letter-spacing: 0; text-transform: none; color: var(--muted); font-size: 0.8rem; }
+section ol, section ul { margin: 0; padding-left: 22px; font-size: 0.85rem; line-height: 1.6; }
+section li::marker { color: var(--accent); font-weight: 600; }
+
+@media (max-width: 720px) {
+  #stage { flex-direction: column; height: auto; }
+  #cy { height: 60vh; }
+  #panel { width: auto; max-height: 40vh; }
+}

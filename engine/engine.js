@@ -38,11 +38,50 @@
 
   // Colour-blind-safe hues (Okabe-Ito without yellow and black), one per Vicious Circle in circle order.
   const CIRCLE_PALETTE = ["#0072B2", "#D55E00", "#009E73", "#CC79A7", "#E69F00", "#56B4E9"];
-  const TYPE_FILL = { goal: "#e8f0fe", cause: "#fff4e0", remedy: "#e6f4ea", obstacle: "#fde8e8" };
   const TYPE_NAME = { goal: "Goal", cause: "Cause", remedy: "Remedy", obstacle: "Obstacle" };
-  const BORDER = "#5b6573";
-  const CRISIS_BORDER = "#8a1c1c";
-  const PRESENT_RED = "#c0392b";
+
+  // Canvas colours per theme; engine.css holds the page's. Dark leans on the game's look: deep navy panels, teal
+  // frames, warm titles. Every colour still comes with words in the node tag and the legend.
+  const THEMES = {
+    dark: {
+      fill: { goal: "#10304a", cause: "#33260f", remedy: "#0f3324", obstacle: "#3a1419" },
+      border: { goal: "#5fb0f0", cause: "#d8a548", remedy: "#46c483", obstacle: "#e0646a" },
+      text: "#e3eef4",
+      mutedText: "#8fa1ad",
+      plain: "#0c1a28",
+      edge: "#5f8ea6",
+      present: "#ff6b6b",
+      crisis: "#ff4d4d",
+      actionable: "#5ff0a0",
+      hatchLine: "#1d5a3e",
+      obstructedFill: "#1b232c",
+      obstructedBorder: "#4d5c68",
+      ink: "#e3eef4",
+      selected: "#5fd6d0",
+      selectedOpacity: 0.35,
+      outline: "#e8c97a",
+    },
+    light: {
+      fill: { goal: "#e8f0fe", cause: "#fff4e0", remedy: "#e6f4ea", obstacle: "#fde8e8" },
+      border: { goal: "#3b6fb6", cause: "#a8741c", remedy: "#2f8a52", obstacle: "#b3261e" },
+      text: "#1b1f24",
+      mutedText: "#59606b",
+      plain: "#ffffff",
+      edge: "#8a93a0",
+      present: "#c0392b",
+      crisis: "#8a1c1c",
+      actionable: "#1e8e3e",
+      hatchLine: "#a9cfb4",
+      obstructedFill: "#d9dce1",
+      obstructedBorder: "#8a93a0",
+      ink: "#1b1f24",
+      selected: "#1b1f24",
+      selectedOpacity: 0.18,
+      outline: "#1b1f24",
+    },
+  };
+  const THEME_KEY = "hlidskjalf-theme";
+  let T = THEMES.dark;
 
   /** Circle id -> colour, and node id -> circle, both from circle order in the data. */
   function circleInfo(doc) {
@@ -192,7 +231,7 @@
     const entries = [];
     const types = new Set(doc.nodes.map((n) => n.type));
     for (const type of NODE_TYPES) {
-      if (types.has(type)) entries.push({ id: `type:${type}`, label: TYPE_NAME[type], fill: TYPE_FILL[type] });
+      if (types.has(type)) entries.push({ id: `type:${type}`, label: TYPE_NAME[type], fill: T.fill[type], border: T.border[type] });
     }
     const remedyStatus = {
       actionable: "green border",
@@ -204,10 +243,10 @@
         entries.push({
           id: `status:${status}`,
           label: `Remedy ${status} (${remedyStatus[status]})`,
-          fill: TYPE_FILL.remedy,
+          fill: T.fill.remedy,
           hatched: status === "pending",
           grey: status === "obstructed",
-          border: status === "actionable" ? "#1e8e3e" : undefined,
+          border: status === "actionable" ? T.actionable : T.border.remedy,
           heavy: status === "actionable",
         });
       }
@@ -223,27 +262,27 @@
         entries.push({
           id: `check:${state}`,
           label: `Obstacle ${state} (${checkLook[state]})`,
-          fill: TYPE_FILL.obstacle,
-          border: state === "present" ? PRESENT_RED : BORDER,
+          fill: T.fill.obstacle,
+          border: state === "present" ? T.present : T.border.obstacle,
           borderStyle: state === "unknown" || state === "judgement" ? "dotted" : "solid",
           muted: state === "clear",
         });
       }
     }
     if (doc.nodes.some((n) => n.type !== "goal")) {
-      entries.push({ id: "size", label: "bigger node = more impact on the Goals", fill: "#ffffff" });
+      entries.push({ id: "size", label: "bigger node = more impact on the Goals", fill: T.plain });
     }
     if (doc.edges.some((e) => e.weight)) {
-      entries.push({ id: "weight", label: "edge weight: thick high, thin medium, dashed low", fill: "#ffffff" });
+      entries.push({ id: "weight", label: "edge weight: thick high, thin medium, dashed low", fill: T.plain });
     }
     if (doc.key_actions.length) {
-      entries.push({ id: "rank", label: "\u2776 \u2777 \u2778 rank of a Key Action", fill: "#ffffff" });
+      entries.push({ id: "rank", label: "\u2776 \u2777 \u2778 rank of a Key Action", fill: T.plain });
     }
     if (doc.nodes.some((n) => n.type === "goal" && n.crisis)) {
-      entries.push({ id: "crisis", label: "Crisis Goal (heavy outline)", fill: TYPE_FILL.goal, border: CRISIS_BORDER, heavy: true });
+      entries.push({ id: "crisis", label: "Crisis Goal (heavy outline)", fill: T.fill.goal, border: T.crisis, heavy: true });
     }
     if (doc.nodes.some((n) => n.source === "model")) {
-      entries.push({ id: "model", label: "Added by the model (dashed border, \u201cmodel\u201d label)", fill: "#ffffff", borderStyle: "dashed" });
+      entries.push({ id: "model", label: "Added by the model (dashed border, \u201cmodel\u201d label)", fill: T.plain, borderStyle: "dashed" });
     }
     for (const circle of doc.circles) {
       entries.push({
@@ -255,7 +294,7 @@
       });
     }
     if (doc.circles.some((c) => c.break_point)) {
-      entries.push({ id: "break_point", label: "\u2691 break point of a Vicious Circle (double outline)", fill: "#ffffff", doubleOutline: true });
+      entries.push({ id: "break_point", label: "\u2691 break point of a Vicious Circle (double outline)", fill: T.plain, doubleOutline: true });
     }
     return entries;
   }
@@ -523,6 +562,7 @@
         .sort((a, b) => a.rank - b.rank)
         .map((a) => ({ rank: a.rank, node: a.node, text: keyActionText(doc, a) })),
       pruned: doc.pruned.map((p) => ({ id: p.id, reason: p.reason })),
+      theme: document.documentElement.dataset.theme,
       selected: [...current.selected].sort(),
       focus: [...current.focus].sort(),
       panel: current.panel,
@@ -553,13 +593,13 @@
     }
     return { colors: colors.join(" "), positions: positions.join(" ") };
   }
-  const HATCH = stripes(TYPE_FILL.remedy, "#a9cfb4");
-
-  const STYLE = [
+  function buildStyle() {
+    const hatch = stripes(T.fill.remedy, T.hatchLine);
+    return [
     {
       selector: "node",
       style: {
-        shape: "round-rectangle",
+        shape: "cut-rectangle",
         width: "data(width)",
         height: "data(height)",
         label: "data(label)",
@@ -568,10 +608,11 @@
         "text-halign": "center",
         "font-size": "data(fontSize)",
         "line-height": 1.25,
-        "background-color": "#ffffff",
+        "background-color": T.plain,
         "border-width": 1.5,
-        "border-color": BORDER,
-        color: "#1b1f24",
+        "border-color": T.edge,
+        color: T.text,
+        "font-family": FONT,
         "background-image": "data(icon)",
         "background-width": "data(iconSize)",
         "background-height": "data(iconSize)",
@@ -583,43 +624,43 @@
         "text-margin-x": "data(textShift)",
       },
     },
-    { selector: 'node[type = "goal"]', style: { "border-width": 2.5, "background-color": TYPE_FILL.goal } },
-    { selector: 'node[type = "cause"]', style: { "background-color": TYPE_FILL.cause } },
-    { selector: 'node[type = "remedy"]', style: { "background-color": TYPE_FILL.remedy } },
-    { selector: 'node[type = "obstacle"]', style: { "background-color": TYPE_FILL.obstacle } },
+    { selector: 'node[type = "goal"]', style: { "border-width": 2.5, "background-color": T.fill.goal, "border-color": T.border.goal } },
+    { selector: 'node[type = "cause"]', style: { "background-color": T.fill.cause, "border-color": T.border.cause } },
+    { selector: 'node[type = "remedy"]', style: { "background-color": T.fill.remedy, "border-color": T.border.remedy } },
+    { selector: 'node[type = "obstacle"]', style: { "background-color": T.fill.obstacle, "border-color": T.border.obstacle } },
     {
       selector: 'node[status = "pending"]',
       style: {
         "background-fill": "linear-gradient",
         "background-gradient-direction": "to-bottom-right",
-        "background-gradient-stop-colors": HATCH.colors,
-        "background-gradient-stop-positions": HATCH.positions,
+        "background-gradient-stop-colors": hatch.colors,
+        "background-gradient-stop-positions": hatch.positions,
       },
     },
-    { selector: 'node[status = "actionable"]', style: { "border-color": "#1e8e3e", "border-width": 3 } },
+    { selector: 'node[status = "actionable"]', style: { "border-color": T.actionable, "border-width": 3 } },
     {
       selector: 'node[status = "obstructed"]',
-      style: { "background-color": "#d9dce1", color: "#59606b", "border-color": "#8a93a0", "border-style": "dashed", opacity: 0.6, "background-image-opacity": 0.45 },
+      style: { "background-color": T.obstructedFill, color: T.mutedText, "border-color": T.obstructedBorder, "border-style": "dashed", opacity: 0.6, "background-image-opacity": 0.45 },
     },
-    { selector: 'node[checkState = "present"]', style: { "border-color": PRESENT_RED, "border-width": 2.5 } },
+    { selector: 'node[checkState = "present"]', style: { "border-color": T.present, "border-width": 2.5 } },
     { selector: 'node[checkState = "clear"]', style: { opacity: 0.6 } },
     { selector: 'node[checkState = "unknown"], node[checkState = "judgement"]', style: { "border-style": "dotted", "border-width": 2.5 } },
-    { selector: "node[?crisis]", style: { "border-width": 6, "border-color": CRISIS_BORDER } },
+    { selector: "node[?crisis]", style: { "border-width": 6, "border-color": T.crisis } },
     { selector: "node[circleColor]", style: { "border-width": 5, "border-color": "data(circleColor)" } },
     { selector: "node[?model]", style: { "border-style": "dashed" } },
     {
       selector: "node[?breakPoint]",
-      style: { "outline-width": 3, "outline-color": "#1b1f24", "outline-style": "solid", "outline-offset": 3 },
+      style: { "outline-width": 3, "outline-color": T.outline, "outline-style": "solid", "outline-offset": 3 },
     },
-    { selector: "node:selected", style: { "underlay-color": "#1b1f24", "underlay-opacity": 0.18, "underlay-padding": 8, "underlay-shape": "round-rectangle" } },
+    { selector: "node:selected", style: { "underlay-color": T.selected, "underlay-opacity": T.selectedOpacity, "underlay-padding": 8, "underlay-shape": "round-rectangle" } },
     {
       selector: "edge",
       style: {
         width: 1.5,
         "curve-style": "bezier",
-        "line-color": "#8a93a0",
+        "line-color": T.edge,
         "target-arrow-shape": "triangle",
-        "target-arrow-color": "#8a93a0",
+        "target-arrow-color": T.edge,
         "arrow-scale": 0.9,
       },
     },
@@ -627,7 +668,7 @@
     { selector: 'edge[weight = "low"]', style: { width: 1, "line-style": "dashed" } },
     {
       selector: 'edge[accent = "present"]',
-      style: { "line-color": PRESENT_RED, "target-arrow-color": PRESENT_RED, width: 2.5 },
+      style: { "line-color": T.present, "target-arrow-color": T.present, width: 2.5 },
     },
     { selector: 'edge[accent = "clear"]', style: { opacity: 0.45 } },
     {
@@ -640,11 +681,12 @@
     },
     {
       selector: "edge.serves",
-      style: { width: 1, "line-style": "dashed", "line-color": "#5b6573", "target-arrow-color": "#5b6573", display: "none", "curve-style": "unbundled-bezier", "control-point-distances": 60 },
+      style: { width: 1, "line-style": "dashed", "line-color": T.mutedText, "target-arrow-color": T.mutedText, display: "none", "curve-style": "unbundled-bezier", "control-point-distances": 60 },
     },
     { selector: "edge.serves.shown", style: { display: "element" } },
     { selector: ".faded", style: { opacity: FADED_OPACITY } },
   ];
+  }
 
   // --- DOM: header, legend, lists, panel (text only) ----------------------------------------------
 
@@ -653,6 +695,40 @@
     if (className) node.className = className;
     if (text !== undefined) node.textContent = text;
     return node;
+  }
+
+  const FONT = '"Exo 2", "Rajdhani", "Segoe UI", system-ui, sans-serif';
+
+  function storedTheme() {
+    try {
+      return localStorage.getItem(THEME_KEY);
+    } catch (_) {
+      return null; // storage blocked: the default stands
+    }
+  }
+
+  /** Dark by default; the reader's last choice wins. Page tokens via data-theme, canvas colours via THEMES. */
+  function applyTheme(name) {
+    const theme = THEMES[name] ? name : "dark";
+    T = THEMES[theme];
+    document.documentElement.dataset.theme = theme;
+    const toggle = document.getElementById("theme-toggle");
+    if (toggle) toggle.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+    if (cy) {
+      cy.style(buildStyle());
+      renderLegend(current.doc);
+    }
+  }
+
+  function toggleTheme() {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch (_) {
+      // not remembered, still switched
+    }
+    applyTheme(next);
+    if (cy) publish();
   }
 
   function renderHeader(doc) {
@@ -664,14 +740,14 @@
     const swatch = el("span", "swatch");
     if (entry.fill) swatch.style.background = entry.fill;
     if (entry.hatched) {
-      swatch.style.background = `repeating-linear-gradient(135deg, ${TYPE_FILL.remedy} 0 3px, #a9cfb4 3px 6px)`;
+      swatch.style.background = `repeating-linear-gradient(135deg, ${T.fill.remedy} 0 3px, ${T.hatchLine} 3px 6px)`;
     }
-    if (entry.grey) swatch.style.background = "#d9dce1";
+    if (entry.grey) swatch.style.background = T.obstructedFill;
     if (entry.border) swatch.style.borderColor = entry.border;
     if (entry.borderStyle) swatch.style.borderStyle = entry.borderStyle;
     if (entry.heavy) swatch.style.borderWidth = "4px";
     if (entry.muted) swatch.style.opacity = "0.6";
-    if (entry.doubleOutline) swatch.style.outline = "2px solid #1b1f24";
+    if (entry.doubleOutline) swatch.style.outline = `2px solid ${T.outline}`;
     return swatch;
   }
 
@@ -843,7 +919,7 @@
     cy = cytoscape({
       container: document.getElementById("cy"),
       elements: toElements(doc),
-      style: STYLE,
+      style: buildStyle(),
       layout: { name: "preset" },
       autoungrabify: true,
       boxSelectionEnabled: false,
@@ -915,6 +991,10 @@
   }
 
   async function start() {
+    applyTheme(storedTheme() || "dark");
+    document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+    // the canvas draws its labels once; redraw them when the web font has arrived
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => cy && cy.style().update());
     let doc;
     try {
       doc = await loadGraph();

@@ -4,11 +4,13 @@
   Libraries are pinned in engine/pins.json (exact versions + SRI); see engine/VERSIONS.md.
   The page takes its data from solution-graph.json and writes nothing but text into the DOM.
 -->
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <title>Hliðskjálf — Solution Graph</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&display=swap">
 <link rel="stylesheet" href="engine.css">
 <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.34.4/dist/cytoscape.min.js" integrity="sha384-lyd1lDWZ623YSUJ/wMQH50y+T81dWKJk7ZoFdYWXQS83b0+QpW0pgdfXEnQnXL/X" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/elkjs@0.12.0/lib/elk.bundled.js" integrity="sha384-ww57TDqx4cGknIavPm0QKO+aygLUR1BLSn2Vhbnt1XdYKWcwLyWTFKX7aZMaKIi2" crossorigin="anonymous"></script>
@@ -21,20 +23,23 @@
     <p>No <code>solution-graph.json</code> found next to this page. Choose a file or drop it here.</p>
     <input id="picker" type="file" accept=".json,application/json">
   </div>
-  <header id="header" hidden>
-    <h1>Hliðskjálf — Solution Graph</h1>
-    <p id="header-text"></p>
+  <header id="header" class="frame" hidden>
+    <div class="titles">
+      <h1>Hliðskjálf — Solution Graph</h1>
+      <p id="header-text"></p>
+    </div>
+    <button id="theme-toggle" type="button">Light mode</button>
   </header>
   <div id="stage">
     <div id="cy"></div>
-    <aside id="panel" aria-live="polite"><div id="panel-body"></div></aside>
+    <aside id="panel" class="frame" aria-live="polite"><div id="panel-body"></div></aside>
   </div>
-  <ul id="legend" aria-label="Legend"></ul>
-  <section id="actions-section" hidden>
+  <ul id="legend" class="frame" aria-label="Legend"></ul>
+  <section id="actions-section" class="frame" hidden>
     <h2>Key Actions, ranked <span class="hint">(click one to focus its chain)</span></h2>
     <ol id="key-actions"></ol>
   </section>
-  <section id="pruned-section" hidden>
+  <section id="pruned-section" class="frame" hidden>
     <h2>Pruned (cut by the model, with the reason)</h2>
     <ul id="pruned"></ul>
   </section>

@@ -484,3 +484,13 @@ def test_node_size_follows_the_weighted_impact_on_the_goals():
     for edge in graph["edges"]:
         if edge["kind"] == "obstacle":
             assert nodes[edge["to"]]["impact"] >= nodes[edge["from"]]["impact"]
+
+
+@needs_browser
+def test_dark_is_the_default_theme_and_the_toggle_switches_to_light():
+    graph = chain_graph()
+    assert driver.render_engine(graph)["theme"] == "dark"
+    switched = driver.render_engine(
+        graph, after_ready="document.getElementById('theme-toggle').click()"
+    )
+    assert switched["theme"] == "light"
