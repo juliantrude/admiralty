@@ -595,11 +595,14 @@ section li::marker { color: var(--accent); font-weight: 600; }
     return [...nodes, ...edges];
   }
 
-  /** ELK layer constraints: Goals first, Key Actions last, everything else in between. */
+  /**
+   * ELK layer constraints: Goals first; every other column follows from the edges alone. Key Actions are not pinned to
+   * the last column: one that unblocks another (Open more job slots frees a slot for Staff more Technician jobs) must
+   * stand right of it, so a chain reads as a plan, from the action on the right to the Goal on the left.
+   */
   function layerConstraints(doc) {
     const constraint = new Map();
     for (const node of doc.nodes) if (node.type === "goal") constraint.set(node.id, "FIRST");
-    for (const action of doc.key_actions) constraint.set(action.node, "LAST");
     return constraint;
   }
 
@@ -1006,12 +1009,41 @@ section li::marker { color: var(--accent); font-weight: 600; }
       .addClass("faded");
   }
 
+  // When a chain gets the focus, the view moves to it: the whole chain if that stays readable, else the clicked part.
+  const FOCUS_MIN_ZOOM = 0.45;
+  const FOCUS_MAX_ZOOM = 1.2;
+  const FOCUS_PADDING = 50;
+  const FOCUS_MOVE_MS = 400;
+
+  function viewToFocus(ids) {
+    if (!ids.length || !current.focus.size) return;
+    const chain = cy.nodes().filter((node) => current.focus.has(node.id()));
+    const box = chain.boundingBox({ includeLabels: false });
+    const area = cy.container();
+    const fitZoom = Math.min(
+      (area.clientWidth - 2 * FOCUS_PADDING) / Math.max(1, box.w),
+      (area.clientHeight - 2 * FOCUS_PADDING) / Math.max(1, box.h)
+    );
+    const zoom = Math.max(FOCUS_MIN_ZOOM, Math.min(FOCUS_MAX_ZOOM, fitZoom));
+    // the chain fits: centre it; it does not: centre the clicked nodes, the reader pans along the chain
+    const target = zoom === fitZoom || fitZoom > FOCUS_MAX_ZOOM ? box : cy.collection(ids.map((id) => cy.getElementById(id))).boundingBox();
+    const pan = {
+      x: area.clientWidth / 2 - ((target.x1 + target.x2) / 2) * zoom,
+      y: area.clientHeight / 2 - ((target.y1 + target.y2) / 2) * zoom,
+    };
+    const instant = typeof window.hlidskjalfAnimationMs === "number" || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    cy.stop(true, false);
+    if (instant) cy.viewport({ zoom, pan });
+    else cy.animate({ zoom, pan }, { duration: FOCUS_MOVE_MS });
+  }
+
   function applySelection(ids, panel) {
     cy.nodes(":selected").unselect();
     for (const id of ids) cy.getElementById(id).select();
     current.selected = new Set(ids);
     current.panel = panel;
     applyFocus(ids);
+    viewToFocus(ids);
     showServes(ids);
     renderPanel(panel);
     publish();

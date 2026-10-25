@@ -194,23 +194,24 @@ def test_engine_script_never_inserts_html():
 
 @needs_browser
 @pytest.mark.parametrize("name", FIXTURES)
-def test_goals_lie_left_of_key_actions_and_causes_between(name):
+def test_goals_lie_left_and_every_edge_runs_left_to_right(name):
     graph = FIXTURES[name]()
     state = driver.render_engine(graph)
     assert state["ok"] and state["error"] is None
     nodes = by_id(state)
     assert set(nodes) == {node["id"] for node in graph["nodes"]}
-    goals = [n for n in graph["nodes"] if n["type"] == "goal"]
-    causes = [n for n in graph["nodes"] if n["type"] == "cause"]
-    key_actions = [a["node"] for a in graph["key_actions"]]
+    # a Vicious Circle has no first node, so its members may fall into any column
+    in_circle = {m for c in graph["circles"] for m in c["members"]}
+    goals = [n["id"] for n in graph["nodes"] if n["type"] == "goal"]
+    others = [n["id"] for n in graph["nodes"] if n["type"] != "goal" and n["id"] not in in_circle]
     for goal in goals:
-        for action in key_actions:
-            assert nodes[goal["id"]]["x"] < nodes[action]["x"]
-        for cause in causes:
-            assert nodes[goal["id"]]["x"] < nodes[cause["id"]]["x"]
-    for cause in causes:
-        for action in key_actions:
-            assert nodes[cause["id"]]["x"] < nodes[action]["x"]
+        for other in others:
+            assert nodes[goal]["x"] < nodes[other]["x"]
+    # a chain reads as a plan: every edge points right, except inside a Vicious Circle
+    for edge in graph["edges"]:
+        if edge["from"] in in_circle and edge["to"] in in_circle:
+            continue
+        assert nodes[edge["from"]]["x"] < nodes[edge["to"]]["x"], (edge["from"], edge["to"])
 
 
 @needs_browser
