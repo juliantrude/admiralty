@@ -125,7 +125,7 @@ nodes:
     description: >
       Researcher jobs come from districts and from buildings. A planet with no free district or
       building slot cannot host another one until it grows or a slot is freed.
-    check: {judgement_only: true}
+    check: {metric: jobs.open_research, op: "==", compare_to: 0}
     remedies: [jobs.free_jobs]
 
   - id: research.lab_locked

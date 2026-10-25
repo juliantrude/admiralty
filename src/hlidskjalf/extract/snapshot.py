@@ -106,6 +106,7 @@ class Snapshot:
     def document(self, planet_detail: bool = False) -> dict[str, Any]:
         ctx, country = self.ctx, self.country
         timeline = data.timeline(ctx, country)
+        planets = self.planets(detail=planet_detail)
         doc = {
             "schema": SCHEMA_VERSION,
             "header": self.header(),
@@ -119,7 +120,8 @@ class Snapshot:
             },
             "resources": data.economy(ctx, country),
             "pops": data.pops(ctx, self.colonies),
-            "planets": self.planets(detail=planet_detail),
+            "planets": planets,
+            "room": data.room(ctx, planets, self.colonies),
             "naval_capacity": self.naval_capacity(),
             "progression": {
                 **data.progression(ctx, country),

@@ -108,7 +108,7 @@ nodes:
     description: >
       Farmer jobs come from agriculture districts and from buildings. A planet with no free
       district or building slot cannot host another one until it grows or a slot is freed.
-    check: {judgement_only: true}
+    check: {metric: room.farming_free, op: "==", compare_to: 0, only_clears: true}
     remedies: [jobs.free_jobs]
 
   - id: food.cannot_pay_district

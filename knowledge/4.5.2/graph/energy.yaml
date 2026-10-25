@@ -121,7 +121,7 @@ nodes:
     description: >
       Technician jobs come from generator districts and from buildings. A planet with no free
       district or building slot cannot host another one until it grows or a slot is freed.
-    check: {judgement_only: true}
+    check: {metric: room.generator_free, op: "==", compare_to: 0, only_clears: true}
     remedies: [jobs.free_jobs]
 
   - id: energy.generator_building_locked

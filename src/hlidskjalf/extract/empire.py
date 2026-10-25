@@ -242,6 +242,78 @@ def _sector_name(ctx: Context, system: dict[str, Any]) -> str | None:
     return ctx.name(sector["name"])
 
 
+# --- room for growth -----------------------------------------------------------------
+
+RURAL = {
+    "generator": "district_generator",
+    "mining": "district_mining",
+    "farming": "district_farming",
+}
+# Resources the room section counts open jobs for; others are left out to keep the extract small.
+JOB_OUTPUTS = (
+    "energy", "minerals", "food", "alloys", "consumer_goods", "unity", "trade",
+    "physics_research", "society_research", "engineering_research",
+)  # fmt: skip
+
+
+def job_output(definition: Any) -> str | None:
+    """The resource a job is for: the largest positive amount in its first `produces` block,
+    the one without a special trigger in the game files (Technician: energy, Physicist:
+    physics_research). Jobs that produce nothing (soldiers, amenity jobs) have none."""
+    if not isinstance(definition, dict):
+        return None
+    produces = (
+        definition.get("resources", {}).get("produces")
+        if isinstance(definition.get("resources"), dict)
+        else None
+    )
+    blocks = produces if isinstance(produces, list) else [produces]
+    first = next((b for b in blocks if isinstance(b, dict)), None)
+    if not first:
+        return None
+    amounts = {
+        k: v
+        for k, v in first.items()
+        if isinstance(v, int | float) and not isinstance(v, bool) and v > 0
+    }
+    return max(amounts, key=lambda k: amounts[k]) if amounts else None
+
+
+def room(ctx: Context, planets: list[dict[str, Any]], colonies: list[tuple[int, dict, dict]]):
+    """Free places to grow into, summed over the empire's planets: district slots in all and per
+    rural type (a type's free places never exceed the planet's free slots), and open jobs by the
+    resource they produce. Lets the Mechanics Graph check "no free slot" Obstacles."""
+    districts_free = 0
+    by_type = dict.fromkeys(RURAL, 0)
+    for planet in planets:
+        built = sum(d.get("built", 0) for d in planet["districts"].values())
+        planet_room = max(0, int(planet["district_limit"]) - built)
+        districts_free += planet_room
+        for name, kind in RURAL.items():
+            entry = planet["districts"].get(kind)
+            if entry is None or "max" not in entry:
+                continue
+            maximum = entry["max"]
+            type_room = planet_room if maximum == "uncapped" else max(0, maximum - entry["built"])
+            by_type[name] += min(type_room, planet_room)
+    job_defs = ctx.game.category("pop_jobs")
+    jobs_table = ctx.table("pop_jobs")
+    open_jobs = dict.fromkeys(JOB_OUTPUTS, 0)
+    for _, _, colony in colonies:
+        for job_id in as_list(colony.get("pop_jobs")):
+            job = jobs_table.get(job_id)
+            if not job or job.get("max_workforce", -1) < 0:
+                continue
+            output = job_output(job_defs.get(job["type"]))
+            if output in open_jobs:
+                open_jobs[output] += max(job["max_workforce"] - max(job.get("workforce", 0), 0), 0)
+    return {
+        "districts_free": districts_free,
+        "district_types_free": by_type,
+        "open_jobs_by_output": {k: rounded(v) for k, v in open_jobs.items()},
+    }
+
+
 # --- progression --------------------------------------------------------------------
 
 

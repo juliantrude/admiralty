@@ -50,3 +50,12 @@ metrics:
     ratio: {numerator: naval_capacity.used, denominator: naval_capacity.max}
     unit: fraction
   traditions.next_cost: {path: progression.next_tradition.cost, unit: unity}
+  # free places to grow into (extract section "room")
+  room.districts_free: {path: room.districts_free, unit: district slots}
+  room.generator_free: {path: room.district_types_free.generator, unit: district slots}
+  room.mining_free: {path: room.district_types_free.mining, unit: district slots}
+  room.farming_free: {path: room.district_types_free.farming, unit: district slots}
+  jobs.open_research:
+    sum: [room.open_jobs_by_output.physics_research, room.open_jobs_by_output.society_research, room.open_jobs_by_output.engineering_research]
+    unit: open job places
+  jobs.open_unity: {path: room.open_jobs_by_output.unity, unit: open job places}

@@ -121,7 +121,7 @@ nodes:
     description: >
       A new district needs a free district slot. A planet at its limit has to raise the limit or
       replace a district first.
-    check: {judgement_only: true}
+    check: {metric: room.districts_free, op: "==", compare_to: 0}
     remedies: [slots.more_district_slots]
 
   - id: slots.district_upkeep

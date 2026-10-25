@@ -225,10 +225,9 @@ def test_status_check_state_and_crisis_are_in_words_and_the_legend_lists_only_wh
     assert nodes["energy.research_multiplier"]["tag"].endswith("pending")
     assert nodes["pop_growth.grow_pops"]["status"] == "obstructed"
     assert nodes["energy.staff_technicians"]["status"] == "actionable"
-    assert [nodes[i]["check_state"] for i in ("energy.no_spare_pops", "energy.credits_clear")] == [
-        "present",
-        "clear",
-    ]
+    assert nodes["energy.no_spare_pops"]["check_state"] == "present"
+    # checked and clear: not in the way, so not drawn
+    assert "energy.credits_clear" not in nodes
     assert nodes["energy.more"]["crisis"] is True and "CRISIS" in nodes["energy.more"]["tag"]
     legend = [e["id"] for e in state["legend"]]
     assert legend == [
@@ -240,7 +239,6 @@ def test_status_check_state_and_crisis_are_in_words_and_the_legend_lists_only_wh
         "status:pending",
         "status:obstructed",
         "check:present",
-        "check:clear",
         "check:unknown",
         "check:judgement",
         "size",
@@ -494,3 +492,12 @@ def test_dark_is_the_default_theme_and_the_toggle_switches_to_light():
         graph, after_ready="document.getElementById('theme-toggle').click()"
     )
     assert switched["theme"] == "light"
+
+
+@needs_browser
+def test_a_clear_obstacle_is_listed_in_its_remedys_details_instead_of_drawn():
+    state = driver.render_engine(
+        rich_graph(), after_ready='HlidskjalfEngine.click("energy.staff_technicians")'
+    )
+    assert state["panel"]["checked_clear"] == ["Credits are fine"]
+    assert all(e["to"] != "energy.credits_clear" for e in state["edges"])

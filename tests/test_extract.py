@@ -231,3 +231,20 @@ def test_blocked_deposits_show_as_behind_blockers(extractor):
     assert early["district_farming"]["behind_blockers"] == 5
     late = _planet(extract(extractor, VULKAN, "2298.03.11.sav"), "2", "Astarte")["districts"]
     assert "behind_blockers" not in late["district_mining"]
+
+
+def test_room_counts_free_district_slots_and_open_jobs(extractor):
+    doc = extract(extractor, VULKAN, "2259.12.25.sav")
+    expected = sum(
+        max(0, int(p["district_limit"]) - sum(d["built"] for d in p["districts"].values()))
+        for p in doc["planets"]
+    )
+    room = doc["room"]
+    assert room["districts_free"] == expected
+    assert all(0 <= v <= expected for v in room["district_types_free"].values())
+    # Golden values: "2" in Astarte has 9 of 10 districts, Unimatrix 1 is full
+    astarte = _planet(doc, "2", "Astarte")
+    assert (
+        int(astarte["district_limit"]) - sum(d["built"] for d in astarte["districts"].values()) == 1
+    )
+    assert room["open_jobs_by_output"]["energy"] > 0

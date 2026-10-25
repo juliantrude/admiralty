@@ -60,6 +60,8 @@
       selected: "#5fd6d0",
       selectedOpacity: 0.35,
       outline: "#e8c97a",
+      judgeFill: "#1f2633",
+      judgeBorder: "#8c9bb0",
     },
     light: {
       fill: { goal: "#e8f0fe", cause: "#fff4e0", remedy: "#e6f4ea", obstacle: "#fde8e8" },
@@ -78,6 +80,8 @@
       selected: "#1b1f24",
       selectedOpacity: 0.18,
       outline: "#1b1f24",
+      judgeFill: "#eef0f4",
+      judgeBorder: "#6b7686",
     },
   };
   const THEME_KEY = "hlidskjalf-theme";
@@ -122,8 +126,8 @@
   }
 
   // Placeholder icons per node type until a node carries a game icon (docs/plans/M6-revision.md).
-  const TYPE_GLYPH = { goal: "G", cause: "?", remedy: "\u2713", obstacle: "!" };
-  const TYPE_INK = { goal: "#1a56c4", cause: "#a35d00", remedy: "#1e7e34", obstacle: "#b3261e" };
+  const TYPE_GLYPH = { goal: "G", cause: "?", remedy: "\u2713", obstacle: "!", unchecked: "?" };
+  const TYPE_INK = { goal: "#1a56c4", cause: "#a35d00", remedy: "#1e7e34", obstacle: "#b3261e", unchecked: "#6b7686" };
 
   function placeholderIcon(type) {
     const svg =
@@ -137,7 +141,8 @@
   /** A node's icon: an embedded image from the data, else the placeholder of its type. Only data URIs of images are used. */
   function iconOf(node) {
     if (typeof node.icon === "string" && /^data:image\/(png|svg\+xml)[;,]/.test(node.icon)) return node.icon;
-    return placeholderIcon(node.type);
+    const unchecked = node.type === "obstacle" && (node.check_state === "judgement" || node.check_state === "unknown");
+    return placeholderIcon(unchecked ? "unchecked" : node.type);
   }
 
   // Impact (docs/plans/M6-revision.md): edge weights multiply along the way from a Goal, the
@@ -253,19 +258,17 @@
     }
     const checkLook = {
       present: "red line into it",
-      clear: "muted",
-      unknown: "dotted border",
-      judgement: "dotted border",
+      unknown: "not checkable from the save, judge it yourself: grey with ?",
+      judgement: "not checked against numbers, judge it yourself: grey with ?",
     };
     for (const state of Object.keys(checkLook)) {
       if (doc.nodes.some((n) => n.type === "obstacle" && n.check_state === state)) {
         entries.push({
           id: `check:${state}`,
           label: `Obstacle ${state} (${checkLook[state]})`,
-          fill: T.fill.obstacle,
-          border: state === "present" ? T.present : T.border.obstacle,
+          fill: state === "present" ? T.fill.obstacle : T.judgeFill,
+          border: state === "present" ? T.present : T.judgeBorder,
           borderStyle: state === "unknown" || state === "judgement" ? "dotted" : "solid",
-          muted: state === "clear",
         });
       }
     }
@@ -306,6 +309,14 @@
     const title = (nodeId) => (doc.nodes.find((n) => n.id === nodeId) || { title: nodeId }).title;
     const ref = (nodeId) => ({ id: nodeId, title: title(nodeId) });
     const panel = { kind: "node", id: node.id, type: node.type, source: node.source, title: node.title };
+    if (node.type === "remedy") {
+      panel.checked_clear = doc.edges
+        .filter((e) => e.from === id && e.kind === "obstacle")
+        .map((e) => doc.nodes.find((n) => n.id === e.to))
+        .filter((n) => n.check_state === "clear")
+        .map((n) => n.title)
+        .sort();
+    }
     for (const field of ["text", "horizon", "crisis", "status", "ratings", "check_state", "evidence", "rules", "reason"]) {
       if (node[field] !== undefined) panel[field] = node[field];
     }
@@ -553,7 +564,7 @@
       error: null,
       nodes,
       edges,
-      header: headerOf(doc),
+      header: headerOf(current.full),
       legend: legendOf(doc).map((entry) => ({ id: entry.id, label: entry.label })),
       circles: doc.circles.map((c) => ({
         id: c.id,
@@ -647,7 +658,10 @@
     },
     { selector: 'node[checkState = "present"]', style: { "border-color": T.present, "border-width": 2.5 } },
     { selector: 'node[checkState = "clear"]', style: { opacity: 0.6 } },
-    { selector: 'node[checkState = "unknown"], node[checkState = "judgement"]', style: { "border-style": "dotted", "border-width": 2.5 } },
+    {
+      selector: 'node[checkState = "unknown"], node[checkState = "judgement"]',
+      style: { "border-style": "dotted", "border-width": 2, "background-color": T.judgeFill, "border-color": T.judgeBorder },
+    },
     { selector: "node[?crisis]", style: { "border-width": 6, "border-color": T.crisis } },
     { selector: "node[circleColor]", style: { "border-width": 5, "border-color": "data(circleColor)" } },
     { selector: "node[?model]", style: { "border-style": "dashed" } },
@@ -810,6 +824,9 @@
     if (panel.ratings) {
       rows.push(["Ratings", [`strength ${panel.ratings.strength}`, `speed ${panel.ratings.speed}`, `cost ${panel.ratings.cost}`]]);
     }
+    if (panel.checked_clear && panel.checked_clear.length) {
+      rows.push(["Checked, not in the way", panel.checked_clear]);
+    }
     if (panel.check_state !== undefined) rows.push(["Check state", [panel.check_state]]);
     if (panel.evidence !== undefined) rows.push(["Evidence", panel.evidence.length ? panel.evidence : ["none"]]);
     if (panel.rules !== undefined) rows.push(["Playbook Rules", panel.rules.length ? panel.rules : ["none"]]);
@@ -905,7 +922,7 @@
   }
 
   function selectNode(id) {
-    applySelection([id], panelOf(current.doc, id));
+    applySelection([id], panelOf(current.full, id));
   }
 
   function selectCircle(circleId) {
@@ -947,7 +964,7 @@
     cy.pan({ x: VIEW_PADDING - box.x1 * READABLE_ZOOM, y: VIEW_PADDING - box.y1 * READABLE_ZOOM });
   }
 
-  function draw(doc) {
+  function draw(doc, full) {
     cy = cytoscape({
       container: document.getElementById("cy"),
       elements: toElements(doc),
@@ -956,8 +973,8 @@
       autoungrabify: true,
       boxSelectionEnabled: false,
     });
-    current = { doc, panel: null, selected: new Set(), focus: new Set() };
-    renderHeader(doc);
+    current = { doc, full, panel: null, selected: new Set(), focus: new Set() };
+    renderHeader(full);
     renderLegend(doc);
     renderLists(doc);
     renderPanel(null);
@@ -987,6 +1004,20 @@
     }).run();
   }
 
+  /**
+   * The graph that is drawn: Obstacles the code checked against the numbers and found clear are not in the way, so
+   * they leave the picture (with their edges) and are listed in their Remedy's details instead.
+   */
+  function drawnPart(doc) {
+    const clear = new Set(doc.nodes.filter((n) => n.type === "obstacle" && n.check_state === "clear").map((n) => n.id));
+    if (!clear.size) return doc;
+    return {
+      ...doc,
+      nodes: doc.nodes.filter((n) => !clear.has(n.id)),
+      edges: doc.edges.filter((e) => !clear.has(e.from) && !clear.has(e.to)),
+    };
+  }
+
   function render(doc) {
     const problem = validateGraph(doc);
     if (problem) {
@@ -994,7 +1025,7 @@
       writeState(emptyState(problem));
       return;
     }
-    draw(doc);
+    draw(drawnPart(doc), doc);
   }
 
   function offerPicker() {

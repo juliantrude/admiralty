@@ -36,6 +36,10 @@
       "properties": {
         "metric": {"$ref": "#/$defs/metric"},
         "op": {"enum": ["<", "<=", ">", ">=", "==", "!="]},
+        "only_clears": {
+          "type": "boolean",
+          "description": "The metric covers only part of the Obstacle (district slots of 'no district or building slot'): it can rule the Obstacle out, but where the comparison holds the rest is still judgement."
+        },
         "compare_to": {
           "oneOf": [
             {"type": "number"},

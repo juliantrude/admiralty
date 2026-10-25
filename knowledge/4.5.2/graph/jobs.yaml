@@ -24,7 +24,7 @@ nodes:
     description: >
       A district adds job slots, and each planet only has so many district slots. A planet that is
       full cannot get another district until something raises its limit.
-    check: {judgement_only: true}
+    check: {metric: room.districts_free, op: "==", compare_to: 0}
     remedies: [slots.more_district_slots]
 
   - id: jobs.no_building_room
