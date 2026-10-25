@@ -5,13 +5,11 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 #header { padding: 8px 16px; border-bottom: 1px solid #d5d9df; }
 #header h1 { margin: 0; font-size: 1.1rem; }
 #header p { margin: 2px 0 0; color: #3b4452; font-size: 0.9rem; }
-#stage { position: relative; height: 62vh; min-height: 380px; overflow: hidden; }
-#cy { position: absolute; inset: 0; }
-#panel { box-sizing: border-box; padding: 10px 16px 12px; border-top: 1px solid #d5d9df; background: #ffffff; font-size: 0.85rem; }
+#stage { display: flex; height: 70vh; min-height: 420px; }
+#cy { flex: 1; min-width: 0; }
+#panel { width: 320px; flex: none; overflow-y: auto; box-sizing: border-box; padding: 12px 14px; border-left: 1px solid #d5d9df; background: #ffffff; font-size: 0.85rem; }
 #panel h2 { margin: 0 0 8px; font-size: 1rem; }
-#panel dl { margin: 0; column-count: 3; column-gap: 24px; column-width: 260px; }
-#panel .row { break-inside: avoid; padding-bottom: 6px; }
-#panel dt { margin-top: 2px; font-weight: 600; color: #3b4452; }
+#panel dt { margin-top: 8px; font-weight: 600; color: #3b4452; }
 #panel dd { margin: 2px 0 0; overflow-wrap: anywhere; }
 #panel .hint { color: #5b6573; }
 #legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 0; padding: 8px 16px; border-top: 1px solid #d5d9df; font-size: 0.8rem; }

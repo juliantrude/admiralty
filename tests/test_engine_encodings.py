@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import copy
-import itertools
 import json
 from html.parser import HTMLParser
 from importlib import resources
@@ -286,6 +285,17 @@ def test_header_and_lists_show_counts_key_actions_and_the_pruned_reasons():
     page = Tags(dom)
     assert "".join(page.text["header-text"]) == state["header"]["text"]
     assert "Not useful at this stage." in "".join(page.text["pruned"])
+    assert "Key Actions, ranked" in "".join(page.text["actions-section"])
+
+
+@needs_browser
+def test_a_key_action_in_the_list_selects_its_node():
+    graph = chain_graph()
+    state = driver.render_engine(
+        graph, after_ready="document.querySelector('#key-actions li:nth-child(2)').click()"
+    )
+    assert state["selected"] == ["pop_growth.grow_pops"]
+    assert state["panel"]["rank"] == 2
 
 
 # --- the click panel ----------------------------------------------------------------------------------
@@ -366,7 +376,7 @@ def test_a_second_click_replaces_the_first_and_a_click_on_the_background_clears_
 def test_markup_in_the_data_is_shown_as_text_and_adds_no_element():
     clicks = (
         'HlidskjalfEngine.click("energy.no_spare_pops");'
-        "HlidskjalfEngine.click(document.getElementById('engine-state').dataset.ka || '');"
+        'document.querySelector("#key-actions li").click();'
         'HlidskjalfEngine.click("energy.staff_technicians");'
     )
     baseline = copy.deepcopy(script_graph())
@@ -381,13 +391,7 @@ def test_markup_in_the_data_is_shown_as_text_and_adds_no_element():
     page = Tags(dom)
     assert sorted(page.tags) == sorted(plain.tags)
     assert "<b>Staff</b> technicians" in "".join(page.text["panel-body"])
-    why = Tags(
-        driver.engine_dom(
-            script_graph(),
-            after_ready=f'HlidskjalfEngine.click("{script_graph()["key_actions"][0]["node"]}")',
-        )
-    )
-    assert "<i>Because</i>" in "".join(why.text["panel-body"])
+    assert "<i>Because</i>" in "".join(page.text["key-actions"])
     assert "<u>cut</u>" in "".join(page.text["pruned"])
     state = driver.read_state(dom)
     assert state["panel"]["text"] == "<img src=x onerror=alert(1)>"
@@ -419,13 +423,13 @@ def _chain(graph: dict, start: str) -> set[str]:
 
 
 @needs_browser
-def test_a_click_shows_only_the_whole_chain_and_hides_the_rest():
+def test_a_click_focuses_the_whole_chain_and_fades_the_rest():
     graph = chain_graph()
     target = graph["key_actions"][0]["node"]
     state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
     expected = _chain(graph, target)
     assert set(state["focus"]) == expected
-    assert {n["id"] for n in state["nodes"] if not n["hidden"]} == expected
+    assert {n["id"] for n in state["nodes"] if not n["faded"]} == expected
 
 
 @needs_browser
@@ -436,7 +440,16 @@ def test_a_click_on_the_background_ends_the_focus():
         graph,
         after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()',
     )
-    assert state["focus"] == [] and not any(n["hidden"] for n in state["nodes"])
+    assert state["focus"] == [] and not any(n["faded"] for n in state["nodes"])
+
+
+@needs_browser
+def test_a_key_action_in_the_list_focuses_its_chain():
+    graph = chain_graph()
+    state = driver.render_engine(
+        graph, after_ready="document.querySelector('#key-actions li:nth-child(2)').click()"
+    )
+    assert set(state["focus"]) == _chain(graph, "pop_growth.grow_pops")
 
 
 @needs_browser
@@ -471,69 +484,3 @@ def test_node_size_follows_the_weighted_impact_on_the_goals():
     for edge in graph["edges"]:
         if edge["kind"] == "obstacle":
             assert nodes[edge["to"]]["impact"] >= nodes[edge["from"]]["impact"]
-
-
-@needs_browser
-def test_the_focused_chain_is_centred_and_the_whole_graph_comes_back():
-    graph = chain_graph()
-    target = graph["key_actions"][0]["node"]
-    focused = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
-    whole = driver.render_engine(
-        graph, after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()'
-    )
-    assert focused["focus_in_view"] is True
-    assert whole["focus_in_view"] is None
-    assert not any(n["hidden"] for n in whole["nodes"])
-
-
-@needs_browser
-def test_an_edge_click_shows_both_chains_and_the_edge_weight():
-    graph = chain_graph()
-    edge = next(e for e in graph["edges"] if e["kind"] == "cause")
-    edge |= {"weight": "high", "weight_reason": "Most of the gap."}
-    state = driver.render_engine(
-        graph, after_ready=f'HlidskjalfEngine.clickEdge("{edge["from"]}", "{edge["to"]}")'
-    )
-    assert state["panel"]["kind"] == "edge"
-    assert state["panel"]["weight"] == "high"
-    assert state["panel"]["weight_reason"] == "Most of the gap."
-    assert {edge["from"], edge["to"]} <= set(state["focus"])
-
-
-def _no_overlap(nodes):
-    for a, b in itertools.combinations(nodes, 2):
-        apart_x = abs(a["x"] - b["x"]) >= (a["width"] + b["width"]) / 2 - 0.5
-        apart_y = abs(a["y"] - b["y"]) >= (a["height"] + b["height"]) / 2 - 0.5
-        assert apart_x or apart_y, (a["id"], b["id"])
-
-
-def _same_order(before, after, axis):
-    ids = sorted(after)
-    for a, b in itertools.combinations(ids, 2):
-        if before[a][axis] < before[b][axis] - 0.5:
-            assert after[a][axis] <= after[b][axis] + 0.5, (axis, a, b)
-
-
-@needs_browser
-@pytest.mark.parametrize("target_index", [0, 1])
-def test_the_focused_chain_keeps_its_shape_and_nothing_overlaps(target_index):
-    graph = chain_graph()
-    whole = {n["id"]: n for n in driver.render_engine(graph)["nodes"]}
-    target = graph["key_actions"][target_index]["node"]
-    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
-    shown = {n["id"]: n for n in state["nodes"] if not n["hidden"]}
-    assert set(shown) == set(state["focus"])
-    _no_overlap(list(shown.values()))
-    _same_order(whole, shown, "x")
-    _same_order(whole, shown, "y")
-
-
-@needs_browser
-def test_after_the_focus_the_whole_graph_returns_to_its_own_layout():
-    graph = chain_graph()
-    whole = {n["id"]: (n["x"], n["y"]) for n in driver.render_engine(graph)["nodes"]}
-    target = graph["key_actions"][0]["node"]
-    back = driver.render_engine(
-        graph, after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()'
-    )
-    assert {n["id"]: (n["x"], n["y"]) for n in back["nodes"]} == whole

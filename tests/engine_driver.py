@@ -157,9 +157,7 @@ def engine_dom(
     html = embed_graph((index or ENGINE / "index.html").read_text(encoding="utf-8"), graph)
     if after_ready:
         hook = (
-            # no animation: headless Chromium runs animation frames unreliably, and the end state is what counts
-            '<script id="driver-hook">window.hlidskjalfAnimationMs = 0;'
-            'document.addEventListener("engine-ready", () => {'
+            '<script id="driver-hook">document.addEventListener("engine-ready", () => {'
             f"{after_ready}}}, {{once: true}});</script>"
         )
         # The unbundled page loads engine.js; the bundle has the same code inline as <script id="engine-script">.

@@ -27,9 +27,13 @@
   </header>
   <div id="stage">
     <div id="cy"></div>
+    <aside id="panel" aria-live="polite"><div id="panel-body"></div></aside>
   </div>
-  <section id="panel" aria-live="polite"><div id="panel-body"></div></section>
   <ul id="legend" aria-label="Legend"></ul>
+  <section id="actions-section" hidden>
+    <h2>Key Actions, ranked <span class="hint">(click one to focus its chain)</span></h2>
+    <ol id="key-actions"></ol>
+  </section>
   <section id="pruned-section" hidden>
     <h2>Pruned (cut by the model, with the reason)</h2>
     <ul id="pruned"></ul>

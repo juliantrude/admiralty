@@ -16,9 +16,7 @@
   const VIEW_PADDING = 30;
   const ICON_SIZE = 22;
   const ICON_SPACE = 30; // icon plus gap on the left of every node
-  const FOCUS_PADDING = 40;
-  const FOCUS_MAX_ZOOM = 1.4; // a short chain is not blown up beyond this
-  const ANIMATION_MS = 500;
+  const FADED_OPACITY = 0.15;
   const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
   const EDGE_KINDS = ["cause", "remedy", "obstacle"];
   const REQUIRED_ARRAYS = ["nodes", "edges", "circles", "key_actions", "pruned"];
@@ -152,48 +150,6 @@
     if (impact >= 1) return 2;
     if (impact >= 0.55) return 1;
     return 0;
-  }
-
-  const COLUMN_GAP = 70;
-  const ROW_GAP = 22;
-
-  /** Overlapping intervals [lo, hi] merged into bands, in order: [{lo, hi, newLo}] once placed. */
-  function bands(intervals, gap) {
-    const sorted = [...intervals].sort((a, b) => a.lo - b.lo || a.hi - b.hi);
-    const merged = [];
-    for (const { lo, hi } of sorted) {
-      const last = merged[merged.length - 1];
-      if (last && lo <= last.hi) last.hi = Math.max(last.hi, hi);
-      else merged.push({ lo, hi });
-    }
-    let next = 0;
-    for (const band of merged) {
-      band.newLo = next;
-      next += band.hi - band.lo + gap;
-    }
-    return merged;
-  }
-
-  /**
-   * Where the nodes of a focused chain go: the chain keeps the shape it has in the full layout and only loses the gaps
-   * that hidden nodes leave. Columns are the merged x-extents of the chain's nodes, rows the merged y-extents; each
-   * keeps its order and each node its offset inside its column and row, so nothing that did not overlap before can
-   * overlap now. `boxes` maps id -> {x, y, width, height} (centre positions). Pure, so it is testable.
-   */
-  function compactChain(boxes) {
-    const ids = Object.keys(boxes).sort();
-    const xBands = bands(ids.map((id) => ({ lo: boxes[id].x - boxes[id].width / 2, hi: boxes[id].x + boxes[id].width / 2 })), COLUMN_GAP);
-    const yBands = bands(ids.map((id) => ({ lo: boxes[id].y - boxes[id].height / 2, hi: boxes[id].y + boxes[id].height / 2 })), ROW_GAP);
-    const shift = (value, list) => {
-      const band = list.find((b) => value >= b.lo - 1e-6 && value <= b.hi + 1e-6);
-      return band.newLo + (value - band.lo);
-    };
-    const out = {};
-    for (const id of ids) {
-      const b = boxes[id];
-      out[id] = { x: round(shift(b.x, xBands)), y: round(shift(b.y, yBands)) };
-    }
-    return out;
   }
 
   /** The chain of a node: everything it can be reached from and everything it reaches, the node included. */
@@ -349,16 +305,6 @@
       panel.circle = circle.id;
       panel.break_point = circle.break_point === id;
     }
-    return panel;
-  }
-
-  function edgePanelOf(doc, from, to) {
-    const edge = doc.edges.find((e) => e.from === from && e.to === to);
-    if (!edge) return null;
-    const title = (nodeId) => (doc.nodes.find((n) => n.id === nodeId) || { title: nodeId }).title;
-    const panel = { kind: "edge", id: `${from}>${to}`, title: `${title(from)} \u2192 ${title(to)}`, edge_kind: edge.kind };
-    if (edge.weight) panel.weight = edge.weight;
-    if (edge.weight_reason) panel.weight_reason = edge.weight_reason;
     return panel;
   }
 
@@ -542,7 +488,7 @@
           badges: node.data("badges"),
           scale: node.data("scale"),
           impact: node.data("impact"),
-          hidden: node.hasClass("hidden"),
+          faded: node.hasClass("faded"),
         };
         for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"]]) {
           if (node.data(field) !== undefined) state[key] = node.data(field);
@@ -576,21 +522,11 @@
       key_actions: [...doc.key_actions]
         .sort((a, b) => a.rank - b.rank)
         .map((a) => ({ rank: a.rank, node: a.node, text: keyActionText(doc, a) })),
-      zoom: round(cy.zoom()),
-      focus_in_view: focusInView(cyInstance),
       pruned: doc.pruned.map((p) => ({ id: p.id, reason: p.reason })),
       selected: [...current.selected].sort(),
       focus: [...current.focus].sort(),
       panel: current.panel,
     };
-  }
-
-  /** Whether the whole focused chain lies inside the visible area (null without a focus). */
-  function focusInView(cyInstance) {
-    if (!current.focus.size) return null;
-    const box = cyInstance.elements().not(".hidden").not(".serves").renderedBoundingBox({ includeLabels: false });
-    const area = cyInstance.container();
-    return box.x1 >= -1 && box.y1 >= -1 && box.x2 <= area.clientWidth + 1 && box.y2 <= area.clientHeight + 1;
   }
 
   function publish() {
@@ -707,7 +643,7 @@
       style: { width: 1, "line-style": "dashed", "line-color": "#5b6573", "target-arrow-color": "#5b6573", display: "none", "curve-style": "unbundled-bezier", "control-point-distances": 60 },
     },
     { selector: "edge.serves.shown", style: { display: "element" } },
-    { selector: ".hidden", style: { display: "none" } },
+    { selector: ".faded", style: { opacity: FADED_OPACITY } },
   ];
 
   // --- DOM: header, legend, lists, panel (text only) ----------------------------------------------
@@ -755,11 +691,23 @@
     }
   }
 
-  function renderPruned(doc) {
+  function renderLists(doc) {
+    const actions = document.getElementById("key-actions");
+    actions.replaceChildren();
+    for (const action of [...doc.key_actions].sort((a, b) => a.rank - b.rank)) {
+      const item = el("li", "clickable", keyActionText(doc, action).replace(/^\d+\.\s*/, ""));
+      item.value = action.rank;
+      item.tabIndex = 0;
+      item.dataset.node = action.node;
+      item.addEventListener("click", () => selectNode(action.node));
+      actions.append(item);
+    }
+    actions.hidden = doc.key_actions.length === 0;
     const pruned = document.getElementById("pruned");
     pruned.replaceChildren();
     for (const entry of doc.pruned) pruned.append(el("li", "", `${entry.id} — ${entry.reason}`));
     document.getElementById("pruned-section").hidden = doc.pruned.length === 0;
+    document.getElementById("actions-section").hidden = doc.key_actions.length === 0;
   }
 
   const refText = (ref) => {
@@ -770,12 +718,6 @@
 
   /** The rows of the panel as [label, [lines]]; the same panel object gives the same rows. */
   function panelRows(panel) {
-    if (panel.kind === "edge") {
-      const rows = [["Type", [`edge into a ${panel.edge_kind}`]]];
-      rows.push(["Weight", [panel.weight || "none (Obstacle edges carry what they block)"]]);
-      if (panel.weight_reason) rows.push(["Why this weight", [panel.weight_reason]]);
-      return rows;
-    }
     if (panel.kind === "circle") {
       const rows = [["Type", ["Vicious Circle"]], ["Members", panel.members.map(refText)]];
       rows.push(["Break point", [panel.break_point ? panel.break_point.title : "none (judgement needed)"]]);
@@ -810,19 +752,16 @@
     const box = document.getElementById("panel-body");
     box.replaceChildren();
     if (!panel) {
-      box.append(el("p", "hint", "Click a node or an edge to see its chain and its details. Esc or a click on the background shows the whole graph again."));
+      box.append(el("p", "hint", "Click a node, a Key Action or a Vicious Circle to see its details."));
       return;
     }
     box.append(el("h2", "", panel.title));
     const list = el("dl");
     for (const [label, lines] of panelRows(panel)) {
-      // one group per row, so the columns never split a label from its value
-      const row = el("div", "row");
-      row.append(el("dt", "", label));
+      list.append(el("dt", "", label));
       const value = el("dd");
       for (const line of lines) value.append(el("div", "line", line));
-      row.append(value);
-      list.append(row);
+      list.append(value);
     }
     box.append(list);
   }
@@ -834,117 +773,16 @@
     cy.edges(".serves").filter((edge) => ids.includes(edge.source().id()) || ids.includes(edge.target().id())).addClass("shown");
   }
 
-  /** Focus: only the chains of the selected nodes stay on screen, centred; no selection shows the whole graph. */
-  const reducedMotion = () => window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  // window.hlidskjalfAnimationMs overrides the duration: the test driver sets 0, since headless Chromium does not run
-  // animation frames reliably and the end state is what the tests check.
-  const animationMs = () =>
-    typeof window.hlidskjalfAnimationMs === "number" ? window.hlidskjalfAnimationMs : reducedMotion() ? 0 : ANIMATION_MS;
-
-  /** Zoom and pan that put the box (model coordinates) in the middle of the graph area, readable but not blown up. */
-  function viewFor(box, padding, maxZoom) {
-    const area = cy.container();
-    const width = Math.max(1, box.x2 - box.x1);
-    const height = Math.max(1, box.y2 - box.y1);
-    const zoom = Math.min(maxZoom, (area.clientWidth - 2 * padding) / width, (area.clientHeight - 2 * padding) / height);
-    return {
-      zoom,
-      pan: {
-        x: area.clientWidth / 2 - ((box.x1 + box.x2) / 2) * zoom,
-        y: area.clientHeight / 2 - ((box.y1 + box.y2) / 2) * zoom,
-      },
-    };
-  }
-
-  function boxOf(positions, nodes) {
-    const box = { x1: Infinity, y1: Infinity, x2: -Infinity, y2: -Infinity };
-    nodes.forEach((node) => {
-      const p = positions[node.id()];
-      box.x1 = Math.min(box.x1, p.x - node.data("width") / 2);
-      box.x2 = Math.max(box.x2, p.x + node.data("width") / 2);
-      box.y1 = Math.min(box.y1, p.y - node.data("height") / 2);
-      box.y2 = Math.max(box.y2, p.y + node.data("height") / 2);
-    });
-    return box;
-  }
-
-  /**
-   * Focus as one movement (docs/plans/M6-revision.md): what leaves the chain fades out, the chain's nodes glide from
-   * their places in the full layout to the compacted ones and the view follows, so the eye keeps its bearings. No
-   * selection plays it backwards. A newer selection cancels an older movement midway.
-   */
+  /** Focus: the chains of the selected nodes stay, everything else steps back. No selection, no focus. */
   function applyFocus(ids) {
-    if (!current.positions) return; // the first layout is still running
-    const token = (current.focusToken = (current.focusToken || 0) + 1);
-    const ms = animationMs();
-    cy.elements().stop(true, false);
-    cy.stop(true, false);
+    cy.elements().removeClass("faded");
     current.focus = new Set();
+    if (!ids.length) return;
     for (const id of ids) for (const member of chainOf(current.doc, id)) current.focus.add(member);
-    const keep = (node) => !ids.length || current.focus.has(node.id());
-    const keepEdge = (edge) => keep(edge.source()) && keep(edge.target());
-    const nodes = cy.nodes().filter(keep);
-    const leaving = cy.nodes().not(nodes).union(cy.edges().not(".serves").filter((e) => !keepEdge(e)));
-    const staying = nodes.union(cy.edges().not(".serves").filter(keepEdge));
-
-    let targets;
-    if (ids.length) {
-      const boxes = {};
-      nodes.forEach((node) => {
-        const p = current.positions.get(node.id());
-        boxes[node.id()] = { x: p.x, y: p.y, width: node.data("width"), height: node.data("height") };
-      });
-      targets = compactChain(boxes);
-    } else {
-      targets = Object.fromEntries([...current.positions].map(([id, p]) => [id, p]));
-    }
-    const view = ids.length
-      ? viewFor(boxOf(targets, nodes), FOCUS_PADDING, FOCUS_MAX_ZOOM)
-      : overviewView(targets);
-
-    const returning = staying.filter(".hidden");
-    returning.style("opacity", 0); // what comes back fades in from nothing
-    staying.removeClass("hidden");
-    staying.animate({ style: { opacity: 1 } }, { duration: ms });
-    leaving.animate(
-      { style: { opacity: 0 } },
-      { duration: ms, complete: () => token === current.focusToken && leaving.addClass("hidden") }
-    );
-    nodes.forEach((node) => node.animate({ position: targets[node.id()] }, { duration: ms }));
-    cy.animate(
-      { zoom: view.zoom, pan: view.pan },
-      {
-        duration: ms,
-        complete: () => {
-          if (token !== current.focusToken) return;
-          leaving.addClass("hidden"); // the fade may finish a frame later; the state must not wait for it
-          staying.forEach((element) => element.removeStyle("opacity"));
-          publish();
-          document.dispatchEvent(new CustomEvent("engine-focused"));
-        },
-      }
-    );
-    if (!ms) {
-      // no motion wanted: land at once
-      cy.elements().stop(true, false);
-      cy.stop(true, false);
-      nodes.forEach((node) => node.position(targets[node.id()]));
-      leaving.addClass("hidden");
-      staying.forEach((element) => element.removeStyle("opacity"));
-      cy.viewport(view);
-      publish();
-    }
-  }
-
-  /** The whole graph's view: all of it when that stays readable, else its top left at the readable zoom. */
-  function overviewView(positions) {
-    const box = boxOf(positions, cy.nodes());
-    const fit = viewFor(box, VIEW_PADDING, Infinity);
-    if (fit.zoom >= READABLE_ZOOM) return fit;
-    return {
-      zoom: READABLE_ZOOM,
-      pan: { x: VIEW_PADDING - box.x1 * READABLE_ZOOM, y: VIEW_PADDING - box.y1 * READABLE_ZOOM },
-    };
+    cy.nodes().filter((node) => !current.focus.has(node.id())).addClass("faded");
+    cy.edges()
+      .filter((edge) => !(current.focus.has(edge.source().id()) && current.focus.has(edge.target().id())))
+      .addClass("faded");
   }
 
   function applySelection(ids, panel) {
@@ -962,13 +800,6 @@
     applySelection([id], panelOf(current.doc, id));
   }
 
-  /** An edge: the chains of both its ends, and the edge itself with its weight in the details. */
-  function selectEdge(edgeId) {
-    const edge = cy.getElementById(edgeId);
-    const ends = [edge.data("source"), edge.data("target")];
-    applySelection(ends, edgePanelOf(current.doc, ends[0], ends[1]));
-  }
-
   function selectCircle(circleId) {
     const circle = current.doc.circles.find((c) => c.id === circleId);
     applySelection(circle.members, circlePanelOf(current.doc, circleId));
@@ -981,10 +812,6 @@
   /** The seam for the driver: emits the same `tap` event a click on the node produces. */
   function click(id) {
     cy.getElementById(id).emit("tap");
-  }
-
-  function clickEdge(from, to) {
-    cy.getElementById(`${from}>${to}`).emit("tap");
   }
 
   // --- drawing --------------------------------------------------------------------------------------
@@ -1024,17 +851,11 @@
     current = { doc, panel: null, selected: new Set(), focus: new Set() };
     renderHeader(doc);
     renderLegend(doc);
-    renderPruned(doc);
+    renderLists(doc);
     renderPanel(null);
     cy.on("tap", "node", (event) => selectNode(event.target.id()));
     cy.on("tap", (event) => {
       if (event.target === cy) clearSelection();
-    });
-    cy.on("tap", "edge", (event) => {
-      if (!event.target.hasClass("serves")) selectEdge(event.target.id());
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && current && current.panel) clearSelection();
     });
     const constraint = layerConstraints(doc);
     const started = performance.now();
@@ -1050,7 +871,6 @@
       },
       stop: () => {
         window.engineLayoutMs = Math.round(performance.now() - started);
-        current.positions = new Map(cy.nodes().map((node) => [node.id(), { ...node.position() }]));
         readableView();
         addServesEdges(doc);
         publish();
@@ -1114,7 +934,6 @@
 
   window.HlidskjalfEngine = {
     nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep,
-    edgePanelOf, clickEdge, compactChain,
     tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
   };
   start();
