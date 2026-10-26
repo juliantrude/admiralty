@@ -153,14 +153,13 @@ section li::marker { color: var(--accent); font-weight: 600; }
   const TITLE_MAX = 40;
   const NODE_HEIGHT = 44;
   const NODE_MIN_WIDTH = 132;
-  const NODE_MAX_WIDTH = 320;
+  const NODE_MAX_WIDTH = 480;
   const CHAR_WIDTH = 9; // about 0.6 em of the 15 px node font
-  const TAG_CHAR_WIDTH = 6;
-  const NODE_PADDING = 20;
   const READABLE_ZOOM = 0.8;
   const VIEW_PADDING = 30;
   const ICON_SIZE = 35; // big enough to tell a node's theme at a glance (Julian, 2026-10-26)
-  const ICON_SPACE = 44; // icon plus gap on the left of every node
+  const ICON_SPACE = 54; // 8 px margin, the icon, 11 px gap before the text
+  const RIGHT_PADDING = 16; // between the text and the right border
   const NODE_FONT = 15;
   const FADED_OPACITY = 0.15;
   const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
@@ -175,10 +174,23 @@ section li::marker { color: var(--accent); font-weight: 600; }
   }
 
   /** Size from the visible title and the tag line alone: no DOM measuring, so every machine gets the same layout. */
+  let measureContext = null;
+
+  /** The drawn width of a label in the node font: measured with the font the canvas will use, so the text never runs
+   *  into the icon or over the border. Falls back to an estimate where no canvas exists. Same font, same width. */
+  function textWidth(text) {
+    try {
+      measureContext = measureContext || document.createElement("canvas").getContext("2d");
+      measureContext.font = `${NODE_FONT}px ${FONT}`;
+      return Math.ceil(measureContext.measureText(text).width);
+    } catch (_) {
+      return CHAR_WIDTH * Array.from(text).length;
+    }
+  }
+
   function nodeSize(title, tag, badges) {
-    const titleWidth = CHAR_WIDTH * Array.from(String(badges || "") + nodeLabel(title)).length;
-    const tagWidth = TAG_CHAR_WIDTH * Array.from(String(tag || "")).length;
-    const width = NODE_PADDING + ICON_SPACE + Math.max(titleWidth, tagWidth);
+    const titleWidth = textWidth(String(badges || "") + nodeLabel(title));
+    const width = ICON_SPACE + titleWidth + RIGHT_PADDING;
     return { width: Math.min(NODE_MAX_WIDTH, Math.max(NODE_MIN_WIDTH, width)), height: NODE_HEIGHT };
   }
 
@@ -579,8 +591,8 @@ section li::marker { color: var(--accent); font-weight: 600; }
         impact: node.type === "goal" ? null : round(impact.get(node.id) || 0),
         fontSize: Math.round(NODE_FONT * scale * 10) / 10,
         iconSize: Math.round(ICON_SIZE * scale),
-        textShift: Math.round((ICON_SPACE * scale) / 2),
-        textWidth: Math.round(size.width - (ICON_SPACE + NODE_PADDING) * scale),
+        // centre the text in the room between the icon and the right padding
+        textShift: Math.round(((ICON_SPACE - RIGHT_PADDING) * scale) / 2),
         width: size.width,
         height: size.height,
         model: node.source === "model",
@@ -775,7 +787,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
         "background-image": "data(icon)",
         "background-width": "data(iconSize)",
         "background-height": "data(iconSize)",
-        "background-position-x": 7,
+        "background-position-x": 8,
         "background-position-y": "50%",
         "background-fit": "none",
         "background-clip": "none",
@@ -1199,7 +1211,19 @@ section li::marker { color: var(--accent); font-weight: 600; }
     });
   }
 
+  /** Wait for the node font (briefly: offline it never comes and the fallback face is measured instead). */
+  async function fontReady() {
+    if (!document.fonts || !document.fonts.load) return;
+    const timeout = new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      await Promise.race([document.fonts.load(`${NODE_FONT}px ${FONT}`), timeout]);
+    } catch (_) {
+      // no font: measure the fallback
+    }
+  }
+
   async function start() {
+    await fontReady();
     applyTheme(storedTheme() || "dark");
     document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
     // the canvas draws its labels once; redraw them when the web font has arrived

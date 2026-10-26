@@ -257,7 +257,7 @@ def test_a_wider_title_gives_a_wider_node_and_a_long_one_is_cut():
     sizes = by_id(driver.render_engine(graph))
     assert sizes["energy.few_producers"]["width"] > sizes["energy.weak_multipliers"]["width"]
     long = sizes["energy.few_producers"]
-    assert long["width"] <= 320 * long["scale"]  # the cap grows with the impact size step
+    assert long["width"] <= 480 * long["scale"]  # the cap grows with the impact size step
 
 
 @needs_browser
