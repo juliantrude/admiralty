@@ -12,10 +12,10 @@ import argparse
 import sys
 from pathlib import Path
 
-from hlidskjalf.extract.names import Localisation
-from hlidskjalf.game import GameEnvironment
-from hlidskjalf.gamefiles import GameData
-from hlidskjalf.graph.generator import game_version, generate, load_allow_list, write
+from admiralty.extract.names import Localisation
+from admiralty.game import GameEnvironment
+from admiralty.gamefiles import GameData
+from admiralty.graph.generator import game_version, generate, load_allow_list, write
 
 ROOT = Path(__file__).resolve().parent.parent
 ALLOW_UNNAMED = Path(__file__).with_name("gen_mechanics_allow_unnamed.txt")

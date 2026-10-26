@@ -9,11 +9,11 @@ from datetime import UTC, datetime
 import pytest
 from conftest import SAVES_DIR, VULKAN, reference_save
 
-from hlidskjalf.claims.check import check_answer
-from hlidskjalf.claims.evidence import build_evidence, read_turn_log
-from hlidskjalf.mcp.service import CampaignService
-from hlidskjalf.workspace.config import CampaignConfig
-from hlidskjalf.workspace.turnlog import turn_log_path
+from admiralty.claims.check import check_answer
+from admiralty.claims.evidence import build_evidence, read_turn_log
+from admiralty.mcp.service import CampaignService
+from admiralty.workspace.config import CampaignConfig
+from admiralty.workspace.turnlog import turn_log_path
 
 pytestmark = pytest.mark.saves
 

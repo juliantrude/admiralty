@@ -8,8 +8,8 @@ import re
 from contextlib import redirect_stdout
 from pathlib import Path
 
-from hlidskjalf.claims.blocks import summarise
-from hlidskjalf.cli import main
+from admiralty.claims.blocks import summarise
+from admiralty.cli import main
 
 ROOT = Path(__file__).parent.parent
 SKILL = ROOT / "skills" / "review-blocks" / "SKILL.md"
@@ -40,8 +40,8 @@ def block(prompt, findings, released=False):
 
 def write_log(tmp_path: Path, lines: list[str]) -> Path:
     workspace = tmp_path / "ws"
-    (workspace / ".hlidskjalf").mkdir(parents=True)
-    (workspace / ".hlidskjalf" / "blocks.jsonl").write_text(
+    (workspace / ".admiralty").mkdir(parents=True)
+    (workspace / ".admiralty" / "blocks.jsonl").write_text(
         "".join(line + "\n" for line in lines), encoding="utf-8"
     )
     return workspace
@@ -69,7 +69,7 @@ def fixture_log(tmp_path: Path) -> Path:
 
 def test_no_log_is_an_empty_summary(tmp_path):
     workspace = tmp_path / "ws"
-    (workspace / ".hlidskjalf").mkdir(parents=True)
+    (workspace / ".admiralty").mkdir(parents=True)
     result = summarise(workspace)
     assert result["blocks"] == 0 and result["claims"] == 0
     assert result["groups"] == [] and result["released"] == []
@@ -150,7 +150,7 @@ def test_frontmatter_names_the_skill():
 
 def test_every_command_and_flag_the_skill_runs_exists():
     text = SKILL.read_text(encoding="utf-8")
-    commands = set(re.findall(r"hlidskjalf (\w+(?: [\w-]+)?)", text))
+    commands = set(re.findall(r"admiralty (\w+(?: [\w-]+)?)", text))
     assert commands == {"blocks summary"}
     out = io.StringIO()
     try:
@@ -175,7 +175,7 @@ def summarise_keys() -> set[str]:
 
     with tempfile.TemporaryDirectory() as tmp:
         workspace = Path(tmp)
-        (workspace / ".hlidskjalf").mkdir()
+        (workspace / ".admiralty").mkdir()
         return set(summarise(workspace))
 
 

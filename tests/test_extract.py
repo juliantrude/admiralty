@@ -14,8 +14,8 @@ import pytest
 from conftest import SAVES_DIR, VULKAN, budget, reference_save
 from golden_values import PENDING, matches, value
 
-from hlidskjalf.extract.diff import DiffError, diff_extracts
-from hlidskjalf.extract.snapshot import Extractor
+from admiralty.extract.diff import DiffError, diff_extracts
+from admiralty.extract.snapshot import Extractor
 
 pytestmark = pytest.mark.saves
 

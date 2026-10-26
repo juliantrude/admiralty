@@ -1,6 +1,6 @@
 """`only_clears`: a metric that covers only part of an Obstacle can rule it out, never confirm it."""
 
-from hlidskjalf.graph.metrics import evaluate
+from admiralty.graph.metrics import evaluate
 
 METRICS = {"room.generator_free": {"path": "room.district_types_free.generator"}}
 

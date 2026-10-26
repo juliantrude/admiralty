@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 import yaml
 
-from hlidskjalf.workspace.config import (
+from admiralty.workspace.config import (
     CONFIG_FILE,
     CampaignConfig,
     Player,
@@ -13,7 +13,7 @@ from hlidskjalf.workspace.config import (
     SetupMissing,
     write_config,
 )
-from hlidskjalf.workspace.layout import (
+from admiralty.workspace.layout import (
     DIRECTORIES,
     NotAWorkspace,
     create_workspace,
@@ -23,8 +23,8 @@ from hlidskjalf.workspace.layout import (
 
 @pytest.fixture(autouse=True)
 def no_env_overrides(monkeypatch):
-    monkeypatch.delenv("HLIDSKJALF_SAVE_DIR", raising=False)
-    monkeypatch.delenv("HLIDSKJALF_EMPIRE", raising=False)
+    monkeypatch.delenv("ADMIRALTY_SAVE_DIR", raising=False)
+    monkeypatch.delenv("ADMIRALTY_EMPIRE", raising=False)
 
 
 def saves(tmp_path):
@@ -102,15 +102,15 @@ def test_hand_written_invalid_mode_fails_on_load(tmp_path):
 
 def test_env_overrides_still_win(tmp_path, monkeypatch):
     write_config(tmp_path, save_dir="/x", empire="Plexxi")
-    monkeypatch.setenv("HLIDSKJALF_SAVE_DIR", "/elsewhere")
-    monkeypatch.setenv("HLIDSKJALF_EMPIRE", "Other")
+    monkeypatch.setenv("ADMIRALTY_SAVE_DIR", "/elsewhere")
+    monkeypatch.setenv("ADMIRALTY_EMPIRE", "Other")
     config = CampaignConfig.load(tmp_path)
     assert (str(config.save_dir), config.empire) == ("/elsewhere", "Other")
 
 
 def test_env_alone_works_without_a_yaml_file(tmp_path, monkeypatch):
-    monkeypatch.setenv("HLIDSKJALF_SAVE_DIR", "/elsewhere")
-    monkeypatch.setenv("HLIDSKJALF_EMPIRE", "Other")
+    monkeypatch.setenv("ADMIRALTY_SAVE_DIR", "/elsewhere")
+    monkeypatch.setenv("ADMIRALTY_EMPIRE", "Other")
     assert CampaignConfig.load(tmp_path).empire == "Other"
 
 
@@ -149,7 +149,7 @@ def test_validate_reports_each_problem(tmp_path):
     assert "does not exist" in validate_workspace(tmp_path / "nope")[0]
     ws = tmp_path / "ws"
     ws.mkdir()
-    assert "hlidskjalf:setup" in validate_workspace(ws)[0]  # no campaign.yaml
+    assert "admiralty:setup" in validate_workspace(ws)[0]  # no campaign.yaml
     write_config(ws, save_dir=tmp_path / "gone", empire="Plexxi")
     problems = validate_workspace(ws)
     assert any("archive/ is missing" in p for p in problems)

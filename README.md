@@ -1,9 +1,12 @@
-# Hliðskjálf
+# Admiralty
 
-An AI system that helps you master Stellaris faster. Named after Odin's high seat, from which he overlooks all worlds, and to which his ravens bring their reports:
+An AI system that helps you master Stellaris faster, from the admiral's chair:
 
-- **Huginn** (thought) accompanies you while you play, either as a **Coach** who trains you with Socratic questions or as a **Consultant** who tells you how to win right now.
-- **Muninn** (memory) reflects on a Play Session or a whole Campaign afterwards.
+- **Academy** coaches you while you play: a **Coach** trains you with Socratic questions.
+- **Ops** consults you while you play: a **Consultant** briefs you on how to win right now.
+- **Debrief** gives you feedback on a Play Session or a whole Campaign afterwards.
+
+Formerly called Hliðskjálf (Huginn and Muninn); the design records under docs/plans and docs/adr keep the old names.
 
 Runs as a Claude Code plugin. Reads your Stellaris save files, no game mod required.
 

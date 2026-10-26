@@ -1,19 +1,19 @@
 ---
 name: review-blocks
-description: Developer skill for Hliðskjálf, not for the Player. Reads the log of the Unverified Claim check (`.hlidskjalf/blocks.jsonl`), sorts every group of blocked claims into a real error of the model or a false positive of the check, and writes a proposal per group into `docs/proposals/claims.md`. Use when a developer asks to review the blocks, the false positives or the Unverified Claim hook.
+description: Developer skill for Admiralty, not for the Player. Reads the log of the Unverified Claim check (`.admiralty/blocks.jsonl`), sorts every group of blocked claims into a real error of the model or a false positive of the check, and writes a proposal per group into `docs/proposals/claims.md`. Use when a developer asks to review the blocks, the false positives or the Unverified Claim hook.
 ---
 
 # Reviewing the blocks of the Unverified Claim check
 
 The Stop hook blocks an answer when a number, date or name in it is not in the tool results of
-the session. Every block is one line in `<workspace>/.hlidskjalf/blocks.jsonl`. You review that
+the session. Every block is one line in `<workspace>/.admiralty/blocks.jsonl`. You review that
 log for a developer. You **propose**; you never edit code, `knowledge/` or tests, and you never
 touch `blocks.jsonl`.
 
 The workspace is the directory the developer names (default: the current directory). Run
 
 ```
-uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} hlidskjalf blocks summary --workspace DIR
+uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty blocks summary --workspace DIR
 ```
 
 Output is JSON: `blocks`, `claims`, `unreadable_lines`, `by_kind`, `groups` and `released`.

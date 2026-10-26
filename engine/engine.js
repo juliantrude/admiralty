@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Hliðskjálf graph engine (docs/plans/M6.md). One fixed program, one data file: a Solution Graph.
+ * Admiralty graph engine (docs/plans/M6.md). One fixed program, one data file: a Solution Graph.
  * Everything from the JSON reaches the DOM through textContent or Cytoscape's canvas, never as HTML.
  * Layout is deterministic: sorted ids, sizes from the label alone (no DOM measuring), fixed ELK options.
  */
@@ -95,7 +95,7 @@
       judgeBorder: "#6b7686",
     },
   };
-  const THEME_KEY = "hlidskjalf-theme";
+  const THEME_KEY = "admiralty-theme";
   let T = THEMES.dark;
 
   /** Circle id -> colour, and node id -> circle, both from circle order in the data. */
@@ -939,7 +939,7 @@
       x: area.clientWidth / 2 - ((target.x1 + target.x2) / 2) * zoom,
       y: area.clientHeight / 2 - ((target.y1 + target.y2) / 2) * zoom,
     };
-    const instant = typeof window.hlidskjalfAnimationMs === "number" || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const instant = typeof window.admiraltyAnimationMs === "number" || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     cy.stop(true, false);
     if (instant) cy.viewport({ zoom, pan });
     else cy.animate({ zoom, pan }, { duration: FOCUS_MOVE_MS });
@@ -1107,7 +1107,7 @@
     cy.emit("tap");
   }
 
-  window.HlidskjalfEngine = {
+  window.AdmiraltyEngine = {
     nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep,
     tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
   };

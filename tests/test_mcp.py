@@ -10,10 +10,10 @@ import time
 import pytest
 from conftest import SAVES_DIR, VULKAN, reference_save
 
-from hlidskjalf.mcp.server import build_server
-from hlidskjalf.mcp.service import CampaignService
-from hlidskjalf.workspace.config import CampaignConfig, SetupMissing
-from hlidskjalf.workspace.turnlog import TURN_LOG
+from admiralty.mcp.server import build_server
+from admiralty.mcp.service import CampaignService
+from admiralty.workspace.config import CampaignConfig, SetupMissing
+from admiralty.workspace.turnlog import TURN_LOG
 
 pytestmark = pytest.mark.saves
 
@@ -37,9 +37,9 @@ def service(tmp_path_factory, save_dir) -> CampaignService:
 
 
 def test_setup_missing_is_explained(tmp_path, monkeypatch):
-    monkeypatch.delenv("HLIDSKJALF_SAVE_DIR", raising=False)
-    monkeypatch.delenv("HLIDSKJALF_EMPIRE", raising=False)
-    with pytest.raises(SetupMissing, match="hlidskjalf:setup"):
+    monkeypatch.delenv("ADMIRALTY_SAVE_DIR", raising=False)
+    monkeypatch.delenv("ADMIRALTY_EMPIRE", raising=False)
+    with pytest.raises(SetupMissing, match="admiralty:setup"):
         CampaignConfig.load(tmp_path)
 
 
@@ -101,8 +101,8 @@ def call(server, tool, args=None):
 
 
 def test_tools_log_every_result(tmp_path, save_dir, monkeypatch):
-    monkeypatch.setenv("HLIDSKJALF_SAVE_DIR", str(save_dir))
-    monkeypatch.setenv("HLIDSKJALF_EMPIRE", "Plexxi")
+    monkeypatch.setenv("ADMIRALTY_SAVE_DIR", str(save_dir))
+    monkeypatch.setenv("ADMIRALTY_EMPIRE", "Plexxi")
     server = build_server(tmp_path)
     tools = {t.name: t for t in asyncio.run(server.list_tools())}
     assert set(tools) == {
@@ -116,7 +116,7 @@ def test_tools_log_every_result(tmp_path, save_dir, monkeypatch):
     missing = call(server, "planet", {"name": "Nowhere", "save": "2259.12.25"})
     assert "error" in missing
 
-    log = (tmp_path / ".hlidskjalf" / TURN_LOG).read_text().splitlines()
+    log = (tmp_path / ".admiralty" / TURN_LOG).read_text().splitlines()
     entries = [json.loads(line) for line in log]
     assert [e["tool"] for e in entries] == ["economy", "planet"]
     assert entries[0]["args"] == {"save": "2259.12.25"}
@@ -124,13 +124,13 @@ def test_tools_log_every_result(tmp_path, save_dir, monkeypatch):
 
 
 def graph_server(tmp_path, save_dir, monkeypatch):
-    monkeypatch.setenv("HLIDSKJALF_SAVE_DIR", str(save_dir))
-    monkeypatch.setenv("HLIDSKJALF_EMPIRE", "Plexxi")
+    monkeypatch.setenv("ADMIRALTY_SAVE_DIR", str(save_dir))
+    monkeypatch.setenv("ADMIRALTY_EMPIRE", "Plexxi")
     return build_server(tmp_path)
 
 
 def log_entries(workspace):
-    lines = (workspace / ".hlidskjalf" / TURN_LOG).read_text().splitlines()
+    lines = (workspace / ".admiralty" / TURN_LOG).read_text().splitlines()
     return [json.loads(line) for line in lines]
 
 
@@ -193,7 +193,7 @@ def test_expand_graph_errors_are_answers_not_crashes(tmp_path, save_dir, monkeyp
 
 
 def test_expand_graph_without_a_pack_for_the_version_is_an_error(service, monkeypatch):
-    from hlidskjalf.graph.mechanics import GraphMissing
+    from admiralty.graph.mechanics import GraphMissing
 
     doc = service.document(service.find("2259.12.25"))
     monkeypatch.setitem(doc["header"], "game_version", "9.9.9")
@@ -202,10 +202,10 @@ def test_expand_graph_without_a_pack_for_the_version_is_an_error(service, monkey
 
 
 def test_tools_explain_missing_setup(tmp_path, monkeypatch):
-    monkeypatch.delenv("HLIDSKJALF_SAVE_DIR", raising=False)
-    monkeypatch.delenv("HLIDSKJALF_EMPIRE", raising=False)
-    assert "hlidskjalf:setup" in call(build_server(tmp_path), "campaign_status")["error"]
+    monkeypatch.delenv("ADMIRALTY_SAVE_DIR", raising=False)
+    monkeypatch.delenv("ADMIRALTY_EMPIRE", raising=False)
+    assert "admiralty:setup" in call(build_server(tmp_path), "campaign_status")["error"]
 
 
 def test_env_overrides_do_not_leak():
-    assert "HLIDSKJALF_EMPIRE" not in os.environ
+    assert "ADMIRALTY_EMPIRE" not in os.environ

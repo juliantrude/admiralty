@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from hlidskjalf.graph.mechanics import MechanicsGraph, validate
+from admiralty.graph.mechanics import MechanicsGraph, validate
 
 GOALS = {
     "unity.more": "unity.job.bureaucrat.produces_unity",

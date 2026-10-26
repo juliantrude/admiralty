@@ -15,8 +15,8 @@ import pytest
 from test_engine_encodings import rich_graph
 from test_engine_page import needs_browser
 
-from hlidskjalf.cli import main
-from hlidskjalf.graph import view
+from admiralty.cli import main
+from admiralty.graph import view
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
@@ -64,7 +64,7 @@ def test_the_driver_hooks_into_the_bundle_too(tmp_path):
     bundled = tmp_path / "index.html"
     bundled.write_text(bundle_engine.bundle(), encoding="utf-8")
     dom = driver.engine_dom(
-        rich_graph(), index=bundled, after_ready='HlidskjalfEngine.click("energy.more")'
+        rich_graph(), index=bundled, after_ready='AdmiraltyEngine.click("energy.more")'
     )
     assert driver.read_state(dom)["selected"] == ["energy.more"]
 
@@ -157,7 +157,7 @@ SKILLS = sorted((ROOT / "skills").glob("*/SKILL.md"))
 
 
 def test_there_are_skills_to_check():
-    assert {path.parent.name for path in SKILLS} >= {"huginn-consult", "setup"}
+    assert {path.parent.name for path in SKILLS} >= {"ops", "setup"}
 
 
 @pytest.mark.parametrize("skill", SKILLS, ids=lambda p: p.parent.name)
@@ -172,10 +172,10 @@ def test_no_skill_tells_the_model_to_write_html_js_or_css(skill):
 
 
 def test_the_consult_skill_writes_only_the_overlay_and_runs_only_the_two_commands():
-    text = (ROOT / "skills" / "huginn-consult" / "SKILL.md").read_text(encoding="utf-8")
+    text = (ROOT / "skills" / "ops" / "SKILL.md").read_text(encoding="utf-8")
     assert "It is the only file you write by hand." in text
     assert "You never write HTML" in text
-    commands = set(re.findall(r"hlidskjalf (\w+(?: [\w-]+)?)", text))
+    commands = set(re.findall(r"admiralty (\w+(?: [\w-]+)?)", text))
     assert {"briefing compose", "graph check-solution"} <= commands
     assert "briefing view" not in text, "the consult skill does not open the page (plan M6)"
     assert len(re.findall(r"`overlay\.json`|overlay\.json", text)) >= 1
@@ -184,8 +184,8 @@ def test_the_consult_skill_writes_only_the_overlay_and_runs_only_the_two_command
 
 
 def test_nothing_in_compose_or_the_schema_accepts_html():
-    schema = (ROOT / "src" / "hlidskjalf" / "graph" / "solution.schema.json").read_text()
+    schema = (ROOT / "src" / "admiralty" / "graph" / "solution.schema.json").read_text()
     assert not re.search(r'"(html|markup|script|style|svg)"\s*:', schema, re.I)
-    from hlidskjalf.graph.solution import _OVERLAY_KEYS
+    from admiralty.graph.solution import _OVERLAY_KEYS
 
     assert not {"html", "markup", "script", "style", "svg"} & set(_OVERLAY_KEYS)

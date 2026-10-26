@@ -1,19 +1,19 @@
 <!doctype html>
 <!--
-  Hliðskjálf graph engine: one fixed page that draws one Solution Graph (docs/plans/M6.md).
+  Admiralty graph engine: one fixed page that draws one Solution Graph (docs/plans/M6.md).
   Libraries are pinned in engine/pins.json (exact versions + SRI); see engine/VERSIONS.md.
   The page takes its data from solution-graph.json and writes nothing but text into the DOM.
 -->
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<title>Hliðskjálf — Solution Graph</title>
+<title>Admiralty — Solution Graph</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&display=swap">
 <style>
 /*
- * Hliðskjálf graph engine theme. Dark ("Stellaris") is the default; [data-theme="light"] switches.
+ * Admiralty graph engine theme. Dark ("Stellaris") is the default; [data-theme="light"] switches.
  * Colours are tokens on :root; engine.js keeps the canvas colours of the graph itself in step (THEMES).
  */
 :root {
@@ -124,7 +124,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
   </div>
   <header id="header" class="frame" hidden>
     <div class="titles">
-      <h1>Hliðskjálf — Solution Graph</h1>
+      <h1>Admiralty — Solution Graph</h1>
       <p id="header-text"></p>
     </div>
     <button id="theme-toggle" type="button">Light mode</button>
@@ -151,7 +151,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
 <script id="engine-script">
 "use strict";
 /*
- * Hliðskjálf graph engine (docs/plans/M6.md). One fixed program, one data file: a Solution Graph.
+ * Admiralty graph engine (docs/plans/M6.md). One fixed program, one data file: a Solution Graph.
  * Everything from the JSON reaches the DOM through textContent or Cytoscape's canvas, never as HTML.
  * Layout is deterministic: sorted ids, sizes from the label alone (no DOM measuring), fixed ELK options.
  */
@@ -246,7 +246,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
       judgeBorder: "#6b7686",
     },
   };
-  const THEME_KEY = "hlidskjalf-theme";
+  const THEME_KEY = "admiralty-theme";
   let T = THEMES.dark;
 
   /** Circle id -> colour, and node id -> circle, both from circle order in the data. */
@@ -1090,7 +1090,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
       x: area.clientWidth / 2 - ((target.x1 + target.x2) / 2) * zoom,
       y: area.clientHeight / 2 - ((target.y1 + target.y2) / 2) * zoom,
     };
-    const instant = typeof window.hlidskjalfAnimationMs === "number" || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    const instant = typeof window.admiraltyAnimationMs === "number" || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
     cy.stop(true, false);
     if (instant) cy.viewport({ zoom, pan });
     else cy.animate({ zoom, pan }, { duration: FOCUS_MOVE_MS });
@@ -1258,7 +1258,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
     cy.emit("tap");
   }
 
-  window.HlidskjalfEngine = {
+  window.AdmiraltyEngine = {
     nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep,
     tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
   };

@@ -1,4 +1,4 @@
-# Build plan: Hliðskjálf v1
+# Build plan: Admiralty v1
 
 The terms used here are defined in [GLOSSARY.md](../GLOSSARY.md). Decisions behind them are in [docs/adr/](adr/).
 
@@ -6,8 +6,8 @@ The terms used here are defined in [GLOSSARY.md](../GLOSSARY.md). Decisions behi
 
 In scope:
 
-- **Huginn** in both modes, Consulting and Coaching.
-- **Muninn** over any time frame of a Campaign.
+- **Ops/Academy** in both modes, Consulting and Coaching.
+- **Debrief** over any time frame of a Campaign.
 - **Campaign Setup** and a **Campaign Workspace** per Campaign.
 - The **Mechanics Graph** and **Playbook** for Stellaris 4.5.2.
 - The **Unverified Claim** check.
@@ -19,11 +19,11 @@ Target: current vanilla Stellaris (4.5.2 Cygnus) with at most cosmetic mods, on 
 ## Shape
 
 ```
-hlidskjalf/                      # this repo = Claude Code plugin + Python package
+admiralty/                      # this repo = Claude Code plugin + Python package
 ├── .claude-plugin/plugin.json
-├── skills/                      # setup, huginn-consult, huginn-coach, muninn, review-blocks
+├── skills/                      # setup, ops, academy, debrief, review-blocks
 ├── hooks/                       # unverified-claim check, Player Model guard
-├── src/hlidskjalf/
+├── src/admiralty/
 │   ├── extract/                 # save → Snapshot extract (parser, names, empire data)
 │   ├── mcp/                     # MCP server exposing extracts and graph expansion
 │   ├── graph/                   # Mechanics Graph loader, expansion, Solution Graph schema
@@ -40,7 +40,7 @@ Where data lives at runtime:
 | What | Where | Why |
 |---|---|---|
 | Campaign Workspace | one directory per Campaign, e.g. `~/Stellaris/<campaign>/` | Claude Code runs there; holds setup, archive, save backups, Predictions, block log |
-| Player Model | `~/.local/share/hlidskjalf/player/` | the Player learns across Campaigns |
+| Player Model | `~/.local/share/admiralty/player/` | the Player learns across Campaigns |
 | Mechanics Graph, Playbook | inside the plugin, per game version | ships with the software, maintained by the developer |
 
 Stack: Python 3.14+ (the `rust_parser` crate requires it), uv, the `rust_parser` crate from stellaris-dashboard (MIT) as a git dependency, its `NameRenderer` approach for Display Names, our own Clausewitz parser for the game files (the save parser rejects script syntax), and the official MCP Python SDK (2.x, `MCPServer`).
@@ -57,7 +57,7 @@ Each milestone is a vertical slice that ends in something usable. Order matters:
 
 **Done when:** `uv run pytest` runs, and a smoke test parses one 4.5.2 save in under 3 s.
 
-### M1: Huginn's extractor
+### M1: The extractor
 
 Builds a **Snapshot extract**: a compact, typed JSON document per save and Tracked Empire.
 
@@ -122,8 +122,8 @@ Tools (names are working titles):
 
 ### M3: Campaign Workspace and Campaign Setup
 
-- `hlidskjalf:setup` skill. It asks which empire is the Player's, who plays along and whether they are allies or rivals, then the mode (Coaching or Consulting) and Fair Play or God Mode. It writes `campaign.yaml`.
-- Archive: every save read is backed up and its extract stored compressed in the workspace (`archive/<date>.json.zst`), so Muninn works after the original saves are deleted.
+- `admiralty:setup` skill. It asks which empire is the Player's, who plays along and whether they are allies or rivals, then the mode (Coaching or Consulting) and Fair Play or God Mode. It writes `campaign.yaml`.
+- Archive: every save read is backed up and its extract stored compressed in the workspace (`archive/<date>.json.zst`), so Debrief works after the original saves are deleted.
 - Workspace layout and a short `CLAUDE.md` template for the workspace that loads the right skill for the chosen mode.
 
 **Done when:** a fresh directory becomes a Campaign Workspace in one guided conversation, and reading two saves leaves two archived extracts.
@@ -149,7 +149,7 @@ Tools (names are working titles):
 - Expanding the Goal "more naval capacity" from the Mechanics Graph alone yields Supremacy, Anchorages, naval-capacity technologies and Soldier jobs, each with its Obstacles.
 - The benchmark draft is ready for review.
 
-### M5: Huginn in Consulting mode
+### M5: Ops (Consulting)
 
 1. **Graph expansion tool** (`expand_graph`, in the MCP server). It takes Goals and a Snapshot extract and walks the Mechanics Graph:
    - It checks each Obstacle against the numbers and marks Remedies as Actionable, Pending or obstructed.
@@ -158,7 +158,7 @@ Tools (names are working titles):
    - It merges identical nodes.
    - The result is deterministic, so the same input gives the same graph.
 2. **Solution Graph JSON Schema.** The model adds nodes outside the Mechanics Graph only with `source: "model"`, and the validator rejects malformed graphs.
-3. **`hlidskjalf:consult` skill:** the Briefing flow.
+3. **`admiralty:ops` skill:** the Briefing flow.
    1. Check the save's age.
    2. Situation.
    3. Goals per Horizon, from Symptoms and the Player's stated ambitions.
@@ -191,28 +191,28 @@ Tools (names are working titles):
    - Block when a number or name has no match.
    - Append every block to `blocks.jsonl` in the workspace.
 2. Exempt: numbers inside quoted Playbook Rules and explicit Player input.
-3. A developer skill, `hlidskjalf:review-blocks`, groups the logged blocks into real errors versus false positives and proposes fixes to the extractor, the check or the Playbook.
+3. A developer skill, `admiralty:review-blocks`, groups the logged blocks into real errors versus false positives and proposes fixes to the extractor, the check or the Playbook.
 
 **Done when:** a planted wrong district count is blocked, a normal Briefing passes, and false positives on the reference Briefings stay at or below one per Briefing.
 
-### M8: Muninn
+### M8: Debrief
 
-`hlidskjalf:muninn` skill over a chosen time frame, from the last Play Session up to the whole Campaign since 2200.
+`admiralty:debrief` skill over a chosen time frame, from the last Play Session up to the whole Campaign since 2200.
 
 1. It reads archived extracts and diffs, and Timeline events.
 2. It splits the time frame into the epochs that shaped it.
 3. It gives a classic analysis: what went well, what went badly, and what to learn.
 4. In Consulting it adds the state of the Goals.
 
-**Done when:** Muninn over the 8-save reference Campaign (2200 to 2298) names its epochs correctly by the Timeline and passes the Unverified Claim check.
+**Done when:** Debrief over the 8-save reference Campaign (2200 to 2298) names its epochs correctly by the Timeline and passes the Unverified Claim check.
 
-### M9: Huginn in Coaching mode
+### M9: Academy (Coaching)
 
 1. **Player Model:**
-   - `src/hlidskjalf/player/` is the only write path. A PreToolUse hook blocks direct writes.
+   - `src/admiralty/player/` is the only write path. A PreToolUse hook blocks direct writes.
    - Mastery per concept changes only by fixed rules from the Hint Level reached and the outcome.
    - Escape Hatch use is recorded, together with the Situation it happened in.
-2. **`hlidskjalf:coach` skill:**
+2. **`admiralty:academy` skill:**
    - Builds the Solution Graph like the Consultant but never shows it.
    - Leads with Socratic questions along the Hint Ladder: one level up after a miss, back to the first after a success.
    - Points the Player to where in the game a fact can be checked.
@@ -222,8 +222,8 @@ Tools (names are working titles):
 3. **Escape Hatch:** a one-off Consulting call inside a Coaching Campaign. Always available, and recorded.
 4. **Predictions:**
    - Asked before major decisions only, and stored in the workspace.
-   - Checked against the next extract and by Muninn.
-5. **Muninn in Coaching:** the Player's self-assessment first, then the analysis, then the Player Model update.
+   - Checked against the next extract and by Debrief.
+5. **Debrief in Coaching:** the Player's self-assessment first, then the analysis, then the Player Model update.
 
 **Done when:** a scripted Coaching dialogue on the reference mid-game save reaches a Key Action without the Coach stating it before the Player's own attempt. The Player Model changes only through the script, and an Escape Hatch shows up in it.
 

@@ -10,9 +10,9 @@ from datetime import UTC, datetime
 
 import pytest
 
-from hlidskjalf.claims.check import check_answer
-from hlidskjalf.claims.evidence import build_evidence, read_transcript, read_turn_log
-from hlidskjalf.cli import main
+from admiralty.claims.check import check_answer
+from admiralty.claims.evidence import build_evidence, read_transcript, read_turn_log
+from admiralty.cli import main
 
 RESULTS = [
     {
@@ -211,7 +211,7 @@ def test_an_answer_without_figures_or_names_passes():
 
 
 def write_log(workspace, entries):
-    log = workspace / ".hlidskjalf" / "turn-log.jsonl"
+    log = workspace / ".admiralty" / "turn-log.jsonl"
     log.parent.mkdir(parents=True)
     log.write_text("".join(json.dumps(e) + "\n" for e in entries) + "not json\n")
 

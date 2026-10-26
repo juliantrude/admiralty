@@ -7,11 +7,11 @@ import os
 import pytest
 from conftest import SAVES_DIR, VULKAN, reference_save
 
-from hlidskjalf.extract.diff import diff_extracts
-from hlidskjalf.mcp.service import CampaignService
-from hlidskjalf.workspace.archive import EXTRACT_SUFFIX, Archive, ArchiveCorrupt
-from hlidskjalf.workspace.config import CampaignConfig
-from hlidskjalf.workspace.turnlog import TURN_LOG
+from admiralty.extract.diff import diff_extracts
+from admiralty.mcp.service import CampaignService
+from admiralty.workspace.archive import EXTRACT_SUFFIX, Archive, ArchiveCorrupt
+from admiralty.workspace.config import CampaignConfig
+from admiralty.workspace.turnlog import TURN_LOG
 
 
 def doc(date="2259.12.29", **extra):
@@ -122,7 +122,7 @@ def test_two_saves_read_leave_two_archived_extracts_and_survive_the_originals(tm
     assert "planets" in archive.load("2259.12.29")
     assert "jobs" not in archive.load("2259.12.29")["planets"][0]  # compact, no planet detail
 
-    # Muninn-style read: the originals are gone, the archive alone answers.
+    # Debrief-style read: the originals are gone, the archive alone answers.
     for link in source.iterdir():
         link.unlink()
     older, newer = archive.load("2220.04.26"), archive.load("2259.12.29")
@@ -151,5 +151,5 @@ def test_backup_can_be_switched_off_and_failures_become_warnings(tmp_path, monke
     broken = CampaignService(CampaignConfig.load(ws))
     assert broken.empire_overview()["date"] == "2259.12.29"
     assert any("disk full" in w for w in broken.campaign_status()["warnings"])
-    log = (ws / ".hlidskjalf" / TURN_LOG).read_text()
+    log = (ws / ".admiralty" / TURN_LOG).read_text()
     assert '"tool": "archive"' in log and "disk full" in log

@@ -20,9 +20,9 @@ from pathlib import Path
 
 import yaml
 
-from hlidskjalf.game import GameEnvironment
-from hlidskjalf.gamefiles import GameData
-from hlidskjalf.graph.mechanics import KNOWLEDGE_ROOT, MechanicsGraph
+from admiralty.game import GameEnvironment
+from admiralty.gamefiles import GameData
+from admiralty.graph.mechanics import KNOWLEDGE_ROOT, MechanicsGraph
 
 ICONS = "gfx/interface/icons"
 # Where the game keeps the icons of a kind of object, and the category of its definitions.

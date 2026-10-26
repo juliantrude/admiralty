@@ -6,9 +6,9 @@ import base64
 
 import pytest
 
-from hlidskjalf.game import GameEnvironment
-from hlidskjalf.graph.icons import embed_icons, icon_paths
-from hlidskjalf.graph.mechanics import MechanicsGraph
+from admiralty.game import GameEnvironment
+from admiralty.graph.icons import embed_icons, icon_paths
+from admiralty.graph.mechanics import MechanicsGraph
 
 
 @pytest.fixture(scope="module")

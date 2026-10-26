@@ -1,7 +1,7 @@
 """Golden-test harness.
 
 Reference saves contain friends' player names, so they live in the git-ignored
-folder tests/fixtures/saves/ (override with HLIDSKJALF_SAVES). Tests that need
+folder tests/fixtures/saves/ (override with ADMIRALTY_SAVES). Tests that need
 them skip with a clear message when they are missing.
 
 Layout: one subfolder per Campaign, e.g. tests/fixtures/saves/vulkan/2259.12.25.sav
@@ -14,11 +14,11 @@ from pathlib import Path
 
 import pytest
 
-SAVES_DIR = Path(os.environ.get("HLIDSKJALF_SAVES", Path(__file__).parent / "fixtures" / "saves"))
+SAVES_DIR = Path(os.environ.get("ADMIRALTY_SAVES", Path(__file__).parent / "fixtures" / "saves"))
 
 # Time budgets from the build plan assume a CPU at full clock. On a throttled machine
-# (powersave governor, battery) set HLIDSKJALF_PERF_SLACK=1.5 or so.
-PERF_SLACK = float(os.environ.get("HLIDSKJALF_PERF_SLACK", "1.0"))
+# (powersave governor, battery) set ADMIRALTY_PERF_SLACK=1.5 or so.
+PERF_SLACK = float(os.environ.get("ADMIRALTY_PERF_SLACK", "1.0"))
 
 
 def budget(seconds: float) -> float:
@@ -35,7 +35,7 @@ def reference_save(campaign: str, name: str) -> Path:
     if not path.exists():
         pytest.skip(
             f"reference save missing: {path}. Copy the Campaign's saves into "
-            f"{SAVES_DIR / campaign}/ (they stay out of git) or set HLIDSKJALF_SAVES."
+            f"{SAVES_DIR / campaign}/ (they stay out of git) or set ADMIRALTY_SAVES."
         )
     return path
 

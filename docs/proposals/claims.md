@@ -1,7 +1,7 @@
 # Proposed changes to the Unverified Claim check
 
-Changes to `src/hlidskjalf/claims/` (extractor, matching) or to the Playbook that the
-`hlidskjalf:review-blocks` skill proposes after reading `.hlidskjalf/blocks.jsonl`. Nothing here
+Changes to `src/admiralty/claims/` (extractor, matching) or to the Playbook that the
+`admiralty:review-blocks` skill proposes after reading `.admiralty/blocks.jsonl`. Nothing here
 is applied: Julian decides, and the code, `knowledge/` and the tests change only afterwards.
 
 One section per group of blocks: kind and reason code, how often it happened, the answer
@@ -25,10 +25,10 @@ Julian decides whether the check should trade recall for that.
 ## Name claims on bold sentence leads and code spans (found in M8 verification)
 
 **Decided 2026-10-24 (Julian): applied.** All three parts are in: bold sentences and code
-identifiers are no names (`src/hlidskjalf/claims/extract.py`), and the consult and muninn skills
+identifiers are no names (`src/admiralty/claims/extract.py`), and the consult and debrief skills
 forbid tool and command names in the answer. The quoted epoch title stays a known false positive.
 
-Kind `name`, reason code `name_no_match`. One headless Muninn run over the reference Campaign (150 claims
+Kind `name`, reason code `name_no_match`. One headless Debrief run over the reference Campaign (150 claims
 checked on the first pass) was blocked once with 8 findings, all false positives; the rewrite passed with
 149 claims and no finding. Sentences:
 

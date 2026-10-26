@@ -12,9 +12,9 @@ import pytest
 import yaml
 from conftest import MID, VULKAN, reference_save
 
-from hlidskjalf.graph.expand import Candidate, catalogue, expand_graph, rank_key_actions
-from hlidskjalf.graph.mechanics import MechanicsGraph, validate
-from hlidskjalf.graph.metrics import evaluate, resolve_metric
+from admiralty.graph.expand import Candidate, catalogue, expand_graph, rank_key_actions
+from admiralty.graph.mechanics import MechanicsGraph, validate
+from admiralty.graph.metrics import evaluate, resolve_metric
 
 METRICS = {
     "version": "v4.5.2",
@@ -485,7 +485,7 @@ def test_cited_playbook_rules_come_with_their_text(tmp_path):
 
 @pytest.fixture(scope="module")
 def reference():
-    from hlidskjalf.extract.snapshot import Extractor
+    from admiralty.extract.snapshot import Extractor
 
     save = reference_save(VULKAN, MID)
     return Extractor().extract(str(save), "Plexxi")

@@ -1,4 +1,4 @@
-"""Campaign Setup: finding Campaigns, the `hlidskjalf setup` CLI, the generated CLAUDE.md."""
+"""Campaign Setup: finding Campaigns, the `admiralty setup` CLI, the generated CLAUDE.md."""
 
 from __future__ import annotations
 
@@ -11,10 +11,10 @@ import pytest
 import yaml
 from conftest import MID, VULKAN, reference_save
 
-from hlidskjalf.cli import main
-from hlidskjalf.workspace.archive import EXTRACT_SUFFIX
-from hlidskjalf.workspace.config import CONFIG_FILE, CampaignConfig, Player
-from hlidskjalf.workspace.setup import (
+from admiralty.cli import main
+from admiralty.workspace.archive import EXTRACT_SUFFIX
+from admiralty.workspace.config import CONFIG_FILE, CampaignConfig, Player
+from admiralty.workspace.setup import (
     WORKSPACE_CLAUDE_MD,
     SetupRefused,
     describe_save,
@@ -26,8 +26,8 @@ from hlidskjalf.workspace.setup import (
 
 @pytest.fixture(autouse=True)
 def no_env_overrides(monkeypatch):
-    monkeypatch.delenv("HLIDSKJALF_SAVE_DIR", raising=False)
-    monkeypatch.delenv("HLIDSKJALF_EMPIRE", raising=False)
+    monkeypatch.delenv("ADMIRALTY_SAVE_DIR", raising=False)
+    monkeypatch.delenv("ADMIRALTY_EMPIRE", raising=False)
 
 
 def fake_save(path: Path, name="Test Campaign", date="2259.12.29", mtime=None) -> Path:
@@ -129,7 +129,7 @@ def test_check_on_a_missing_setup_reports_it(tmp_path, capsys):
 
 
 def config_for(tmp_path, **fields) -> CampaignConfig:
-    from hlidskjalf.workspace.config import write_config
+    from admiralty.workspace.config import write_config
 
     folder = fake_save(tmp_path / "saves-in" / "x.sav").parent
     return write_config(
@@ -140,8 +140,8 @@ def config_for(tmp_path, **fields) -> CampaignConfig:
 def test_claude_md_routes_consulting_to_consult(tmp_path):
     text = render_workspace_claude_md(config_for(tmp_path, mode="consulting"))
 
-    assert "hlidskjalf:consult" in text and "hlidskjalf:coach" not in text
-    assert "hlidskjalf:muninn" in text and "hlidskjalf:setup" in text
+    assert "admiralty:ops" in text and "admiralty:academy" not in text
+    assert "admiralty:debrief" in text and "admiralty:setup" in text
     assert "Test Campaign" in text and "Plexxi" in text and "Fair Play" in text
 
 
@@ -155,7 +155,7 @@ def test_claude_md_routes_coaching_to_coach_and_lists_players(tmp_path):
 
     text = render_workspace_claude_md(config)
 
-    assert "hlidskjalf:coach" in text and "hlidskjalf:consult" not in text
+    assert "admiralty:academy" in text and "admiralty:ops" not in text
     assert "God Mode" in text and "Anna (ally)" in text and "Ben (rival)" in text
 
 
@@ -201,8 +201,8 @@ def test_write_creates_a_valid_workspace_and_check_is_clean(vulkan_folder, tmp_p
     )
     assert saved["backup_saves"] is False and saved["version"] == 1
     assert saved["players"] == [{"name": others[0], "relation": "ally"}]
-    assert "hlidskjalf:coach" in (ws / WORKSPACE_CLAUDE_MD).read_text()
-    for name in ("archive", "saves", "predictions", ".hlidskjalf"):
+    assert "admiralty:academy" in (ws / WORKSPACE_CLAUDE_MD).read_text()
+    for name in ("archive", "saves", "predictions", ".admiralty"):
         assert (ws / name).is_dir()
 
     code, check, _ = run(capsys, "check", "--workspace", ws)
@@ -226,7 +226,7 @@ def test_write_is_idempotent_and_keeps_archive_saves_and_hand_edits(vulkan_folde
     assert saved["players"] == [{"name": other, "relation": "rival"}]
     assert (ws / "archive" / f"2259.12.29{EXTRACT_SUFFIX}").read_bytes() == b"kept"
     assert (ws / "saves" / "2259.12.29.sav").read_bytes() == b"kept"
-    assert "hlidskjalf:coach" in (ws / WORKSPACE_CLAUDE_MD).read_text()
+    assert "admiralty:academy" in (ws / WORKSPACE_CLAUDE_MD).read_text()
 
 
 @pytest.mark.parametrize(

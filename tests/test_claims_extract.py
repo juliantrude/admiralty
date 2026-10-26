@@ -9,8 +9,8 @@ from decimal import Decimal
 
 import pytest
 
-from hlidskjalf.claims.extract import Claim, extract_claims
-from hlidskjalf.claims.normalise import (
+from admiralty.claims.extract import Claim, extract_claims
+from admiralty.claims.normalise import (
     Reading,
     apply_suffix,
     name_forms,
@@ -319,7 +319,7 @@ def test_capitalised_german_nouns_are_no_names():
 def test_a_long_quote_is_prose_and_a_command_or_path_is_no_name():
     answer = (
         '"Wenn du eine Flotte hast die zu groß ist dann baue mehr Docks bitte" sagte er. '
-        "Nutze `uv run hlidskjalf setup check`, `docs/plans/M7.md`, `campaign.yaml`."
+        "Nutze `uv run admiralty setup check`, `docs/plans/M7.md`, `campaign.yaml`."
     )
     assert names(answer) == []
 

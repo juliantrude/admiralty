@@ -1,5 +1,5 @@
 /*
- * Hliðskjálf graph engine theme. Dark ("Stellaris") is the default; [data-theme="light"] switches.
+ * Admiralty graph engine theme. Dark ("Stellaris") is the default; [data-theme="light"] switches.
  * Colours are tokens on :root; engine.js keeps the canvas colours of the graph itself in step (THEMES).
  */
 :root {

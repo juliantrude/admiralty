@@ -20,8 +20,8 @@ from pathlib import Path
 
 import yaml
 
-from hlidskjalf.extract.snapshot import Extractor
-from hlidskjalf.graph.benchmarks import (
+from admiralty.extract.snapshot import Extractor
+from admiralty.graph.benchmarks import (
     DECADES,
     DEFAULT_VERSION,
     benchmarks_path,
@@ -29,7 +29,7 @@ from hlidskjalf.graph.benchmarks import (
     render_review_page,
     resolve_source,
 )
-from hlidskjalf.graph.mechanics import KNOWLEDGE_ROOT, METRICS_FILE
+from admiralty.graph.mechanics import KNOWLEDGE_ROOT, METRICS_FILE
 
 ROOT = Path(__file__).resolve().parent.parent
 PAGE = ROOT / "docs" / "benchmarks-draft.md"

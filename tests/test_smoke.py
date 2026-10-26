@@ -3,7 +3,7 @@ import time
 import pytest
 from conftest import budget
 
-from hlidskjalf.extract.save import load_save
+from admiralty.extract.save import load_save
 
 
 @pytest.mark.saves

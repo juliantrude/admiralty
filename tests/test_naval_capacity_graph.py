@@ -10,7 +10,7 @@ import re
 
 import pytest
 
-from hlidskjalf.graph.mechanics import MechanicsGraph
+from admiralty.graph.mechanics import MechanicsGraph
 
 GOAL = "naval_capacity.more"
 

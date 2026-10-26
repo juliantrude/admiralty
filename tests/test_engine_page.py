@@ -164,7 +164,7 @@ def by_id(state: dict) -> dict:
 
 @pytest.mark.parametrize("name", FIXTURES)
 def test_fixture_graphs_satisfy_the_solution_graph_schema(name):
-    text = (resources.files("hlidskjalf.graph") / "solution.schema.json").read_text("utf-8")
+    text = (resources.files("admiralty.graph") / "solution.schema.json").read_text("utf-8")
     import json
 
     errors = list(Draft202012Validator(json.loads(text)).iter_errors(FIXTURES[name]()))

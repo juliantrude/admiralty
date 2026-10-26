@@ -152,13 +152,13 @@ def engine_dom(
     """Render engine/index.html (or `index`) with `graph` embedded and return the final DOM.
 
     `after_ready` is JavaScript run once, right after the page's first layout (the page's `engine-ready`
-    event), for clicking: it uses the page's own seams, e.g. `HlidskjalfEngine.click("id")`."""
+    event), for clicking: it uses the page's own seams, e.g. `AdmiraltyEngine.click("id")`."""
     base = (index or ENGINE / "index.html").parent
     html = embed_graph((index or ENGINE / "index.html").read_text(encoding="utf-8"), graph)
     if after_ready:
         hook = (
             # no animation: headless Chromium runs animation frames unreliably, and the end state is what counts
-            '<script id="driver-hook">window.hlidskjalfAnimationMs = 0;'
+            '<script id="driver-hook">window.admiraltyAnimationMs = 0;'
             'document.addEventListener("engine-ready", () => {'
             f"{after_ready}}}, {{once: true}});</script>"
         )

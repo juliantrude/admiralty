@@ -13,8 +13,8 @@ import pytest
 import yaml
 from conftest import MID, VULKAN, reference_save
 
-from hlidskjalf.cli import main
-from hlidskjalf.graph.mechanics import (
+from admiralty.cli import main
+from admiralty.graph.mechanics import (
     KNOWLEDGE_ROOT,
     GraphInvalid,
     GraphMissing,
@@ -409,7 +409,7 @@ def _dig(document: dict, path: str):
 
 def test_every_registered_metric_path_exists_in_the_extract():
     """A renamed extract field must break the registry loudly, not silently disable an Obstacle."""
-    from hlidskjalf.extract.snapshot import Extractor
+    from admiralty.extract.snapshot import Extractor
 
     save = reference_save(VULKAN, MID)
     document = Extractor().extract(str(save), "Plexxi")

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from hlidskjalf.graph.mechanics import MechanicsGraph, validate
+from admiralty.graph.mechanics import MechanicsGraph, validate
 
 GOALS = {
     "pop_growth.faster": "pop_growth.technology.tech_genome_mapping.logistic_growth_mult",

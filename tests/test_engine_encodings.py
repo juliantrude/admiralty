@@ -136,7 +136,7 @@ class Tags(HTMLParser):
 
 @pytest.mark.parametrize("name", FIXTURES)
 def test_fixture_graphs_satisfy_the_solution_graph_schema(name):
-    text = (resources.files("hlidskjalf.graph") / "solution.schema.json").read_text("utf-8")
+    text = (resources.files("admiralty.graph") / "solution.schema.json").read_text("utf-8")
     errors = list(Draft202012Validator(json.loads(text)).iter_errors(FIXTURES[name]()))
     assert errors == []
 
@@ -302,7 +302,7 @@ def test_a_click_shows_what_the_json_says_about_the_node():
     graph = rich_graph()
     node = next(n for n in graph["nodes"] if n["id"] == "energy.staff_technicians")
     state = driver.render_engine(
-        graph, after_ready='HlidskjalfEngine.click("energy.staff_technicians")'
+        graph, after_ready='AdmiraltyEngine.click("energy.staff_technicians")'
     )
     panel = state["panel"]
     assert state["selected"] == ["energy.staff_technicians"]
@@ -324,7 +324,7 @@ def test_a_click_shows_what_the_json_says_about_the_node():
 def test_a_click_on_an_obstacle_shows_check_state_and_evidence_strings_unchanged():
     graph = rich_graph()
     obstacle = next(n for n in graph["nodes"] if n["id"] == "energy.judged")
-    dom = driver.engine_dom(graph, after_ready='HlidskjalfEngine.click("energy.judged")')
+    dom = driver.engine_dom(graph, after_ready='AdmiraltyEngine.click("energy.judged")')
     state = driver.read_state(dom)
     assert state["panel"]["check_state"] == "judgement"
     assert state["panel"]["evidence"] == obstacle["evidence"]
@@ -336,11 +336,11 @@ def test_a_click_on_an_obstacle_shows_check_state_and_evidence_strings_unchanged
 @needs_browser
 def test_a_click_on_a_model_node_shows_its_reason_and_a_key_action_its_rank_and_why():
     graph = rich_graph()
-    model = driver.render_engine(graph, after_ready='HlidskjalfEngine.click("model.edict_swap")')
+    model = driver.render_engine(graph, after_ready='AdmiraltyEngine.click("model.edict_swap")')
     assert model["panel"]["reason"] == "The save shows an idle edict slot."
     assert model["panel"]["source"] == "model"
     action = driver.render_engine(
-        graph, after_ready='HlidskjalfEngine.click("pop_growth.grow_pops")'
+        graph, after_ready='AdmiraltyEngine.click("pop_growth.grow_pops")'
     )
     key = graph["key_actions"][1]
     assert (action["panel"]["rank"], action["panel"]["why"]) == (key["rank"], key["why"])
@@ -353,14 +353,14 @@ def test_a_second_click_replaces_the_first_and_a_click_on_the_background_clears_
     state = driver.render_engine(
         chain_graph(),
         after_ready=(
-            'HlidskjalfEngine.click("energy.more"); HlidskjalfEngine.click("energy.no_spare_pops");'
+            'AdmiraltyEngine.click("energy.more"); AdmiraltyEngine.click("energy.no_spare_pops");'
         ),
     )
     assert state["selected"] == ["energy.no_spare_pops"]
     assert state["panel"]["id"] == "energy.no_spare_pops"
     state = driver.render_engine(
         chain_graph(),
-        after_ready='HlidskjalfEngine.click("energy.more"); HlidskjalfEngine.clickBackground();',
+        after_ready='AdmiraltyEngine.click("energy.more"); AdmiraltyEngine.clickBackground();',
     )
     assert state["selected"] == [] and state["panel"] is None
 
@@ -371,9 +371,9 @@ def test_a_second_click_replaces_the_first_and_a_click_on_the_background_clears_
 @needs_browser
 def test_markup_in_the_data_is_shown_as_text_and_adds_no_element():
     clicks = (
-        'HlidskjalfEngine.click("energy.no_spare_pops");'
+        'AdmiraltyEngine.click("energy.no_spare_pops");'
         'document.querySelector("#key-actions li").click();'
-        'HlidskjalfEngine.click("energy.staff_technicians");'
+        'AdmiraltyEngine.click("energy.staff_technicians");'
     )
     baseline = copy.deepcopy(script_graph())
     baseline["nodes"][3]["title"] = "Staff technicians"
@@ -394,7 +394,7 @@ def test_markup_in_the_data_is_shown_as_text_and_adds_no_element():
 
     evidence = Tags(
         driver.engine_dom(
-            script_graph(), after_ready='HlidskjalfEngine.click("energy.no_spare_pops")'
+            script_graph(), after_ready='AdmiraltyEngine.click("energy.no_spare_pops")'
         )
     )
     assert SCRIPT_TEXT in "".join(evidence.text["panel-body"])
@@ -422,7 +422,7 @@ def _chain(graph: dict, start: str) -> set[str]:
 def test_a_click_focuses_the_whole_chain_and_fades_the_rest():
     graph = chain_graph()
     target = graph["key_actions"][0]["node"]
-    state = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')
+    state = driver.render_engine(graph, after_ready=f'AdmiraltyEngine.click("{target}")')
     expected = _chain(graph, target)
     assert set(state["focus"]) == expected
     assert {n["id"] for n in state["nodes"] if not n["faded"]} == expected
@@ -434,7 +434,7 @@ def test_a_click_on_the_background_ends_the_focus():
     target = graph["key_actions"][0]["node"]
     state = driver.render_engine(
         graph,
-        after_ready=f'HlidskjalfEngine.click("{target}"); HlidskjalfEngine.clickBackground()',
+        after_ready=f'AdmiraltyEngine.click("{target}"); AdmiraltyEngine.clickBackground()',
     )
     assert state["focus"] == [] and not any(n["faded"] for n in state["nodes"])
 
@@ -481,7 +481,7 @@ def test_dark_is_the_default_theme_and_the_toggle_switches_to_light():
 @needs_browser
 def test_a_clear_obstacle_is_listed_in_its_remedys_details_instead_of_drawn():
     state = driver.render_engine(
-        rich_graph(), after_ready='HlidskjalfEngine.click("energy.staff_technicians")'
+        rich_graph(), after_ready='AdmiraltyEngine.click("energy.staff_technicians")'
     )
     assert state["panel"]["checked_clear"] == ["Credits are fine"]
     assert all(e["to"] != "energy.credits_clear" for e in state["edges"])
@@ -514,5 +514,5 @@ def test_a_selection_adds_no_lines():
     graph = chain_graph()
     before = driver.render_engine(graph)["edges"]
     target = graph["key_actions"][0]["node"]
-    after = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')["edges"]
+    after = driver.render_engine(graph, after_ready=f'AdmiraltyEngine.click("{target}")')["edges"]
     assert after == before

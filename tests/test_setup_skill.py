@@ -1,9 +1,9 @@
-"""The hlidskjalf:setup skill is prose; these tests pin what it promises about the CLI."""
+"""The admiralty:setup skill is prose; these tests pin what it promises about the CLI."""
 
 import re
 from pathlib import Path
 
-from hlidskjalf.cli import KNOWLEDGE, MODES
+from admiralty.cli import KNOWLEDGE, MODES
 
 SKILL = Path(__file__).parent.parent / "skills" / "setup" / "SKILL.md"
 

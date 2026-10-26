@@ -1,7 +1,7 @@
 {
-  "name": "hlidskjalf",
+  "name": "admiralty",
   "version": "0.1.0",
-  "description": "Huginn coaches or consults you while you play Stellaris, Muninn reflects on your campaign afterwards. Reads save files, no game mod required.",
+  "description": "Academy coaches and Ops consults you while you play Stellaris; Debrief gives feedback on your campaign afterwards. Reads save files, no game mod required.",
   "author": {
     "name": "Julian Trude"
   },
@@ -9,9 +9,9 @@
   "keywords": ["stellaris", "coaching", "strategy"],
   "hooks": "./hooks/hooks.json",
   "mcpServers": {
-    "hlidskjalf": {
+    "admiralty": {
       "command": "uv",
-      "args": ["run", "--quiet", "--project", "${CLAUDE_PLUGIN_ROOT}", "hlidskjalf", "mcp"]
+      "args": ["run", "--quiet", "--project", "${CLAUDE_PLUGIN_ROOT}", "admiralty", "mcp"]
     }
   }
 }

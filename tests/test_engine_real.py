@@ -11,9 +11,9 @@ import pytest
 from conftest import MID, VULKAN, reference_save
 from test_engine_page import by_id, chain_graph, needs_browser, shuffled
 
-from hlidskjalf.graph.expand import expand_graph
-from hlidskjalf.graph.mechanics import MechanicsGraph
-from hlidskjalf.graph.solution import compose, validate_solution_graph
+from admiralty.graph.expand import expand_graph
+from admiralty.graph.mechanics import MechanicsGraph
+from admiralty.graph.solution import compose, validate_solution_graph
 
 GOALS = ["energy.more", "alloys.more", "research.more"]
 LAYOUT_BUDGET_MS = 20000
@@ -21,7 +21,7 @@ LAYOUT_BUDGET_MS = 20000
 
 @pytest.fixture(scope="module")
 def real_graph():
-    from hlidskjalf.extract.snapshot import Extractor
+    from admiralty.extract.snapshot import Extractor
 
     extract = Extractor().extract(str(reference_save(VULKAN, MID)), "Plexxi")
     mechanics = MechanicsGraph.load("v4.5.2")

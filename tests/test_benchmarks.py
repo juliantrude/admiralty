@@ -9,7 +9,7 @@ import pytest
 import yaml
 from conftest import MID, VULKAN, reference_save
 
-from hlidskjalf.graph.benchmarks import (
+from admiralty.graph.benchmarks import (
     DECADES,
     BenchmarksInvalid,
     load_benchmarks,
@@ -18,7 +18,7 @@ from hlidskjalf.graph.benchmarks import (
     render_review_page,
     resolve_source,
 )
-from hlidskjalf.graph.mechanics import KNOWLEDGE_ROOT, validate
+from admiralty.graph.mechanics import KNOWLEDGE_ROOT, validate
 
 METRICS = {
     "research.income": {"sum": ["a.x", "a.y"]},
@@ -167,7 +167,7 @@ def test_resolve_source():
 
 
 def test_review_page_states_the_gaps_and_the_draft():
-    from hlidskjalf.graph.benchmarks import Benchmarks
+    from admiralty.graph.benchmarks import Benchmarks
 
     page = render_review_page(Benchmarks("v4.5.2", "draft", GOOD["figures"]), {})
     assert "DRAFT" in page and "0 of 9 benchmark values are filled, 9 are open" in page
@@ -214,7 +214,7 @@ def test_graph_validate_reports_benchmark_errors(tmp_path):
 
 def test_observed_values_match_a_fresh_extract():
     """The recorded figures come from the extractor, not from hand: one reference save re-read."""
-    from hlidskjalf.extract.snapshot import Extractor
+    from admiralty.extract.snapshot import Extractor
 
     save = reference_save(VULKAN, MID)
     document = Extractor().extract(str(save), "Plexxi")

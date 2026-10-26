@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from hlidskjalf.graph.mechanics import KNOWLEDGE_ROOT, MechanicsGraph, validate
-from hlidskjalf.graph.playbook import RulesInvalid, load_rules, read_rules
+from admiralty.graph.mechanics import KNOWLEDGE_ROOT, MechanicsGraph, validate
+from admiralty.graph.playbook import RulesInvalid, load_rules, read_rules
 
 SEEDS = ["unity-vs-next-tradition", "influence-at-cap-is-waste", "unemployed-before-colonies"]
 

@@ -1,4 +1,4 @@
-# Hliðskjálf
+# Admiralty
 
 An AI system that helps a player master Stellaris faster by reading the state of a running Campaign, advising during play and reflecting afterwards. Named after Odin's high seat, from which he overlooks all worlds.
 
@@ -35,20 +35,24 @@ The short interview at the start of a Campaign: which empire is the Player's, wh
 _Avoid_: Config, onboarding
 
 **Campaign Workspace**:
-The directory that belongs to one Campaign, in which its Claude Code sessions run and which holds everything about it: Campaign Setup, archived Snapshot extracts, save backups, Predictions and notes. Muninn's memory of the Campaign.
+The directory that belongs to one Campaign, in which its Claude Code sessions run and which holds everything about it: Campaign Setup, archived Snapshot extracts, save backups, Predictions and notes. Debrief's memory of the Campaign.
 _Avoid_: Session folder, project
 
 **Play Session**:
 One sitting in which the Player plays part of a Campaign, from launching the game to quitting it.
 _Avoid_: Session (alone), game session
 
-**Huginn**:
-The live phase: Coach or Consultant accompanies the Player while a Play Session is running. Named after Odin's raven of thought.
-_Avoid_: Live phase, triage, in-game analysis
+**Academy**:
+The Coaching side of the live phase: the Coach accompanies the Player during a Play Session and trains them with questions. Named after the place where officers learn to decide for themselves.
+_Avoid_: Huginn (the old name), live coaching, tutorial
 
-**Muninn**:
-The retrospective phase: reflection over a chosen time frame of a Campaign, from the last Play Session up to the whole Campaign since 2200. Says what went well and what went badly; in Coaching, the Player's own assessment comes first. Named after Odin's raven of memory.
-_Avoid_: Retrospective, retro, debrief, game review, post-game analysis
+**Ops**:
+The Consulting side of the live phase: the Consultant gives a Briefing on the situation and what to do now. Named after the operations staff who keep the picture of the whole front.
+_Avoid_: Huginn (the old name), war room, live phase
+
+**Debrief**:
+Feedback after the fact over a chosen time frame of a Campaign, from the last Play Session up to the whole Campaign since 2200. Says what went well and what went badly; in Coaching, the Player's own assessment comes first.
+_Avoid_: Muninn (the old name), retrospective, retro, game review, post-game analysis
 
 **Fair Play**:
 The Campaign Setup option under which Coach and Consultant state only what the Tracked Empire can see in the game. Hidden knowledge may still shape the Coach's questions.

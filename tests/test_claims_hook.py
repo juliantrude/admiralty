@@ -13,8 +13,8 @@ from pathlib import Path
 
 import pytest
 
-from hlidskjalf.claims import hook
-from hlidskjalf.cli import main
+from admiralty.claims import hook
+from admiralty.cli import main
 
 ROOT = Path(__file__).parent.parent
 DISTRICTS = {"tool": "economy", "result": {"districts": {"city": 11}, "unity": {"stock": 2794.45}}}
@@ -22,10 +22,10 @@ DISTRICTS = {"tool": "economy", "result": {"districts": {"city": 11}, "unity": {
 
 def make_workspace(tmp_path: Path, entries=(DISTRICTS,)) -> Path:
     workspace = tmp_path / "ws"
-    (workspace / ".hlidskjalf").mkdir(parents=True)
+    (workspace / ".admiralty").mkdir(parents=True)
     (workspace / "campaign.yaml").write_text("version: 1\n", encoding="utf-8")
     lines = [json.dumps(entry) for entry in entries]
-    (workspace / ".hlidskjalf" / "turn-log.jsonl").write_text(
+    (workspace / ".admiralty" / "turn-log.jsonl").write_text(
         "".join(line + "\n" for line in lines), encoding="utf-8"
     )
     return workspace
@@ -52,7 +52,7 @@ def run(payload) -> tuple[int, dict | None]:
 
 
 def blocks(workspace: Path) -> list[dict]:
-    path = workspace / ".hlidskjalf" / "blocks.jsonl"
+    path = workspace / ".admiralty" / "blocks.jsonl"
     if not path.exists():
         return []
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
@@ -206,7 +206,7 @@ def test_outside_a_campaign_workspace_the_hook_allows_silently(tmp_path):
     elsewhere = tmp_path / "other"
     elsewhere.mkdir()
     assert run(event(elsewhere, "You have 14 city districts.")) == (0, None)
-    assert not (elsewhere / ".hlidskjalf").exists()
+    assert not (elsewhere / ".admiralty").exists()
 
 
 def test_the_workspace_is_found_from_a_subdirectory(tmp_path):
@@ -222,7 +222,7 @@ def test_a_directory_with_only_a_config_or_only_the_state_dir_is_no_workspace(tm
     only_config = tmp_path / "a"
     only_config.mkdir()
     (only_config / "campaign.yaml").write_text("x: 1\n", encoding="utf-8")
-    only_state = tmp_path / "b" / ".hlidskjalf"
+    only_state = tmp_path / "b" / ".admiralty"
     only_state.mkdir(parents=True)
     assert hook.find_workspace(only_config) is None
     assert hook.find_workspace(only_state.parent) is None
@@ -241,14 +241,14 @@ def test_a_crash_still_exits_0_without_a_block_and_is_logged(tmp_path, monkeypat
 
     monkeypatch.setattr(hook, "check_answer", boom)
     assert run(event(workspace, "You have 14 city districts.")) == (0, None)
-    log = (workspace / ".hlidskjalf" / "hook-errors.log").read_text(encoding="utf-8")
+    log = (workspace / ".admiralty" / "hook-errors.log").read_text(encoding="utf-8")
     assert "RuntimeError: index exploded" in log
     assert blocks(workspace) == []
 
 
 def test_a_broken_turn_log_or_transcript_does_not_block_a_good_answer(tmp_path):
     workspace = make_workspace(tmp_path)
-    (workspace / ".hlidskjalf" / "turn-log.jsonl").write_text("{broken\n", encoding="utf-8")
+    (workspace / ".admiralty" / "turn-log.jsonl").write_text("{broken\n", encoding="utf-8")
     payload = event(workspace, "Build more farms.", transcript_path=str(tmp_path / "missing"))
     assert run(payload) == (0, None)
 
@@ -271,7 +271,7 @@ def test_the_installed_command_blocks_in_a_subprocess(tmp_path):
         [
             sys.executable,
             "-c",
-            "import sys; from hlidskjalf.cli import main; sys.exit(main())",
+            "import sys; from admiralty.cli import main; sys.exit(main())",
             "hook",
             "stop",
         ],
@@ -294,7 +294,7 @@ def test_hooks_json_runs_the_stop_command_that_the_cli_serves():
     assert entry["type"] == "command" and entry["command"] == "uv"
     args = entry["args"]
     assert args[:4] == ["run", "--quiet", "--project", "${CLAUDE_PLUGIN_ROOT}"]
-    assert args[4:] == ["hlidskjalf", "hook", "stop"]
+    assert args[4:] == ["admiralty", "hook", "stop"]
     assert entry["timeout"] >= 10
 
 

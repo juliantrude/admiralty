@@ -15,9 +15,9 @@ from pathlib import Path
 import pytest
 import yaml
 
-from hlidskjalf.gamefiles import GameData
-from hlidskjalf.gamefiles.script import parse
-from hlidskjalf.graph.generator import (
+from admiralty.gamefiles import GameData
+from admiralty.gamefiles.script import parse
+from admiralty.graph.generator import (
     _walk,
     game_version,
     generate,
@@ -25,7 +25,7 @@ from hlidskjalf.graph.generator import (
     render_conditions,
     render_quantity,
 )
-from hlidskjalf.graph.quantities import QUANTITIES, QUANTITY_IDS
+from admiralty.graph.quantities import QUANTITIES, QUANTITY_IDS
 
 ROOT = Path(__file__).resolve().parent.parent
 GENERATED = ROOT / "knowledge" / "4.5.2" / "generated"
@@ -237,13 +237,13 @@ def test_quantity_key_tables(quantity, key, counts):
 
 @pytest.fixture(scope="module")
 def regenerated():
-    from hlidskjalf.extract.names import Localisation
-    from hlidskjalf.game import GameEnvironment
+    from admiralty.extract.names import Localisation
+    from admiralty.game import GameEnvironment
 
     try:
         env = GameEnvironment.detect()
     except FileNotFoundError:
-        pytest.skip("Stellaris installation not found (set HLIDSKJALF_GAME_DIR)")
+        pytest.skip("Stellaris installation not found (set ADMIRALTY_GAME_DIR)")
     if game_version(env.install_dir) != "v4.5.2":
         pytest.skip("the installed game is not 4.5.2; the committed facts are for 4.5.2")
     game = GameData(env.install_dir)
@@ -262,12 +262,12 @@ def test_committed_facts_match_the_game_files(regenerated):
 
 def test_known_facts_hold_in_the_raw_game_files():
     """Pin the numbers to the game files themselves, not only to our output."""
-    from hlidskjalf.game import GameEnvironment
+    from admiralty.game import GameEnvironment
 
     try:
         game = GameData(GameEnvironment.detect().install_dir)
     except FileNotFoundError:
-        pytest.skip("Stellaris installation not found (set HLIDSKJALF_GAME_DIR)")
+        pytest.skip("Stellaris installation not found (set ADMIRALTY_GAME_DIR)")
     assert (
         game.category("traditions")["tr_supremacy_adopt"]["modifier"]["country_naval_cap_add"] == 20
     )

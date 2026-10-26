@@ -22,11 +22,11 @@ from test_expand import (
     remedy,
 )
 
-from hlidskjalf.cli import main
-from hlidskjalf.graph.expand import expand_graph
-from hlidskjalf.graph.mechanics import MechanicsGraph
-from hlidskjalf.graph.solution import SolutionInvalid, validate_solution_graph
-from hlidskjalf.graph.solution import compose as compose_exact
+from admiralty.cli import main
+from admiralty.graph.expand import expand_graph
+from admiralty.graph.mechanics import MechanicsGraph
+from admiralty.graph.solution import SolutionInvalid, validate_solution_graph
+from admiralty.graph.solution import compose as compose_exact
 
 NODES = [
     cause("c", remedies=["ok", "blocked", "judged"], rules=["a-rule"]),
@@ -580,12 +580,12 @@ def test_compose_takes_dropped_text_from_the_graph(graph, tmp_path):
 
 def test_cli_compose_reads_the_expansion_from_the_turn_log(graph, expansion, tmp_path, capsys):
     workspace = tmp_path / "ws"
-    (workspace / ".hlidskjalf").mkdir(parents=True)
+    (workspace / ".admiralty").mkdir(parents=True)
     entries = [
         {"tool": "economy", "args": {}, "result": {}},
         {"tool": "expand_graph", "args": {}, "result": expansion},
     ]
-    log = workspace / ".hlidskjalf" / "turn-log.jsonl"
+    log = workspace / ".admiralty" / "turn-log.jsonl"
     log.write_text("".join(json.dumps(e) + "\n" for e in entries))
     (tmp_path / "overlay.json").write_text(json.dumps(OVERLAY))
     out = tmp_path / "solution-graph.json"
@@ -606,7 +606,7 @@ def test_cli_compose_reads_the_expansion_from_the_turn_log(graph, expansion, tmp
 
 @pytest.fixture(scope="module")
 def reference():
-    from hlidskjalf.extract.snapshot import Extractor
+    from admiralty.extract.snapshot import Extractor
 
     return Extractor().extract(str(reference_save(VULKAN, MID)), "Plexxi")
 
@@ -669,7 +669,7 @@ def test_a_weight_on_no_cause_edge_or_without_reason_is_refused(graph, expansion
 
 
 def test_unchecked_obstacles_speak_in_the_conditional():
-    from hlidskjalf.extract.snapshot import Extractor
+    from admiralty.extract.snapshot import Extractor
 
     mechanics = MechanicsGraph.load("v4.5.2")
     extract = Extractor().extract(str(reference_save(VULKAN, MID)), "Plexxi")
