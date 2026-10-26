@@ -324,9 +324,6 @@
     if (has((e, to) => e.kind === "obstacle" && (to.check_state === "judgement" || to.check_state === "unknown"))) {
       add("edge:unchecked", "into an Obstacle that may hold: check it yourself", { width: 1.5, style: "dotted", color: T.edge });
     }
-    if (doc.key_actions.length) {
-      add("edge:serves", "Key Action to the Goals it serves (shown for the selection)", { width: 1, style: "dashed", color: T.mutedText });
-    }
     for (const circle of doc.circles) {
       add(`edge:circle:${circle.id}`, `Vicious Circle ${circle.id}`, { width: 3.5, style: "solid", color: circleInfo(doc).color.get(circle.id) });
     }
@@ -730,11 +727,6 @@
       selector: "edge[circleColor]",
       style: { width: 3.5, "line-color": "data(circleColor)", "target-arrow-color": "data(circleColor)" },
     },
-    {
-      selector: "edge.serves",
-      style: { width: 1, "line-style": "dashed", "line-color": T.mutedText, "target-arrow-color": T.mutedText, display: "none", "curve-style": "unbundled-bezier", "control-point-distances": 60 },
-    },
-    { selector: "edge.serves.shown", style: { display: "element" } },
     { selector: ".faded", style: { opacity: FADED_OPACITY } },
   ];
   }
@@ -913,11 +905,6 @@
 
   // --- selection ------------------------------------------------------------------------------------
 
-  function showServes(ids) {
-    cy.edges(".serves").removeClass("shown");
-    cy.edges(".serves").filter((edge) => ids.includes(edge.source().id()) || ids.includes(edge.target().id())).addClass("shown");
-  }
-
   /** Focus: the chains of the selected nodes stay, everything else steps back. No selection, no focus. */
   function applyFocus(ids) {
     cy.elements().removeClass("faded");
@@ -965,7 +952,6 @@
     current.panel = panel;
     applyFocus(ids);
     viewToFocus(ids);
-    showServes(ids);
     renderPanel(panel);
     publish();
   }
@@ -989,20 +975,6 @@
   }
 
   // --- drawing --------------------------------------------------------------------------------------
-
-  function addServesEdges(doc) {
-    const edges = [];
-    for (const action of doc.key_actions) {
-      for (const goal of action.serves) {
-        edges.push({
-          group: "edges",
-          classes: "serves",
-          data: { id: `serves:${action.node}>${goal}`, source: action.node, target: goal, kind: "serves" },
-        });
-      }
-    }
-    cy.add(edges);
-  }
 
   /** Fitting a 50 node graph into the stage shrinks the 11 px labels to about 5 px: below this zoom the view starts at the
    *  top left of the graph at a readable size instead, and the reader pans (drag) or zooms (wheel). Positions are untouched. */
@@ -1046,7 +1018,6 @@
       stop: () => {
         window.engineLayoutMs = Math.round(performance.now() - started);
         readableView();
-        addServesEdges(doc);
         publish();
         document.dispatchEvent(new CustomEvent("engine-ready"));
       },

@@ -505,5 +505,14 @@ def test_the_line_legend_explains_the_kinds_of_line_in_the_graph():
     edge |= {"weight": "high", "weight_reason": "Most of it."}
     state = driver.render_engine(graph)
     ids = [e["id"] for e in state["edge_legend"]]
-    assert "edge:high" in ids and "edge:present" in ids and "edge:serves" in ids
+    assert "edge:high" in ids and "edge:present" in ids and "edge:serves" not in ids
     assert all(e["label"].strip() for e in state["edge_legend"])
+
+
+@needs_browser
+def test_a_selection_adds_no_lines():
+    graph = chain_graph()
+    before = driver.render_engine(graph)["edges"]
+    target = graph["key_actions"][0]["node"]
+    after = driver.render_engine(graph, after_ready=f'HlidskjalfEngine.click("{target}")')["edges"]
+    assert after == before
