@@ -5,10 +5,8 @@
  * Layout is deterministic: sorted ids, sizes from the label alone (no DOM measuring), fixed ELK options.
  */
 (function () {
-  const TITLE_MAX = 40;
   const NODE_HEIGHT = 44;
   const NODE_MIN_WIDTH = 132;
-  const NODE_MAX_WIDTH = 480;
   const CHAR_WIDTH = 9; // about 0.6 em of the 15 px node font
   const READABLE_ZOOM = 0.8;
   const VIEW_PADDING = 30;
@@ -23,9 +21,9 @@
 
   // --- pure functions -----------------------------------------------------------------------------
 
+  /** The whole title, on one line: the node grows with its text (Julian, 2026-10-26). */
   function nodeLabel(title) {
-    const chars = Array.from(String(title));
-    return chars.length > TITLE_MAX ? chars.slice(0, TITLE_MAX - 1).join("") + "…" : chars.join("");
+    return String(title);
   }
 
   /** Size from the visible title and the tag line alone: no DOM measuring, so every machine gets the same layout. */
@@ -46,7 +44,7 @@
   function nodeSize(title, tag, badges) {
     const titleWidth = textWidth(String(badges || "") + nodeLabel(title));
     const width = ICON_SPACE + titleWidth + RIGHT_PADDING;
-    return { width: Math.min(NODE_MAX_WIDTH, Math.max(NODE_MIN_WIDTH, width)), height: NODE_HEIGHT };
+    return { width: Math.max(NODE_MIN_WIDTH, width), height: NODE_HEIGHT };
   }
 
   // Colour-blind-safe hues (Okabe-Ito without yellow and black), one per Vicious Circle in circle order.
@@ -629,7 +627,7 @@
         width: "data(width)",
         height: "data(height)",
         label: "data(label)",
-        "text-wrap": "wrap",
+        "text-wrap": "none",
         "text-valign": "center",
         "text-halign": "center",
         "font-size": "data(fontSize)",

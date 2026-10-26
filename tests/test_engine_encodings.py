@@ -495,4 +495,4 @@ def test_a_node_shows_its_title_alone():
     for node in state["nodes"]:
         title = titles[node["id"]]
         assert "\n" not in node["label"]
-        assert node["label"] == title or node["label"].rstrip("\u2026") in title
+        assert node["label"] == title
