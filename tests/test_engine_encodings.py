@@ -496,3 +496,14 @@ def test_a_node_shows_its_title_alone():
         title = titles[node["id"]]
         assert "\n" not in node["label"]
         assert node["label"] == title
+
+
+@needs_browser
+def test_the_line_legend_explains_the_kinds_of_line_in_the_graph():
+    graph = chain_graph()
+    edge = next(e for e in graph["edges"] if e["kind"] == "cause")
+    edge |= {"weight": "high", "weight_reason": "Most of it."}
+    state = driver.render_engine(graph)
+    ids = [e["id"] for e in state["edge_legend"]]
+    assert "edge:high" in ids and "edge:present" in ids and "edge:serves" in ids
+    assert all(e["label"].strip() for e in state["edge_legend"])

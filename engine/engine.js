@@ -286,9 +286,6 @@
     if (doc.nodes.some((n) => n.type !== "goal")) {
       entries.push({ id: "size", label: "bigger node = more impact on the Goals", fill: T.plain });
     }
-    if (doc.edges.some((e) => e.weight)) {
-      entries.push({ id: "weight", label: "edge weight: thick high, thin medium, dashed low", fill: T.plain });
-    }
     if (doc.nodes.some((n) => n.type === "goal" && n.crisis)) {
       entries.push({ id: "crisis", label: "Crisis Goal (heavy outline)", fill: T.fill.goal, border: T.crisis, heavy: true });
     }
@@ -306,6 +303,32 @@
     }
     if (doc.circles.some((c) => c.break_point)) {
       entries.push({ id: "break_point", label: "\u2691 break point of a Vicious Circle (double outline)", fill: T.plain, doubleOutline: true });
+    }
+    return entries;
+  }
+
+  /** The kinds of line that occur in this graph, each with its meaning; drawn as line samples. */
+  function edgeLegendOf(doc) {
+    const nodeById = new Map(doc.nodes.map((n) => [n.id, n]));
+    const has = (test) => doc.edges.some((e) => test(e, nodeById.get(e.to)));
+    const entries = [];
+    const add = (id, label, line) => entries.push({ id, label, line });
+    if (has((e) => e.weight === "high")) add("edge:high", "strong link: explains much of the problem", { width: 3, style: "solid", color: T.edge });
+    if (has((e) => e.kind !== "obstacle" && e.weight !== "high" && e.weight !== "low")) {
+      add("edge:medium", "medium link", { width: 1.5, style: "solid", color: T.edge });
+    }
+    if (has((e) => e.weight === "low")) add("edge:low", "weak link: explains little of the problem", { width: 1, style: "dashed", color: T.edge });
+    if (has((e, to) => e.kind === "obstacle" && to.check_state === "present")) {
+      add("edge:present", "into an Obstacle that holds: this blocks the Remedy", { width: 2.5, style: "solid", color: T.present });
+    }
+    if (has((e, to) => e.kind === "obstacle" && (to.check_state === "judgement" || to.check_state === "unknown"))) {
+      add("edge:unchecked", "into an Obstacle that may hold: check it yourself", { width: 1.5, style: "dotted", color: T.edge });
+    }
+    if (doc.key_actions.length) {
+      add("edge:serves", "Key Action to the Goals it serves (shown for the selection)", { width: 1, style: "dashed", color: T.mutedText });
+    }
+    for (const circle of doc.circles) {
+      add(`edge:circle:${circle.id}`, `Vicious Circle ${circle.id}`, { width: 3.5, style: "solid", color: circleInfo(doc).color.get(circle.id) });
     }
     return entries;
   }
@@ -576,6 +599,7 @@
       edges,
       header: headerOf(current.full),
       legend: legendOf(doc).map((entry) => ({ id: entry.id, label: entry.label })),
+      edge_legend: edgeLegendOf(doc).map((entry) => ({ id: entry.id, label: entry.label })),
       circles: doc.circles.map((c) => ({
         id: c.id,
         color: circleColors.get(c.id),
@@ -779,7 +803,21 @@
     return swatch;
   }
 
+  function renderEdgeLegend(doc) {
+    const list = document.getElementById("edge-legend");
+    list.replaceChildren();
+    for (const entry of edgeLegendOf(doc)) {
+      const item = el("li");
+      item.dataset.legend = entry.id;
+      const sample = el("span", "line-swatch");
+      sample.style.borderTop = `${entry.line.width}px ${entry.line.style} ${entry.line.color}`;
+      item.append(sample, el("span", "legend-text", entry.label));
+      list.append(item);
+    }
+  }
+
   function renderLegend(doc) {
+    renderEdgeLegend(doc);
     const list = document.getElementById("legend");
     list.replaceChildren();
     for (const entry of legendOf(doc)) {

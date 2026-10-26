@@ -90,8 +90,11 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 #panel dd { margin: 2px 0 0; overflow-wrap: anywhere; }
 #panel .hint { color: var(--muted); }
 
-#legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 10px 12px 0; padding: 8px 16px; font-size: 0.78rem; color: var(--muted); }
-#legend li { display: flex; align-items: center; gap: 6px; }
+#legends { margin: 10px 12px 0; padding: 8px 16px; }
+#legend, #edge-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 0; padding: 0; font-size: 0.78rem; color: var(--muted); }
+#edge-legend { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+#legend li, #edge-legend li { display: flex; align-items: center; gap: 6px; }
+.line-swatch { display: inline-block; width: 30px; height: 0; }
 .swatch { display: inline-block; width: 18px; height: 12px; border: 1.5px solid var(--line-strong); box-sizing: border-box; clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px); }
 .clickable { cursor: pointer; }
 .clickable:hover { color: var(--accent); }
@@ -130,7 +133,10 @@ section li::marker { color: var(--accent); font-weight: 600; }
     <div id="cy"></div>
     <aside id="panel" class="frame" aria-live="polite"><div id="panel-body"></div></aside>
   </div>
-  <ul id="legend" class="frame" aria-label="Legend"></ul>
+  <div id="legends" class="frame">
+    <ul id="legend" aria-label="Legend for the nodes"></ul>
+    <ul id="edge-legend" aria-label="Legend for the lines"></ul>
+  </div>
   <section id="actions-section" class="frame" hidden>
     <h2>Key Actions, ranked <span class="hint">(click one to focus its chain)</span></h2>
     <ol id="key-actions"></ol>
@@ -431,9 +437,6 @@ section li::marker { color: var(--accent); font-weight: 600; }
     if (doc.nodes.some((n) => n.type !== "goal")) {
       entries.push({ id: "size", label: "bigger node = more impact on the Goals", fill: T.plain });
     }
-    if (doc.edges.some((e) => e.weight)) {
-      entries.push({ id: "weight", label: "edge weight: thick high, thin medium, dashed low", fill: T.plain });
-    }
     if (doc.nodes.some((n) => n.type === "goal" && n.crisis)) {
       entries.push({ id: "crisis", label: "Crisis Goal (heavy outline)", fill: T.fill.goal, border: T.crisis, heavy: true });
     }
@@ -451,6 +454,32 @@ section li::marker { color: var(--accent); font-weight: 600; }
     }
     if (doc.circles.some((c) => c.break_point)) {
       entries.push({ id: "break_point", label: "\u2691 break point of a Vicious Circle (double outline)", fill: T.plain, doubleOutline: true });
+    }
+    return entries;
+  }
+
+  /** The kinds of line that occur in this graph, each with its meaning; drawn as line samples. */
+  function edgeLegendOf(doc) {
+    const nodeById = new Map(doc.nodes.map((n) => [n.id, n]));
+    const has = (test) => doc.edges.some((e) => test(e, nodeById.get(e.to)));
+    const entries = [];
+    const add = (id, label, line) => entries.push({ id, label, line });
+    if (has((e) => e.weight === "high")) add("edge:high", "strong link: explains much of the problem", { width: 3, style: "solid", color: T.edge });
+    if (has((e) => e.kind !== "obstacle" && e.weight !== "high" && e.weight !== "low")) {
+      add("edge:medium", "medium link", { width: 1.5, style: "solid", color: T.edge });
+    }
+    if (has((e) => e.weight === "low")) add("edge:low", "weak link: explains little of the problem", { width: 1, style: "dashed", color: T.edge });
+    if (has((e, to) => e.kind === "obstacle" && to.check_state === "present")) {
+      add("edge:present", "into an Obstacle that holds: this blocks the Remedy", { width: 2.5, style: "solid", color: T.present });
+    }
+    if (has((e, to) => e.kind === "obstacle" && (to.check_state === "judgement" || to.check_state === "unknown"))) {
+      add("edge:unchecked", "into an Obstacle that may hold: check it yourself", { width: 1.5, style: "dotted", color: T.edge });
+    }
+    if (doc.key_actions.length) {
+      add("edge:serves", "Key Action to the Goals it serves (shown for the selection)", { width: 1, style: "dashed", color: T.mutedText });
+    }
+    for (const circle of doc.circles) {
+      add(`edge:circle:${circle.id}`, `Vicious Circle ${circle.id}`, { width: 3.5, style: "solid", color: circleInfo(doc).color.get(circle.id) });
     }
     return entries;
   }
@@ -721,6 +750,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
       edges,
       header: headerOf(current.full),
       legend: legendOf(doc).map((entry) => ({ id: entry.id, label: entry.label })),
+      edge_legend: edgeLegendOf(doc).map((entry) => ({ id: entry.id, label: entry.label })),
       circles: doc.circles.map((c) => ({
         id: c.id,
         color: circleColors.get(c.id),
@@ -924,7 +954,21 @@ section li::marker { color: var(--accent); font-weight: 600; }
     return swatch;
   }
 
+  function renderEdgeLegend(doc) {
+    const list = document.getElementById("edge-legend");
+    list.replaceChildren();
+    for (const entry of edgeLegendOf(doc)) {
+      const item = el("li");
+      item.dataset.legend = entry.id;
+      const sample = el("span", "line-swatch");
+      sample.style.borderTop = `${entry.line.width}px ${entry.line.style} ${entry.line.color}`;
+      item.append(sample, el("span", "legend-text", entry.label));
+      list.append(item);
+    }
+  }
+
   function renderLegend(doc) {
+    renderEdgeLegend(doc);
     const list = document.getElementById("legend");
     list.replaceChildren();
     for (const entry of legendOf(doc)) {

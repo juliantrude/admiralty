@@ -76,8 +76,11 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 #panel dd { margin: 2px 0 0; overflow-wrap: anywhere; }
 #panel .hint { color: var(--muted); }
 
-#legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 10px 12px 0; padding: 8px 16px; font-size: 0.78rem; color: var(--muted); }
-#legend li { display: flex; align-items: center; gap: 6px; }
+#legends { margin: 10px 12px 0; padding: 8px 16px; }
+#legend, #edge-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 0; padding: 0; font-size: 0.78rem; color: var(--muted); }
+#edge-legend { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+#legend li, #edge-legend li { display: flex; align-items: center; gap: 6px; }
+.line-swatch { display: inline-block; width: 30px; height: 0; }
 .swatch { display: inline-block; width: 18px; height: 12px; border: 1.5px solid var(--line-strong); box-sizing: border-box; clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px); }
 .clickable { cursor: pointer; }
 .clickable:hover { color: var(--accent); }
