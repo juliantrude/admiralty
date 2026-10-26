@@ -6,7 +6,7 @@
  */
 (function () {
   const TITLE_MAX = 40;
-  const NODE_HEIGHT = 40;
+  const NODE_HEIGHT = 58;
   const NODE_MIN_WIDTH = 132;
   const NODE_MAX_WIDTH = 320;
   const CHAR_WIDTH = 7;
@@ -14,8 +14,8 @@
   const NODE_PADDING = 20;
   const READABLE_ZOOM = 0.8;
   const VIEW_PADDING = 30;
-  const ICON_SIZE = 22;
-  const ICON_SPACE = 30; // icon plus gap on the left of every node
+  const ICON_SIZE = 44; // big enough to tell a node's theme at a glance (Julian, 2026-10-26)
+  const ICON_SPACE = 56; // icon plus gap on the left of every node
   const FADED_OPACITY = 0.15;
   const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
   const EDGE_KINDS = ["cause", "remedy", "obstacle"];
@@ -630,7 +630,7 @@
         "background-image": "data(icon)",
         "background-width": "data(iconSize)",
         "background-height": "data(iconSize)",
-        "background-position-x": 8,
+        "background-position-x": 7,
         "background-position-y": "50%",
         "background-fit": "none",
         "background-clip": "none",

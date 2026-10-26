@@ -30,7 +30,7 @@ KINDS = {
     "job": ("jobs", "pop_jobs", ["job_{id}"]),
     "building": ("buildings", "buildings", ["{id}"]),
     "technology": ("technologies", "technology", ["{id}"]),
-    "tradition": ("traditions", "traditions", ["{id}"]),
+    "tradition": ("traditions", "traditions", ["tradition_{short}", "{id}"]),
     "ascension_perk": ("ascension_perks", "ascension_perks", ["{id}"]),
     "district": ("districts", "districts", ["{id}"]),
     "edict": ("edicts", "edicts", ["{id}"]),
@@ -38,23 +38,47 @@ KINDS = {
     "starbase_module": ("modules", "starbase_modules", ["sb_{id}", "{id}"]),
     "starbase_building": ("modules", "starbase_buildings", ["sb_{id}", "{id}"]),
 }
-# The icon of a domain: its resource where it has one, else the closest planet icon.
-DOMAIN_ICON = {
-    "alloys": f"{ICONS}/resources/alloys.dds",
-    "energy": f"{ICONS}/resources/energy.dds",
-    "minerals": f"{ICONS}/resources/minerals.dds",
-    "food": f"{ICONS}/resources/food.dds",
-    "unity": f"{ICONS}/resources/unity.dds",
-    "influence": f"{ICONS}/resources/influence.dds",
-    "research": f"{ICONS}/resources/physics_research.dds",
-    "amenities": f"{ICONS}/planet_amenities.dds",
-    "housing": f"{ICONS}/planet_housing.dds",
-    "pop_growth": f"{ICONS}/pop.dds",
-    "jobs": f"{ICONS}/pop_job.dds",
-    "slots": f"{ICONS}/building_icon.dds",
-    "naval_capacity": f"{ICONS}/fleet_size_icon.dds",
-    "stability": f"{ICONS}/stability.dds",
+# The icon of a domain, best first: a technology icon of the theme where one exists (52 px), as the
+# resource icons are only 20 px; the first file that exists is taken.
+DOMAIN_ICONS = {
+    "alloys": ["technologies/tech_alloys_1.dds", "resources/alloys_large.dds"],
+    "energy": ["technologies/tech_power_plant_1.dds", "resources/energy.dds"],
+    "minerals": [
+        "technologies/tech_mining_1.dds",
+        "technologies/tech_mineral_purification_1.dds",
+        "resources/minerals.dds",
+    ],
+    "food": [
+        "technologies/tech_eco_simulation.dds",
+        "technologies/tech_food_processing_1.dds",
+        "resources/food.dds",
+    ],
+    "unity": ["technologies/tech_unity_of_purpose.dds", "resources/unity.dds"],
+    "influence": ["resources/influence.dds"],
+    "research": ["technologies/tech_basic_science_lab_1.dds", "resources/physics_research.dds"],
+    "amenities": ["planet_amenities.dds"],
+    "housing": ["technologies/tech_housing_1.dds", "planet_housing.dds"],
+    "pop_growth": ["technologies/tech_frontier_health.dds", "pop.dds"],
+    "jobs": ["pop_job.dds"],
+    "slots": ["technologies/tech_planetary_unification.dds", "building_icon.dds"],
+    "naval_capacity": ["technologies/tech_doctrine_fleet_size_1.dds", "fleet_size_icon.dds"],
+    "stability": ["stability.dds"],
 }
+
+
+def domain_icon(domain: str, install: Path) -> str | None:
+    for name in DOMAIN_ICONS.get(domain, []):
+        if (install / ICONS / name).exists():
+            return f"{ICONS}/{name}"
+    return None
+
+
+def larger_variant(path: str, install: Path) -> str:
+    """The `_large` sibling of an icon where the game ships one (resources mostly)."""
+    large = path.replace(".dds", "_large.dds")
+    return large if (install / large).exists() else path
+
+
 SPRITE = re.compile(r'name\s*=\s*"(?P<name>[^"]+)"\s*texturefile\s*=\s*"(?P<file>[^"]+)"', re.I)
 
 
@@ -76,7 +100,7 @@ def object_icon(
     folder, category, patterns = KINDS[kind]
     definition = game.category(category).get(object_id)
     own = definition.get("icon") if isinstance(definition, dict) else None
-    names = [p.format(id=object_id) for p in patterns]
+    names = [p.format(id=object_id, short=object_id.removeprefix("tr_")) for p in patterns]
     if isinstance(own, str):
         names.insert(0, own.removeprefix("GFX_"))
     for name in names:
@@ -93,8 +117,9 @@ def choose(
     icons: dict[str, str] = {}
     fallback: list[str] = []
     for goal_id in sorted(graph.goals):
-        if goal_id.split(".")[0] in DOMAIN_ICON:
-            icons[goal_id] = DOMAIN_ICON[goal_id.split(".")[0]]
+        found = domain_icon(goal_id.split(".")[0], install)
+        if found:
+            icons[goal_id] = found
     for node_id, node in sorted(graph.nodes.items()):
         domain = node_id.split(".")[0]
         found = None
@@ -107,11 +132,11 @@ def choose(
                 if found:
                     break
         if not found:
-            found = DOMAIN_ICON.get(domain)
+            found = domain_icon(domain, install)
             if node.get("type") != "goal":
                 fallback.append(node_id)
         if found:
-            icons[node_id] = found
+            icons[node_id] = larger_variant(found, install)
     return icons, fallback
 
 

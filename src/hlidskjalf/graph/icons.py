@@ -6,7 +6,7 @@ small PNGs and embedded in the graph as data URIs, so the page needs no game fil
 repository holds no game graphics. Goals get a green upward arrow over their resource icon. The
 model never sees the image data: it writes the overlay, the CLI composes and embeds.
 
-No cache: decoding one 20 to 60 px DDS takes about 10 ms, a Briefing has about 50 nodes.
+No cache: decoding one 20 to 78 px DDS takes about 10 ms, a Briefing has about 50 nodes.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ import yaml
 
 from hlidskjalf.graph.mechanics import KNOWLEDGE_ROOT
 
-ICON_PX = 44  # drawn at 22 px; twice that keeps it sharp on high-density screens
+ICON_PX = 88  # drawn at 44 px; twice that keeps it sharp on high-density screens
 
 
 def icon_paths(version: str, root: Path | None = None) -> dict[str, str]:
@@ -68,7 +68,8 @@ def load_icon(file: Path, goal: bool = False) -> str | None:
     # icon sheets (several frames side by side) show their first frame
     if image.width >= 2 * image.height:
         image = image.crop((0, 0, image.height, image.height))
-    image = image.resize((ICON_PX, ICON_PX))
+    # most game icons are 20 to 78 px: Lanczos keeps the upscaled ones as crisp as they can be
+    image = image.resize((ICON_PX, ICON_PX), Image.Resampling.LANCZOS)
     return _png(_with_arrow(image) if goal else image)
 
 
