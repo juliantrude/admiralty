@@ -6,7 +6,7 @@
           {
             "type": "command",
             "command": "uv",
-            "args": ["run", "--quiet", "--project", "${CLAUDE_PLUGIN_ROOT}", "hlidskjalf", "hook", "stop"],
+            "args": ["run", "--quiet", "--project", "${CLAUDE_PLUGIN_ROOT}", "admiralty", "hook", "stop"],
             "timeout": 30
           }
         ]
