@@ -21,6 +21,7 @@ nodes:
   - id: jobs.no_district_room
     type: obstacle
     title: The planet has no free district slot
+    uncertain_title: The planet may have no free district slot
     description: >
       A district adds job slots, and each planet only has so many district slots. A planet that is
       full cannot get another district until something raises its limit.
@@ -30,6 +31,7 @@ nodes:
   - id: jobs.no_building_room
     type: obstacle
     title: The planet has no free building slot
+    uncertain_title: The planet may have no free building slot
     description: >
       A building adds job slots, and each planet only has so many building slots. A full planet
       has to open a slot or give one up.

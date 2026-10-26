@@ -110,6 +110,7 @@ nodes:
     type: obstacle
     rules: [unemployed-before-colonies]
     title: No unemployed pops to fill new researcher jobs
+    uncertain_title: There may be no unemployed pops for new researcher jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new researcher job pulls a
       worker away from another job.
@@ -122,6 +123,7 @@ nodes:
   - id: research.no_researcher_slot
     type: obstacle
     title: No free researcher job slot
+    uncertain_title: There may be no free researcher job slot
     description: >
       Researcher jobs come from districts and from buildings. A planet with no free district or
       building slot cannot host another one until it grows or a slot is freed.
@@ -131,6 +133,7 @@ nodes:
   - id: research.lab_locked
     type: obstacle
     title: The upgraded lab is not unlocked
+    uncertain_title: The upgraded lab may not be unlocked yet
     description: >
       Each lab level is unlocked by the technology of its field, and the higher levels also need an
       upgraded capital building on the planet.
@@ -139,6 +142,7 @@ nodes:
   - id: research.no_lab_slot
     type: obstacle
     title: No free building slot for another lab
+    uncertain_title: There may be no free building slot for another lab
     description: >
       A lab needs a free building slot on its planet. A planet with every slot taken has to grow or
       give one up first.
@@ -148,6 +152,7 @@ nodes:
   - id: research.speed_tech_prerequisites
     type: obstacle
     title: The speed technologies need their prerequisites
+    uncertain_title: The speed technologies may still need their prerequisites
     description: >
       The technologies that raise research speed sit behind other technologies, so the line has to
       be researched in order, and they come slowly when research output is low.
@@ -160,6 +165,7 @@ nodes:
     type: obstacle
     rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the next Tradition
+    uncertain_title: There may not be enough Unity banked for the next Tradition
     description: >
       Each Tradition of the tree is paid in Unity. While the stockpile is below the cost of the next
       one, the tree cannot move forward.
@@ -172,6 +178,7 @@ nodes:
   - id: research.discovery_tree_unfinished
     type: obstacle
     title: The Discovery tree has Traditions left to take
+    uncertain_title: The Discovery tree may have Traditions left to take
     description: >
       The finishing bonus only arrives once every Tradition of the tree is taken, so a tree that was
       adopted but not completed gives none of it.

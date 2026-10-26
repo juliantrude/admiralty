@@ -95,6 +95,7 @@ nodes:
   - id: housing.no_district_slot
     type: obstacle
     title: No free district slot on the planet
+    uncertain_title: The planet may have no free district slot
     description: >
       A city district needs a free district slot. A planet at its district limit has to raise the
       limit or replace a district first.
@@ -104,6 +105,7 @@ nodes:
   - id: housing.district_upkeep
     type: obstacle
     title: Energy income cannot carry another district
+    uncertain_title: The energy income may not carry another district
     description: >
       Every district charges energy upkeep. With negative net energy a new district deepens the
       deficit, so energy has to be fixed first.
@@ -115,6 +117,7 @@ nodes:
   - id: housing.no_building_slot
     type: obstacle
     title: No free building slot on the planet
+    uncertain_title: The planet may have no free building slot
     description: >
       A housing building needs a free building slot on its planet.
     check: {judgement_only: true}
@@ -123,6 +126,7 @@ nodes:
   - id: housing.dwelling_locked
     type: obstacle
     title: The housing building is not unlocked
+    uncertain_title: The housing building may not be unlocked yet
     description: >
       The better housing buildings are unlocked by technologies and some need a building that the
       planet has not built yet.
@@ -131,6 +135,7 @@ nodes:
   - id: housing.arcology_locked
     type: obstacle
     title: The arcology is not unlocked, or the planet is no city world
+    uncertain_title: The arcology may not be unlocked, or the planet may be no city world
     description: >
       Arcologies come from a technology and only apply to city worlds, so other planet types
       cannot use them.
@@ -139,6 +144,7 @@ nodes:
   - id: housing.cannot_pay_conversion
     type: obstacle
     title: Not enough alloys for the conversion
+    uncertain_title: There may not be enough alloys for the conversion
     description: >
       The conversion is paid in alloys. With a low stockpile it has to wait for alloy income.
     check:
@@ -150,6 +156,7 @@ nodes:
   - id: housing.usage_modifier_locked
     type: obstacle
     title: The tradition or technology is not taken yet
+    uncertain_title: The tradition or technology may not be taken yet
     description: >
       The tradition belongs to a tree that has to be opened and paid in Unity, and a technology
       has to be researched first.

@@ -92,6 +92,7 @@ nodes:
     type: obstacle
     rules: [unemployed-before-colonies]
     title: No unemployed pops to fill new Metallurgist jobs
+    uncertain_title: There may be no unemployed pops for new Metallurgist jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new Metallurgist job
       pulls a worker away from another job.
@@ -104,6 +105,7 @@ nodes:
   - id: alloys.minerals_short
     type: obstacle
     title: The mineral income cannot feed more foundries
+    uncertain_title: The mineral income may not feed more foundries
     description: >
       Metallurgists consume minerals to make alloys. With no mineral surplus, a new foundry job
       only moves the shortage from alloys to minerals.
@@ -116,6 +118,7 @@ nodes:
   - id: alloys.energy_short
     type: obstacle
     title: The energy income cannot carry more buildings
+    uncertain_title: The energy income may not carry more buildings
     description: >
       Foundry buildings and the jobs in them cost energy upkeep. With no energy surplus a new
       foundry zone drives energy negative.
@@ -128,6 +131,7 @@ nodes:
   - id: alloys.no_foundry_slot
     type: obstacle
     title: No free zone or building slot for foundries
+    uncertain_title: There may be no free zone or building slot for foundries
     description: >
       Metallurgist jobs come from foundry zones and their buildings. A planet with no free slot
       cannot host another one until it grows or a slot is freed.
@@ -137,6 +141,7 @@ nodes:
   - id: alloys.alloy_tech_prerequisites
     type: obstacle
     title: The alloy technologies need their prerequisites
+    uncertain_title: The alloy technologies may still need their prerequisites
     description: >
       The alloy technologies sit deep in the industry line and need the earlier steps first.
     check:
@@ -147,6 +152,7 @@ nodes:
   - id: alloys.ministry_locked
     type: obstacle
     title: The ministry building is not unlocked
+    uncertain_title: The ministry building may not be unlocked yet
     description: >
       The production ministry is unlocked by a late industry technology and needs a major
       upgraded capital building on the planet.

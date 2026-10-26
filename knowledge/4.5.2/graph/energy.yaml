@@ -106,6 +106,7 @@ nodes:
     type: obstacle
     rules: [unemployed-before-colonies]
     title: No unemployed pops to fill new Technician jobs
+    uncertain_title: There may be no unemployed pops for new Technician jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new Technician job pulls
       a worker away from another job.
@@ -118,6 +119,7 @@ nodes:
   - id: energy.no_generator_slot
     type: obstacle
     title: No free generator district or building slot
+    uncertain_title: There may be no free generator district or building slot
     description: >
       Technician jobs come from generator districts and from buildings. A planet with no free
       district or building slot cannot host another one until it grows or a slot is freed.
@@ -127,6 +129,7 @@ nodes:
   - id: energy.generator_building_locked
     type: obstacle
     title: The generator building is not unlocked
+    uncertain_title: The generator building may not be unlocked yet
     description: >
       The upgraded generator buildings are unlocked by power plant technologies, and the higher
       one also needs an upgraded capital building on the planet.
@@ -135,6 +138,7 @@ nodes:
   - id: energy.power_tech_prerequisites
     type: obstacle
     title: The power plant technologies need their prerequisites
+    uncertain_title: The power plant technologies may still need their prerequisites
     description: >
       Each power plant technology requires the one before it, and the repeatable one only opens
       after the later steps, so the line has to be researched in order.
@@ -146,6 +150,7 @@ nodes:
   - id: energy.upkeep_buys_something
     type: obstacle
     title: The upkeep pays for something the empire uses
+    uncertain_title: The upkeep may pay for something the empire uses
     description: >
       A district or building that costs energy usually houses pops or jobs. Removing it also
       removes its housing, amenities or output, which can cost more than the energy saved.

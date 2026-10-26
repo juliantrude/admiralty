@@ -138,6 +138,7 @@ nodes:
   - id: influence.no_ascension_slot
     type: obstacle
     title: No free ascension perk slot
+    uncertain_title: There may be no free ascension perk slot
     description: >
       Ascension perks are limited by the slots the empire has unlocked, and every perk taken is a
       choice against the others. The perk also needs its prerequisite technology.
@@ -146,6 +147,7 @@ nodes:
   - id: influence.decree_locked
     type: obstacle
     title: The decree is not unlocked yet
+    uncertain_title: The decree may not be unlocked yet
     description: >
       The ambition decrees open with a late technology, so an empire that has not researched it
       cannot use them at all.
@@ -155,6 +157,7 @@ nodes:
     type: obstacle
     rules: [unity-vs-next-tradition]
     title: Not enough Unity to buy and keep the decree
+    uncertain_title: There may not be enough Unity to buy and keep the decree
     description: >
       The decree is paid in Unity, once to start it and then every month while it runs. A weak Unity
       income makes it a bad trade, and the empire is then better off raising Unity first.
@@ -168,6 +171,7 @@ nodes:
     type: obstacle
     rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the next Tradition
+    uncertain_title: There may not be enough Unity banked for the next Tradition
     description: >
       A Tradition is paid in Unity. While the stockpile is below the cost of the next one, this step
       cannot be taken.
@@ -181,6 +185,7 @@ nodes:
     type: obstacle
     rules: [unity-vs-next-tradition]
     title: Not enough Unity banked to adopt the tradition tree
+    uncertain_title: There may not be enough Unity banked to adopt the tradition tree
     description: >
       Adopting a tradition tree is paid in Unity. While the stockpile is below the cost of the next
       Tradition, the tree cannot be adopted.
@@ -193,6 +198,7 @@ nodes:
   - id: influence.project_cannot_wait
     type: obstacle
     title: The project cannot wait for the stockpile to refill
+    uncertain_title: The project may not be able to wait for the stockpile to refill
     description: >
       Some projects have a deadline, such as a war or a threatened border. Waiting then costs more
       than the influence it saves.
@@ -201,6 +207,7 @@ nodes:
   - id: influence.federation_code_prerequisites
     type: obstacle
     title: Federation Code needs its prerequisites
+    uncertain_title: Federation Code may still need its prerequisites
     description: >
       The technology sits behind other technologies and is slow while research output is low.
     check:

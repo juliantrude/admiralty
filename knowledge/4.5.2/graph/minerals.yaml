@@ -109,6 +109,7 @@ nodes:
     type: obstacle
     rules: [unemployed-before-colonies]
     title: No unemployed pops to fill new Miner jobs
+    uncertain_title: There may be no unemployed pops for new Miner jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new Miner job pulls a
       worker away from another job.
@@ -121,6 +122,7 @@ nodes:
   - id: minerals.no_mining_slot
     type: obstacle
     title: No free mining district or building slot
+    uncertain_title: There may be no free mining district or building slot
     description: >
       Miner jobs come from mining districts and from buildings. A planet with no free district
       or building slot cannot host another one until it grows or a slot is freed.
@@ -130,6 +132,7 @@ nodes:
   - id: minerals.cannot_pay_district
     type: obstacle
     title: The mineral stockpile is empty
+    uncertain_title: The mineral stockpile may be empty
     description: >
       A district is paid in minerals when it is built. With nothing in the stockpile the build
       has to wait for income.
@@ -141,6 +144,7 @@ nodes:
   - id: minerals.mining_tech_prerequisites
     type: obstacle
     title: The mining technologies need their prerequisites
+    uncertain_title: The mining technologies may still need their prerequisites
     description: >
       Each mining technology requires the one before it, and the repeatable one only opens after
       the purification line, so the line has to be researched in order.
@@ -152,6 +156,7 @@ nodes:
   - id: minerals.purification_locked
     type: obstacle
     title: The purification building is not unlocked
+    uncertain_title: The purification building may not be unlocked yet
     description: >
       The purification buildings are unlocked by purification technologies, and the hub also
       needs an upgraded capital building on the planet.
@@ -160,6 +165,7 @@ nodes:
   - id: minerals.decree_locked
     type: obstacle
     title: The decree is not available
+    uncertain_title: The decree may not be available
     description: >
       The decree is unlocked by an ascension technology and a decree is paid for with influence,
       so it is out of reach until both are in place.

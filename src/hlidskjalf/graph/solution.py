@@ -498,6 +498,10 @@ def _graph_node(node: dict[str, Any], graph: MechanicsGraph) -> dict[str, Any]:
     if node["type"] == "obstacle":
         out["check_state"] = node["check"]["state"]
         evidence.append(_check_evidence(node["check"]))
+        # not checked against the numbers: say it in the conditional ("may have no free slot")
+        uncertain = graph.nodes.get(node["id"], {}).get("uncertain_title")
+        if uncertain and out["check_state"] in ("judgement", "unknown"):
+            out["title"] = uncertain
     if node["type"] == "remedy":
         out["status"] = node["status"]
         out["ratings"] = dict(node["ratings"])

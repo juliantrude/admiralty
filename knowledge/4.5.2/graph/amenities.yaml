@@ -99,6 +99,7 @@ nodes:
     type: obstacle
     rules: [unemployed-before-colonies]
     title: No unemployed pops to staff amenity jobs
+    uncertain_title: There may be no unemployed pops for amenity jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new amenity job pulls a
       worker away from another job.
@@ -111,6 +112,7 @@ nodes:
   - id: amenities.no_amenity_slot
     type: obstacle
     title: No free amenity job slot
+    uncertain_title: There may be no free amenity job slot
     description: >
       Amenity jobs come from districts and buildings. A planet with no free district or building
       slot cannot host another one until a slot is freed.
@@ -120,6 +122,7 @@ nodes:
   - id: amenities.no_building_slot
     type: obstacle
     title: No free building slot for an amenity building
+    uncertain_title: There may be no free building slot for an amenity building
     description: >
       An amenity building needs a free building slot on its planet.
     check: {judgement_only: true}
@@ -128,6 +131,7 @@ nodes:
   - id: amenities.building_locked
     type: obstacle
     title: The amenity building is not unlocked
+    uncertain_title: The amenity building may not be unlocked yet
     description: >
       The better amenity buildings are unlocked by technologies, and some are limited to certain
       planet types or governments.
@@ -137,6 +141,7 @@ nodes:
     type: obstacle
     rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the tradition or edict
+    uncertain_title: There may not be enough Unity banked for the tradition or edict
     description: >
       The tradition and the edict are paid in Unity. While the stockpile is below the cost of the
       next Tradition, spending it elsewhere delays the tree.
@@ -149,6 +154,7 @@ nodes:
   - id: amenities.tech_empire_type
     type: obstacle
     title: The technology applies to one kind of empire only
+    uncertain_title: The technology may apply to another kind of empire only
     description: >
       The two technologies are meant for different kinds of empire, so only one of them can help a
       given government, and the other has no effect.

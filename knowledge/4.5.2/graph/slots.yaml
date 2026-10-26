@@ -87,6 +87,7 @@ nodes:
   - id: slots.capital_upgrade_locked
     type: obstacle
     title: The capital building is not upgraded yet
+    uncertain_title: The capital building may not be upgraded yet
     description: >
       The capital building adds district slots when it is upgraded, and each upgrade needs a
       technology and the alloys or other resources it costs.
@@ -96,6 +97,7 @@ nodes:
     type: obstacle
     rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the next Tradition
+    uncertain_title: There may not be enough Unity banked for the next Tradition
     description: >
       Each Tradition of the tree is paid in Unity. While the stockpile is below the cost of the
       next one, the tree cannot move forward.
@@ -107,6 +109,7 @@ nodes:
   - id: slots.district_tech_locked
     type: obstacle
     title: The technology is not researched yet
+    uncertain_title: The technology may not be researched yet
     description: >
       The technologies that add district slots sit behind earlier ones and arrive slowly when
       research is low.
@@ -118,6 +121,7 @@ nodes:
   - id: slots.no_district_room
     type: obstacle
     title: No free district slot on the planet
+    uncertain_title: The planet may have no free district slot
     description: >
       A new district needs a free district slot. A planet at its limit has to raise the limit or
       replace a district first.
@@ -127,6 +131,7 @@ nodes:
   - id: slots.district_upkeep
     type: obstacle
     title: Energy income cannot carry another district
+    uncertain_title: The energy income may not carry another district
     description: >
       Every district charges energy upkeep. With negative net energy a new district deepens the
       deficit, so energy has to be fixed first.
@@ -138,6 +143,7 @@ nodes:
   - id: slots.weak_building_unknown
     type: obstacle
     title: It is not clear which building is the weakest
+    uncertain_title: It may not be clear which building is the weakest
     description: >
       Weighing one building against another needs what each produces on that planet and what the
       Player wants most. The files do not rank them.

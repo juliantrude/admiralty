@@ -109,6 +109,7 @@ nodes:
     type: obstacle
     rules: [unemployed-before-colonies]
     title: No unemployed pops to staff order jobs
+    uncertain_title: There may be no unemployed pops for order jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new order job pulls a
       worker away from another job.
@@ -121,6 +122,7 @@ nodes:
   - id: stability.no_order_slot
     type: obstacle
     title: No free order job slot
+    uncertain_title: There may be no free order job slot
     description: >
       Order jobs come from buildings and districts. A planet with no free slot cannot host another
       one until a slot is freed.
@@ -130,6 +132,7 @@ nodes:
   - id: stability.no_building_slot
     type: obstacle
     title: No free building slot for a stability building
+    uncertain_title: There may be no free building slot for a stability building
     description: >
       A stability building needs a free building slot on its planet.
     check: {judgement_only: true}
@@ -138,6 +141,7 @@ nodes:
   - id: stability.building_locked
     type: obstacle
     title: The stability building is not unlocked
+    uncertain_title: The stability building may not be unlocked yet
     description: >
       The stronger buildings are unlocked by technologies, and some also need the planet or the
       government to be of a fitting type.
@@ -146,6 +150,7 @@ nodes:
   - id: stability.edict_costs_unity
     type: obstacle
     title: Not enough Unity banked for the edict
+    uncertain_title: There may not be enough Unity banked for the edict
     description: >
       An edict is bought with Unity and then charges upkeep in Unity. While the stockpile is short
       of what the next Tradition needs, the edict slows that down.
@@ -159,6 +164,7 @@ nodes:
     type: obstacle
     rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the next Tradition
+    uncertain_title: There may not be enough Unity banked for the next Tradition
     description: >
       Each Tradition of the tree is paid in Unity. While the stockpile is below the cost of the
       next one, the tree cannot move forward.
@@ -171,6 +177,7 @@ nodes:
   - id: stability.faction_demands_conflict
     type: obstacle
     title: The factions want things the empire cannot give
+    uncertain_title: The factions may want things the empire cannot give
     description: >
       Factions can want opposite policies or more than the empire is willing to spend. Only the
       Player can weigh which demand to meet.

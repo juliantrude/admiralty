@@ -242,7 +242,6 @@ def test_status_check_state_and_crisis_are_in_words_and_the_legend_lists_only_wh
         "check:unknown",
         "check:judgement",
         "size",
-        "rank",
         "crisis",
         "model",
     ]
@@ -255,7 +254,6 @@ def test_status_check_state_and_crisis_are_in_words_and_the_legend_lists_only_wh
         "status:actionable",
         "check:present",
         "size",
-        "rank",
     ]
     assert all(e["label"].strip() for e in state["legend"])
 
@@ -451,20 +449,6 @@ def test_a_key_action_in_the_list_focuses_its_chain():
 
 
 @needs_browser
-def test_key_actions_carry_their_rank_and_remedy_states_their_symbol():
-    graph = chain_graph()
-    graph["nodes"] = [
-        n | {"status": "obstructed"} if n["id"] == "pop_growth.grow_pops" else n
-        for n in graph["nodes"]
-    ]
-    state = driver.render_engine(graph)
-    nodes = {n["id"]: n for n in state["nodes"]}
-    for action in graph["key_actions"]:
-        assert nodes[action["node"]]["badges"].startswith(chr(0x2775 + action["rank"]))
-    assert "\U0001f6ab" in nodes["pop_growth.grow_pops"]["badges"]
-
-
-@needs_browser
 def test_node_size_follows_the_weighted_impact_on_the_goals():
     graph = chain_graph()
     cause_edges = [e for e in graph["edges"] if e["kind"] == "cause"]
@@ -501,3 +485,14 @@ def test_a_clear_obstacle_is_listed_in_its_remedys_details_instead_of_drawn():
     )
     assert state["panel"]["checked_clear"] == ["Credits are fine"]
     assert all(e["to"] != "energy.credits_clear" for e in state["edges"])
+
+
+@needs_browser
+def test_a_node_shows_its_title_alone():
+    graph = chain_graph()
+    state = driver.render_engine(graph)
+    titles = {n["id"]: n["title"] for n in graph["nodes"]}
+    for node in state["nodes"]:
+        title = titles[node["id"]]
+        assert "\n" not in node["label"]
+        assert node["label"] == title or node["label"].rstrip("\u2026") in title

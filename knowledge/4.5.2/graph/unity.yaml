@@ -128,6 +128,7 @@ nodes:
     type: obstacle
     rules: [unemployed-before-colonies]
     title: No unemployed pops to fill new Unity jobs
+    uncertain_title: There may be no unemployed pops for new Unity jobs
     description: >
       A job only counts once a pop works it. With no unemployed pops, a new Unity job pulls a
       worker away from another job.
@@ -140,6 +141,7 @@ nodes:
   - id: unity.no_unity_job_slot
     type: obstacle
     title: No free Bureaucrat or Politician job slot
+    uncertain_title: There may be no free Bureaucrat or Politician job slot
     description: >
       The Unity jobs come from districts and buildings. A planet with no free slot for them cannot
       host another one until it grows or a slot is freed.
@@ -149,6 +151,7 @@ nodes:
   - id: unity.building_locked
     type: obstacle
     title: The Unity building is not unlocked
+    uncertain_title: The Unity building may not be unlocked yet
     description: >
       Each Unity building is unlocked by a technology of the society line, and some also need a
       branch office or a civic that this empire may not have.
@@ -157,6 +160,7 @@ nodes:
   - id: unity.no_building_slot
     type: obstacle
     title: No free building slot for another Unity building
+    uncertain_title: There may be no free building slot for another Unity building
     description: >
       A building needs a free slot on its planet. A planet with every slot taken has to grow or give
       one up first.
@@ -166,6 +170,7 @@ nodes:
   - id: unity.unity_tech_prerequisites
     type: obstacle
     title: The Unity technologies need their prerequisites
+    uncertain_title: The Unity technologies may still need their prerequisites
     description: >
       The Unity technologies sit behind other technologies, and the repeatable one only opens late,
       so the line has to be researched in order.
@@ -177,6 +182,7 @@ nodes:
   - id: unity.no_ascension_slot
     type: obstacle
     title: No free ascension perk slot
+    uncertain_title: There may be no free ascension perk slot
     description: >
       Ascension perks are limited by the slots the empire has unlocked, and every perk taken is a
       choice against the others.
@@ -185,6 +191,7 @@ nodes:
   - id: unity.edict_still_needed
     type: obstacle
     title: The edict still serves a purpose
+    uncertain_title: The edict may still serve a purpose
     description: >
       An edict that supports a war, a build-up or a growth goal is worth its upkeep while that goal
       lasts. Dropping it loses the effect at once and buying it again costs Unity.

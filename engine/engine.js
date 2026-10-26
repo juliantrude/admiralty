@@ -6,16 +6,17 @@
  */
 (function () {
   const TITLE_MAX = 40;
-  const NODE_HEIGHT = 58;
+  const NODE_HEIGHT = 44;
   const NODE_MIN_WIDTH = 132;
   const NODE_MAX_WIDTH = 320;
-  const CHAR_WIDTH = 7;
+  const CHAR_WIDTH = 9; // about 0.6 em of the 15 px node font
   const TAG_CHAR_WIDTH = 6;
   const NODE_PADDING = 20;
   const READABLE_ZOOM = 0.8;
   const VIEW_PADDING = 30;
-  const ICON_SIZE = 44; // big enough to tell a node's theme at a glance (Julian, 2026-10-26)
-  const ICON_SPACE = 56; // icon plus gap on the left of every node
+  const ICON_SIZE = 35; // big enough to tell a node's theme at a glance (Julian, 2026-10-26)
+  const ICON_SPACE = 44; // icon plus gap on the left of every node
+  const NODE_FONT = 15;
   const FADED_OPACITY = 0.15;
   const NODE_TYPES = ["goal", "cause", "remedy", "obstacle"];
   const EDGE_KINDS = ["cause", "remedy", "obstacle"];
@@ -239,9 +240,9 @@
       if (types.has(type)) entries.push({ id: `type:${type}`, label: TYPE_NAME[type], fill: T.fill[type], border: T.border[type] });
     }
     const remedyStatus = {
-      actionable: "green border",
-      pending: "hatched, \u23f1",
-      obstructed: "greyed out, \u{1F6AB}",
+      actionable: "bright green border",
+      pending: "hatched",
+      obstructed: "greyed out, dashed border",
     };
     for (const status of Object.keys(remedyStatus)) {
       if (doc.nodes.some((n) => n.type === "remedy" && n.status === status)) {
@@ -277,9 +278,6 @@
     }
     if (doc.edges.some((e) => e.weight)) {
       entries.push({ id: "weight", label: "edge weight: thick high, thin medium, dashed low", fill: T.plain });
-    }
-    if (doc.key_actions.length) {
-      entries.push({ id: "rank", label: "\u2776 \u2777 \u2778 rank of a Key Action", fill: T.plain });
     }
     if (doc.nodes.some((n) => n.type === "goal" && n.crisis)) {
       entries.push({ id: "crisis", label: "Crisis Goal (heavy outline)", fill: T.fill.goal, border: T.crisis, heavy: true });
@@ -423,20 +421,21 @@
       const badges = badgesOf(node, rankOf.get(node.id));
       const step = node.type === "goal" ? 0 : scaleStep(impact.get(node.id) || 0);
       const scale = SCALE_STEPS[step];
-      const base = nodeSize(node.title, tag, badges);
+      const base = nodeSize(node.title, "", "");
       const size = { width: Math.round(base.width * scale), height: Math.round(base.height * scale) };
       const data = {
         id: node.id,
         type: node.type,
-        label: `${badges}${nodeLabel(node.title)}\n${tag}`,
+        label: nodeLabel(node.title), // type, state and rank are told by colour, border and the details
         tag,
         badges,
         icon: iconOf(node),
         scale,
         impact: node.type === "goal" ? null : round(impact.get(node.id) || 0),
-        fontSize: Math.round(11 * scale * 10) / 10,
+        fontSize: Math.round(NODE_FONT * scale * 10) / 10,
         iconSize: Math.round(ICON_SIZE * scale),
         textShift: Math.round((ICON_SPACE * scale) / 2),
+        textWidth: Math.round(size.width - (ICON_SPACE + NODE_PADDING) * scale),
         width: size.width,
         height: size.height,
         model: node.source === "model",
@@ -535,6 +534,7 @@
           width: node.data("width"),
           height: node.data("height"),
           tag: node.data("tag"),
+          label: node.data("label"),
           model: node.data("model"),
           break_point: node.data("breakPoint"),
           color: node.data("circleColor") || null,
@@ -621,7 +621,7 @@
         "text-valign": "center",
         "text-halign": "center",
         "font-size": "data(fontSize)",
-        "line-height": 1.25,
+        "line-height": 1.2,
         "background-color": T.plain,
         "border-width": 1.5,
         "border-color": T.edge,
@@ -714,7 +714,8 @@
     return node;
   }
 
-  const FONT = '"Exo 2", "Rajdhani", "Segoe UI", system-ui, sans-serif';
+  // single quotes: a valid canvas font string, so measuring and drawing use the same face and size
+  const FONT = "'Exo 2', 'Segoe UI', sans-serif";
 
   function storedTheme() {
     try {

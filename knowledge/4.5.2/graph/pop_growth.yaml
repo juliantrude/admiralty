@@ -130,6 +130,7 @@ nodes:
   - id: pop_growth.food_deficit
     type: obstacle
     title: Food income is negative
+    uncertain_title: Food income may be negative
     description: >
       Pops eat food, and a planet with a food deficit stops growing and can starve. More pops
       then make the deficit worse, so the food has to come first.
@@ -143,6 +144,7 @@ nodes:
   - id: pop_growth.no_free_housing
     type: obstacle
     title: The planets have no free housing
+    uncertain_title: The planets may have no free housing
     description: >
       Pops need housing. Where every planet is full, new pops have no place to appear, so housing
       has to be added before growth can show.
@@ -151,6 +153,7 @@ nodes:
   - id: pop_growth.growth_tech_locked
     type: obstacle
     title: The growth technologies are not researched yet
+    uncertain_title: The growth technologies may not be researched yet
     description: >
       The growth technologies sit in the society tree behind earlier ones, so they arrive only
       with enough research output in that field.
@@ -159,6 +162,7 @@ nodes:
   - id: pop_growth.edict_costs_unity
     type: obstacle
     title: The edict is paid in Unity
+    uncertain_title: The edict may cost Unity that is needed elsewhere
     description: >
       An edict is bought with Unity and then charges upkeep in Unity. While the stockpile is short
       of what the Tradition needs, spending on an edict slows that down.
@@ -171,6 +175,7 @@ nodes:
   - id: pop_growth.no_growth_building_slot
     type: obstacle
     title: No free building slot for a growth building
+    uncertain_title: There may be no free building slot for a growth building
     description: >
       A growth building needs a free building slot on a planet that still has room to grow.
     check: {judgement_only: true}
@@ -179,6 +184,7 @@ nodes:
   - id: pop_growth.assembly_locked
     type: obstacle
     title: The assembly boosts are not unlocked yet
+    uncertain_title: The assembly boosts may not be unlocked yet
     description: >
       The assembly technologies need earlier ones, the tradition needs its whole tree, and the
       civic is chosen at the start of the game, so each is a long-term decision.

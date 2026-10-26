@@ -119,6 +119,7 @@
         "id": {"$ref": "#/$defs/id"},
         "type": {"const": "obstacle"},
         "title": {"$ref": "#/$defs/text"},
+        "uncertain_title": {"$ref": "#/$defs/text", "description": "The title in the conditional, shown when the Obstacle could not be checked against the numbers."},
         "description": {"$ref": "#/$defs/text"},
         "check": {
           "description": "Compared against the Snapshot by M5; judgement_only hands the Obstacle to the model, and the Briefing then says it was not checked against numbers.",

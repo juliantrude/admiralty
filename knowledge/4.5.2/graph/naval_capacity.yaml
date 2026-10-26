@@ -131,6 +131,7 @@ nodes:
     type: obstacle
     rules: [unity-vs-next-tradition]
     title: Not enough Unity banked for the next Tradition
+    uncertain_title: There may not be enough Unity banked for the next Tradition
     description: >
       Adopting a tradition tree or taking a Tradition is paid in Unity. While the stockpile is
       below the cost of the next Tradition, this step cannot be taken.
@@ -143,6 +144,7 @@ nodes:
   - id: naval_capacity.tradition_slot_taken
     type: obstacle
     title: The tradition trees are already committed elsewhere
+    uncertain_title: The tradition trees may already be committed elsewhere
     description: >
       An empire has only so many tradition tree slots. If they are all spent, Supremacy
       competes with a tree already adopted, and the Player has to weigh that trade.
@@ -151,6 +153,7 @@ nodes:
   - id: naval_capacity.anchorage_needs_alloys
     type: obstacle
     title: Alloy income does not carry another module
+    uncertain_title: The alloy income may not carry another module
     description: >
       A module is paid in alloys when it is built and costs energy upkeep afterwards. With no
       positive alloy income the build competes with ships and buildings.
@@ -162,6 +165,7 @@ nodes:
   - id: naval_capacity.no_free_starbase_slot
     type: obstacle
     title: No starbase has a free module or building slot
+    uncertain_title: No starbase may have a free module or building slot
     description: >
       Modules and starbase buildings are limited by the size of the starbase. A starbase must be
       upgraded, or a lesser module replaced, before another Anchorage or Office fits.
@@ -170,6 +174,7 @@ nodes:
   - id: naval_capacity.office_needs_technology
     type: obstacle
     title: The Office is not unlocked
+    uncertain_title: The Office may not be unlocked yet
     description: >
       The Naval Logistics Office is locked behind a fleet tradition technology and also needs an
       Anchorage on the same starbase.
@@ -178,6 +183,7 @@ nodes:
   - id: naval_capacity.doctrine_prerequisites
     type: obstacle
     title: The doctrine technologies need their prerequisites first
+    uncertain_title: The doctrine technologies may still need their prerequisites
     description: >
       The repeatable technology is only offered after the last doctrine step, and every step
       needs the one before it, so the whole line has to be researched in order.
@@ -187,6 +193,7 @@ nodes:
     type: obstacle
     rules: [unemployed-before-colonies]
     title: No unemployed pops to fill Soldier jobs
+    uncertain_title: There may be no unemployed pops for Soldier jobs
     description: >
       A Soldier job only counts once a pop works it. With no unemployed pops, new jobs would
       pull workers away from other jobs.
@@ -199,6 +206,7 @@ nodes:
   - id: naval_capacity.soldier_jobs_cost_output
     type: obstacle
     title: Soldier jobs take pops from productive work
+    uncertain_title: Soldier jobs may take pops from productive work
     description: >
       A Soldier produces no goods and has upkeep, so filling the job costs economy elsewhere.
     check: {judgement_only: true}

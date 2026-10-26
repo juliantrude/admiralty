@@ -666,3 +666,24 @@ def test_a_weight_on_no_cause_edge_or_without_reason_is_refused(graph, expansion
         with pytest.raises(SolutionInvalid) as caught:
             compose_exact(expansion, overlay(weights=weights), graph)
         assert message in str(caught.value.problems)
+
+
+def test_unchecked_obstacles_speak_in_the_conditional():
+    from hlidskjalf.extract.snapshot import Extractor
+
+    mechanics = MechanicsGraph.load("v4.5.2")
+    extract = Extractor().extract(str(reference_save(VULKAN, MID)), "Plexxi")
+    expansion = expand_graph(mechanics, ["alloys.more", "energy.more"], extract).to_dict()
+    doc = compose(
+        expansion,
+        {
+            "empire": "Plexxi",
+            "goals": {"alloys.more": {"horizon": "medium"}, "energy.more": {"horizon": "short"}},
+            "why": {c["node"]: "x" for c in expansion["key_action_candidates"]},
+        },
+        mechanics,
+    )
+    unchecked = [n for n in doc["nodes"] if n.get("check_state") in ("judgement", "unknown")]
+    checked = [n for n in doc["nodes"] if n.get("check_state") in ("present", "clear")]
+    assert unchecked and all(" may " in n["title"] for n in unchecked)
+    assert all(n["title"] == mechanics.nodes[n["id"]]["title"] for n in checked)
