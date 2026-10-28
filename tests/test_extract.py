@@ -14,8 +14,9 @@ import pytest
 from conftest import SAVES_DIR, VULKAN, budget, reference_save
 from golden_values import PENDING, matches, value
 
+from admiralty.extract.context import as_list, block
 from admiralty.extract.diff import DiffError, diff_extracts
-from admiralty.extract.snapshot import Extractor
+from admiralty.extract.snapshot import Extractor, Snapshot
 
 pytestmark = pytest.mark.saves
 
@@ -274,3 +275,71 @@ def test_room_counts_open_jobs_by_function_and_free_housing(extractor, campaign_
     assert room["housing_free"] == pytest.approx(
         sum(max(p["free_housing"], 0) for p in doc["planets"]), abs=0.1
     )
+
+
+@pytest.mark.parametrize(
+    "campaign_save",
+    [
+        (VULKAN, "2298.03.11.sav"),
+        (ZYGERRIAN, "2271.08.25.sav"),
+        (ZYGERRIAN, "2291.09.26.sav"),  # one unlocked slot not yet filled
+        (ZYGERRIAN, "2363.04.17.sav"),
+    ],
+)
+def test_ascension_slots_follow_finished_trees(extractor, campaign_save):
+    campaign, save = campaign_save
+    doc = extract(extractor, campaign, save)
+    slots = doc["progression"]["ascension_slots"]
+    ctx = extractor.context(reference_save(campaign, save))
+    snapshot = Snapshot(extractor, ctx, PLAYER)
+    traditions = as_list(snapshot.country.get("traditions"))
+    techs = as_list(block(snapshot.country.get("tech_status")).get("technology"))
+    # independent count from save fields: a slot per finished tree, one for Ascension Theory
+    finished = sum(1 for t in traditions if t.endswith("_finish"))
+    expected = finished + ("tech_ascension_theory" in techs)
+    assert slots["unlocked"] == min(expected, slots["cap"])
+    assert slots["taken"] == len(doc["progression"]["ascension_perks"])
+    assert slots["free"] == max(0, slots["unlocked"] - slots["taken"])
+    assert slots["cap"] == 8
+
+
+def test_a_free_ascension_slot_exists_on_the_reference_saves(extractor):
+    free = extract(extractor, ZYGERRIAN, "2291.09.26.sav")["progression"]["ascension_slots"]["free"]
+    full = extract(extractor, VULKAN, "2298.03.11.sav")["progression"]["ascension_slots"]["free"]
+    assert free == 1
+    assert full == 0
+
+
+@pytest.mark.parametrize(
+    "campaign_save", [(VULKAN, "2298.03.11.sav"), (ZYGERRIAN, "2363.04.17.sav")]
+)
+def test_tradition_tree_slots_and_discovery_traditions(extractor, campaign_save):
+    doc = extract(extractor, *campaign_save)
+    progression = doc["progression"]
+    trees = progression["tradition_tree_slots"]
+    assert trees["max"] == 7
+    assert trees["adopted"] == len(progression["tradition_trees"])
+    assert trees["free"] == 7 - trees["adopted"]
+    discovery = progression["discovery_traditions"]
+    assert discovery["total"] == 5
+    assert discovery["adopted"] + discovery["left"] == 5
+    assert 0 <= discovery["left"] <= 5
+
+
+def test_progression_obstacles_are_checked_on_the_reference_saves(extractor):
+    from admiralty.graph.mechanics import MechanicsGraph
+    from admiralty.graph.metrics import evaluate
+
+    graph = MechanicsGraph.load()
+
+    def state(node, campaign_save):
+        doc = extract(extractor, *campaign_save)
+        return evaluate(graph.node(node)["check"], graph.metrics, doc).state
+
+    full, free = (VULKAN, "2298.03.11.sav"), (ZYGERRIAN, "2291.09.26.sav")
+    for node in ("unity.no_ascension_slot", "influence.no_ascension_slot"):
+        assert state(node, full) == "present"
+        assert state(node, free) == "clear"
+    assert state("research.discovery_tree_unfinished", full) == "present"
+    assert state("research.discovery_tree_unfinished", free) == "clear"  # tree finished
+    assert state("naval_capacity.tradition_slot_taken", full) == "clear"  # 4 tree slots free

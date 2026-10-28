@@ -183,9 +183,12 @@ These stay `judgement_only`. The reason each cannot have a number:
 
 ## Open questions (decided inside the increment that needs them)
 
-1. **Tradition tree slots.** `TRADITION_CATEGORIES_MAX = 7` is a cap; what unlocks the second, third and
-   later tree is not yet read from the files. If it cannot be derived, `naval_capacity.tradition_slot_taken`
-   gets the reason here and stays `judgement_only`.
+1. **Tradition tree slots.** Settled in increment 2b. The game's own test for "Requires an empty
+   Tradition Tree slot" is `num_tradition_categories < @max_tradition_trees` (7; `ascension_perks/
+   00_ascension_paths.txt:72`, `scripted_variables/07_scripted_variables_machine_age.txt:47`), and no
+   game file changes the limit. So `traditions.trees_free` = 7 − trees unlocked
+   (`computed/tradition_trees.py`). Ascension slots: no base slot, one per finished tree plus one for
+   `tech_ascension_theory` (`computed/ascension_slots.py`, checked on 15 saves).
 2. **Capital tier numbering** for each empire type (regular, machine, hive, habitat, wilderness). Read
    from the capital building keys and `capital_tier` use in the scripted triggers.
 3. **Zone capacity corner cases.** `max_buildings_planet_class` and `is_capped_by_modifier` zones; the

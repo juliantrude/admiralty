@@ -84,7 +84,7 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 - [x] 2a. Group 2 (3 Obstacles): `room.open_jobs_by_function` (amenities, order), `room.housing_free`;
       checks for `amenities.no_amenity_slot`, `stability.no_order_slot` (only_clears),
       `pop_growth.no_free_housing`.
-- [ ] 2b. Group 1 (4 Obstacles): `computed/ascension_slots.py` (perk slots free), tradition trees free,
+- [x] 2b. Group 1 (4 Obstacles): `computed/ascension_slots.py` (perk slots free), tradition trees free,
       Discovery traditions left; checks for the four Obstacles of group 1.
 - [ ] 3a. Technology prerequisites: `computed/unlocks.py`, the `only_present` flag, and the four
       unlocks without capital tier (decree, doctrine, growth techs, assembly).
@@ -100,12 +100,11 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 2b, group 1 (see the plan document, group 1). Start with the ascension slot
-module `computed/ascension_slots.py` (`influence.no_ascension_slot`, `unity.no_ascension_slot`), then
-`traditions.discovery_left`, then tradition tree slots.
-**Blockers:** none. Open question for 2b: what unlocks further tradition tree slots (plan document, Open
-questions 1); if not derivable, `naval_capacity.tradition_slot_taken` stays `judgement_only` with the
-reason written into the plan.
+**Next action:** increment 3a, technology prerequisites: `computed/unlocks.py`, the `only_present` flag
+(`mechanics.schema.json`, `evaluate`, `tests/test_metrics_only_clears.py`), then the four unlocks without
+capital tier (`influence.decree_locked`, `naval_capacity.doctrine_prerequisites`,
+`pop_growth.growth_tech_locked`, `pop_growth.assembly_locked`). See plan document, group 3.
+**Blockers:** none.
 
 ## Budget
 
@@ -125,3 +124,9 @@ reason written into the plan.
   (order one `only_clears`, since bureaucrats carry no tag). Suite 736 passed, ruff clean. On the reference
   saves: vulkan 2298 amenities 0 / order 0 / housing 28380; zygerrian 2363 amenities 0 / order 2636 /
   housing 100561.6 (raw save units).
+- 2026-10-28 — Increment 2b: `computed/ascension_slots.py` (slots = Ledger `ascension_perks_add`, no base
+  slot, cap 8; unlocked count equals finished trees + Ascension Theory on 15 saves) and
+  `computed/tradition_trees.py` (free tree slots = `@max_tradition_trees` 7 − trees; Discovery traditions left
+  from `tradition_categories`). 4 Obstacles checked (`tradition_slot_taken` is derivable after all: the game's
+  own slot test is the cap). Suite 743 passed + new progression tests, ruff clean. vulkan 2298: slots free 0,
+  trees free 4, Discovery left 3; zygerrian 2291.09.26: slots free 1; 2363: slots free 0, trees free 3.

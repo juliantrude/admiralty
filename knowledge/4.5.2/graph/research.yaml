@@ -182,4 +182,4 @@ nodes:
     description: >
       The finishing bonus only arrives once every Tradition of the tree is taken, so a tree that was
       adopted but not completed gives none of it.
-    check: {judgement_only: true}
+    check: {metric: traditions.discovery_left, op: ">", compare_to: 0}

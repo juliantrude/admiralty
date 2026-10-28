@@ -148,7 +148,7 @@ nodes:
     description: >
       An empire has only so many tradition tree slots. If they are all spent, Supremacy
       competes with a tree already adopted, and the Player has to weigh that trade.
-    check: {judgement_only: true}
+    check: {metric: traditions.trees_free, op: "==", compare_to: 0}
 
   - id: naval_capacity.anchorage_needs_alloys
     type: obstacle

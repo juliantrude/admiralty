@@ -8,10 +8,16 @@ from pathlib import Path
 from typing import Any
 
 from admiralty.extract import empire as data
+from admiralty.extract.computed.ascension_slots import ascension_slots
 from admiralty.extract.computed.max_districts import max_districts, planet_ledger
 from admiralty.extract.computed.modifiers import Ledger, Triggers, country_ledger
 from admiralty.extract.computed.naval_capacity import naval_capacity
 from admiralty.extract.computed.tradition_cost import next_tradition_cost
+from admiralty.extract.computed.tradition_trees import (
+    DISCOVERY,
+    tradition_tree_slots,
+    traditions_left,
+)
 from admiralty.extract.context import Context
 from admiralty.extract.header import build_header, resolve_tracked_empire
 from admiralty.extract.names import Localisation
@@ -126,6 +132,9 @@ class Snapshot:
             "progression": {
                 **data.progression(ctx, country),
                 "next_tradition": self.next_tradition(),
+                "ascension_slots": ascension_slots(ctx, country, self.ledger),
+                "tradition_tree_slots": tradition_tree_slots(ctx, country),
+                "discovery_traditions": traditions_left(ctx, country, DISCOVERY),
             },
             "military": {
                 "fleets": data.fleets(ctx, self.country_id, country),

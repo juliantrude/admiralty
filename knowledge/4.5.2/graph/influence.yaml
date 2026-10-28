@@ -142,7 +142,7 @@ nodes:
     description: >
       Ascension perks are limited by the slots the empire has unlocked, and every perk taken is a
       choice against the others. The perk also needs its prerequisite technology.
-    check: {judgement_only: true}
+    check: {metric: ascension.slots_free, op: "==", compare_to: 0}
 
   - id: influence.decree_locked
     type: obstacle

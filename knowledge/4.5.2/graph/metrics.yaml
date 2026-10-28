@@ -50,6 +50,9 @@ metrics:
     ratio: {numerator: naval_capacity.used, denominator: naval_capacity.max}
     unit: fraction
   traditions.next_cost: {path: progression.next_tradition.cost, unit: unity}
+  ascension.slots_free: {path: progression.ascension_slots.free, unit: ascension perk slots}
+  traditions.trees_free: {path: progression.tradition_tree_slots.free, unit: tradition tree slots}
+  traditions.discovery_left: {path: progression.discovery_traditions.left, unit: traditions}
   # free places to grow into (extract section "room")
   room.districts_free: {path: room.districts_free, unit: district slots}
   room.generator_free: {path: room.district_types_free.generator, unit: district slots}
