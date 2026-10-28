@@ -146,7 +146,7 @@ nodes:
     description: >
       A lab needs a free building slot on its planet. A planet with every slot taken has to grow or
       give one up first.
-    check: {judgement_only: true}
+    check: {metric: room.building_slots_free_research, op: "==", compare_to: 0, only_clears: true}
     remedies: [slots.more_building_slots]
 
   - id: research.speed_tech_prerequisites

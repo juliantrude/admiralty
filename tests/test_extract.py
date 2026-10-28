@@ -548,7 +548,7 @@ def test_building_unlock_obstacles_are_checked_on_the_reference_saves(extractor)
 
 
 CHECKED_BY_THE_OBSTACLE_PLAN = (
-    # docs/plans/obstacle-checks.md, groups 1 to 3 (the 4 unlocks with a named reason stay grey)
+    # docs/plans/obstacle-checks.md, groups 1 to 4 (the 4 unlocks with a named reason stay grey)
     "influence.no_ascension_slot",
     "unity.no_ascension_slot",
     "naval_capacity.tradition_slot_taken",
@@ -568,6 +568,15 @@ CHECKED_BY_THE_OBSTACLE_PLAN = (
     "housing.dwelling_locked",
     "naval_capacity.office_needs_technology",
     "slots.capital_upgrade_locked",
+    # group 4, the seven planet-level slot Obstacles with a family (amenities stays grey: no
+    # amenity building is buildable for either reference empire)
+    "jobs.no_building_room",
+    "alloys.no_foundry_slot",
+    "research.no_lab_slot",
+    "unity.no_building_slot",
+    "stability.no_building_slot",
+    "housing.no_building_slot",
+    "pop_growth.no_growth_building_slot",
 )
 
 REFERENCE_SAVES = (

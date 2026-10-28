@@ -92,7 +92,8 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 - [x] 4. Verification of 2 and 3: tests on the reference saves, one headless Briefing.
 - [x] 5a. Zone rules: `computed/building_slots.py`, free slots per planet, golden tests pending for
       Julian, steps in `docs/awaiting-julian.md`.
-- [ ] 5b. Family metrics and the eight planet-level slot checks.
+- [x] 5b. Family metrics and the planet-level slot checks (seven checked; `amenities.no_building_slot`
+      stays grey with its reason in the plan).
 - [ ] 5c. Starbase slots: `computed/starbase_slots.py`, `naval_capacity.no_free_starbase_slot`,
       golden test pending.
 - [ ] 6. Final verification: full suite, ruff, one headless Briefing, numbers in the Log.
@@ -100,16 +101,14 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 5b, family metrics and the eight planet-level slot checks: read the
-`building_sets` of `common/buildings/*.txt` and the `included_building_sets` / `include` / `exclude` of
-the zones (`computed/building_slots.py` already gives capacity, used and free per zone; the zone detail
-has the zone type), derive which zone types host the families foundry, research, unity, order, amenities,
-housing and growth (from each family's buildings: `planet_*_add` modifiers named in the plan), add
-`room.building_slots_free` and `room.building_slots_free_by_family.<family>` to `room()`, register the
-metrics, and set the checks of `jobs.no_building_room` and the seven family Obstacles (`only_clears` where
-the zone sum does not cover the district part, as `energy.no_generator_slot`). Free slots in a zone whose
-building sets do not fit a family do not count for it. Unfinished zone slots (`empty_zone_slots`) stay out
-of the numbers.
+**Next action:** increment 5c, starbase slots: read `starbase_levels`, `starbase_modules` and
+`starbase_buildings` of `common/` (and the `module_slots`/`building_slots` of each level), write
+`computed/starbase_slots.py` (free module and building slots per starbase from the level and the modules
+the save lists; `computed/naval_capacity.py` already reads a starbase's modules), add the metric
+`starbases.module_slots_free` to `metrics.yaml` and the `room`/starbase section of the extract, set the check
+of `naval_capacity.no_free_starbase_slot` (`== 0`, `only_clears` if the sum does not cover every slot type),
+add a golden test that skips as pending, and German steps in `docs/awaiting-julian.md`. If the slots cannot be
+rebuilt cleanly from the files after two iterations, write that into Blockers and stop the chain.
 **Blockers:** none.
 
 ## Budget
@@ -169,3 +168,15 @@ of the numbers.
   13/21, Astarte 14/18. Golden test `test_golden_building_slots` pending (key `building_slots` in
   `golden_values.py` is Julian's); German steps in `docs/awaiting-julian.md` section 5. Suite 788 passed,
   3 skipped (pending), ruff clean.
+- 2026-10-29 — Increment 5b: `SLOT_FAMILIES`, `zone_admits` and `family_zones` in `computed/building_slots.py`
+  (a zone counts for a family when its definition admits a buildable building of it; all 10854 built buildings
+  of the 15 saves are admitted by their zone, tested). `room.building_slots_free` and
+  `room.building_slots_free_by_family` (None when a family has no buildable building, or when a sum of 0 meets
+  a zone type that is not computed); per-planet `free_by_family` only in the planet detail, since the summary
+  would break the 40000-character extract budget. 7 Obstacles checked: `jobs.no_building_room`,
+  `stability.no_building_slot`, `housing.no_building_slot`, `pop_growth.no_growth_building_slot` (`== 0`) and
+  `alloys.no_foundry_slot`, `research.no_lab_slot`, `unity.no_building_slot` (`only_clears`, they need a zone of
+  their own). `amenities.no_building_slot` stays `judgement_only`: no amenity building is buildable for either
+  reference empire (reason in the plan). `unlocks._buildable` is now public as `is_buildable`. Suite 822 passed,
+  3 skipped (pending), ruff clean. vulkan 2298: free slots 61, foundry 34, research 38, unity 34, order 33,
+  housing 33, growth 33; zygerrian 2363: 119, 61, 75, 75, 61, 61, 61; all seven read `clear` on both.

@@ -35,5 +35,5 @@ nodes:
     description: >
       A building adds job slots, and each planet only has so many building slots. A full planet
       has to open a slot or give one up.
-    check: {judgement_only: true}
+    check: {metric: room.building_slots_free, op: "==", compare_to: 0}
     remedies: [slots.more_building_slots]

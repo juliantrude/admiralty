@@ -13,9 +13,15 @@ import pytest
 from conftest import SAVES_DIR, VULKAN, reference_save
 from golden_values import PENDING, value
 
-from admiralty.extract.computed.building_slots import planet_building_slots
+from admiralty.extract.computed.building_slots import (
+    SLOT_FAMILIES,
+    planet_building_slots,
+    zone_admits,
+)
 from admiralty.extract.context import NO_ID, as_list
+from admiralty.extract.empire import _slots_free
 from admiralty.extract.snapshot import Extractor, Snapshot
+from admiralty.graph.metrics import evaluate
 
 pytestmark = pytest.mark.saves
 
@@ -84,7 +90,8 @@ def test_summary_and_detail_agree(extractor):
     assert summary.keys() == detail.keys()
     for planet_id, slots in summary.items():
         assert "zones" not in slots
-        assert {k: v for k, v in detail[planet_id].items() if k != "zones"} == slots
+        assert detail[planet_id].keys() - slots.keys() == {"zones", "free_by_family"}
+        assert {k: v for k, v in detail[planet_id].items() if k in slots} == slots
     # Golden-free facts from the game UI notes: the capital is full, so no slot is free there
     capital = next(p for p in snap.planets() if p["name"] == "Unimatrix 1")
     assert capital["building_slots"]["free"] == 0
@@ -139,6 +146,99 @@ def test_zones_with_other_capacity_rules_are_reported_not_guessed(rule):
     assert (slots["capacity"], slots["used"], slots["free"]) == (3, 1, 2)
     assert slots["unsupported"] == ["zone_odd"]
     assert len(ctx.errors) == 1 and "zone_odd" in ctx.errors[0] and rule in ctx.errors[0]
+
+
+def test_a_zone_admits_by_sets_include_and_exclude():
+    building = {"building_sets": ["government", "urban"]}
+    assert zone_admits({"include": ["all"]}, "b", building)
+    assert not zone_admits({"include": ["all"], "excluded_building_sets": ["urban"]}, "b", building)
+    assert not zone_admits({"include": ["all"], "exclude": ["b"]}, "b", building)
+    assert zone_admits({"include": ["b"]}, "b", {})
+    assert zone_admits({"included_building_sets": ["urban"]}, "b", building)
+    assert not zone_admits({"included_building_sets": ["research"]}, "b", building)
+    assert not zone_admits({}, "b", building)
+    # the arcology zones write `included_building_sets` twice: both blocks count
+    twice = {"included_building_sets": [["industrial", "origin"], ["urban"]]}
+    assert zone_admits(twice, "b", building)
+
+
+@pytest.mark.parametrize(("campaign", "save"), all_saves())
+def test_every_building_in_a_zone_is_admitted_by_the_zone_rule(extractor, campaign, save):
+    """The rule that decides which zones a family can use reproduces what the game let the
+    players build: no building stands in a zone the rule would bar it from."""
+    ctx = extractor.context(reference_save(campaign, save))
+    zone_defs = extractor.game.category("zones")
+    building_defs = extractor.game.category("buildings")
+    barred = set()
+    for zone in ctx.g["zones"].values():
+        if not isinstance(zone, dict):
+            continue
+        for building_id in as_list(zone.get("buildings")):
+            key = ctx.g["buildings"][building_id]["type"]
+            if not zone_admits(zone_defs[zone["type"]], key, building_defs[key]):
+                barred.add((zone["type"], key))
+    assert barred == set()
+
+
+def test_the_slot_families_name_buildings_of_the_game_files(extractor):
+    buildings = extractor.game.category("buildings")
+    assert [key for keys in SLOT_FAMILIES.values() for key in keys if key not in buildings] == []
+
+
+@pytest.mark.parametrize(("campaign", "save"), all_saves())
+def test_family_slots_never_exceed_the_free_slots(extractor, campaign, save):
+    snap = snapshot(extractor, campaign, save)
+    room = snap.document()["room"]
+    planets = [p["building_slots"] for p in snap.planets(detail=True)]
+    assert room["building_slots_free"] == sum(p["free"] for p in planets)
+    assert set(room["building_slots_free_by_family"]) == set(SLOT_FAMILIES)
+    for family, free in room["building_slots_free_by_family"].items():
+        if free is None:
+            assert all(p["free_by_family"][family] is None for p in planets)
+            continue
+        assert free <= room["building_slots_free"], family
+        assert free == sum(p["free_by_family"][family] for p in planets)
+        for planet in planets:
+            assert planet["free_by_family"][family] <= planet["free"]
+
+
+def _planet(free, by_family=None, unsupported=()):
+    return {"free": free, "free_by_family": by_family or {}, "unsupported": list(unsupported)}
+
+
+def test_the_empire_sum_is_unknown_where_it_could_wrongly_read_zero():
+    assert _slots_free([_planet(2, {"unity": 1}), _planet(0, {"unity": 0})], "unity") == 1
+    assert _slots_free([_planet(0), _planet(0)], None) == 0
+    # no buildable building in the family
+    assert _slots_free([_planet(3, {"unity": None})], "unity") is None
+    # a zone whose slots are not computed may hold the free slot
+    assert _slots_free([_planet(0, {"unity": 0}, ["zone_lathe"])], "unity") is None
+    assert _slots_free([_planet(0, unsupported=["zone_lathe"])], None) is None
+    assert _slots_free([_planet(2, unsupported=["zone_lathe"])], None) == 2
+
+
+def test_the_slot_obstacles_read_the_empire_sums():
+    from admiralty.graph.mechanics import MechanicsGraph
+
+    graph = MechanicsGraph.load()
+
+    def state(node, family_free, free=5):
+        room = {
+            "building_slots_free": free,
+            "building_slots_free_by_family": {family: family_free for family in SLOT_FAMILIES},
+        }
+        return evaluate(graph.node(node)["check"], graph.metrics, {"room": room}).state
+
+    assert state("jobs.no_building_room", 3, free=0) == "present"
+    assert state("jobs.no_building_room", 3) == "clear"
+    assert state("stability.no_building_slot", 0) == "present"
+    assert state("housing.no_building_slot", 2) == "clear"
+    assert state("pop_growth.no_growth_building_slot", 0) == "present"
+    # a family that needs a zone of its own: more zones may still be built
+    for node in ("alloys.no_foundry_slot", "research.no_lab_slot", "unity.no_building_slot"):
+        assert state(node, 0) == "judgement", node
+        assert state(node, 1) == "clear", node
+    assert state("unity.no_building_slot", None) == "unknown"
 
 
 GOLDEN_SLOT_SAVES = [

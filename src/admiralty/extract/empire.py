@@ -298,12 +298,36 @@ def job_functions(definition: Any) -> set[str]:
     return {name for name, wanted in JOB_FUNCTION_TAGS.items() if tags & set(wanted)}
 
 
-def room(ctx: Context, planets: list[dict[str, Any]], colonies: list[tuple[int, dict, dict]]):
+def _slots_free(slots_by_planet: list[dict[str, Any]], family: str | None) -> int | None:
+    """Free building slots over the planets, all zones or those that admit a building of `family`.
+    None when the family has no buildable building, or when the sum is 0 but a zone of some planet
+    is not computed (its slots may be free)."""
+    total = 0
+    for slots in slots_by_planet:
+        if family is None:
+            total += slots["free"]
+        else:
+            free = slots["free_by_family"][family]
+            if free is None:
+                return None
+            total += free
+    if total == 0 and any(slots["unsupported"] for slots in slots_by_planet):
+        return None
+    return total
+
+
+def room(
+    ctx: Context,
+    planets: list[dict[str, Any]],
+    colonies: list[tuple[int, dict, dict]],
+    planet_slots: list[dict[str, Any]],
+):
     """Free places to grow into, summed over the empire's planets: district slots in all and per
     rural type (a type's free places never exceed the planet's free slots), and open jobs by the
     resource they produce and by the function they serve (amenities, order), plus free housing
-    (planets over capacity count 0, so a crowded planet does not hide a free one). Lets the
-    Mechanics Graph check "no free slot" Obstacles."""
+    (planets over capacity count 0, so a crowded planet does not hide a free one), and free
+    building slots in all zones and by building family (`planet_slots`, computed/building_slots.py).
+    Lets the Mechanics Graph check "no free slot" Obstacles."""
     districts_free = 0
     by_type = dict.fromkeys(RURAL, 0)
     for planet in planets:
@@ -333,6 +357,11 @@ def room(ctx: Context, planets: list[dict[str, Any]], colonies: list[tuple[int, 
             for function in job_functions(job_defs.get(job["type"])):
                 open_by_function[function] += open_places
     return {
+        "building_slots_free": _slots_free(planet_slots, None),
+        "building_slots_free_by_family": {
+            family: _slots_free(planet_slots, family)
+            for family in (planet_slots[0]["free_by_family"] if planet_slots else {})
+        },
         "districts_free": districts_free,
         "district_types_free": by_type,
         "open_jobs_by_output": {k: rounded(v) for k, v in open_jobs.items()},

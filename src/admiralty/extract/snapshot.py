@@ -9,7 +9,7 @@ from typing import Any
 
 from admiralty.extract import empire as data
 from admiralty.extract.computed.ascension_slots import ascension_slots
-from admiralty.extract.computed.building_slots import planet_building_slots
+from admiralty.extract.computed.building_slots import family_zones, planet_building_slots
 from admiralty.extract.computed.capital_tier import capital_tiers
 from admiralty.extract.computed.max_districts import max_districts, planet_ledger
 from admiralty.extract.computed.modifiers import Ledger, Triggers, country_ledger
@@ -81,6 +81,19 @@ class Snapshot:
         return country_ledger(self.ctx, self.country_id, self.country)
 
     @cached_property
+    def slot_families(self) -> dict[str, frozenset[str] | None]:
+        return family_zones(self.ctx, self.triggers)
+
+    @cached_property
+    def planet_slots(self) -> list[dict[str, Any]]:
+        """Building slots of every planet with the free slots per family, for the empire sums
+        of `room` (the planet summaries leave the families out to keep the extract small)."""
+        return [
+            planet_building_slots(self.ctx, pid, colony, families=self.slot_families)
+            for pid, _, colony in self.colonies
+        ]
+
+    @cached_property
     def colonies(self) -> list[tuple[int, dict, dict]]:
         return data.owned_colonies(self.ctx, self.country)
 
@@ -98,7 +111,9 @@ class Snapshot:
             behind = maxima.pop("_behind_blockers")
             summary = data.planet_summary(self.ctx, pid, planet, colony, maxima)
             summary["district_limit"] = limit
-            summary["building_slots"] = planet_building_slots(self.ctx, pid, colony, detail)
+            summary["building_slots"] = planet_building_slots(
+                self.ctx, pid, colony, detail, self.slot_families if detail else None
+            )
             for kind, count in behind.items():
                 summary["districts"][kind]["behind_blockers"] = count
             if detail:
@@ -131,7 +146,7 @@ class Snapshot:
             "resources": data.economy(ctx, country),
             "pops": data.pops(ctx, self.colonies),
             "planets": planets,
-            "room": data.room(ctx, planets, self.colonies),
+            "room": data.room(ctx, planets, self.colonies, self.planet_slots),
             "naval_capacity": self.naval_capacity(),
             "progression": {
                 **data.progression(ctx, country),

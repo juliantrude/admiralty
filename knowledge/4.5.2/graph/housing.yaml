@@ -120,7 +120,7 @@ nodes:
     uncertain_title: The planet may have no free building slot
     description: >
       A housing building needs a free building slot on its planet.
-    check: {judgement_only: true}
+    check: {metric: room.building_slots_free_housing, op: "==", compare_to: 0}
     remedies: [slots.more_building_slots]
 
   - id: housing.dwelling_locked

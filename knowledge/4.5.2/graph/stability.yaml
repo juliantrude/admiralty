@@ -139,7 +139,7 @@ nodes:
     uncertain_title: There may be no free building slot for a stability building
     description: >
       A stability building needs a free building slot on its planet.
-    check: {judgement_only: true}
+    check: {metric: room.building_slots_free_order, op: "==", compare_to: 0}
     remedies: [slots.more_building_slots]
 
   - id: stability.building_locked

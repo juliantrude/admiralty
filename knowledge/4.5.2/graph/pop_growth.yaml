@@ -181,7 +181,7 @@ nodes:
     uncertain_title: There may be no free building slot for a growth building
     description: >
       A growth building needs a free building slot on a planet that still has room to grow.
-    check: {judgement_only: true}
+    check: {metric: room.building_slots_free_growth, op: "==", compare_to: 0}
     remedies: [slots.more_building_slots]
 
   - id: pop_growth.assembly_locked

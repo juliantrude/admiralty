@@ -180,6 +180,25 @@ Julian reads free slots on two or three planets in the game (`docs/awaiting-juli
 | `pop_growth.no_growth_building_slot` | `...by_family.growth` | `== 0` | clone vats, genomic facility (growth modifiers) |
 | `naval_capacity.no_free_starbase_slot` | `starbases.module_slots_free` | `== 0` | module and building slots by starbase level (`starbase_levels`, `starbase_modules`, `starbase_buildings`); module `extract/computed/starbase_slots.py`; the save lists each starbase's modules (`computed/naval_capacity.py` already reads them) |
 
+Settled in increment 5b (`computed/building_slots.py`): a family is the list of buildings its Remedy
+builds (`SLOT_FAMILIES`), reduced to those the empire can build at all (`is_buildable`, as in
+`computed/unlocks.py`). A zone counts for the family when its definition admits one of them
+(`zone_admits`: `include`/`included_building_sets` minus `exclude`/`excluded_building_sets`,
+`99_HOW_TO_ZONE.txt`); on the 15 reference saves every one of 10854 built buildings is admitted by
+its zone, so the rule reproduces what the game allowed. Checks:
+
+- plain `== 0`: `jobs.no_building_room` (all zones), `stability.no_building_slot` (order keep, psi
+  corps, chamber of silence), `housing.no_building_slot`, `pop_growth.no_growth_building_slot`
+  (clone vats, genomic facility, spawning pool). These families fit the government and urban zones
+  every planet has.
+- `only_clears` (a zone of its own is needed, and an empty zone slot could still get one):
+  `alloys.no_foundry_slot`, `research.no_lab_slot`, `unity.no_building_slot`.
+- `amenities.no_building_slot` stays `judgement_only`: the amenity buildings (`luxury_residence`,
+  `paradise_dome`, `communal_housing`) have a `potential` that is false for both reference empires,
+  so the family is empty and the metric would have no value, as for the four unlocks above.
+- A sum of 0 where a planet has a zone type whose slots are not computed (Synaptic Lathe) has no
+  value instead of 0, and so has the sum of a family with no buildable building.
+
 The empire-level number says whether any planet has room. The per-planet number goes into the
 planet detail (`planets[].building_slots`) so Ops can name the planet. Where the zone sum covers only
 the zones and not the districts ("No free zone or building slot for foundries"), the check is

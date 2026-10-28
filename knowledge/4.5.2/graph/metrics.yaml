@@ -78,3 +78,10 @@ metrics:
   jobs.open_amenities: {path: room.open_jobs_by_function.amenities, unit: open job places}
   jobs.open_order: {path: room.open_jobs_by_function.order, unit: open job places}
   housing.free: {path: room.housing_free, unit: housing}
+  room.building_slots_free: {path: room.building_slots_free, unit: building slots}
+  room.building_slots_free_foundry: {path: room.building_slots_free_by_family.foundry, unit: building slots}
+  room.building_slots_free_research: {path: room.building_slots_free_by_family.research, unit: building slots}
+  room.building_slots_free_unity: {path: room.building_slots_free_by_family.unity, unit: building slots}
+  room.building_slots_free_order: {path: room.building_slots_free_by_family.order, unit: building slots}
+  room.building_slots_free_housing: {path: room.building_slots_free_by_family.housing, unit: building slots}
+  room.building_slots_free_growth: {path: room.building_slots_free_by_family.growth, unit: building slots}

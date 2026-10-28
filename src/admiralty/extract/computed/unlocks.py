@@ -150,7 +150,7 @@ def _family(
         capital = building_defs.get(tiers["capital_building"], {})
         building_keys.extend(as_list(capital.get("upgrades")))
     tier_needed = 0
-    buildable = [key for key in building_keys if _buildable(building_defs, key, triggers)]
+    buildable = [key for key in building_keys if is_buildable(building_defs, key, triggers)]
     for key in buildable:
         targets.extend(as_list(building_defs[key].get("prerequisites")))
         tier_needed = max(tier_needed, required_tier(ctx, building_defs[key]))
@@ -182,7 +182,7 @@ def _family(
     }
 
 
-def _buildable(definitions: dict[str, Any], key: str, triggers: Triggers) -> bool:
+def is_buildable(definitions: dict[str, Any], key: str, triggers: Triggers) -> bool:
     """False when the empire can never build the building: its `potential` is false for the
     country, or it needs a building (`has_building`) that is itself unbuildable."""
     if key not in definitions:
@@ -193,7 +193,7 @@ def _buildable(definitions: dict[str, Any], key: str, triggers: Triggers) -> boo
     if triggers.evaluate(potential) is False:
         return False
     return all(
-        _buildable(definitions, needed, triggers)
+        is_buildable(definitions, needed, triggers)
         for needed in script_list(potential.get("has_building"))
         if needed in definitions
     )
