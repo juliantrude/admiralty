@@ -8,11 +8,11 @@ dist/
 .ruff_cache/
 
 # Reference saves contain friends' player names; keep them local
-tests/fixtures/saves/
+tests/fixtures/saves
 *.sav
 
 # Claude Code worktrees of parallel sessions
 .claude/worktrees/
 
 # Engine libraries fetched by tools/fetch_engine_libs.py
-tests/fixtures/engine-libs/
+tests/fixtures/engine-libs
