@@ -151,7 +151,7 @@ nodes:
     description: >
       The ambition decrees open with a late technology, so an empire that has not researched it
       cannot use them at all.
-    check: {judgement_only: true}
+    check: {metric: unlocks.decree_missing, op: ">", compare_to: 0}
 
   - id: influence.decree_costs_unity
     type: obstacle

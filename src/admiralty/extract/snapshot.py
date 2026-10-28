@@ -18,6 +18,7 @@ from admiralty.extract.computed.tradition_trees import (
     tradition_tree_slots,
     traditions_left,
 )
+from admiralty.extract.computed.unlocks import unlocks
 from admiralty.extract.context import Context
 from admiralty.extract.header import build_header, resolve_tracked_empire
 from admiralty.extract.names import Localisation
@@ -136,6 +137,7 @@ class Snapshot:
                 "tradition_tree_slots": tradition_tree_slots(ctx, country),
                 "discovery_traditions": traditions_left(ctx, country, DISCOVERY),
             },
+            "unlocks": unlocks(ctx, country),
             "military": {
                 "fleets": data.fleets(ctx, self.country_id, country),
                 "wars": data.wars(ctx, self.country_id),

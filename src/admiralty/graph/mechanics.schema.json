@@ -40,6 +40,10 @@
           "type": "boolean",
           "description": "The metric covers only part of the Obstacle (district slots of 'no district or building slot'): it can rule the Obstacle out, but where the comparison holds the rest is still judgement."
         },
+        "only_present": {
+          "type": "boolean",
+          "description": "The metric proves the Obstacle only where the comparison holds ('technologies missing'); where it does not, a clause the numbers do not cover (a civic, a planet type) may still apply, so the answer stays judgement."
+        },
         "compare_to": {
           "oneOf": [
             {"type": "number"},

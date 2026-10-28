@@ -86,6 +86,15 @@ proves the Obstacle, anything else is still `judgement`. Adding this flag is a s
 `mechanics.schema.json`, `evaluate` and `tests/test_metrics_only_clears.py`; it is done once in the
 first unlock increment (3a).
 
+Settled in 3a: metric names have one dot (schema), so the registry names are `unlocks.<name>_missing`
+and point at `unlocks.<family>.missing` in the extract. `missing` counts distinct technologies and
+Traditions lacking, including the transitive `prerequisites` of each target; a technology whose
+`potential` is false for the empire, or with `weight = 0` (never offered, `tech_universal_marcophage`),
+is not counted; an undecidable `potential` makes `missing` null and the Obstacle `unknown`. The
+extract lists the missing names under `unlocks.<family>`. `only_present` exists in the schema and
+`evaluate`. Facts: Ascension Theory is not researched on any of the four reference saves checked
+(vulkan 2220, 2298, zygerrian 2271, 2363), so `influence.decree_locked` is present on all of them.
+
 | Obstacle | Metric | Technologies / conditions (from the game files) | Flag |
 |---|---|---|---|
 | `alloys.ministry_locked` | `unlocks.production_ministry.missing` | `building_ministry_production`: `tech_global_production_strategy`, major upgraded capital | none |
@@ -98,11 +107,11 @@ first unlock increment (3a).
 | `amenities.building_locked` | `unlocks.amenity_buildings.missing` | `building_paradise_dome` `tech_paradise_dome` + upgraded capital; `building_luxury_residence` has none | `only_present` |
 | `housing.dwelling_locked` | `unlocks.housing_buildings.missing` | better housing buildings: `building_paradise_dome`/`communal_housing_large` `tech_paradise_dome`, `building_drone_megastorage` `tech_micro_replicators`, `building_expanded_warren` `tech_housing_2`; only those the empire can build (`potential`) | `only_present` |
 | `housing.arcology_locked` | `unlocks.arcology.missing` | arcology district/zone and its technology (found in `districts/` and `zones/` in the increment); the planet must be a city world | `only_present` |
-| `influence.decree_locked` | `unlocks.will_to_power.missing` | edict `will_to_power` has `potential = { has_technology = tech_ascension_theory }` (`edicts/02_ambitions.txt`) | none |
+| `influence.decree_locked` | `unlocks.decree_missing` | edict `will_to_power` has `potential = { has_technology = tech_ascension_theory }` (`edicts/02_ambitions.txt`) | none |
 | `naval_capacity.office_needs_technology` | `unlocks.logistics_office.missing` | starbase building/module for the Naval Logistics Office: technology from `starbase_buildings/` and `starbase_modules/`; also needs an Anchorage (that part stays judgement) | `only_present` |
-| `naval_capacity.doctrine_prerequisites` | `unlocks.naval_doctrine.missing` | chain `tech_doctrine_navy_size_1..4` then `tech_repeatable_naval_cap` (`technology/00_soc_tech.txt:3600-3697`, `00_soc_tech_repeatable.txt:216`); missing = chain steps not researched | none |
-| `pop_growth.growth_tech_locked` | `unlocks.growth_techs.missing` | the technologies in the Remedy facts (`tech_genome_mapping`, `tech_universal_marcophage`, ...) | none |
-| `pop_growth.assembly_locked` | `unlocks.assembly_boosts.missing` | `tech_micro_replicators`, `tech_self_assembling_components`, tradition `tr_versatility_finish`; the civic is a start-of-game choice and stays outside the number | `only_present` |
+| `naval_capacity.doctrine_prerequisites` | `unlocks.doctrine_missing` | chain `tech_doctrine_navy_size_1..4` then `tech_repeatable_naval_cap` (`technology/00_soc_tech.txt:3600-3697`, `00_soc_tech_repeatable.txt:216`); missing = chain steps not researched | none |
+| `pop_growth.growth_tech_locked` | `unlocks.growth_techs_missing` | the technologies in the Remedy facts (`tech_genome_mapping`, `tech_universal_marcophage`, ...) | none |
+| `pop_growth.assembly_locked` | `unlocks.assembly_missing` | `tech_micro_replicators`, `tech_self_assembling_components`, tradition `tr_versatility_finish`; the civic is a start-of-game choice and stays outside the number | `only_present` |
 | `slots.capital_upgrade_locked` | `unlocks.capital_upgrade.missing` | next capital building in the family of the capital planet: its `prerequisites` (`tech_planetary_government`, `tech_colonial_centralization`, `tech_galactic_administration`) and `sapient_pop_amount>=` from `allow`; the alloy cost is not part of the number | `only_present` |
 
 If, while building the family for an Obstacle, no building in it has a prerequisite the empire could

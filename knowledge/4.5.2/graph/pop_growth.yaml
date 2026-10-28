@@ -160,7 +160,7 @@ nodes:
     description: >
       The growth technologies sit in the society tree behind earlier ones, so they arrive only
       with enough research output in that field.
-    check: {judgement_only: true}
+    check: {metric: unlocks.growth_techs_missing, op: ">", compare_to: 0}
 
   - id: pop_growth.edict_costs_unity
     type: obstacle
@@ -191,4 +191,4 @@ nodes:
     description: >
       The assembly technologies need earlier ones, the tradition needs its whole tree, and the
       civic is chosen at the start of the game, so each is a long-term decision.
-    check: {judgement_only: true}
+    check: {metric: unlocks.assembly_missing, op: ">", compare_to: 0, only_present: true}

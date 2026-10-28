@@ -98,6 +98,8 @@ def evaluate(
         state = "present" if _OPERATORS[op](left, right) else "clear"
         if state == "present" and comparison.get("only_clears"):
             state = "judgement"  # the numbers cover only part of the Obstacle
+        elif state == "clear" and comparison.get("only_present"):
+            state = "judgement"  # another clause than the numbers may still hold the Obstacle
     return Check(state, name, op, compare_to, values)
 
 

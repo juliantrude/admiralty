@@ -53,6 +53,11 @@ metrics:
   ascension.slots_free: {path: progression.ascension_slots.free, unit: ascension perk slots}
   traditions.trees_free: {path: progression.tradition_tree_slots.free, unit: tradition tree slots}
   traditions.discovery_left: {path: progression.discovery_traditions.left, unit: traditions}
+  # technologies and Traditions still lacking for an unlock (extract section "unlocks")
+  unlocks.decree_missing: {path: unlocks.will_to_power.missing, unit: technologies}
+  unlocks.doctrine_missing: {path: unlocks.naval_doctrine.missing, unit: technologies}
+  unlocks.growth_techs_missing: {path: unlocks.growth_techs.missing, unit: technologies}
+  unlocks.assembly_missing: {path: unlocks.assembly_boosts.missing, unit: technologies and traditions}
   # free places to grow into (extract section "room")
   room.districts_free: {path: room.districts_free, unit: district slots}
   room.generator_free: {path: room.district_types_free.generator, unit: district slots}

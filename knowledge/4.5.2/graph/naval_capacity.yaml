@@ -187,7 +187,7 @@ nodes:
     description: >
       The repeatable technology is only offered after the last doctrine step, and every step
       needs the one before it, so the whole line has to be researched in order.
-    check: {judgement_only: true}
+    check: {metric: unlocks.doctrine_missing, op: ">", compare_to: 0}
 
   - id: naval_capacity.no_spare_pops
     type: obstacle

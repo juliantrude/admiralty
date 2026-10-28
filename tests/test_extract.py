@@ -343,3 +343,75 @@ def test_progression_obstacles_are_checked_on_the_reference_saves(extractor):
     assert state("research.discovery_tree_unfinished", full) == "present"
     assert state("research.discovery_tree_unfinished", free) == "clear"  # tree finished
     assert state("naval_capacity.tradition_slot_taken", full) == "clear"  # 4 tree slots free
+
+
+@pytest.mark.parametrize(
+    "campaign_save",
+    [
+        (VULKAN, "2220.04.22.sav"),
+        (VULKAN, "2298.03.11.sav"),
+        (ZYGERRIAN, "2271.08.25.sav"),
+        (ZYGERRIAN, "2363.04.17.sav"),
+    ],
+)
+def test_unlocks_count_what_the_save_lacks(extractor, campaign_save):
+    campaign, save = campaign_save
+    doc = extract(extractor, campaign, save)
+    ctx = extractor.context(reference_save(campaign, save))
+    snapshot = Snapshot(extractor, ctx, PLAYER)
+    researched = set(as_list(block(snapshot.country.get("tech_status")).get("technology")))
+    unlocks = doc["unlocks"]
+    # the Ascension Theory edict needs exactly the technology its `potential` names
+    assert (unlocks["will_to_power"]["missing"] == 0) == ("tech_ascension_theory" in researched)
+    # the doctrine chain: one missing step per unresearched doctrine technology, because each
+    # step needs the one before it
+    steps = [f"tech_doctrine_navy_size_{n}" for n in range(1, 5)]
+    assert unlocks["naval_doctrine"]["missing"] >= sum(s not in researched for s in steps)
+    assert unlocks["naval_doctrine"]["missing"] == len(unlocks["naval_doctrine"]["technologies"])
+    # tech_universal_marcophage has weight 0 (never offered), so only genome mapping can be missing
+    assert (unlocks["growth_techs"]["missing"] == 0) == ("tech_genome_mapping" in researched)
+    traditions = set(as_list(snapshot.country.get("traditions")))
+    assembly = unlocks["assembly_boosts"]
+    assert len(assembly["traditions"]) == ("tr_versatility_finish" not in traditions)
+    for family in unlocks.values():
+        assert family["undecided"] == []
+        assert family["missing"] == len(family["technologies"]) + len(family["traditions"])
+
+
+def test_unlock_families_name_technologies_that_exist(extractor):
+    from admiralty.extract.computed.unlocks import FAMILIES
+
+    ctx = extractor.context(reference_save(VULKAN, "2298.03.11.sav"))
+    technologies = ctx.game.category("technology")
+    traditions = ctx.game.category("traditions")
+    for family in FAMILIES.values():
+        for key in (*family.technologies, *family.reached):
+            assert key in technologies
+        for key in family.traditions:
+            assert key in traditions
+    # the repeatable technology is reached through the whole doctrine line
+    from admiralty.extract.computed.unlocks import _collect
+
+    wanted: dict[str, None] = {}
+    _collect(technologies, "tech_repeatable_naval_cap", wanted, include_self=False)
+    assert {f"tech_doctrine_navy_size_{n}" for n in range(1, 5)} <= set(wanted)
+    assert "tech_repeatable_naval_cap" not in wanted
+
+
+def test_technology_unlock_obstacles_are_checked_on_the_reference_saves(extractor):
+    from admiralty.graph.mechanics import MechanicsGraph
+    from admiralty.graph.metrics import evaluate
+
+    graph = MechanicsGraph.load()
+
+    def state(node, campaign_save):
+        doc = extract(extractor, *campaign_save)
+        return evaluate(graph.node(node)["check"], graph.metrics, doc).state
+
+    early, late = (VULKAN, "2220.04.22.sav"), (ZYGERRIAN, "2363.04.17.sav")
+    assert state("influence.decree_locked", late) == "present"  # Ascension Theory missing
+    assert state("naval_capacity.doctrine_prerequisites", early) == "present"
+    assert state("naval_capacity.doctrine_prerequisites", late) == "clear"
+    assert state("pop_growth.growth_tech_locked", early) == "clear"
+    assert state("pop_growth.assembly_locked", early) == "present"
+    assert state("pop_growth.assembly_locked", late) == "judgement"  # only_present, nothing lacking
