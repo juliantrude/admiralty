@@ -43,7 +43,7 @@ authoritative for scope and order. `docs/build-plan.md`, `GLOSSARY.md`, `docs/ad
 2. Then take the next unchecked increment from `## Plan`.
 
 **Git workflow:**
-- Work directly on `main` in this repository. There is no remote: commit locally, never
+- Work directly on `main` in this repository. Commit locally only; Julian pushes. Never
   push, never force, never rewrite or amend existing commits, never create other branches.
 - One commit per finished increment, message in English: `Obstacles: <what>` plus a short body
   on why. End every commit message with
