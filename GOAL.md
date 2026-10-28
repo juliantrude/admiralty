@@ -77,20 +77,31 @@ switches `.hustle/config` to Opus.
 
 ## Plan
 
-- [ ] 1. Plan document `docs/plans/obstacle-checks.md`: classify all 39, name metric, save fields
+Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 3 is 16, group 4 is 9).
+
+- [x] 1. Plan document `docs/plans/obstacle-checks.md`: classify all 39, name metric, save fields
       and game files per Obstacle, and split groups 3 and 5 into increments if they are large.
-- [ ] 2. The 6 quick ones (perks and traditions, free job slots): data already in the extract.
-- [ ] 3. The 14 unlocks: researched technologies from the save, prerequisites from the game files.
+- [ ] 2. Groups 1 and 2 (7 Obstacles): ascension perk slots, tradition trees, Discovery left,
+      open jobs by function, free housing. Data mostly in the extract.
+- [ ] 3a. Technology prerequisites: `computed/unlocks.py`, the `only_present` flag, and the four
+      unlocks without capital tier (decree, doctrine, growth techs, assembly).
+- [ ] 3b. Capital tier: `computed/capital_tier.py` and the 12 unlocks with a capital requirement.
 - [ ] 4. Verification of 2 and 3: tests on the reference saves, one headless Briefing.
-- [ ] 5. The 11 building and zone slots: rebuild the zone rules from the game files, golden tests
-      pending for Julian, steps in `docs/awaiting-julian.md`.
+- [ ] 5a. Zone rules: `computed/building_slots.py`, free slots per planet, golden tests pending for
+      Julian, steps in `docs/awaiting-julian.md`.
+- [ ] 5b. Family metrics and the eight planet-level slot checks.
+- [ ] 5c. Starbase slots: `computed/starbase_slots.py`, `naval_capacity.no_free_starbase_slot`,
+      golden test pending.
 - [ ] 6. Final verification: full suite, ruff, one headless Briefing, numbers in the Log.
 
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 1, the plan document.
-**Blockers:** none.
+**Next action:** increment 2, groups 1 and 2 (see the plan document, groups 1 and 2). Start with
+`room.open_jobs_by_function` and `housing.free` (data in the extract), then the ascension slot module.
+**Blockers:** none. Open question for increment 2: what unlocks further tradition tree slots
+(plan document, Open questions 1); if not derivable, `naval_capacity.tradition_slot_taken` stays
+`judgement_only` with the reason written into the plan.
 
 ## Budget
 
@@ -102,3 +113,6 @@ STATUS: ACTIVE
 <!-- Append-only, dated. One line per iteration. Newest at the bottom. -->
 - 2026-10-28 — GOAL.md written by Claude from `docs/plans/grilling.md` topic 4 after all grilling
   topics were closed; Julian starts the chain tonight.
+- 2026-10-28 — Increment 1: wrote `docs/plans/obstacle-checks.md` (39 classified: 4 perks and traditions,
+  3 jobs and housing, 16 unlocks, 9 slots, 7 trade-offs without check; counts differ from the grilling,
+  explained in the plan). Plan split into 2, 3a, 3b, 4, 5a, 5b, 5c, 6.
