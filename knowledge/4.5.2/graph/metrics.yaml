@@ -59,3 +59,6 @@ metrics:
     sum: [room.open_jobs_by_output.physics_research, room.open_jobs_by_output.society_research, room.open_jobs_by_output.engineering_research]
     unit: open job places
   jobs.open_unity: {path: room.open_jobs_by_output.unity, unit: open job places}
+  jobs.open_amenities: {path: room.open_jobs_by_function.amenities, unit: open job places}
+  jobs.open_order: {path: room.open_jobs_by_function.order, unit: open job places}
+  housing.free: {path: room.housing_free, unit: housing}

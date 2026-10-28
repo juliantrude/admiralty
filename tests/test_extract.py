@@ -248,3 +248,29 @@ def test_room_counts_free_district_slots_and_open_jobs(extractor):
         int(astarte["district_limit"]) - sum(d["built"] for d in astarte["districts"].values()) == 1
     )
     assert room["open_jobs_by_output"]["energy"] > 0
+
+
+def test_job_functions_follow_the_game_tags():
+    from admiralty.extract.empire import job_functions
+
+    assert job_functions({"tags": ["amenities", "trade"]}) == {"amenities"}  # clerk
+    assert job_functions({"tags": ["soldier"]}) == {"order"}
+    assert job_functions({"tags": ["crime", "enforcer"]}) == {"order"}
+    assert job_functions({"tags": ["unity"]}) == set()  # bureaucrat: stability only behind triggers
+    assert job_functions({"tags": {}}) == set()
+    assert job_functions(None) == set()
+
+
+@pytest.mark.parametrize(
+    "campaign_save", [(VULKAN, "2259.12.25.sav"), (ZYGERRIAN, "2271.08.25.sav")]
+)
+def test_room_counts_open_jobs_by_function_and_free_housing(extractor, campaign_save):
+    doc = extract(extractor, *campaign_save)
+    room = doc["room"]
+    assert set(room["open_jobs_by_function"]) == {"amenities", "order"}
+    assert all(v >= 0 for v in room["open_jobs_by_function"].values())
+    # free housing: crowded planets (negative) count 0, every planet carries its own value
+    assert all("free_housing" in p for p in doc["planets"])
+    assert room["housing_free"] == pytest.approx(
+        sum(max(p["free_housing"], 0) for p in doc["planets"]), abs=0.1
+    )

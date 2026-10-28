@@ -148,7 +148,10 @@ nodes:
     description: >
       Pops need housing. Where every planet is full, new pops have no place to appear, so housing
       has to be added before growth can show.
-    check: {judgement_only: true}
+    check:
+      metric: housing.free
+      op: "=="
+      compare_to: 0
 
   - id: pop_growth.growth_tech_locked
     type: obstacle

@@ -186,6 +186,7 @@ def planet_summary(
         "unemployed": colony.get("civilian", 0),
         "open_jobs": rounded(sum(job["open"] for job in jobs)),
         "stability": rounded(colony.get("stability", 0), 1),
+        "free_housing": rounded(colony.get("free_housing", 0), 1),
         "districts": districts,
     }
 
@@ -215,7 +216,6 @@ def planet_detail(ctx: Context, planet_id: int, planet: dict, colony: dict) -> d
         )
     return {
         "free_amenities": rounded(colony.get("free_amenities", 0), 1),
-        "free_housing": rounded(colony.get("free_housing", 0), 1),
         "crime": rounded(colony.get("crime", 0), 1),
         "jobs": _jobs(ctx, colony),
         "buildings": [
@@ -279,10 +279,31 @@ def job_output(definition: Any) -> str | None:
     return max(amounts, key=lambda k: amounts[k]) if amounts else None
 
 
+# Job functions the room section counts open jobs for, by the tags the game gives its jobs
+# (`tags` in common/pop_jobs): amenity jobs carry `amenities`, order jobs `soldier` or `enforcer`.
+# Bureaucrats add stability only behind triggers and carry neither tag, so the order count can
+# miss open places and only its non-zero values are reliable.
+JOB_FUNCTION_TAGS = {
+    "amenities": ("amenities",),
+    "order": ("soldier", "enforcer"),
+}
+
+
+def job_functions(definition: Any) -> set[str]:
+    """The functions (keys of JOB_FUNCTION_TAGS) a job definition serves, by its `tags`."""
+    if not isinstance(definition, dict):
+        return set()
+    tags = definition.get("tags")
+    tags = set(tags) if isinstance(tags, list) else set()
+    return {name for name, wanted in JOB_FUNCTION_TAGS.items() if tags & set(wanted)}
+
+
 def room(ctx: Context, planets: list[dict[str, Any]], colonies: list[tuple[int, dict, dict]]):
     """Free places to grow into, summed over the empire's planets: district slots in all and per
     rural type (a type's free places never exceed the planet's free slots), and open jobs by the
-    resource they produce. Lets the Mechanics Graph check "no free slot" Obstacles."""
+    resource they produce and by the function they serve (amenities, order), plus free housing
+    (planets over capacity count 0, so a crowded planet does not hide a free one). Lets the
+    Mechanics Graph check "no free slot" Obstacles."""
     districts_free = 0
     by_type = dict.fromkeys(RURAL, 0)
     for planet in planets:
@@ -299,18 +320,24 @@ def room(ctx: Context, planets: list[dict[str, Any]], colonies: list[tuple[int, 
     job_defs = ctx.game.category("pop_jobs")
     jobs_table = ctx.table("pop_jobs")
     open_jobs = dict.fromkeys(JOB_OUTPUTS, 0)
+    open_by_function = dict.fromkeys(JOB_FUNCTION_TAGS, 0)
     for _, _, colony in colonies:
         for job_id in as_list(colony.get("pop_jobs")):
             job = jobs_table.get(job_id)
             if not job or job.get("max_workforce", -1) < 0:
                 continue
+            open_places = max(job["max_workforce"] - max(job.get("workforce", 0), 0), 0)
             output = job_output(job_defs.get(job["type"]))
             if output in open_jobs:
-                open_jobs[output] += max(job["max_workforce"] - max(job.get("workforce", 0), 0), 0)
+                open_jobs[output] += open_places
+            for function in job_functions(job_defs.get(job["type"])):
+                open_by_function[function] += open_places
     return {
         "districts_free": districts_free,
         "district_types_free": by_type,
         "open_jobs_by_output": {k: rounded(v) for k, v in open_jobs.items()},
+        "open_jobs_by_function": {k: rounded(v) for k, v in open_by_function.items()},
+        "housing_free": rounded(sum(max(p["free_housing"], 0) for p in planets), 1),
     }
 
 

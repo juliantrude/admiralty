@@ -126,7 +126,11 @@ nodes:
     description: >
       Order jobs come from buildings and districts. A planet with no free slot cannot host another
       one until a slot is freed.
-    check: {judgement_only: true}
+    check:
+      metric: jobs.open_order
+      op: "=="
+      compare_to: 0
+      only_clears: true
     remedies: [jobs.free_jobs]
 
   - id: stability.no_building_slot

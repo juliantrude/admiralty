@@ -81,8 +81,11 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 
 - [x] 1. Plan document `docs/plans/obstacle-checks.md`: classify all 39, name metric, save fields
       and game files per Obstacle, and split groups 3 and 5 into increments if they are large.
-- [ ] 2. Groups 1 and 2 (7 Obstacles): ascension perk slots, tradition trees, Discovery left,
-      open jobs by function, free housing. Data mostly in the extract.
+- [x] 2a. Group 2 (3 Obstacles): `room.open_jobs_by_function` (amenities, order), `room.housing_free`;
+      checks for `amenities.no_amenity_slot`, `stability.no_order_slot` (only_clears),
+      `pop_growth.no_free_housing`.
+- [ ] 2b. Group 1 (4 Obstacles): `computed/ascension_slots.py` (perk slots free), tradition trees free,
+      Discovery traditions left; checks for the four Obstacles of group 1.
 - [ ] 3a. Technology prerequisites: `computed/unlocks.py`, the `only_present` flag, and the four
       unlocks without capital tier (decree, doctrine, growth techs, assembly).
 - [ ] 3b. Capital tier: `computed/capital_tier.py` and the 12 unlocks with a capital requirement.
@@ -97,11 +100,12 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 2, groups 1 and 2 (see the plan document, groups 1 and 2). Start with
-`room.open_jobs_by_function` and `housing.free` (data in the extract), then the ascension slot module.
-**Blockers:** none. Open question for increment 2: what unlocks further tradition tree slots
-(plan document, Open questions 1); if not derivable, `naval_capacity.tradition_slot_taken` stays
-`judgement_only` with the reason written into the plan.
+**Next action:** increment 2b, group 1 (see the plan document, group 1). Start with the ascension slot
+module `computed/ascension_slots.py` (`influence.no_ascension_slot`, `unity.no_ascension_slot`), then
+`traditions.discovery_left`, then tradition tree slots.
+**Blockers:** none. Open question for 2b: what unlocks further tradition tree slots (plan document, Open
+questions 1); if not derivable, `naval_capacity.tradition_slot_taken` stays `judgement_only` with the
+reason written into the plan.
 
 ## Budget
 
@@ -116,3 +120,8 @@ STATUS: ACTIVE
 - 2026-10-28 — Increment 1: wrote `docs/plans/obstacle-checks.md` (39 classified: 4 perks and traditions,
   3 jobs and housing, 16 unlocks, 9 slots, 7 trade-offs without check; counts differ from the grilling,
   explained in the plan). Plan split into 2, 3a, 3b, 4, 5a, 5b, 5c, 6.
+- 2026-10-28 — Increment 2a: `room.open_jobs_by_function` (job `tags` from common/pop_jobs: `amenities`;
+  `soldier`/`enforcer`) and `room.housing_free` (free_housing now in the planet summary); 3 Obstacles checked
+  (order one `only_clears`, since bureaucrats carry no tag). Suite 736 passed, ruff clean. On the reference
+  saves: vulkan 2298 amenities 0 / order 0 / housing 28380; zygerrian 2363 amenities 0 / order 2636 /
+  housing 100561.6 (raw save units).

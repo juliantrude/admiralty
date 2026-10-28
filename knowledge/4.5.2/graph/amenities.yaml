@@ -116,7 +116,10 @@ nodes:
     description: >
       Amenity jobs come from districts and buildings. A planet with no free district or building
       slot cannot host another one until a slot is freed.
-    check: {judgement_only: true}
+    check:
+      metric: jobs.open_amenities
+      op: "=="
+      compare_to: 0
     remedies: [jobs.free_jobs]
 
   - id: amenities.no_building_slot
