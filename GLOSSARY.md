@@ -55,7 +55,7 @@ Feedback after the fact over a chosen time frame of a Campaign, from the last Pl
 _Avoid_: Muninn (the old name), retrospective, retro, game review, post-game analysis
 
 **Fair Play**:
-The Campaign Setup option under which Coach and Consultant state only what the Tracked Empire can see in the game. Hidden knowledge may still shape the Coach's questions.
+The Campaign Setup option under which Coach and Consultant state only what the Tracked Empire can see in the game. Hidden knowledge may still decide what the Coach asks about and how urgently, but every question and hint, up to the full explanation, points only at what the Player can see (ethics, attitude, borders, the fleet strength intel shows).
 _Avoid_: Fog of war mode, fair mode
 
 **God Mode**:
@@ -183,11 +183,15 @@ _Avoid_: To-do list, recommendations
 ### Coaching
 
 **Player Model**:
-The record of which Stellaris concepts the Player has mastered and how well, derived only from observable facts such as which Hint Level the Player needed.
+The record of which Stellaris concepts the Player has mastered and how well, derived only from observable facts such as which Hint Level the Player needed. One per Player across all Campaigns; a concept is a node of the Mechanics Graph, and each sits on a Mastery Level.
 _Avoid_: Learner profile, skill rating
 
+**Mastery Level**:
+How well the Player has mastered one concept, on six levels modelled on the revised Bloom taxonomy, each backed by an observable fact: New, Understand (found the cause in conversation), Apply (a Snapshot shows it done), Analyse (found the cause before the Coach named the domain), Evaluate (chose between Remedies with reasons, or a Prediction came true), Create (avoided the problem unprompted). It drops one level when the cause reappears in two Snapshots a year apart outside a Crisis.
+_Avoid_: Score, skill points, checkmark
+
 **Hint Ladder**:
-The four levels of help in Coaching: question, hint, partial answer, full explanation. One level up after a failed attempt, back to the first after a success.
+The four levels of help in Coaching: question, hint, partial answer, full explanation. One level up after a failed attempt (two during a Crisis), back to the first after a success.
 _Avoid_: Hint system, help levels
 
 **Escape Hatch**:
@@ -195,8 +199,16 @@ The Player's request to just be told the answer. Always honoured in Coaching, co
 _Avoid_: Skip, cheat
 
 **Prediction**:
-The Player's stated expectation of what a major decision will achieve, checked against a later Snapshot.
+The Player's stated expectation of what a major decision will achieve, given before the decision and checked against a later Snapshot on a date the Coach proposes. An expectation asked only after the decision is stored apart as a hindsight expectation and weighs less in Debrief.
 _Avoid_: Guess, forecast
+
+**Drill**:
+One run of Coaching questions about one Snapshot, from the Coach's opening question to the short summary of what the Player means to do. One question at a time; Crises first.
+_Avoid_: Lesson, session, round
+
+**Rendezvous**:
+The in-game date the Coach and the Player agree on at the end of a Drill: the Player plays until then, saves by hand under an agreed name, and the next Drill starts like a Debrief in Coaching.
+_Avoid_: Appointment, meeting, check-in
 
 **Unverified Claim**:
 A number or name in a Coach or Consultant answer that does not appear in the game data the answer was based on. Such answers are blocked and logged for review after the play session.

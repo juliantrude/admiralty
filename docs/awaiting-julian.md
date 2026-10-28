@@ -46,34 +46,10 @@ So geht's:
 Hinweis: Die Bevölkerungszahlen im Save sind die Werte, die das Spiel anzeigt (5513 erscheint als
 "5.5k", siehe Punkt 1). Absolutwerte für Pops sind also brauchbar.
 
-## 3. Lösungsgraph als Artifact veröffentlichen (einmalig)
+## 3. Lösungsgraph als Artifact veröffentlichen — entfällt (28.10.2026)
 
-Wofür: Die Grafik (`engine/dist/index.html`) ist lokal fertig und getestet. Ob ein Claude-Artifact
-sie so laden darf (Bibliotheken vom CDN, Daten aus einer Datei), weiß ich erst, wenn du sie einmal
-veröffentlicht hast. Ich veröffentliche selbst nichts.
-
-So geht's:
-
-1. Erst lokal ansehen: in einem Campaign Workspace nach einem Briefing
-   `uv run admiralty briefing view briefings/<Datum>/solution-graph.json`
-   (aus dem Plugin-Ordner mit `--project`). Der Befehl druckt eine Adresse wie
-   `http://127.0.0.1:PORT/`; im Browser öffnen. Ohne Briefing geht auch die Datei
-   `/tmp/h6/ws/briefings/2259.12.29/solution-graph.json` (Probe-Briefing von Plexxi, Save 2259.12.25),
-   falls sie noch existiert.
-2. Als Artifact veröffentlichen: den Inhalt von `engine/dist/index.html` in ein neues Claude-Artifact
-   (HTML) einfügen und veröffentlichen. Das mache nur du.
-3. Im Artifact eine `solution-graph.json` hochladen oder hineinziehen (Auswahlfeld erscheint, wenn keine
-   Daten eingebettet sind).
-4. Prüfen und mir sagen:
-   - Erscheint die Grafik überhaupt, oder bleibt die Seite leer (dann blockiert das Artifact das CDN)?
-   - Stehen die Ziele (Goals) links und die Schlüsselmaßnahmen (Key Actions) rechts?
-   - Stimmen die Farben: grüne Heilmittel, rote Hindernisse, ein Hindernis mit roter Linie hinein =
-     trifft zu; gestrichelter Rahmen = Modell-Knoten (vom Modell ergänzt, nicht aus dem Spielwissen).
-   - Zeigt ein Klick auf einen Knoten rechts die Belege (die Zahlen aus dem Save)?
-   - Lässt sich die Grafik ziehen und mit dem Mausrad zoomen? Sie startet bewusst oben links in
-     lesbarer Größe; die Schlüsselmaßnahmen stehen zusätzlich als Liste darunter.
-5. Falls das Artifact das CDN blockiert: sag mir Bescheid, dann binde ich die Bibliotheken
-   (rund 1,5 MB) direkt in die Seite ein.
+Entschieden in `docs/plans/grilling.md`, Thema 5: Admiralty bleibt lokal und veröffentlicht
+nichts bei einem Anbieter. Die Graph-Seite läuft weiter über `admiralty briefing view`.
 
 ## 4. Debrief: fühlen sich die Epochen richtig an?
 

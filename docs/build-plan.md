@@ -174,11 +174,11 @@ Tools (names are working titles):
 
 ### M6: Graph engine
 
-- One static page (`engine/index.html`) with a layered layout for directed graphs, using ELK.js via Cytoscape.js, pinned versions from a CDN. Goals sit on the left, Causes in the middle and Key Actions on the right.
+- One static page (`engine/index.html`) with a layered layout for directed graphs, using ELK.js via Cytoscape.js, pinned versions shipped with the plugin (no CDN, ADR 0004). Goals sit on the left, Causes in the middle and Key Actions on the right.
   - Vicious Circles are coloured.
   - Model-added nodes are marked.
   - Clicking a node shows its evidence.
-- Published once as an Artifact. Each Briefing uploads only `solution-graph.json`.
+- Served locally by `admiralty briefing view`; nothing is published (ADR 0004). A footer credits the game icons to Paradox Interactive and leaves sharing to the Player.
 
 **Done when:** two Briefings with the same graph data render identically, and the model never writes HTML.
 
@@ -208,24 +208,74 @@ Tools (names are working titles):
 
 ### M9: Academy (Coaching)
 
+Decisions from the grilling of 2026-10-28, with their reasons: `docs/plans/grilling.md`, section 1.
+
 1. **Player Model:**
+   - One per Player across all Campaigns, in `~/.local/share/admiralty/player-model/`
+     (`ADMIRALTY_DATA_DIR` moves `~/.local/share/admiralty`). The Campaign Workspace keeps only the
+     log of the evidence found in that Campaign.
    - `src/admiralty/player/` is the only write path. A PreToolUse hook blocks direct writes.
-   - Mastery per concept changes only by fixed rules from the Hint Level reached and the outcome.
+   - A concept is a node of the Mechanics Graph; domains are only for display.
+   - Each concept sits on a Mastery Level (New, Understand, Apply, Analyse, Evaluate, Create), and
+     changes only by fixed rules from observable evidence. Understand comes from the conversation;
+     Apply and above need a Snapshot. Partial answer, full explanation and Escape Hatch leave a
+     concept at New.
+   - A remedy talked through counts as applied if a Snapshot shows it within five in-game years;
+     otherwise nothing changes and the Coach asks once what held the Player back.
+   - A concept drops one level when its cause reappears in two Snapshots at least a year apart,
+     not during a Crisis. A patch that changes a node's formula or links (not just numbers) drops it
+     to Understand.
    - Escape Hatch use is recorded, together with the Situation it happened in.
 2. **`admiralty:academy` skill:**
-   - Builds the Solution Graph like the Consultant but never shows it.
-   - Leads with Socratic questions along the Hint Ladder: one level up after a miss, back to the first after a success.
-   - Points the Player to where in the game a fact can be checked.
-   - Under Fair Play it never states hidden facts. Under God Mode hidden knowledge may also be stated.
-   - Lets instructive mistakes happen below Crisis level, and warns clearly at Crisis level while staying in question mode.
-   - Skips concepts the Player Model shows as mastered.
-3. **Escape Hatch:** a one-off Consulting call inside a Coaching Campaign. Always available, and recorded.
+   - Builds the Solution Graph like the Consultant but never shows it, aimed at the Player's own
+     goal until the next Rendezvous (asked at the first Drill and at every Rendezvous); Crises first.
+   - Claude Code is passive: on every Player message the Coach first checks for a newer save and,
+     if there is one, opens a Drill with one question about the newest save.
+   - One question at a time. The Coach says how many topics are waiting without naming them; "next
+     topic" works at any time.
+   - Leads with Socratic questions along the Hint Ladder: one level up after a miss (two during a
+     Crisis), back to the first after a success. A different answer the save data supports counts
+     as a success and is noted as a candidate for the Mechanics Graph.
+   - Points the Player to where in the game a fact can be checked, only from a curated table per
+     domain and key figure (drafted from the game's interface files and the official Paradox wiki,
+     spot-checked by the Player). Without an entry it names only the domain. At the full
+     explanation it may link a wiki page from a curated list; no live wiki lookups, no numbers from
+     the wiki.
+   - Under Fair Play hidden knowledge may choose the topic and its urgency, but every question and
+     hint points only at what the Player can see. Under God Mode hidden knowledge may also be stated.
+   - Below Crisis level it does not warn: it asks once what the Player expects and lets the
+     mistake happen. At Crisis level it warns clearly while staying in question mode.
+   - Skips concepts at Evaluate or above; at Analyse it asks only open questions that do not name
+     the domain.
+   - Tone: a calm instructor. Informal "du" in German, short sentences, a light fleet tone, no
+     role-play, never condescending.
+   - A Drill ends when the topics are done or the Player wants to play on: a two- or three-sentence
+     summary, then a proposed Rendezvous.
+3. **Escape Hatch:** a one-off Consulting answer on the current topic (cause, remedy, Key Action,
+   no graph) inside a Coaching Campaign. Always available, and recorded. A full Briefing only on
+   explicit request; it counts as Escape Hatch for every concept in it.
 4. **Predictions:**
-   - Asked before major decisions only, and stored in the workspace.
-   - Checked against the next extract and by Debrief.
-5. **Debrief in Coaching:** the Player's self-assessment first, then the analysis, then the Player Model update.
+   - Asked before major decisions only: declaring war, an ascension perk, a tradition tree, a
+     megastructure, joining or founding a federation, redesignating a world. The Coach also asks
+     when a Snapshot shows such a decision coming (unity for the next tree, a free perk slot).
+   - A decision the Coach only sees afterwards (by comparing two Snapshots) yields a hindsight
+     expectation, stored apart and weighted less.
+   - One sentence plus a check date the Coach proposes, stored in the workspace, checked against
+     the Snapshot of that date and by Debrief.
+5. **Rendezvous:** at the end of a Drill the Coach proposes an in-game date at most five years
+   ahead, fitting the open Predictions, and a name for a manual save. The Player may move it. A
+   message before it: the Coach helps and reminds. After it: the newest save, with a note that the
+   Rendezvous was missed. Stored in the workspace.
+6. **Debrief in Coaching (also every Rendezvous):** the Player's self-assessment first, then the
+   Predictions, then the analysis, then the Player Model update, then new topics.
 
-**Done when:** a scripted Coaching dialogue on the reference mid-game save reaches a Key Action without the Coach stating it before the Player's own attempt. The Player Model changes only through the script, and an Escape Hatch shows up in it.
+**Done when:**
+- A test without a language model covers the fixed rules (Mastery Levels, drops, Hint Ladder,
+  Escape Hatch, Rendezvous, the single write path) on the reference mid-game save.
+- In a live trial in a real Campaign Workspace with the installed plugin, the Player as student on
+  the Avarisches Imperium save of 2297.02.09 reaches a Key Action without the Coach stating it
+  before the Player's own attempt. The Player Model changes only through the script, and an Escape
+  Hatch shows up in it. This trial is also the end-to-end acceptance.
 
 ## Risks and how we catch them
 
