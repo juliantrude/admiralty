@@ -545,3 +545,61 @@ def test_building_unlock_obstacles_are_checked_on_the_reference_saves(extractor)
     assert state("naval_capacity.office_needs_technology", early) == "present"
     assert state("naval_capacity.office_needs_technology", late) == "judgement"  # only_present
     assert state("slots.capital_upgrade_locked", late) == "present"  # Galactic Administration
+
+
+CHECKED_BY_THE_OBSTACLE_PLAN = (
+    # docs/plans/obstacle-checks.md, groups 1 to 3 (the 4 unlocks with a named reason stay grey)
+    "influence.no_ascension_slot",
+    "unity.no_ascension_slot",
+    "naval_capacity.tradition_slot_taken",
+    "research.discovery_tree_unfinished",
+    "amenities.no_amenity_slot",
+    "stability.no_order_slot",
+    "pop_growth.no_free_housing",
+    "influence.decree_locked",
+    "naval_capacity.doctrine_prerequisites",
+    "pop_growth.growth_tech_locked",
+    "pop_growth.assembly_locked",
+    "energy.generator_building_locked",
+    "food.processing_locked",
+    "minerals.purification_locked",
+    "research.lab_locked",
+    "unity.building_locked",
+    "housing.dwelling_locked",
+    "naval_capacity.office_needs_technology",
+    "slots.capital_upgrade_locked",
+)
+
+REFERENCE_SAVES = (
+    (VULKAN, "2220.04.22.sav"),
+    (VULKAN, "2298.03.11.sav"),
+    (ZYGERRIAN, "2271.08.25.sav"),
+    (ZYGERRIAN, "2363.04.17.sav"),
+)
+
+
+@pytest.mark.parametrize("campaign_save", REFERENCE_SAVES)
+def test_no_checked_obstacle_is_unknown_on_the_reference_saves(extractor, campaign_save):
+    """A check whose metric has no value in the extract reports `unknown`; on the reference
+    saves every Obstacle with a metric check must have its number."""
+    from admiralty.graph.mechanics import MechanicsGraph
+    from admiralty.graph.metrics import evaluate
+
+    graph = MechanicsGraph.load()
+    doc = extract(extractor, *campaign_save)
+    unknown = [
+        node_id
+        for node_id in graph.nodes
+        if graph.node(node_id).get("type") == "obstacle"
+        and not graph.node(node_id)["check"].get("judgement_only")
+        and evaluate(graph.node(node_id)["check"], graph.metrics, doc).state == "unknown"
+    ]
+    assert unknown == []
+
+
+def test_the_planned_obstacles_have_a_metric_check():
+    from admiralty.graph.mechanics import MechanicsGraph
+
+    graph = MechanicsGraph.load()
+    grey = [n for n in CHECKED_BY_THE_OBSTACLE_PLAN if graph.node(n)["check"].get("judgement_only")]
+    assert grey == []

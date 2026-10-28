@@ -89,7 +89,7 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 - [x] 3a. Technology prerequisites: `computed/unlocks.py`, the `only_present` flag, and the four
       unlocks without capital tier (decree, doctrine, growth techs, assembly).
 - [x] 3b. Capital tier: `computed/capital_tier.py` and the 12 unlocks with a capital requirement.
-- [ ] 4. Verification of 2 and 3: tests on the reference saves, one headless Briefing.
+- [x] 4. Verification of 2 and 3: tests on the reference saves, one headless Briefing.
 - [ ] 5a. Zone rules: `computed/building_slots.py`, free slots per planet, golden tests pending for
       Julian, steps in `docs/awaiting-julian.md`.
 - [ ] 5b. Family metrics and the eight planet-level slot checks.
@@ -100,10 +100,11 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 4, verification of 2 and 3: tests on the reference saves for all 23 Obstacles
-checked so far (groups 1 to 3) are in `tests/test_extract.py`; check what is still missing (e.g. a test
-per Obstacle that no check reports `unknown` on the four reference saves), then one headless Ops Briefing
-on a reference save and record the numbers in the Log. Then 5a (zone rules).
+**Next action:** increment 5a, zone rules: read `common/zones/*.txt` (+ `99_HOW_TO_ZONE.txt`),
+`common/zone_slots/*.txt` and the `building_sets` of `common/buildings/*.txt`, then write
+`src/admiralty/extract/computed/building_slots.py` (free slots per planet and zone, formula and game-file
+sources in the docstring), a test on `vulkan` and `zygerrian`, golden tests pending for Julian, and the German
+steps in `docs/awaiting-julian.md`. Zone rules failing after two iterations: write it into Blockers and stop.
 **Blockers:** none.
 
 ## Budget
@@ -145,3 +146,11 @@ on a reference save and record the numbers in the Log. Then 5a (zone rules).
   empires). Suite 763 passed, ruff clean. vulkan 2298 missing: generator 2, food 1, purification 2, labs 6,
   unity 3, housing 0, office 1, capital upgrade 1; zygerrian 2363: 0, 1, 0, 0, 1, 0, 0, 1. Remaining
   `judgement_only`: 20 (7 trade-offs, 9 slots, 4 above).
+- 2026-10-28 — Increment 4: verification of groups 1 to 3. New tests in `tests/test_extract.py`: no
+  metric-checked Obstacle reports `unknown` on the four reference saves, and the 19 planned Obstacles are not
+  `judgement_only`. Over all 15 saves 65 of 85 Obstacles have a metric check (20 grey: 7 trade-offs, 9 slots,
+  4 unlocks with a named reason) and none is `unknown`. Headless Briefing (all 13 Goals expanded, 173 nodes,
+  83 Obstacles, no warnings): vulkan 2298 shows 32 clear / 29 present / 22 judgement, of the 19 newly checked
+  18 are in the expansion: 14 present, 2 clear, 2 judgement (only_present or only_clears); zygerrian 2363 shows
+  43 clear / 17 present / 23 judgement, newly checked 7 present, 8 clear, 3 judgement. Suite 768 passed,
+  ruff clean.
