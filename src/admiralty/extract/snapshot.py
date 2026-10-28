@@ -9,6 +9,7 @@ from typing import Any
 
 from admiralty.extract import empire as data
 from admiralty.extract.computed.ascension_slots import ascension_slots
+from admiralty.extract.computed.building_slots import planet_building_slots
 from admiralty.extract.computed.capital_tier import capital_tiers
 from admiralty.extract.computed.max_districts import max_districts, planet_ledger
 from admiralty.extract.computed.modifiers import Ledger, Triggers, country_ledger
@@ -97,6 +98,7 @@ class Snapshot:
             behind = maxima.pop("_behind_blockers")
             summary = data.planet_summary(self.ctx, pid, planet, colony, maxima)
             summary["district_limit"] = limit
+            summary["building_slots"] = planet_building_slots(self.ctx, pid, colony, detail)
             for kind, count in behind.items():
                 summary["districts"][kind]["behind_blockers"] = count
             if detail:

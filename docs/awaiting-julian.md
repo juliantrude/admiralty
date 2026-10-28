@@ -78,3 +78,33 @@ So geht's:
 
 Kleinigkeit, die dir auffallen kann: Debrief hat 8 Warnungen des Anspruchsprüfers erzeugt, die
 Fehlalarme waren (fett gesetzte Satzanfänge); sie stehen als Vorschlag in `docs/proposals/claims.md`.
+
+## 5. Golden-Werte: freie Gebäudeplätze ablesen
+
+Wofür: Die Obstacles "kein freier Gebäudeplatz" (Gebäudeplätze auf Planeten) prüft Admiralty gegen
+eine Zahl, die nicht im Save steht. Wir rechnen sie aus den Spieldateien nach: Jede Zone hat Plätze
+für Gebäude (Regierungszone sechs, die meisten anderen drei, einige nur einen), gezählt wird nur
+in gebauten Zonen. Ob das mit dem Spiel übereinstimmt, kannst nur du ablesen. Bis dahin überspringen
+die Tests (`tests/test_building_slots.py`, `test_golden_building_slots`) mit dem Vermerk "pending".
+
+So geht's (Referenz-Save `vulkan`, `2298.03.11`; bei Bedarf auch `2259.12.25` und `2220.04.22`):
+
+1. Save laden und pausieren, wie bei den Werten aus Punkt 1.
+2. Diese drei Planeten öffnen. Sie zeigen drei verschiedene Fälle:
+   - Unimatrix 1 (System Unimatrix 1): die Hauptwelt, sollte voll sein.
+   - 2 (System Astarte): eine Welt mit teilweise belegten Zonen.
+   - Asterion Prime Forsch (System Asterion): eine Welt, auf der Distrikte noch eine leere Zonenstelle haben.
+3. Auf jedem Planeten in der Planetenansicht ablesen: wie viele Gebäude gebaut sind und wie viele
+   Gebäudeplätze der Planet insgesamt hat (belegte und freie zusammen). Wenn das Spiel nur "frei"
+   anzeigt oder nur eine Summe, schreib auf, was dort steht, und ob leere Zonenstellen
+   mitgezählt werden.
+4. In `tests/golden_values.py` beim Save unter dem Schlüssel `"building_slots"` eintragen, je
+   Planet (Name, System) das Paar (Gebäude, Gebäudeplätze), so wie es das Spiel zeigt. Oder mir die
+   Zahlen schicken, dann trage ich sie ein.
+5. Weicht eine Zahl ab: Planet und Save notieren. Die Regel steht in
+   `src/admiralty/extract/computed/building_slots.py`; ich suche dann die Abweichung in den
+   Spieldateien, bevor ein Obstacle auf diese Zahl gestützt wird.
+
+Hinweis: Die Synaptic Lathe (Kosmogenese) rechnen wir bewusst nicht. Ihre Plätze hängen an der
+Planetenklasse und an Distrikt-Modifikatoren. Kommt so eine Zone in einem Save vor, steht das in
+den Fehlern des Extrakts, statt zu raten.

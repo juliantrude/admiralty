@@ -90,7 +90,7 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
       unlocks without capital tier (decree, doctrine, growth techs, assembly).
 - [x] 3b. Capital tier: `computed/capital_tier.py` and the 12 unlocks with a capital requirement.
 - [x] 4. Verification of 2 and 3: tests on the reference saves, one headless Briefing.
-- [ ] 5a. Zone rules: `computed/building_slots.py`, free slots per planet, golden tests pending for
+- [x] 5a. Zone rules: `computed/building_slots.py`, free slots per planet, golden tests pending for
       Julian, steps in `docs/awaiting-julian.md`.
 - [ ] 5b. Family metrics and the eight planet-level slot checks.
 - [ ] 5c. Starbase slots: `computed/starbase_slots.py`, `naval_capacity.no_free_starbase_slot`,
@@ -100,11 +100,16 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 5a, zone rules: read `common/zones/*.txt` (+ `99_HOW_TO_ZONE.txt`),
-`common/zone_slots/*.txt` and the `building_sets` of `common/buildings/*.txt`, then write
-`src/admiralty/extract/computed/building_slots.py` (free slots per planet and zone, formula and game-file
-sources in the docstring), a test on `vulkan` and `zygerrian`, golden tests pending for Julian, and the German
-steps in `docs/awaiting-julian.md`. Zone rules failing after two iterations: write it into Blockers and stop.
+**Next action:** increment 5b, family metrics and the eight planet-level slot checks: read the
+`building_sets` of `common/buildings/*.txt` and the `included_building_sets` / `include` / `exclude` of
+the zones (`computed/building_slots.py` already gives capacity, used and free per zone; the zone detail
+has the zone type), derive which zone types host the families foundry, research, unity, order, amenities,
+housing and growth (from each family's buildings: `planet_*_add` modifiers named in the plan), add
+`room.building_slots_free` and `room.building_slots_free_by_family.<family>` to `room()`, register the
+metrics, and set the checks of `jobs.no_building_room` and the seven family Obstacles (`only_clears` where
+the zone sum does not cover the district part, as `energy.no_generator_slot`). Free slots in a zone whose
+building sets do not fit a family do not count for it. Unfinished zone slots (`empty_zone_slots`) stay out
+of the numbers.
 **Blockers:** none.
 
 ## Budget
@@ -154,3 +159,13 @@ steps in `docs/awaiting-julian.md`. Zone rules failing after two iterations: wri
   18 are in the expansion: 14 present, 2 clear, 2 judgement (only_present or only_clears); zygerrian 2363 shows
   43 clear / 17 present / 23 judgement, newly checked 7 present, 8 clear, 3 judgement. Suite 768 passed,
   ruff clean.
+- 2026-10-29 — Increment 5a: `computed/building_slots.py`. Capacity of a zone = its `max_buildings`, else
+  `DEFAULT_MAX_PLANET_BUILDINGS_PER_ZONE` 3 (zone_default 6, some zones 1); independent of the district
+  level (no zone sets `districts_per_building`); `zone_building_slots_add` is a tooltip modifier only.
+  Synaptic Lathe zones (`max_buildings_planet_class`) and the two other capacity flags are left out and
+  reported in `errors`. Per planet `building_slots` {capacity, used, free, empty_zone_slots, unsupported}
+  in the planet summary, `zones` in the detail. On all 15 saves every building of `buildings_cache`
+  stands in exactly one zone and no zone is over capacity. vulkan 2298: Unimatrix 1 21/21, Neu Vulkan
+  13/21, Astarte 14/18. Golden test `test_golden_building_slots` pending (key `building_slots` in
+  `golden_values.py` is Julian's); German steps in `docs/awaiting-julian.md` section 5. Suite 788 passed,
+  3 skipped (pending), ruff clean.
