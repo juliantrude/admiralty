@@ -130,7 +130,7 @@ nodes:
     description: >
       The better housing buildings are unlocked by technologies and some need a building that the
       planet has not built yet.
-    check: {judgement_only: true}
+    check: {metric: unlocks.housing_buildings_missing, op: ">", compare_to: 0, only_present: true}
 
   - id: housing.arcology_locked
     type: obstacle

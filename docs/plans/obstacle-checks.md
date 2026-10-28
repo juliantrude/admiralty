@@ -114,6 +114,35 @@ extract lists the missing names under `unlocks.<family>`. `only_present` exists 
 | `pop_growth.assembly_locked` | `unlocks.assembly_missing` | `tech_micro_replicators`, `tech_self_assembling_components`, tradition `tr_versatility_finish`; the civic is a start-of-game choice and stays outside the number | `only_present` |
 | `slots.capital_upgrade_locked` | `unlocks.capital_upgrade.missing` | next capital building in the family of the capital planet: its `prerequisites` (`tech_planetary_government`, `tech_colonial_centralization`, `tech_galactic_administration`) and `sapient_pop_amount>=` from `allow`; the alloy cost is not part of the number | `only_present` |
 
+Settled in 3b: `computed/capital_tier.py` gives the tier of each planet (largest `capital_tier` among
+its buildings with `capital = yes`; machine line: capital 2, major 3, system 4) and the number a
+building asks for, read from the scripted trigger in its `allow`. The triggers run in planet scope;
+the extract takes the best tier of any planet of the empire (`progression.capital_tier.best`), the
+lenient reading, so a missing tier is only reported when no planet reaches it. `country.capital` is
+a colony id, not a planet id. Buildings are counted through their own `prerequisites` (the techs
+that unlock them) and left out when the empire can never build them (`potential` false for the
+country, or `has_building` of a building that is left out). The extract lists the buildings that
+count under `unlocks.<family>.buildings`, and `capital_tier_needed` when the tier is short. Two
+findings against the first draft of this table: the lab buildings carry no `allow` with a capital
+trigger in 4.5.2 (the Obstacle text mentions one; the files do not), and the arcology is not a
+technology but the Ascension Perk `ap_arcology_project`. Checked (only_present where marked above),
+metric names `unlocks.<name>_missing`: `energy.generator_building_locked`, `food.processing_locked`,
+`minerals.purification_locked`, `research.lab_locked`, `unity.building_locked` (also the machine,
+hive and corporate lines, which share the three technologies), `housing.dwelling_locked`,
+`naval_capacity.office_needs_technology` (the technology is in the starbase building's `potential`;
+the Anchorage stays outside), `slots.capital_upgrade_locked` (the `upgrades` of the capital
+building on the capital planet).
+
+Four Obstacles of this group stay `judgement_only`, because the family is empty on both reference
+campaigns (both are machine empires) or has no technology to lack:
+
+| Obstacle | Reason |
+|---|---|
+| `alloys.ministry_locked` | `building_ministry_production` has `potential = { owner = { is_regular_empire = yes } }` (`buildings/04_manufacturing_buildings.txt:733`); a machine empire can never build it, so no number would say "locked". |
+| `stability.building_locked` | The stability buildings are `building_order_keep` and `building_psi_corps`; neither has `prerequisites`, they are gated by origin and tradition, not by a technology or a capital tier. |
+| `amenities.building_locked` | `building_paradise_dome` needs `has_building = building_luxury_residence`, which a machine empire cannot build; no amenity building is left for these empires. |
+| `housing.arcology_locked` | The arcology is the Ascension Perk `ap_arcology_project`, whose `potential` asks for a regular empire or the servitor civic (`ascension_perks/00_ascension_perks.txt:2270`); not available to a machine empire. |
+
 If, while building the family for an Obstacle, no building in it has a prerequisite the empire could
 still lack (as for the housing buildings without technology), the family is reduced to those that do.
 An Obstacle whose family turns out empty on both reference saves is not given a check that is always

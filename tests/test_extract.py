@@ -375,7 +375,10 @@ def test_unlocks_count_what_the_save_lacks(extractor, campaign_save):
     assert len(assembly["traditions"]) == ("tr_versatility_finish" not in traditions)
     for family in unlocks.values():
         assert family["undecided"] == []
-        assert family["missing"] == len(family["technologies"]) + len(family["traditions"])
+        short_of_capital = family["capital_tier_needed"] is not None
+        assert family["missing"] == (
+            len(family["technologies"]) + len(family["traditions"]) + short_of_capital
+        )
 
 
 def test_unlock_families_name_technologies_that_exist(extractor):
@@ -415,3 +418,130 @@ def test_technology_unlock_obstacles_are_checked_on_the_reference_saves(extracto
     assert state("pop_growth.growth_tech_locked", early) == "clear"
     assert state("pop_growth.assembly_locked", early) == "present"
     assert state("pop_growth.assembly_locked", late) == "judgement"  # only_present, nothing lacking
+
+
+@pytest.mark.parametrize(
+    "campaign_save",
+    [
+        (VULKAN, "2220.04.22.sav"),
+        (VULKAN, "2298.03.11.sav"),
+        (ZYGERRIAN, "2271.08.25.sav"),
+        (ZYGERRIAN, "2363.04.17.sav"),
+    ],
+)
+def test_capital_tier_follows_the_capital_buildings(extractor, campaign_save):
+    campaign, save = campaign_save
+    doc = extract(extractor, campaign, save)
+    ctx = extractor.context(reference_save(campaign, save))
+    snapshot = Snapshot(extractor, ctx, PLAYER)
+    tiers = doc["progression"]["capital_tier"]
+    definitions = ctx.game.category("buildings")
+    # the capital building named is a capital building of exactly that tier
+    building = definitions[tiers["capital_building"]]
+    assert building["capital"] == "yes"
+    assert building["capital_tier"] == tiers["capital_planet"]
+    assert 2 <= tiers["capital_planet"] <= tiers["best"]  # machine line: capital starts at tier 2
+    # `best` is the tier of a capital building on one of the empire's planets
+    on_planets = {
+        ctx.table("buildings")[building_id]["type"]
+        for _, _, colony in snapshot.colonies
+        for building_id in as_list(colony.get("buildings_cache"))
+        if building_id in ctx.table("buildings")
+    }
+    reached = [
+        definitions[kind]["capital_tier"]
+        for kind in on_planets
+        if kind in definitions and definitions[kind].get("capital") == "yes"
+    ]
+    assert tiers["best"] == max(reached)
+
+
+def test_required_tier_is_read_from_the_scripted_triggers(extractor):
+    from admiralty.extract.computed.capital_tier import required_tier
+
+    ctx = extractor.context(reference_save(VULKAN, "2298.03.11.sav"))
+    buildings = ctx.game.category("buildings")
+    assert required_tier(ctx, buildings["building_energy_nexus"]) == 2  # has_upgraded_capital
+    assert required_tier(ctx, buildings["building_hypercomms_forum"]) == 3  # major upgraded
+    assert required_tier(ctx, buildings["building_energy_grid"]) == 0  # asks for none
+
+
+def test_building_unlock_families_name_buildings_that_exist(extractor):
+    from admiralty.extract.computed.unlocks import FAMILIES
+
+    ctx = extractor.context(reference_save(VULKAN, "2298.03.11.sav"))
+    buildings = ctx.game.category("buildings")
+    starbase_buildings = ctx.game.category("starbase_buildings")
+    for family in FAMILIES.values():
+        for key in family.buildings:
+            assert key in buildings
+        for key in family.starbase_buildings:
+            assert key in starbase_buildings
+
+
+@pytest.mark.parametrize(
+    "campaign_save",
+    [
+        (VULKAN, "2220.04.22.sav"),
+        (VULKAN, "2298.03.11.sav"),
+        (ZYGERRIAN, "2271.08.25.sav"),
+        (ZYGERRIAN, "2363.04.17.sav"),
+    ],
+)
+def test_building_unlocks_count_technologies_of_the_buildings(extractor, campaign_save):
+    campaign, save = campaign_save
+    doc = extract(extractor, campaign, save)
+    ctx = extractor.context(reference_save(campaign, save))
+    snapshot = Snapshot(extractor, ctx, PLAYER)
+    researched = snapshot.triggers.techs
+    unlocks = doc["unlocks"]
+    buildings = ctx.game.category("buildings")
+    labels = {ctx.label(key): key for key in buildings}
+    tier = doc["progression"]["capital_tier"]
+    # every building a family counts that asks for a tier above the best one makes the tier short
+    for name in ("generator_buildings", "food_processing", "purification", "research_labs"):
+        family = unlocks[name]
+        keys = [labels[label] for label in family["buildings"] if label in labels]
+        assert keys, f"{name} has no buildable building for this empire"
+        wanted = max(required(ctx, buildings[key]) for key in keys)
+        assert (family["capital_tier_needed"] is not None) == (wanted > tier["best"])
+        # a family is complete exactly when every prerequisite of its buildings is researched
+        for key in keys:
+            lacking = [
+                t for t in as_list(buildings[key].get("prerequisites")) if t not in researched
+            ]
+            if lacking:
+                assert family["missing"] > 0
+    # the capital's next upgrade needs the technology its building names, nothing else
+    upgrade = unlocks["capital_upgrade"]
+    for label in upgrade["buildings"]:
+        assert buildings[labels[label]].get("capital") == "yes"
+
+
+def required(ctx, definition):
+    from admiralty.extract.computed.capital_tier import required_tier
+
+    return required_tier(ctx, definition)
+
+
+def test_building_unlock_obstacles_are_checked_on_the_reference_saves(extractor):
+    from admiralty.graph.mechanics import MechanicsGraph
+    from admiralty.graph.metrics import evaluate
+
+    graph = MechanicsGraph.load()
+
+    def state(node, campaign_save):
+        doc = extract(extractor, *campaign_save)
+        return evaluate(graph.node(node)["check"], graph.metrics, doc).state
+
+    early, late = (VULKAN, "2298.03.11.sav"), (ZYGERRIAN, "2363.04.17.sav")
+    assert state("energy.generator_building_locked", early) == "present"  # Power Hub 2 missing
+    assert state("energy.generator_building_locked", late) == "clear"
+    assert state("food.processing_locked", late) == "present"  # Advanced Food Processing missing
+    assert state("minerals.purification_locked", late) == "clear"
+    assert state("research.lab_locked", early) == "present"
+    assert state("research.lab_locked", late) == "clear"
+    assert state("unity.building_locked", early) == "present"  # only_present, technologies lacking
+    assert state("naval_capacity.office_needs_technology", early) == "present"
+    assert state("naval_capacity.office_needs_technology", late) == "judgement"  # only_present
+    assert state("slots.capital_upgrade_locked", late) == "present"  # Galactic Administration

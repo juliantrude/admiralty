@@ -133,7 +133,7 @@ nodes:
     description: >
       The upgraded generator buildings are unlocked by power plant technologies, and the higher
       one also needs an upgraded capital building on the planet.
-    check: {judgement_only: true}
+    check: {metric: unlocks.generator_buildings_missing, op: ">", compare_to: 0}
 
   - id: energy.power_tech_prerequisites
     type: obstacle

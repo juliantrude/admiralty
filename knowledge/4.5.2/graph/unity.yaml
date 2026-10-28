@@ -155,7 +155,7 @@ nodes:
     description: >
       Each Unity building is unlocked by a technology of the society line, and some also need a
       branch office or a civic that this empire may not have.
-    check: {judgement_only: true}
+    check: {metric: unlocks.unity_buildings_missing, op: ">", compare_to: 0, only_present: true}
 
   - id: unity.no_building_slot
     type: obstacle

@@ -58,6 +58,14 @@ metrics:
   unlocks.doctrine_missing: {path: unlocks.naval_doctrine.missing, unit: technologies}
   unlocks.growth_techs_missing: {path: unlocks.growth_techs.missing, unit: technologies}
   unlocks.assembly_missing: {path: unlocks.assembly_boosts.missing, unit: technologies and traditions}
+  unlocks.generator_buildings_missing: {path: unlocks.generator_buildings.missing, unit: technologies and capital tiers}
+  unlocks.food_processing_missing: {path: unlocks.food_processing.missing, unit: technologies and capital tiers}
+  unlocks.purification_missing: {path: unlocks.purification.missing, unit: technologies and capital tiers}
+  unlocks.lab_missing: {path: unlocks.research_labs.missing, unit: technologies and capital tiers}
+  unlocks.unity_buildings_missing: {path: unlocks.unity_buildings.missing, unit: technologies and capital tiers}
+  unlocks.housing_buildings_missing: {path: unlocks.housing_buildings.missing, unit: technologies and capital tiers}
+  unlocks.logistics_office_missing: {path: unlocks.logistics_office.missing, unit: technologies}
+  unlocks.capital_upgrade_missing: {path: unlocks.capital_upgrade.missing, unit: technologies and capital tiers}
   # free places to grow into (extract section "room")
   room.districts_free: {path: room.districts_free, unit: district slots}
   room.generator_free: {path: room.district_types_free.generator, unit: district slots}

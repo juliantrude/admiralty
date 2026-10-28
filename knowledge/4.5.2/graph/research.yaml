@@ -137,7 +137,7 @@ nodes:
     description: >
       Each lab level is unlocked by the technology of its field, and the higher levels also need an
       upgraded capital building on the planet.
-    check: {judgement_only: true}
+    check: {metric: unlocks.lab_missing, op: ">", compare_to: 0}
 
   - id: research.no_lab_slot
     type: obstacle

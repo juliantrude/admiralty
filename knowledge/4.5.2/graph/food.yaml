@@ -145,4 +145,4 @@ nodes:
     description: >
       The food processing buildings are unlocked by food processing technologies, and the centre
       also needs an upgraded capital building on the planet.
-    check: {judgement_only: true}
+    check: {metric: unlocks.food_processing_missing, op: ">", compare_to: 0}

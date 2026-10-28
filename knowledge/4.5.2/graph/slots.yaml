@@ -91,7 +91,7 @@ nodes:
     description: >
       The capital building adds district slots when it is upgraded, and each upgrade needs a
       technology and the alloys or other resources it costs.
-    check: {judgement_only: true}
+    check: {metric: unlocks.capital_upgrade_missing, op: ">", compare_to: 0, only_present: true}
 
   - id: slots.tradition_needs_unity
     type: obstacle

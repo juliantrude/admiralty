@@ -88,7 +88,7 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
       Discovery traditions left; checks for the four Obstacles of group 1.
 - [x] 3a. Technology prerequisites: `computed/unlocks.py`, the `only_present` flag, and the four
       unlocks without capital tier (decree, doctrine, growth techs, assembly).
-- [ ] 3b. Capital tier: `computed/capital_tier.py` and the 12 unlocks with a capital requirement.
+- [x] 3b. Capital tier: `computed/capital_tier.py` and the 12 unlocks with a capital requirement.
 - [ ] 4. Verification of 2 and 3: tests on the reference saves, one headless Briefing.
 - [ ] 5a. Zone rules: `computed/building_slots.py`, free slots per planet, golden tests pending for
       Julian, steps in `docs/awaiting-julian.md`.
@@ -100,11 +100,10 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 3b, capital tier: `computed/capital_tier.py` (read tier numbering from the capital
-building keys and `scripted_triggers/01_scripted_triggers_buildings.txt`, open question 2 in the plan), then
-the 12 unlocks with a capital requirement (list in the plan, group 3). Reuse `computed/unlocks.py`
-(`Family`, `_collect`); `only_present` already exists. An Obstacle whose family is empty on both reference
-saves is recorded in the plan and stays `judgement_only`.
+**Next action:** increment 4, verification of 2 and 3: tests on the reference saves for all 23 Obstacles
+checked so far (groups 1 to 3) are in `tests/test_extract.py`; check what is still missing (e.g. a test
+per Obstacle that no check reports `unknown` on the four reference saves), then one headless Ops Briefing
+on a reference save and record the numbers in the Log. Then 5a (zone rules).
 **Blockers:** none.
 
 ## Budget
@@ -137,3 +136,12 @@ saves is recorded in the plan and stays `judgement_only`.
   `naval_capacity.doctrine_prerequisites`, `pop_growth.growth_tech_locked`, `pop_growth.assembly_locked`
   (only_present). Suite 752 passed, ruff clean. vulkan 2298: decree 1, doctrine 1, growth 0, assembly 2;
   zygerrian 2363: decree 1, doctrine 0, growth 0, assembly 0.
+- 2026-10-28 — Increment 3b: `computed/capital_tier.py` (tier of a planet = largest `capital_tier` of its
+  `capital = yes` buildings; required tier read from the scripted trigger; `country.capital` is a colony id)
+  and building families in `computed/unlocks.py` (building `prerequisites`, buildable = `potential` not false
+  for the country). 8 Obstacles checked: generator, food processing, purification, labs, unity buildings,
+  housing, naval logistics office, capital upgrade. 4 stay `judgement_only` with reasons in the plan
+  (ministry, stability buildings, amenity buildings, arcology: not buildable or no technology for machine
+  empires). Suite 763 passed, ruff clean. vulkan 2298 missing: generator 2, food 1, purification 2, labs 6,
+  unity 3, housing 0, office 1, capital upgrade 1; zygerrian 2363: 0, 1, 0, 0, 1, 0, 0, 1. Remaining
+  `judgement_only`: 20 (7 trade-offs, 9 slots, 4 above).

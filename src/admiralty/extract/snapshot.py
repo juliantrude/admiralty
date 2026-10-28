@@ -9,6 +9,7 @@ from typing import Any
 
 from admiralty.extract import empire as data
 from admiralty.extract.computed.ascension_slots import ascension_slots
+from admiralty.extract.computed.capital_tier import capital_tiers
 from admiralty.extract.computed.max_districts import max_districts, planet_ledger
 from admiralty.extract.computed.modifiers import Ledger, Triggers, country_ledger
 from admiralty.extract.computed.naval_capacity import naval_capacity
@@ -136,6 +137,7 @@ class Snapshot:
                 "ascension_slots": ascension_slots(ctx, country, self.ledger),
                 "tradition_tree_slots": tradition_tree_slots(ctx, country),
                 "discovery_traditions": traditions_left(ctx, country, DISCOVERY),
+                "capital_tier": capital_tiers(ctx, country),
             },
             "unlocks": unlocks(ctx, country),
             "military": {

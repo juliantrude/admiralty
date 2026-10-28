@@ -160,7 +160,7 @@ nodes:
     description: >
       The purification buildings are unlocked by purification technologies, and the hub also
       needs an upgraded capital building on the planet.
-    check: {judgement_only: true}
+    check: {metric: unlocks.purification_missing, op: ">", compare_to: 0}
 
   - id: minerals.decree_locked
     type: obstacle

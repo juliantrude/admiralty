@@ -178,7 +178,7 @@ nodes:
     description: >
       The Naval Logistics Office is locked behind a fleet tradition technology and also needs an
       Anchorage on the same starbase.
-    check: {judgement_only: true}
+    check: {metric: unlocks.logistics_office_missing, op: ">", compare_to: 0, only_present: true}
 
   - id: naval_capacity.doctrine_prerequisites
     type: obstacle
