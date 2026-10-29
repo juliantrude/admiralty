@@ -108,3 +108,34 @@ So geht's (Referenz-Save `vulkan`, `2298.03.11`; bei Bedarf auch `2259.12.25` un
 Hinweis: Die Synaptic Lathe (Kosmogenese) rechnen wir bewusst nicht. Ihre Plätze hängen an der
 Planetenklasse und an Distrikt-Modifikatoren. Kommt so eine Zone in einem Save vor, steht das in
 den Fehlern des Extrakts, statt zu raten.
+
+## 6. Golden-Werte: freie Sternenbasis-Plätze ablesen
+
+Wofür: Das Obstacle "keine Sternenbasis hat einen freien Modul- oder Gebäudeplatz" prüft Admiralty
+gegen eine Zahl, die nicht im Save steht. Wir rechnen sie aus den Spieldateien nach: Die Stufe der
+Basis bestimmt die Plätze (Sternenhafen 2 Module und 1 Gebäude, Sternenfestung 4 und 2, Sternenburg
+6 und 3, Zitadelle 6 und 4). Besetzt ist ein Platz durch ein gebautes Modul oder Gebäude, und auch
+durch eines, das noch im Bau ist. Ob das mit dem Spiel übereinstimmt, kannst nur du ablesen. Bis
+dahin überspringen die Tests (`tests/test_starbase_slots.py`, `test_golden_starbase_slots`) mit
+dem Vermerk "pending".
+
+So geht's (Referenz-Save `vulkan`, `2298.03.11`; bei Bedarf auch `2259.12.25`):
+
+1. Save laden und pausieren, wie bei den Werten aus Punkt 1.
+2. Diese Sternenbasen öffnen (Name des Systems in Klammern). Sie zeigen verschiedene Fälle:
+   - Thrish: Module voll, Gebäudeplätze leer.
+   - Menkar: Module teilweise belegt.
+   - Talemes Mar: eine größere Basis (Sternenfestung) mit einem Gebäude.
+3. In der Ansicht der Sternenbasis ablesen: wie viele Module gebaut sind und wie viele Modulplätze
+   die Basis hat, ebenso für Gebäude. Ist gerade etwas im Bau, schreib auf, ob der Platz im Spiel
+   schon als belegt gilt.
+4. In `tests/golden_values.py` beim Save unter dem Schlüssel `"starbase_slots"` eintragen, je
+   System das Quadrupel (Module, Modulplätze, Gebäude, Gebäudeplätze), so wie es das Spiel zeigt.
+   Oder mir die Zahlen schicken, dann trage ich sie ein.
+5. Weicht eine Zahl ab: Basis und Save notieren. Die Regel steht in
+   `src/admiralty/extract/computed/starbase_slots.py`; ich suche dann die Abweichung in den
+   Spieldateien, bevor das Obstacle auf diese Zahl gestützt bleibt.
+
+Hinweis: Mobile Basen (Waystation, Arkship) und Stufen, die in den Spieldateien fehlen, zählen wir
+nicht mit. Kommt so eine Basis vor, steht sie unter `unsupported`, und eine Summe von 0 gilt dann
+als unbekannt statt als festgestellt.

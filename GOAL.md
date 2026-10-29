@@ -94,21 +94,18 @@ Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 
       Julian, steps in `docs/awaiting-julian.md`.
 - [x] 5b. Family metrics and the planet-level slot checks (seven checked; `amenities.no_building_slot`
       stays grey with its reason in the plan).
-- [ ] 5c. Starbase slots: `computed/starbase_slots.py`, `naval_capacity.no_free_starbase_slot`,
+- [x] 5c. Starbase slots: `computed/starbase_slots.py`, `naval_capacity.no_free_starbase_slot`,
       golden test pending.
 - [ ] 6. Final verification: full suite, ruff, one headless Briefing, numbers in the Log.
 
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 5c, starbase slots: read `starbase_levels`, `starbase_modules` and
-`starbase_buildings` of `common/` (and the `module_slots`/`building_slots` of each level), write
-`computed/starbase_slots.py` (free module and building slots per starbase from the level and the modules
-the save lists; `computed/naval_capacity.py` already reads a starbase's modules), add the metric
-`starbases.module_slots_free` to `metrics.yaml` and the `room`/starbase section of the extract, set the check
-of `naval_capacity.no_free_starbase_slot` (`== 0`, `only_clears` if the sum does not cover every slot type),
-add a golden test that skips as pending, and German steps in `docs/awaiting-julian.md`. If the slots cannot be
-rebuilt cleanly from the files after two iterations, write that into Blockers and stop the chain.
+**Next action:** increment 6, final verification: full suite (`ADMIRALTY_PERF_SLACK=1.5 uv run pytest`), ruff,
+one headless Ops Briefing on `vulkan` 2298 and `zygerrian` 2363 showing the newly checked Obstacles (counts of
+checked / `judgement_only`, and the state of `naval_capacity.no_free_starbase_slot`), numbers into the Log; tick
+the Definition of Done boxes that hold; then write `STATUS: COMPLETE`. The Briefing is run the way increment 4
+did it (all Goals expanded; see its Log line). The golden tests stay pending for Julian.
 **Blockers:** none.
 
 ## Budget
@@ -180,3 +177,12 @@ rebuilt cleanly from the files after two iterations, write that into Blockers an
   reference empire (reason in the plan). `unlocks._buildable` is now public as `is_buildable`. Suite 822 passed,
   3 skipped (pending), ruff clean. vulkan 2298: free slots 61, foundry 34, research 38, unity 34, order 33,
   housing 33, growth 33; zygerrian 2363: 119, 61, 75, 75, 61, 61, 61; all seven read `clear` on both.
+- 2026-10-29 — Increment 5c: `computed/starbase_slots.py`. Slots of a starbase = entries of its level's
+  `module_slots`/`building_slots`; taken by `modules`/`buildings` or by a queued
+  `buildable_starbase_module`/`_building` item (`construction.item_mgr`), which names its slot; owner = owner of
+  the station ship's fleet. Waystation/arkship levels and levels without definition go to `unsupported` (sum 0
+  then reads unknown). Metric `starbases.slots_free` (`room.starbase_slots.free`); `naval_capacity.no_free_starbase_slot`
+  checked `== 0` (no `only_clears` needed). Golden test `test_golden_starbase_slots` pending (key `starbase_slots`),
+  German steps in `docs/awaiting-julian.md` section 6. Suite 843 passed, 5 skipped (pending), ruff clean.
+  vulkan 2298: 11 starbases, modules 28/54 used, buildings 6/27, free 47; zygerrian 2363: 21 starbases, modules
+  50/78, buildings 26/39, free 41; the Obstacle reads clear on both.

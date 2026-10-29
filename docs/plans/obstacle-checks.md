@@ -178,7 +178,7 @@ Julian reads free slots on two or three planets in the game (`docs/awaiting-juli
 | `amenities.no_building_slot` | `...by_family.amenities` | `== 0` | buildings with `planet_amenities_add` |
 | `housing.no_building_slot` | `...by_family.housing` | `== 0` | buildings with `planet_housing_add` |
 | `pop_growth.no_growth_building_slot` | `...by_family.growth` | `== 0` | clone vats, genomic facility (growth modifiers) |
-| `naval_capacity.no_free_starbase_slot` | `starbases.module_slots_free` | `== 0` | module and building slots by starbase level (`starbase_levels`, `starbase_modules`, `starbase_buildings`); module `extract/computed/starbase_slots.py`; the save lists each starbase's modules (`computed/naval_capacity.py` already reads them) |
+| `naval_capacity.no_free_starbase_slot` | `starbases.slots_free` (`room.starbase_slots.free`) | `== 0` | module and building slots by starbase level (`starbase_levels`: `module_slots`, `building_slots`); `extract/computed/starbase_slots.py` |
 
 Settled in increment 5b (`computed/building_slots.py`): a family is the list of buildings its Remedy
 builds (`SLOT_FAMILIES`), reduced to those the empire can build at all (`is_buildable`, as in
@@ -251,5 +251,10 @@ These stay `judgement_only`. The reason each cannot have a number:
 3. **Zone capacity corner cases.** `max_buildings_planet_class` and `is_capped_by_modifier` zones; the
    wilderness and habitat zones. If the rule cannot be rebuilt for a zone type, that type is excluded
    and the exclusion is reported in the extract's `errors`, never guessed.
-4. **Starbase slots.** Whether `starbase_levels` plus modules give a clean free-slot number; the
-   Hustlebot stops at this point after two failed iterations (`GOAL.md`, Model).
+4. **Starbase slots.** Settled in increment 5c. The level gives the slot count (`module_slots`,
+   `building_slots` of `common/starbase_levels`, outposts have none); a slot is taken by an entry of the
+   starbase's `modules`/`buildings` or by a queued `buildable_starbase_module`/`_building` item of
+   `construction.item_mgr`, which names the slot it reserves. The sum is over the starbases whose station
+   ship's fleet the country owns. Waystations and arkships (own modules) and levels the files do not
+   define are left out and reported in `unsupported`; a sum of 0 next to one is unknown, not present.
+   Whether anything is left to build in a free slot is not decided. No `only_clears` needed.

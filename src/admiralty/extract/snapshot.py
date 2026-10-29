@@ -14,6 +14,7 @@ from admiralty.extract.computed.capital_tier import capital_tiers
 from admiralty.extract.computed.max_districts import max_districts, planet_ledger
 from admiralty.extract.computed.modifiers import Ledger, Triggers, country_ledger
 from admiralty.extract.computed.naval_capacity import naval_capacity
+from admiralty.extract.computed.starbase_slots import starbase_slots
 from admiralty.extract.computed.tradition_cost import next_tradition_cost
 from admiralty.extract.computed.tradition_trees import (
     DISCOVERY,
@@ -94,6 +95,10 @@ class Snapshot:
         ]
 
     @cached_property
+    def starbase_slots(self) -> dict[str, Any]:
+        return starbase_slots(self.ctx, self.country_id)
+
+    @cached_property
     def colonies(self) -> list[tuple[int, dict, dict]]:
         return data.owned_colonies(self.ctx, self.country)
 
@@ -146,7 +151,7 @@ class Snapshot:
             "resources": data.economy(ctx, country),
             "pops": data.pops(ctx, self.colonies),
             "planets": planets,
-            "room": data.room(ctx, planets, self.colonies, self.planet_slots),
+            "room": data.room(ctx, planets, self.colonies, self.planet_slots, self.starbase_slots),
             "naval_capacity": self.naval_capacity(),
             "progression": {
                 **data.progression(ctx, country),

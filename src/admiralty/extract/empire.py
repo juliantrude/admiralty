@@ -321,12 +321,15 @@ def room(
     planets: list[dict[str, Any]],
     colonies: list[tuple[int, dict, dict]],
     planet_slots: list[dict[str, Any]],
+    starbase_slots: dict[str, Any],
 ):
     """Free places to grow into, summed over the empire's planets: district slots in all and per
     rural type (a type's free places never exceed the planet's free slots), and open jobs by the
     resource they produce and by the function they serve (amenities, order), plus free housing
     (planets over capacity count 0, so a crowded planet does not hide a free one), and free
-    building slots in all zones and by building family (`planet_slots`, computed/building_slots.py).
+    building slots in all zones and by building family (`planet_slots`, computed/building_slots.py),
+    and free module and building slots of the starbases (`starbase_slots`,
+    computed/starbase_slots.py).
     Lets the Mechanics Graph check "no free slot" Obstacles."""
     districts_free = 0
     by_type = dict.fromkeys(RURAL, 0)
@@ -362,6 +365,7 @@ def room(
             family: _slots_free(planet_slots, family)
             for family in (planet_slots[0]["free_by_family"] if planet_slots else {})
         },
+        "starbase_slots": starbase_slots,
         "districts_free": districts_free,
         "district_types_free": by_type,
         "open_jobs_by_output": {k: rounded(v) for k, v in open_jobs.items()},

@@ -85,3 +85,4 @@ metrics:
   room.building_slots_free_order: {path: room.building_slots_free_by_family.order, unit: building slots}
   room.building_slots_free_housing: {path: room.building_slots_free_by_family.housing, unit: building slots}
   room.building_slots_free_growth: {path: room.building_slots_free_by_family.growth, unit: building slots}
+  starbases.slots_free: {path: room.starbase_slots.free, unit: starbase module and building slots}

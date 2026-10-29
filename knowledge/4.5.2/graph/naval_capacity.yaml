@@ -169,7 +169,10 @@ nodes:
     description: >
       Modules and starbase buildings are limited by the size of the starbase. A starbase must be
       upgraded, or a lesser module replaced, before another Anchorage or Office fits.
-    check: {judgement_only: true}
+    check:
+      metric: starbases.slots_free
+      op: "=="
+      compare_to: 0
 
   - id: naval_capacity.office_needs_technology
     type: obstacle
