@@ -20,20 +20,20 @@ authoritative for scope and order. `docs/build-plan.md`, `GLOSSARY.md`, `docs/ad
 
 ## Definition of Done
 
-- [ ] `docs/plans/obstacle-checks.md` lists all 39 `judgement_only` Obstacles with their group,
+- [x] `docs/plans/obstacle-checks.md` lists all 39 `judgement_only` Obstacles with their group,
       the metric that checks them (or why none can), and the save fields and game files used.
-- [ ] Every Obstacle in the groups "perks and traditions", "free job slots", "unlocks" and
+- [x] Every Obstacle in the groups "perks and traditions", "free job slots", "unlocks" and
       "building and zone slots" has a metric check (`check: {metric, op, compare_to}`), or the
       plan document names the concrete reason it cannot have one. The 8 real trade-offs stay
       `judgement_only`.
-- [ ] Each new computed value has its own module with the formula and its game-file sources in
+- [x] Each new computed value has its own module with the formula and its game-file sources in
       the code (`CLAUDE.md`), and a test on the reference saves (`vulkan`, `zygerrian`).
-- [ ] Free building slots are computed values: their golden tests exist and skip as pending
+- [x] Free building slots are computed values: their golden tests exist and skip as pending
       until Julian reads the values in the game; the steps for him are in
       `docs/awaiting-julian.md` (German, without code).
-- [ ] `ADMIRALTY_PERF_SLACK=1.5 uv run pytest` passes (pending skips are fine) and
+- [x] `ADMIRALTY_PERF_SLACK=1.5 uv run pytest` passes (pending skips are fine) and
       `uv run ruff check . && uv run ruff format --check .` is clean.
-- [ ] One headless Ops Briefing on a reference save shows the newly checked Obstacles as checked
+- [x] One headless Ops Briefing on a reference save shows the newly checked Obstacles as checked
       (numbers recorded in the Log).
 
 ## Working Agreements (read every iteration — these override convenience)
@@ -69,43 +69,11 @@ authoritative for scope and order. `docs/build-plan.md`, `GLOSSARY.md`, `docs/ad
 - In-game feel: anything that needs someone playing the game goes to
   `docs/awaiting-julian.md`.
 When an increment hits a hold point: do every part that does not need Julian, add precise
-steps to `docs/awaiting-julian.md`, note it in the Blockers line of `## Status`, and move on.
+steps to `docs/awaiting-julian.md`, note it in the Blockers line of `## Status
 
-**Model:** the loop runs on Sonnet with high effort. If the zone rules (increment 5) are still
-not working after two iterations, write that into Blockers and stop the chain; Julian then
-switches `.hustle/config` to Opus.
-
-## Plan
-
-Split by `docs/plans/obstacle-checks.md` (groups 1 and 2 are 7 Obstacles, group 3 is 16, group 4 is 9).
-
-- [x] 1. Plan document `docs/plans/obstacle-checks.md`: classify all 39, name metric, save fields
-      and game files per Obstacle, and split groups 3 and 5 into increments if they are large.
-- [x] 2a. Group 2 (3 Obstacles): `room.open_jobs_by_function` (amenities, order), `room.housing_free`;
-      checks for `amenities.no_amenity_slot`, `stability.no_order_slot` (only_clears),
-      `pop_growth.no_free_housing`.
-- [x] 2b. Group 1 (4 Obstacles): `computed/ascension_slots.py` (perk slots free), tradition trees free,
-      Discovery traditions left; checks for the four Obstacles of group 1.
-- [x] 3a. Technology prerequisites: `computed/unlocks.py`, the `only_present` flag, and the four
-      unlocks without capital tier (decree, doctrine, growth techs, assembly).
-- [x] 3b. Capital tier: `computed/capital_tier.py` and the 12 unlocks with a capital requirement.
-- [x] 4. Verification of 2 and 3: tests on the reference saves, one headless Briefing.
-- [x] 5a. Zone rules: `computed/building_slots.py`, free slots per planet, golden tests pending for
-      Julian, steps in `docs/awaiting-julian.md`.
-- [x] 5b. Family metrics and the planet-level slot checks (seven checked; `amenities.no_building_slot`
-      stays grey with its reason in the plan).
-- [x] 5c. Starbase slots: `computed/starbase_slots.py`, `naval_capacity.no_free_starbase_slot`,
-      golden test pending.
-- [ ] 6. Final verification: full suite, ruff, one headless Briefing, numbers in the Log.
-
-## Status
-
-STATUS: ACTIVE
-**Next action:** increment 6, final verification: full suite (`ADMIRALTY_PERF_SLACK=1.5 uv run pytest`), ruff,
-one headless Ops Briefing on `vulkan` 2298 and `zygerrian` 2363 showing the newly checked Obstacles (counts of
-checked / `judgement_only`, and the state of `naval_capacity.no_free_starbase_slot`), numbers into the Log; tick
-the Definition of Done boxes that hold; then write `STATUS: COMPLETE`. The Briefing is run the way increment 4
-did it (all Goals expanded; see its Log line). The golden tests stay pending for Julian.
+STATUS: COMPLETE
+**Next action:** none. The goal is done; the golden tests for building slots and starbase slots stay pending until
+Julian reads the values (`docs/awaiting-julian.md`, sections 5 and 6).
 **Blockers:** none.
 
 ## Budget
@@ -186,3 +154,11 @@ did it (all Goals expanded; see its Log line). The golden tests stay pending for
   German steps in `docs/awaiting-julian.md` section 6. Suite 843 passed, 5 skipped (pending), ruff clean.
   vulkan 2298: 11 starbases, modules 28/54 used, buildings 6/27, free 47; zygerrian 2363: 21 starbases, modules
   50/78, buildings 26/39, free 41; the Obstacle reads clear on both.
+- 2026-10-29 — Increment 6: final verification. Full suite `ADMIRALTY_PERF_SLACK=1.5 uv run pytest`: 843 passed,
+  5 skipped (pending golden tests), ruff check and format clean. Headless Briefing (CampaignService.expand_graph,
+  all 13 Goals expanded, 173 nodes, 83 Obstacle nodes; the only warning is the 40000-character size note of
+  expanding all Goals at once): vulkan 2298 shows 40 clear / 29 present / 14 judgement (increment 4: 32 / 29 / 22),
+  zygerrian 2363 shows 51 clear / 17 present / 15 judgement (increment 4: 43 / 17 / 23); the eight Obstacles of
+  increment 5 moved from judgement to clear, `naval_capacity.no_free_starbase_slot` reads clear on both. Whole graph:
+  85 Obstacles, 73 with a metric check, 12 `judgement_only` (7 trade-offs, `amenities.no_building_slot`, and
+  4 unlocks with a named reason in `docs/plans/obstacle-checks.md`). Goal COMPLETE; no further run armed.
