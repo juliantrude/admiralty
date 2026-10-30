@@ -120,6 +120,25 @@ GOLDEN: dict[tuple[str, str], dict[str, Any]] = {
             },
         },
         "intel": {VULKAN_EMPIRE: 49},
+        # Read 2026-10-30. Unimatrix 1: Central Nexus 6/6, its two specialisations (Archives,
+        # Heavy Industry) 3/3 each, Generator, Mining and Research Nexus 3/3 each.
+        # 2 (Astarte): Central Nexus 3/6, two Research Enclave specialisations 3/3 each, Generator
+        # 3/3, Mining 2/3; Agriculture has its specialisation not built, counted as no slots.
+        # Asterion Prime Forsch (Asterion): Central Nexus 3/6, Archives 2/3 (third being built),
+        # Generator 3/3, Mining 0/3 (all three queued); a second Central Nexus specialisation and
+        # Agriculture have none yet, both queued. Built buildings only, the queue does not count.
+        "building_slots": {
+            ("Unimatrix 1", "Unimatrix 1"): (21, 21),
+            ("2", "Astarte"): (14, 18),
+            ("Asterion Prime Forsch", "Asterion"): (8, 15),
+        },
+        # Starbase view, read 2026-10-30: (modules, module slots, buildings, building slots).
+        # Thrish and Menkar: Starhold; Talemes Mar: Star Fortress. All queues empty.
+        "starbase_slots": {
+            "Thrish": (4, 4, 0, 2),
+            "Menkar": (2, 4, 0, 2),
+            "Talemes Mar": (4, 6, 1, 3),
+        },
     },
     # the prototype's campaign, where Helam and Kith'Valas live
     ("zygerrian", "2271.08.25.sav"): {

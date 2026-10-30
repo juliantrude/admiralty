@@ -68,6 +68,9 @@ def test_every_building_stands_in_one_zone_within_its_capacity(extractor, campai
         assert slots["capacity"] == sum(z["capacity"] for z in slots["zones"])
         assert slots["free"] == sum(z["free"] for z in slots["zones"])
         assert all(z["used"] <= z["capacity"] for z in slots["zones"]), planet_id
+        assert all(
+            z["free"] == max(0, z["capacity"] - z["used"] - z["queued"]) for z in slots["zones"]
+        ), planet_id
     assert ctx.errors == []
 
 
@@ -127,6 +130,7 @@ def test_zone_rules_in_isolation():
     assert slots == {
         "capacity": 10,
         "used": 5,
+        "queued": 0,
         "free": 5,
         "empty_zone_slots": 1,
         "unsupported": [],
@@ -200,6 +204,17 @@ def test_family_slots_never_exceed_the_free_slots(extractor, campaign, save):
         assert free == sum(p["free_by_family"][family] for p in planets)
         for planet in planets:
             assert planet["free_by_family"][family] <= planet["free"]
+
+
+def test_queued_buildings_reserve_their_slots(extractor):
+    # Asterion as the Player saw it: the third Archives building under construction and all three
+    # Mining buildings queued, while the planet view still shows 8 of 15 built. The save holds a
+    # fifth order, Drone Storage in the Central Nexus zone, which leaves two of its slots free
+    doc = extractor.extract(reference_save(VULKAN, "2298.03.11.sav"), PLAYER)
+    planet = next(p for p in doc["planets"] if p["name"] == "Asterion Prime Forsch")
+    slots = planet["building_slots"]
+    assert (slots["used"], slots["queued"], slots["capacity"]) == (8, 5, 15)
+    assert slots["free"] == 2
 
 
 def _planet(free, by_family=None, unsupported=()):

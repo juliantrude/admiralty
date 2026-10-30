@@ -6,8 +6,11 @@ district, in the order of the district's `zone_slots`; an empty slot holds the n
 
 Formula:
     capacity of a zone = `max_buildings` of its type, else DEFAULT_MAX_PLANET_BUILDINGS_PER_ZONE (3)
-    used             = the buildings in the zone (`zones[].buildings`)
-    free             = max(0, capacity − used)
+    used             = the buildings in the zone (`zones[].buildings`), as the planet view counts
+    queued           = new buildings for the zone in the construction queue
+                       (`construction.item_mgr.items`, `buildable_planet_building`); a replacement
+                       or an upgrade keeps its slot and is no such item
+    free             = max(0, capacity − used − queued)
     planet           = sums over the planet's zones
     empty zone slots = zone slots of the planet's districts that hold no zone yet (a zone built
                        there would add its capacity; whether the slot is unlocked is not decided)
@@ -39,18 +42,19 @@ Sources (Stellaris 4.5.2, common/):
     zone_slots/*.txt, districts/*.txt       the slot a district offers (`zone_slots`) and its unlock
     defines/00_defines.txt                  DEFAULT_MAX_PLANET_BUILDINGS_PER_ZONE = 3
 Checked on the saves: every building of `buildings_cache` stands in exactly one zone and no zone
-holds more than its capacity (15 saves). Golden values: pending, read by the Player
-(`docs/awaiting-julian.md`).
+holds more than its capacity (15 saves). Golden values: three planets of vulkan 2298.03.11, read by
+the Player (`tests/golden_values.py`).
 """
 
 from __future__ import annotations
 
+from collections import Counter
 from typing import Any
 
 from admiralty.extract.computed.modifiers import Triggers
 from admiralty.extract.computed.naval_capacity import _defines
 from admiralty.extract.computed.unlocks import is_buildable
-from admiralty.extract.context import NO_ID, Context, as_list
+from admiralty.extract.context import NO_ID, Context, as_list, block
 
 # Keys of a zone that make its capacity something other than `max_buildings`.
 UNSUPPORTED_RULES = (
@@ -148,6 +152,17 @@ def family_zones(ctx: Context, triggers: Triggers) -> dict[str, frozenset[str] |
     return out
 
 
+def queued_buildings(ctx: Context) -> Counter[Any]:
+    """Zone id → new buildings queued for that zone."""
+    items = block(block(ctx.g.get("construction")).get("item_mgr")).get("items")
+    orders = (
+        item.get("buildable_planet_building")
+        for item in block(items).values()
+        if isinstance(item, dict)
+    )
+    return Counter(order.get("zone") for order in orders if isinstance(order, dict))
+
+
 def planet_building_slots(
     ctx: Context,
     planet_id: int,
@@ -155,12 +170,13 @@ def planet_building_slots(
     detail: bool = False,
     families: dict[str, frozenset[str] | None] | None = None,
 ) -> dict[str, Any]:
-    """{"capacity", "used", "free", "empty_zone_slots", "unsupported"} of one planet; with
+    """{"capacity", "used", "queued", "free", "empty_zone_slots", "unsupported"} of one planet; with
     `families` (family_zones) also "free_by_family"; with `detail` also "zones": one entry per
     zone."""
     zone_defs = ctx.game.category("zones")
     default = int(_defines(ctx).get("DEFAULT_MAX_PLANET_BUILDINGS_PER_ZONE", 3))
-    capacity = used = free = empty = 0
+    queue = queued_buildings(ctx)
+    capacity = used = queued = free = empty = 0
     by_family: dict[str, int | None] = {
         name: (None if kinds is None else 0) for name, kinds in (families or {}).items()
     }
@@ -193,9 +209,11 @@ def planet_building_slots(
                 continue
             zone_capacity = int(definition.get("max_buildings", default))
             zone_used = len(as_list(zone.get("buildings")))
-            zone_free = max(0, zone_capacity - zone_used)
+            zone_queued = queue[zone_id]
+            zone_free = max(0, zone_capacity - zone_used - zone_queued)
             capacity += zone_capacity
             used += zone_used
+            queued += zone_queued
             free += zone_free
             for name, kinds in (families or {}).items():
                 if kinds is not None and kind in kinds:
@@ -207,12 +225,14 @@ def planet_building_slots(
                         "label": ctx.label(kind),
                         "capacity": zone_capacity,
                         "used": zone_used,
+                        "queued": zone_queued,
                         "free": zone_free,
                     }
                 )
     out: dict[str, Any] = {
         "capacity": capacity,
         "used": used,
+        "queued": queued,
         "free": free,
         "empty_zone_slots": empty,
         "unsupported": unsupported,

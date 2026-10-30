@@ -23,7 +23,7 @@ Sources (Stellaris 4.5.2, common/):
     starbase_levels/*.txt    `module_slots`, `building_slots` (00_documentation.txt)
     starbase_modules/*.txt, starbase_buildings/*.txt   what fills the slots
 Checked on the saves: every used slot index lies below the level's slot count (15 saves).
-Golden values: pending, read by the Player (`docs/awaiting-julian.md`).
+Golden values: three starbases of vulkan 2298.03.11, read by the Player (`tests/golden_values.py`).
 """
 
 from __future__ import annotations
