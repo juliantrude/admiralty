@@ -25,8 +25,11 @@ uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty graph check-solution ..
 ## The Briefing, step by step
 
 1. **Save age.** Call `campaign_status`. If its warnings say the newest save is stale, ask the
-   Player to save the game again and stop; do not brief on old numbers. Relay other warnings
-   (for example a version mismatch) in one sentence.
+   Player to save the game again, or to say that they want to work with this save, and wait for
+   the answer. If they want this save, say its age in one sentence ("This save is 3 hours old,
+   from 2294.01.01") and go on; the numbers are those of the save, not of the game now. Never
+   stop for good on a stale save. Relay other warnings (for example a version mismatch) in one
+   sentence.
 2. **Situation.** Call `empire_overview` and, as the question needs, `economy`, `progression`
    and `military`. Name the Situation in one or two sentences. Is there a **Crisis** (income
    collapsing, a lost war, a stockpile at zero)? The Goals that answer it are Crisis Goals.

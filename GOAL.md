@@ -68,7 +68,7 @@ move on. Report `blocked` only when no increment is left that can be worked on.
 Block 1, Ops as Julian wants it (`docs/proposals/ops.md`, `docs/proposals/claims.md`):
 - [x] 1. Claim check: `admiralty setup` results count as evidence, bold inside bold is read correctly,
       the setup skill bolds Display Names only.
-- [ ] 2. A stale save goes on when the Player asks for it (entry 1).
+- [x] 2. A stale save goes on when the Player asks for it (entry 1).
 - [ ] 3. Roles of text and graph (entry 6) in `skills/ops/SKILL.md`, with its static test.
 - [ ] 4. One current Briefing, updated by feedback, new Goals and new saves, older versions in a
       history (entry 11).
@@ -112,7 +112,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 2 (a stale save goes on when the Player asks for it, `docs/proposals/ops.md` entry 1).
+**Next action:** increment 3 (roles of text and graph, `docs/proposals/ops.md` entry 6, in `skills/ops/SKILL.md` with its static test).
 **Blockers:** none.
 
 ## Budget
@@ -130,3 +130,7 @@ STATUS: ACTIVE
   names plus an outer sentence, the setup skill bolds Display Names only. 852 tests green (3 skips) and ruff
   clean; `tests/test_smoke.py` parse budget fails on this throttled CPU (powersave, 5.2-5.9 s against 4.5 s at
   slack 1.5) also on the untouched HEAD, so it ran with `ADMIRALTY_PERF_SLACK=2.5` (passes, 6.2 s of 7.5 s).
+- 2026-10-31 — Increment 2 done: a stale save no longer stops Ops; the `campaign_status` warning, the MCP
+  instructions, `skills/ops/SKILL.md` step 1 and the workspace CLAUDE.md say: ask for a new save or for the
+  Player's wish to work with this one, then name its age in one sentence and go on. Static test added.
+  853 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (full run 17 min on the throttled CPU), ruff clean.

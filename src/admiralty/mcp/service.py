@@ -143,7 +143,8 @@ class CampaignService:
             status["save_is_stale"] = True
             status["warnings"].append(
                 f"The newest save is {round(age / 60)} minutes old. Ask the Player to save "
-                "again before answering about the current situation."
+                "again, or to say that they want to work with this save; if they do, name "
+                "its age in one sentence and go on."
             )
         return status
 

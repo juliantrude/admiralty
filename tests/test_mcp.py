@@ -56,7 +56,7 @@ def test_old_save_asks_for_a_new_one(service, monkeypatch):
     monkeypatch.setattr(time, "time", lambda: service.newest().mtime + 11 * 60)
     status = service.campaign_status()
     assert status["save_is_stale"] is True
-    assert any("save again" in w for w in status["warnings"])
+    assert any("save again" in w and "work with this save" in w for w in status["warnings"])
 
 
 def test_fresh_save_is_not_stale(service, monkeypatch):

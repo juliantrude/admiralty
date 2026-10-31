@@ -283,7 +283,7 @@ Tracked Empire: {config.empire}. Mode: {config.mode}. Knowledge: {config.knowled
 
 - Every number and every name comes from an `admiralty` tool result. Use Display Names as
   returned; never show a raw localisation key.
-- When `campaign_status` says the save is stale, ask the Player to save again before
-  answering about the current situation.
+- When `campaign_status` says the save is stale, ask the Player to save again or to say they
+  want to work with this save; if they do, name its age in one sentence and go on.
 - Do not edit `archive/` or `saves/`.
 """

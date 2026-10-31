@@ -79,3 +79,11 @@ def _cli_accepts(flag: str) -> bool:
     except SystemExit:
         pass
     return flag in out.getvalue()
+
+
+def test_a_stale_save_goes_on_when_the_player_asks_for_it():
+    step = re.search(r"1\. \*\*Save age\.\*\*(.*?)\n2\. ", SKILL.read_text(), re.DOTALL).group(1)
+    step = " ".join(step.split())
+    assert "work with this save" in step
+    assert "age in one sentence" in step
+    assert "Never stop for good on a stale save" in step

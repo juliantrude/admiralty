@@ -23,7 +23,8 @@ from admiralty.workspace.config import CampaignConfig, SetupMissing
 INSTRUCTIONS = """\
 Admiralty reads the Player's Stellaris saves. Call campaign_status first in a turn: it
 names the newest save, its in-game date and how old it is. If it says the save is stale,
-ask the Player to save again. Use only numbers and names from tool results; never derive
+ask the Player to save again or to say they want to work with this save; if they do, name its
+age in one sentence and go on. Use only numbers and names from tool results; never derive
 game values yourself. Fair Play: known_empires show only what the Player's intel shows.
 """
 
