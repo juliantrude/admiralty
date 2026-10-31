@@ -41,15 +41,6 @@ def fake_save(path: Path, name="Test Campaign", date="2259.12.29", mtime=None) -
     return path
 
 
-@pytest.fixture
-def vulkan_folder(tmp_path, mid_save) -> Path:
-    """A copy of the reference Campaign folder (symlink) under tmp, as the game lays it out."""
-    folder = tmp_path / "save games" / "mpvulkan_1"
-    folder.mkdir(parents=True)
-    (folder / mid_save.name).symlink_to(mid_save)
-    return folder
-
-
 def run(capsys, *argv) -> tuple[int, dict | None, str]:
     code = main(["setup", *map(str, argv)])
     captured = capsys.readouterr()

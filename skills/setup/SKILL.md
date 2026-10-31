@@ -44,12 +44,18 @@ do not ask it again; confirm it in the summary at the end.
    Player changes it by running this setup again.
 5. **Knowledge.** Ask: Fair Play (only what the Tracked Empire can see in the game) or
    God Mode (anything in the save, including what the Tracked Empire cannot see).
-6. **Confirm and write.** Summarise all answers in one short block and ask for a yes. Then run
+6. **Save service.** Run `admiralty setup autosave`. Explain in two sentences: while the game
+   runs, a small background service copies every new save, so Debrief still has the autosaves
+   the game overwrites later. Ask whether the Player wants it, and when `recommended` is not
+   null add its `hint` in the Player's language in the same turn (Admiralty never changes the
+   game's settings; the Player does it in the game's settings screen, or not). Wait for the
+   answer and remember it as yes or no.
+7. **Confirm and write.** Summarise all answers in one short block and ask for a yes. Then run
 
    ```
    admiralty setup write --workspace . --save-dir <folder> --empire <empire> \
        --mode <consulting|coaching> --knowledge <fair_play|god_mode> \
-       [--ally <name>]... [--rival <name>]...
+       --save-service|--no-save-service [--ally <name>]... [--rival <name>]...
    ```
 
    Backing up saves is on by default; pass `--no-backup` only if the Player asks not to
@@ -57,9 +63,9 @@ do not ask it again; confirm it in the summary at the end.
    Tracked Empire, the CLI refuses: tell the Player what the message says and, only if they
    agree, repeat the command with `--reset-archive` (it moves the old archive aside, never
    deletes it).
-7. **Check.** Run `admiralty setup check --workspace .`. If `ok` is false, tell the Player
+8. **Check.** Run `admiralty setup check --workspace .`. If `ok` is false, tell the Player
    the problems in their language and fix the cause with a new `write`; do not edit files.
-8. **Next step.** Tell the Player what happens now: save the game in Stellaris, then ask
+9. **Next step.** Tell the Player what happens now: save the game in Stellaris, then ask
    anything about it (Consulting: a Briefing; Coaching: the Coach asks first), and ask
    Debrief for a retrospective after a Play Session. Mention that the new `CLAUDE.md` in
    this directory loads the right skill from the next session on.

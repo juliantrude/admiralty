@@ -35,6 +35,11 @@ def _find_user_dir() -> Path:
     return Path.home() / ".local/share/Paradox Interactive/Stellaris"
 
 
+def user_dir() -> Path:
+    """The Player's game data folder (settings.txt, save games, mods)."""
+    return _find_user_dir()
+
+
 def save_root() -> Path:
     """The folder with one subfolder per Campaign ('save games' in the user dir)."""
     return _find_user_dir() / "save games"

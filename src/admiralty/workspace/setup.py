@@ -142,12 +142,15 @@ def write_setup(
     allies: tuple[str, ...] = (),
     rivals: tuple[str, ...] = (),
     backup_saves: bool = True,
+    save_service: bool | None = None,
     reset_archive: bool = False,
     extractor: Extractor | None = None,
 ) -> dict[str, Any]:
     """Create the workspace if needed, check every answer against the newest save, write
     campaign.yaml and CLAUDE.md. Idempotent; never touches saves/ and only moves archive/
     aside (never deletes it) when the Tracked Empire changes and `reset_archive` says so.
+    `save_service` is the Player's answer to the offer of the save service; None leaves an
+    earlier answer in campaign.yaml as it is.
 
     Nothing is written when any answer is invalid."""
     workspace = workspace.expanduser().resolve()
@@ -203,6 +206,7 @@ def write_setup(
         knowledge=knowledge,
         backup_saves=backup_saves,
         players=others or None,
+        **({} if save_service is None else {"save_service": save_service}),
     )
     (workspace / WORKSPACE_CLAUDE_MD).write_text(
         render_workspace_claude_md(config), encoding="utf-8"
@@ -216,6 +220,7 @@ def write_setup(
         "knowledge": config.knowledge,
         "players": [{"name": p.name, "relation": p.relation} for p in config.players],
         "backup_saves": config.backup_saves,
+        "save_service": config.save_service,
         "archive_moved_to": str(moved) if moved else None,
         "inbox_adopted": len(adopted),
     }

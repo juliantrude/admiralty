@@ -1,4 +1,4 @@
-"""Command line: admiralty extract | diff | mcp | watch | setup (campaigns, players, write, check) | graph |
+"""Command line: admiralty extract | diff | mcp | watch | setup (campaigns, players, autosave, write, check) | graph |
 briefing | claims | blocks | hook."""
 
 from __future__ import annotations
@@ -214,8 +214,19 @@ def _add_setup_commands(commands) -> None:
     write.add_argument("--rival", action="append", default=[], metavar="NAME")
     write.add_argument("--no-backup", action="store_true", help="do not copy saves into saves/")
     write.add_argument(
+        "--save-service",
+        action=argparse.BooleanOptionalAction,
+        default=None,
+        help="the Player's answer to the offer of the save service (default: keep the earlier one)",
+    )
+    write.add_argument(
         "--reset-archive", action="store_true", help="move archive/ aside if the empire changes"
     )
+
+    autosave = setup.add_parser(
+        "autosave", help="the game's autosave interval and a hint (never changes the game)"
+    )
+    autosave.add_argument("--user-dir", help="default: the game's data folder")
 
     check = setup.add_parser("check", help="report problems of a workspace (exit 1 if any)")
     check.add_argument("--workspace", default=".")
@@ -423,8 +434,9 @@ def _watch(args) -> int:
 
 def _setup(args) -> int:
     """Every answer is JSON on stdout; a refused answer is a plain message on stderr, exit 1."""
-    from admiralty.game import save_root
+    from admiralty.game import save_root, user_dir
     from admiralty.workspace import setup
+    from admiralty.workspace.autosave import autosave_hint
     from admiralty.workspace.config import SetupMissing
     from admiralty.workspace.layout import NotAWorkspace
 
@@ -434,6 +446,8 @@ def _setup(args) -> int:
             result = {"save_root": str(root), "campaigns": setup.list_campaigns(root)}
         elif args.setup_command == "players":
             result = setup.describe_save(Path(args.save_dir_or_save))
+        elif args.setup_command == "autosave":
+            result = autosave_hint(Path(args.user_dir) if args.user_dir else user_dir())
         elif args.setup_command == "write":
             result = setup.write_setup(
                 Path(args.workspace),
@@ -444,6 +458,7 @@ def _setup(args) -> int:
                 allies=tuple(args.ally),
                 rivals=tuple(args.rival),
                 backup_saves=not args.no_backup,
+                save_service=args.save_service,
                 reset_archive=args.reset_archive,
             )
         else:

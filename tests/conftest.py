@@ -67,5 +67,14 @@ def mid_save() -> Path:
 
 
 @pytest.fixture
+def vulkan_folder(tmp_path, mid_save) -> Path:
+    """A copy of the reference Campaign folder (symlink) under tmp, as the game lays it out."""
+    folder = tmp_path / "save games" / "mpvulkan_1"
+    folder.mkdir(parents=True)
+    (folder / mid_save.name).symlink_to(mid_save)
+    return folder
+
+
+@pytest.fixture
 def early_save() -> Path:
     return reference_save(VULKAN, EARLY)

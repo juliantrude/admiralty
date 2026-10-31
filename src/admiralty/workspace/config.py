@@ -9,6 +9,7 @@ by hand any more, but hand edits are fine and survive a rewrite):
     mode: consulting          # or coaching; never switches on its own
     knowledge: fair_play      # or god_mode
     backup_saves: true        # copy every save that is read into saves/
+    save_service: true        # the Player wants `admiralty watch` to copy saves while the game runs
     players:                  # everyone else who plays along; may be empty
       - {name: Friend1, relation: ally}   # ally or rival
 """
@@ -56,6 +57,7 @@ class CampaignConfig:
     mode: str = "consulting"
     knowledge: str = "fair_play"
     backup_saves: bool = True
+    save_service: bool = False
     players: tuple[Player, ...] = ()
     raw: dict[str, Any] | None = None
 
@@ -87,6 +89,7 @@ class CampaignConfig:
             mode=_choice(data, "mode", MODES, "consulting"),
             knowledge=_choice(data, "knowledge", KNOWLEDGE, "fair_play"),
             backup_saves=_flag(data, "backup_saves", True),
+            save_service=_flag(data, "save_service", False),
             players=parse_players(data.get("players")),
             raw=data,
         )
@@ -167,6 +170,7 @@ _KEY_ORDER = (
     "mode",
     "knowledge",
     "backup_saves",
+    "save_service",
     "players",
 )
 
@@ -180,6 +184,7 @@ def _check(data: dict[str, Any]) -> None:
     _choice(data, "mode", MODES, "consulting")
     _choice(data, "knowledge", KNOWLEDGE, "fair_play")
     _flag(data, "backup_saves", True)
+    _flag(data, "save_service", False)
     parse_players(data.get("players"))
 
 

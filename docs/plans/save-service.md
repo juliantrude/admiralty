@@ -36,6 +36,13 @@ copied while the game runs is lost for Debrief. Today only a save that is read g
   other empire) stays, goes to the warnings of `campaign_status` and the turn log, and is not
   parsed again until its mtime changes. Ingest runs before the requested save is parsed because
   it drops the cached gamestate.
+- **Setup question and hint (16c):** `admiralty setup autosave` reads `autosave=<n>` from the game's
+  `settings.txt` (`workspace/autosave.py`; index order of the localisation keys, checked against
+  `autosave=4` and the half-yearly autosaves of Mireesh) and returns `setting`, `recommended`
+  (Quarterly, only when the interval is rarer or autosave is Never) and `hint`. The skill asks the
+  question after Knowledge and passes the answer as `setup write --save-service|--no-save-service`;
+  it lands as `save_service` in `campaign.yaml` (no flag keeps an earlier answer). Installing the
+  unit on a yes is step 16d.
 - **All paths are parameters** (`state_dir`), so tests run on artificial folders and never touch the
   Player's home.
 - **Fair Play / Archive:** the watcher only copies files; it never parses a gamestate and so

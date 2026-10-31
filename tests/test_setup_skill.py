@@ -34,3 +34,10 @@ def test_skill_bolds_display_names_only():
     # the questions the skill dictates carry no bold terms (the check reads bold as a name)
     for term in ("Coaching", "Consulting", "Fair Play", "God Mode", "ally", "rival"):
         assert f"**{term}**" not in text
+
+
+def test_skill_offers_the_save_service_and_passes_the_answer():
+    text = SKILL.read_text()
+    assert "admiralty setup autosave" in text
+    assert "--save-service|--no-save-service" in text
+    assert "never changes the\n   game's settings" in text
