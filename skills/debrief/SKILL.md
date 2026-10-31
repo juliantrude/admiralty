@@ -16,7 +16,8 @@ Rule.
 
 The workspace is the current directory (it holds `campaign.yaml`). The tools are the MCP tools
 of the `admiralty` server: `campaign_status`, `retrospective` and, to look closer at one
-point, `timeline`, `compare` and `empire_overview`. The one command is run as
+point, `timeline`, `compare` and `empire_overview`. A Coaching Debrief also uses `prediction_check`
+and `player_model`. The one command is run as
 
 ```
 uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty debrief check-epochs ...
@@ -24,12 +25,32 @@ uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty debrief check-epochs ..
 
 ## Coaching Campaigns
 
-If `campaign.yaml` says `mode: coaching`, ask the Player for **their own assessment** of the
-frame first, in one question ("How do you think this stretch went, and what would you do
-differently?"), and wait for the answer before you show any analysis. Then give the same
-analysis below, weighing their assessment against the findings. In Coaching you do not use
-`goals` from the result, you write nothing about the Player's habits to any file (there is no
-Player Model write in this skill), and you say nothing about Predictions.
+If `campaign.yaml` says `mode: coaching`, the Debrief is a **Coaching Debrief**, usually held at a
+Rendezvous (the Academy skill tells you when). `retrospective` then carries a `coaching` part
+instead of `goals`: `predictions` (foretold, made, due or decided in the frame), `hindsight`
+(expectations given after the decision, each with `weight: "less"`) and `player_model` (the changes
+of the frame). You do not use `goals`. Keep this order, one step at a time:
+
+1. **Self-assessment.** Ask the Player for **their own assessment** of the frame first, in one
+   question ("How do you think this stretch went, and what would you do differently?"), and wait
+   for the answer before you show any analysis.
+2. **Predictions.** Take the Predictions of `coaching.predictions` one by one: the Player's
+   sentence, what the Snapshot of the check date said (`state`, `note`, `decided_by`) and what it
+   means. A Prediction still `open` with `due` true needs a result: call `prediction_check`; the
+   code decides the measurable ones, for the others ask the Player for their verdict and pass it
+   on through the same tool. You never confirm or refute a Prediction yourself. One with `due`
+   false is still waiting; say so and leave it. Hindsight expectations come last and are named as
+   such: they were given after the decision, they weigh less, and they never count as a hit or a
+   miss of the Player's judgement.
+3. **Analysis.** Then the analysis below (epochs, per epoch, what to learn), weighing the
+   Player's assessment against the findings and tying lessons to the Predictions where they fit.
+4. **Player Model.** Call `player_model` and tell the Player plainly what moved in the frame
+   (`coaching.player_model`: the concept by its title, the level it moved to, the reason, an
+   Escape Hatch with its Situation). It is theirs and read only: the Academy tools wrote it
+   during the Drills, you write nothing about the Player to any file and say so if asked.
+5. **New topics.** Close with the Causes the Player should look at next, from what the frame
+   showed, as a hand-over to the Academy skill ("shall we start a Drill on this now?"). Do not
+   state a Key Action here: the Drill is where the Player finds it.
 
 ## The retrospective, step by step
 

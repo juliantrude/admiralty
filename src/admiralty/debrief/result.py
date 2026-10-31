@@ -1,5 +1,6 @@
 """The `retrospective` tool result: frame, series, intervals, Timeline, candidates, findings and
-(Consulting only) the Goals' Symptoms at both ends of the frame.
+(Consulting only) the Goals' Symptoms at both ends of the frame or (Coaching only) the Predictions
+and Player Model changes of the frame.
 
 Everything is assembled from archived extracts by the functions of this package; nothing here is
 read from a save. The result is trimmed to the same character budget as `expand_graph`: over it,
@@ -27,11 +28,13 @@ def build_result(
     mode: str,
     god_mode: bool,
     goals: dict[str, Any] | None = None,
+    coaching: dict[str, Any] | None = None,
     warnings: list[str] | None = None,
     budget: int = RESULT_BUDGET,
 ) -> dict[str, Any]:
     """The tool result for `frame`. `goals` is the finished `goals` value (Consulting) or None:
-    Coaching Campaigns get no `goals` key at all."""
+    Coaching Campaigns get no `goals` key at all. `coaching` is `debrief.coaching.coaching_material`
+    (Coaching) or None: Consulting Campaigns get no `coaching` key."""
     documents = [loaded.documents[date] for date in frame.dates]
     material = candidates_for_frame(loaded, frame)
     intervals = material["intervals"]
@@ -62,6 +65,8 @@ def build_result(
     }
     if goals is not None:
         result["goals"] = goals
+    if coaching is not None:
+        result["coaching"] = coaching
     result["warnings"] = [*(warnings or []), *header.get("warnings", [])]
     return _trim(result, budget)
 

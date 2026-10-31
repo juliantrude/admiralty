@@ -76,14 +76,47 @@ def test_the_skill_tells_the_reserve_in_months_and_the_systems_series():
     assert "`systems`" in text
 
 
-def test_the_coaching_branch_asks_first_and_stays_inside_m8():
+def test_the_coaching_debrief_has_its_five_steps_in_order():
     text = SKILL.read_text()
-    assert "ask the Player for **their own assessment**" in text
-    assert "in one question" in text
-    assert "wait for the answer" in text
-    assert "you do not use\n`goals`" in text
-    assert "no\nPlayer Model write" in text
-    assert "nothing about Predictions" in text
+    section = text[text.index("## Coaching Campaigns") : text.index("## The retrospective")]
+    steps = ["Self-assessment.", "Predictions.", "Analysis.", "Player Model.", "New topics."]
+    positions = [section.index(f"**{step}**") for step in steps]
+    assert positions == sorted(positions)
+    assert "Ask the Player for **their own assessment**" in section
+    flat = " ".join(section.split())
+    assert "in one question" in flat
+    assert "wait for the answer" in flat
+    assert "You do not use `goals`" in section
+
+
+def test_the_coaching_debrief_reads_the_player_model_and_never_writes_it():
+    text = SKILL.read_text()
+    assert "`coaching`" in text and "`predictions`" in text and "`player_model`" in text
+    assert "read only" in text
+    assert "you write nothing about the Player to any file" in text
+    assert "You never confirm or refute a Prediction yourself" in text
+    assert 'weight: "less"' in text and "never count as a hit or a\n   miss" in text
+    assert "nothing about Predictions" not in text and "no\nPlayer Model write" not in text
+
+
+def test_the_coaching_tools_and_result_keys_exist(tmp_path):
+    served = {tool.name for tool in asyncio.run(build_server(tmp_path).list_tools())}
+    for tool in ("prediction_check", "player_model"):
+        assert f"`{tool}`" in SKILL.read_text()
+        assert tool in served
+    # the keys the skill names are the ones the result carries
+    from test_debrief_result import workspace
+
+    coaching = workspace(tmp_path / "w", mode="coaching").retrospective("all")["coaching"]
+    for key in ("predictions", "hindsight", "player_model"):
+        assert key in coaching
+    for field in ("state", "note", "decided_by", "due"):
+        assert f"`{field}`" in SKILL.read_text()
+
+
+def test_the_coaching_debrief_does_not_state_a_key_action():
+    text = SKILL.read_text()
+    assert "Do not\n   state a Key Action here" in text
 
 
 def test_the_workspace_claude_md_routes_to_this_skill(tmp_path):

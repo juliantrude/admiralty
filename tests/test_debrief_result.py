@@ -9,12 +9,14 @@ import json
 import pytest
 from test_debrief_series import doc
 
+from admiralty.academy import predictions
 from admiralty.claims.check import check_answer
 from admiralty.claims.evidence import build_evidence, read_turn_log
 from admiralty.debrief.frame import load_campaign, resolve_frame
 from admiralty.debrief.result import build_result
 from admiralty.mcp.server import build_server
 from admiralty.mcp.service import CampaignService, SaveRef
+from admiralty.player import store
 from admiralty.workspace.archive import Archive
 from admiralty.workspace.config import CampaignConfig
 from admiralty.workspace.turnlog import TURN_LOG
@@ -134,6 +136,93 @@ def test_coaching_has_no_goals_at_all(tmp_path):
     result = workspace(tmp_path, mode="coaching").retrospective("all")
     assert "goals" not in result
     assert result["frame"]["mode"] == "coaching"
+
+
+def _coached(tmp_path):
+    service = workspace(tmp_path, mode="coaching")
+    ws = tmp_path
+    add = predictions.add
+    add(ws, kind="tradition_tree", sentence="More unity.", made="2218.01.01",
+        check_date="2222.01.01", campaign="vulkan")  # fmt: skip
+    add(ws, kind="war", sentence="The war pays off.", made="2246.01.01",
+        check_date="2250.01.01", campaign="vulkan")  # fmt: skip
+    add(ws, kind="ascension_perk", sentence="Faster research.", made="2258.01.01",
+        check_date="2262.01.01", campaign="vulkan")  # fmt: skip
+    add(ws, kind="war", sentence="It was bound to work.", made="2246.01.01",
+        check_date="2250.01.01", basis="hindsight", campaign="vulkan")  # fmt: skip
+    add(ws, kind="megastructure", sentence="Another Campaign.", made="2230.01.01",
+        check_date="2235.01.01", campaign="other")  # fmt: skip
+    predictions.decide(ws, "p001", "confirmed", date="2222.03.01", note="seen")
+    return service
+
+
+def test_coaching_adds_the_predictions_of_the_frame_and_labels_hindsight(tmp_path):
+    result = _coached(tmp_path).retrospective("all")
+    coaching = result["coaching"]
+    assert set(coaching) == {"predictions", "hindsight", "player_model"}
+    by_id = {p["id"]: p for p in coaching["predictions"]}
+    assert set(by_id) == {"p001", "p002", "p003"}  # the other Campaign's p005 stays out
+    assert by_id["p001"]["state"] == "confirmed" and by_id["p001"]["decided_by"] == "player"
+    assert by_id["p002"]["state"] == "open" and by_id["p002"]["due"] is True
+    assert by_id["p003"]["due"] is False  # made in the frame, checked in a later Debrief
+    assert [(h["id"], h["weight"], h["basis"]) for h in coaching["hindsight"]] == [
+        ("p004", "less", "hindsight")
+    ]
+    assert all("weight" not in p for p in coaching["predictions"])
+
+
+def test_a_prediction_outside_the_frame_stays_out(tmp_path):
+    service = _coached(tmp_path)
+    result = service.retrospective(since="2245.01.23")  # 2245.01.23 to 2259.12.29
+    ids = {p["id"] for p in result["coaching"]["predictions"]}
+    assert ids == {"p002", "p003"}  # p001 was made and decided before the frame
+    assert [h["id"] for h in result["coaching"]["hindsight"]] == ["p004"]
+
+
+def test_consulting_has_no_coaching_part(tmp_path):
+    assert "coaching" not in workspace(tmp_path).retrospective("all")
+
+
+def test_coaching_lists_the_player_model_changes_of_the_frame_and_this_campaign(tmp_path):
+    service = _coached(tmp_path)
+    cause = "alloys.few_metallurgists"
+    store.append("level", concept=cause, level="understand", previous="new",
+                 reason="named the cause", campaign="vulkan", date="2221.05.01")  # fmt: skip
+    store.append("hatch", concept=cause, situation="stuck on the budget",
+                 reason="Escape Hatch", campaign="vulkan", date="2250.02.01")  # fmt: skip
+    store.append("note", concept=cause, reason="candidate", campaign="vulkan",
+                 date="2250.02.01")  # fmt: skip
+    store.append("level", concept=cause, level="apply", previous="understand",
+                 reason="elsewhere", campaign="other", date="2250.02.01")  # fmt: skip
+    store.append("level", concept=cause, level="analyse", previous="apply",
+                 reason="before the frame", campaign="vulkan", date="2150.01.01")  # fmt: skip
+    changes = service.retrospective(since="2220.04.26")["coaching"]["player_model"]
+    assert [(c["kind"], c["date"]) for c in changes] == [
+        ("level", "2221.05.01"),
+        ("hatch", "2250.02.01"),
+    ]
+    assert changes[0]["level"] == "understand" and changes[0]["previous"] == "new"
+    assert changes[0]["title"] == "Few staffed Metallurgist jobs"
+    assert changes[1]["situation"] == "stuck on the budget"
+
+
+def test_a_missing_knowledge_pack_only_costs_the_titles_of_the_changes(tmp_path):
+    service = workspace(tmp_path, docs=documents("9.9.9"), mode="coaching")
+    store.append("level", concept="x.y", level="understand", reason="named",
+                 campaign="vulkan", date="2221.05.01")  # fmt: skip
+    changes = service.retrospective("all")["coaching"]["player_model"]
+    assert changes[0]["concept"] == "x.y" and changes[0]["title"] is None
+
+
+def test_the_coaching_part_goes_through_the_server_and_the_turn_log(tmp_path, monkeypatch):
+    _coached(tmp_path)
+    monkeypatch.delenv("ADMIRALTY_SAVE_DIR", raising=False)
+    monkeypatch.delenv("ADMIRALTY_EMPIRE", raising=False)
+    result = call(build_server(tmp_path), "retrospective", {"since": "all"})
+    assert {p["id"] for p in result["coaching"]["predictions"]} == {"p001", "p002", "p003"}
+    lines = (tmp_path / ".admiralty" / TURN_LOG).read_text().splitlines()
+    entries = [json.loads(x) for x in lines]
+    assert any(e["tool"] == "retrospective" and "coaching" in e["result"] for e in entries)
 
 
 def test_a_missing_knowledge_pack_is_an_error_inside_goals_only(tmp_path):

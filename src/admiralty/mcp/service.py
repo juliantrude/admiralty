@@ -15,7 +15,8 @@ from pathlib import Path
 from typing import Any
 
 from admiralty.academy.tools import AcademyTools
-from admiralty.debrief.frame import load_campaign, resolve_frame
+from admiralty.debrief.coaching import coaching_material
+from admiralty.debrief.frame import Frame, load_campaign, resolve_frame
 from admiralty.debrief.result import build_result, goal_symptoms
 from admiralty.extract import empire as data
 from admiralty.extract.diff import diff_extracts
@@ -368,10 +369,21 @@ class CampaignService:
         goals = None
         if self.config.mode == "consulting":
             goals = self._goal_symptoms(loaded.documents[frame.start], loaded.documents[frame.end])
+        coaching = None
+        if self.config.mode == "coaching":
+            coaching = self._coaching_material(loaded.documents[frame.end], frame)
         return build_result(
             loaded, frame, mode=self.config.mode, god_mode=self.config.god_mode, goals=goals,
-            warnings=warnings,
+            coaching=coaching, warnings=warnings,
         )  # fmt: skip
+
+    def _coaching_material(self, last: dict[str, Any], frame: Frame) -> dict[str, Any]:
+        """`coaching` of a retrospective; a missing knowledge pack only costs the concept titles."""
+        try:
+            graph = self.graph(last["header"]["game_version"])
+        except GraphMissing, GraphInvalid:
+            graph = None
+        return coaching_material(self.config.workspace, frame, last["header"]["campaign"], graph)
 
     def _goal_symptoms(self, first: dict[str, Any], last: dict[str, Any]) -> dict[str, Any]:
         """`goals` of a retrospective; a missing or bad knowledge pack is an error in here only."""
