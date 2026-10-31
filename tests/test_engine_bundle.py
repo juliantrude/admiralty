@@ -5,6 +5,7 @@ from __future__ import annotations
 import http.client
 import json
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -33,19 +34,41 @@ def test_the_committed_bundle_is_not_stale():
     assert bundle_engine.main(["--check"]) == 0
 
 
-def test_the_bundle_is_one_file_with_the_cdn_tags_and_no_local_path():
+def test_the_bundle_is_one_file_that_loads_nothing_and_has_no_local_path():
     html = bundle_engine.bundle()
-    assert 'href="engine.css"' not in html and 'src="engine.js"' not in html
     assert '<script id="engine-script">' in html and "<style>" in html
-    assert driver.script_pin_problems(html) == []
-    assert html.count("<script src=") == 3  # only the pinned libraries remain external
+    assert driver.external_loads(html) == []
+    assert html.count("data:font/woff2;base64,") == 2
+    assert 'id="footer"' in html and "Paradox Interactive" in html
     for local in (str(ROOT), str(Path.home()), "/home/", "/tmp/", "C:\\"):
         assert local not in html
 
 
+def _copy_engine(target: Path) -> None:
+    for name in ("index.html", "engine.css", "engine.js", "pins.json"):
+        (target / name).write_text((ROOT / "engine" / name).read_text(encoding="utf-8"))
+    shutil.copytree(ROOT / "engine" / "vendor", target / "vendor")
+
+
+def test_the_bundler_refuses_a_vendored_file_that_does_not_match_its_pin(tmp_path):
+    _copy_engine(tmp_path)
+    (tmp_path / "vendor" / "cytoscape.min.js").write_text("alert(1)", encoding="utf-8")
+    with pytest.raises(SystemExit, match="does not match its pinned hash"):
+        bundle_engine.bundle(tmp_path)
+
+
+def test_the_bundler_refuses_a_vendored_file_that_is_not_pinned(tmp_path):
+    _copy_engine(tmp_path)
+    html = (tmp_path / "index.html").read_text(encoding="utf-8")
+    (tmp_path / "index.html").write_text(
+        html.replace("vendor/elk.bundled.js", "vendor/other.js"), encoding="utf-8"
+    )
+    with pytest.raises(SystemExit, match="not pinned"):
+        bundle_engine.bundle(tmp_path)
+
+
 def test_the_bundler_refuses_a_closing_tag_inside_the_script(tmp_path):
-    for name in ("index.html", "engine.css", "engine.js"):
-        (tmp_path / name).write_text((ROOT / "engine" / name).read_text(encoding="utf-8"))
+    _copy_engine(tmp_path)
     (tmp_path / "engine.js").write_text('const s = "</script>";', encoding="utf-8")
     with pytest.raises(SystemExit, match="breaks inlining"):
         bundle_engine.bundle(tmp_path)
@@ -165,7 +188,6 @@ def test_the_bundled_page_served_by_view_reads_the_sibling_json(running_view, tm
         text=True,
         timeout=90,
     )
-    # The CDN is reachable from the page only when the machine is online; the sibling fetch is what we test.
     assert 'id="engine-state"' in result.stdout
 
 

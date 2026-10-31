@@ -1,7 +1,8 @@
 <!doctype html>
 <!--
   Admiralty graph engine: one fixed page that draws one Solution Graph (docs/plans/M6.md).
-  Libraries are pinned in engine/pins.json (exact versions + SRI); see engine/VERSIONS.md.
+  Libraries and the font Exo 2 ship in engine/vendor/ (pinned in engine/pins.json, see engine/VERSIONS.md):
+  the page needs no network (ADR 0004).
   The page takes its data from solution-graph.json and writes nothing but text into the DOM.
 -->
 <html lang="en" data-theme="dark">
@@ -9,12 +10,10 @@
 <meta charset="utf-8">
 <title>Admiralty — Solution Graph</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600&display=swap">
 <link rel="stylesheet" href="engine.css">
-<script src="https://cdn.jsdelivr.net/npm/cytoscape@3.34.4/dist/cytoscape.min.js" integrity="sha384-lyd1lDWZ623YSUJ/wMQH50y+T81dWKJk7ZoFdYWXQS83b0+QpW0pgdfXEnQnXL/X" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/elkjs@0.12.0/lib/elk.bundled.js" integrity="sha384-ww57TDqx4cGknIavPm0QKO+aygLUR1BLSn2Vhbnt1XdYKWcwLyWTFKX7aZMaKIi2" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/cytoscape-elk@2.3.0/dist/cytoscape-elk.js" integrity="sha384-VCqo69qSTjiAwEkpykDLjsy96VKDH33my5mKmDfk3HhB85Iy4QwZ9R0IXqYuxV1A" crossorigin="anonymous"></script>
+<script src="vendor/cytoscape.min.js"></script>
+<script src="vendor/elk.bundled.js"></script>
+<script src="vendor/cytoscape-elk.js"></script>
 </head>
 <body>
 <main>
@@ -46,6 +45,11 @@
     <h2>Pruned (cut by the model, with the reason)</h2>
     <ul id="pruned"></ul>
   </section>
+  <footer id="footer" class="frame">
+    <p>Game icons are the property of Paradox Interactive and come from the game installation of the person who
+    composed this page. Admiralty is a non-commercial fan project and has no connection to Paradox Interactive.
+    Whoever passes this page on is responsible for it.</p>
+  </footer>
 </main>
 <pre id="engine-state" hidden></pre>
 <!-- solution-graph -->

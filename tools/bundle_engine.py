@@ -1,8 +1,9 @@
 """Build engine/dist/index.html: engine/index.html with engine.css and engine.js inlined.
 
-The Artifact is one file; the repo keeps three for readability (docs/plans/M6.md). The CDN script tags
-stay as they are (pinned, with integrity hashes). The output depends only on the three source files:
-no timestamp, no local path. `bundle()` is also used by tests/test_engine_bundle.py to check that the
+The page is one file so that it opens offline from anywhere (ADR 0004); the repo keeps the sources apart
+for readability: engine.css, engine.js and the pinned files of engine/vendor/ (three libraries, the font
+Exo 2). The libraries become inline scripts, the font files data URIs. Each vendored file is checked
+against its hash in pins.json first. The output depends only on the sources: no timestamp, no local path. `bundle()` is also used by tests/test_engine_bundle.py to check that the
 committed file is not stale.
 
     uv run python tools/bundle_engine.py          # write engine/dist/index.html
@@ -12,6 +13,10 @@ committed file is not stale.
 from __future__ import annotations
 
 import argparse
+import base64
+import hashlib
+import json
+import re
 import sys
 from pathlib import Path
 
@@ -19,8 +24,23 @@ ENGINE = Path(__file__).resolve().parent.parent / "engine"
 DIST = ENGINE / "dist" / "index.html"
 STYLE_TAG = '<link rel="stylesheet" href="engine.css">'
 SCRIPT_TAG = '<script src="engine.js"></script>'
+VENDOR_SCRIPT_RE = re.compile(r'<script src="vendor/([^"]+)"></script>')
+FONT_URL_RE = re.compile(r'url\("vendor/([^"]+\.woff2)"\)')
 # The inlined script keeps this id so that the test driver can find the place to hook in.
 INLINE_SCRIPT_OPEN = '<script id="engine-script">'
+
+
+def _vendored(engine: Path, name: str) -> bytes:
+    """The bytes of engine/vendor/<name>, refused unless they match the SRI hash pinned for it."""
+    pins = json.loads((engine / "pins.json").read_text(encoding="utf-8"))["libraries"]
+    pin = next((pin for pin in pins if pin["file"] == name), None)
+    if pin is None:
+        raise SystemExit(f"bundle_engine: vendor/{name} is not pinned in pins.json")
+    data = (engine / "vendor" / name).read_bytes()
+    got = "sha384-" + base64.b64encode(hashlib.sha384(data).digest()).decode("ascii")
+    if got != pin["integrity"]:
+        raise SystemExit(f"bundle_engine: vendor/{name} does not match its pinned hash")
+    return data
 
 
 def bundle(engine: Path = ENGINE) -> str:
@@ -35,6 +55,22 @@ def bundle(engine: Path = ENGINE) -> str:
         raise SystemExit(
             "bundle_engine: engine.css/engine.js contain a sequence that breaks inlining"
         )
+    css = FONT_URL_RE.sub(
+        lambda m: (
+            "url(data:font/woff2;base64,"
+            + base64.b64encode(_vendored(engine, m.group(1))).decode("ascii")
+            + ")"
+        ),
+        css,
+    )
+
+    def library(match: re.Match) -> str:
+        text = _vendored(engine, match.group(1)).decode("utf-8")
+        if "</script" in text.lower() or "<!--" in text:
+            raise SystemExit(f"bundle_engine: vendor/{match.group(1)} breaks inlining")
+        return f"<script>\n{text.rstrip()}\n</script>"
+
+    html = VENDOR_SCRIPT_RE.sub(library, html)
     html = html.replace(STYLE_TAG, f"<style>\n{css.rstrip()}\n</style>")
     return html.replace(SCRIPT_TAG, f"{INLINE_SCRIPT_OPEN}\n{js.rstrip()}\n</script>")
 

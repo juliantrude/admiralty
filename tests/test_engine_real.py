@@ -1,6 +1,6 @@
 """The engine on a real Solution Graph (M6 verification): built by `expand_graph` and `compose` from the
 reference mid-save with a fixed overlay, then rendered headless. The identical-render, overlap and speed
-checks of the small fixtures, repeated on the biggest realistic input; one test against the real CDN."""
+checks of the small fixtures, repeated on the biggest realistic input; the shipped bundle offline."""
 
 from __future__ import annotations
 
@@ -80,32 +80,15 @@ def test_the_layout_of_the_real_solution_graph_stays_within_its_budget(real_grap
     assert elapsed < LAYOUT_BUDGET_MS
 
 
-@pytest.mark.network
 @needs_browser
-def test_the_page_runs_with_the_real_cdn_libraries(tmp_path):
-    """The only test that touches the network: the bundle with its pinned CDN tags and SRI hashes as published."""
-    import subprocess
-
-    html = driver.embed_graph(
-        (driver.ENGINE / "dist" / "index.html").read_text(encoding="utf-8"), chain_graph()
+def test_the_bundled_page_runs_offline_with_its_own_libraries_and_font(tmp_path):
+    """The shipped file as it is, with name resolution off: layout from the inlined libraries, Exo 2 from its data URIs."""
+    bundled = driver.ENGINE / "dist" / "index.html"
+    hook = (
+        'document.body.setAttribute("data-fonts", ["400", "600"].map('
+        '(w) => document.fonts.check(`${w} 15px "Exo 2"`)).join());'
     )
-    page = tmp_path / "page.html"
-    page.write_text(html, encoding="utf-8")
-    result = subprocess.run(
-        [
-            driver.CHROMIUM,
-            "--headless=new",
-            "--no-sandbox",
-            "--disable-gpu",
-            f"--user-data-dir={tmp_path / 'profile'}",
-            "--virtual-time-budget=30000",
-            "--dump-dom",
-            page.as_uri(),
-        ],
-        capture_output=True,
-        text=True,
-        timeout=120,
-    )
-    assert result.returncode == 0, result.stderr[-500:]
-    state = driver.read_state(result.stdout)
+    dom = driver.engine_dom(chain_graph(), index=bundled, after_ready=hook)
+    state = driver.read_state(dom)
     assert [n["id"] for n in state["nodes"]] == sorted(n["id"] for n in chain_graph()["nodes"])
+    assert 'data-fonts="true,true"' in dom

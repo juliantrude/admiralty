@@ -2,6 +2,21 @@
  * Admiralty graph engine theme. Dark ("Stellaris") is the default; [data-theme="light"] switches.
  * Colours are tokens on :root; engine.js keeps the canvas colours of the graph itself in step (THEMES).
  */
+/* Exo 2 (SIL OFL 1.1), shipped in engine/vendor/; tools/bundle_engine.py inlines the files as data URIs. */
+@font-face {
+  font-family: "Exo 2";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("vendor/exo-2-latin-400-normal.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Exo 2";
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+  src: url("vendor/exo-2-latin-600-normal.woff2") format("woff2");
+}
 :root {
   --font: "Exo 2", "Rajdhani", "Segoe UI", system-ui, sans-serif;
   --bg: #070d16;
@@ -77,6 +92,8 @@ main { display: flex; flex-direction: column; min-height: 100vh; }
 #panel .hint { color: var(--muted); }
 
 #legends { margin: 10px 12px 0; padding: 8px 16px; }
+#footer { margin: 10px 12px 12px; padding: 6px 16px; color: var(--muted); font-size: 0.8em; }
+#footer p { margin: 0; }
 #legend, #edge-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; list-style: none; margin: 0; padding: 0; font-size: 0.78rem; color: var(--muted); }
 #edge-legend { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
 #legend li, #edge-legend li { display: flex; align-items: center; gap: 6px; }

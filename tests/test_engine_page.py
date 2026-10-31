@@ -174,10 +174,15 @@ def test_fixture_graphs_satisfy_the_solution_graph_schema(name):
 # --- the page itself ----------------------------------------------------------------------------------
 
 
-def test_index_html_pins_the_three_libraries_and_loads_its_own_script():
+def test_index_html_loads_the_three_vendored_libraries_and_its_own_script():
     html = (driver.ENGINE / "index.html").read_text(encoding="utf-8")
-    assert driver.script_pin_problems(html) == []
-    assert html.count("cdn.jsdelivr.net") == 3
+    assert re.findall(r'<script src="([^"]+)"', html) == [
+        "vendor/cytoscape.min.js",
+        "vendor/elk.bundled.js",
+        "vendor/cytoscape-elk.js",
+        "engine.js",
+    ]
+    assert not re.search(r"https?://(?!www\.w3\.org)", re.sub(r"<!--.*?-->", "", html, flags=re.S))
     assert '<script src="engine.js"></script>' in html
     assert driver.GRAPH_SLOT in html
 

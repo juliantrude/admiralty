@@ -13,6 +13,3 @@ tests/fixtures/saves
 
 # Claude Code worktrees of parallel sessions
 .claude/worktrees/
-
-# Engine libraries fetched by tools/fetch_engine_libs.py
-tests/fixtures/engine-libs

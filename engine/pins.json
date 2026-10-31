@@ -1,26 +1,60 @@
 {
-  "comment": "Pinned CDN libraries for engine/index.html. Exact versions and SRI hashes only; see engine/VERSIONS.md.",
+  "comment": "Libraries and font shipped in engine/vendor/ (offline, ADR 0004). Exact versions and SRI hashes only; the SRI hash checks the committed file. See engine/VERSIONS.md.",
   "libraries": [
     {
       "name": "cytoscape",
       "version": "3.34.4",
       "url": "https://cdn.jsdelivr.net/npm/cytoscape@3.34.4/dist/cytoscape.min.js",
       "integrity": "sha384-lyd1lDWZ623YSUJ/wMQH50y+T81dWKJk7ZoFdYWXQS83b0+QpW0pgdfXEnQnXL/X",
-      "file": "cytoscape.min.js"
+      "file": "cytoscape.min.js",
+      "kind": "script",
+      "license": "MIT",
+      "license_url": "https://cdn.jsdelivr.net/npm/cytoscape@3.34.4/LICENSE",
+      "license_file": "LICENSE-cytoscape.txt"
     },
     {
       "name": "elkjs",
       "version": "0.12.0",
       "url": "https://cdn.jsdelivr.net/npm/elkjs@0.12.0/lib/elk.bundled.js",
       "integrity": "sha384-ww57TDqx4cGknIavPm0QKO+aygLUR1BLSn2Vhbnt1XdYKWcwLyWTFKX7aZMaKIi2",
-      "file": "elk.bundled.js"
+      "file": "elk.bundled.js",
+      "kind": "script",
+      "license": "EPL-2.0",
+      "license_url": "https://cdn.jsdelivr.net/npm/elkjs@0.12.0/LICENSE.md",
+      "license_file": "LICENSE-elkjs.txt"
     },
     {
       "name": "cytoscape-elk",
       "version": "2.3.0",
       "url": "https://cdn.jsdelivr.net/npm/cytoscape-elk@2.3.0/dist/cytoscape-elk.js",
       "integrity": "sha384-VCqo69qSTjiAwEkpykDLjsy96VKDH33my5mKmDfk3HhB85Iy4QwZ9R0IXqYuxV1A",
-      "file": "cytoscape-elk.js"
+      "file": "cytoscape-elk.js",
+      "kind": "script",
+      "license": "MIT",
+      "license_url": "https://cdn.jsdelivr.net/npm/cytoscape-elk@2.3.0/LICENSE",
+      "license_file": "LICENSE-cytoscape-elk.txt"
+    },
+    {
+      "name": "exo-2-400",
+      "kind": "font",
+      "version": "5.3.0",
+      "url": "https://cdn.jsdelivr.net/npm/@fontsource/exo-2@5.3.0/files/exo-2-latin-400-normal.woff2",
+      "integrity": "sha384-5Qmi4xRYR6vs6Ts3+ivSvCsc5H4lPZR4LyWrUh/EAwyOMzvOr2ZiNwUhh+lHX0I4",
+      "file": "exo-2-latin-400-normal.woff2",
+      "license": "OFL-1.1",
+      "license_url": "https://cdn.jsdelivr.net/npm/@fontsource/exo-2@5.3.0/LICENSE",
+      "license_file": "LICENSE-exo-2.txt"
+    },
+    {
+      "name": "exo-2-600",
+      "kind": "font",
+      "version": "5.3.0",
+      "url": "https://cdn.jsdelivr.net/npm/@fontsource/exo-2@5.3.0/files/exo-2-latin-600-normal.woff2",
+      "integrity": "sha384-ERgXv3Je1dnIGW5waT7Mu77zmVzI7iSnvtHoKDSg8JlHfOIcycRHAn1AtfIR8/TS",
+      "file": "exo-2-latin-600-normal.woff2",
+      "license": "OFL-1.1",
+      "license_url": "https://cdn.jsdelivr.net/npm/@fontsource/exo-2@5.3.0/LICENSE",
+      "license_file": "LICENSE-exo-2.txt"
     }
   ]
 }

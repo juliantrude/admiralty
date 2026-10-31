@@ -1,10 +1,10 @@
-"""Download the pinned engine libraries into the git-ignored cache and check their SRI hashes.
+"""Download the pinned engine libraries and the font into engine/vendor/ and check their SRI hashes.
 
     uv run python tools/fetch_engine_libs.py [--dest DIR] [--force]
 
-Reads engine/pins.json. The cache (default tests/fixtures/engine-libs/) is what the headless-browser
-tests load instead of the CDN, so they never touch the network on their own. A file whose hash does
-not match is deleted and the run fails.
+Reads engine/pins.json. engine/vendor/ is committed: the graph page ships its libraries and the font
+Exo 2 with the plugin and opens offline (ADR 0004). This tool is only run when a pin changes. A file
+whose hash does not match is deleted and the run fails. Licence texts are fetched next to the files.
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PINS = ROOT / "engine" / "pins.json"
-CACHE = ROOT / "tests" / "fixtures" / "engine-libs"
+VENDOR = ROOT / "engine" / "vendor"
 
 
 def load_pins(path: Path = PINS) -> list[dict]:
@@ -30,13 +30,23 @@ def sri(data: bytes) -> str:
     return "sha384-" + base64.b64encode(hashlib.sha384(data).digest()).decode("ascii")
 
 
+def _download(url: str) -> bytes:
+    with urllib.request.urlopen(url, timeout=60) as response:
+        return response.read()
+
+
 def fetch(pin: dict, dest: Path, force: bool = False) -> str:
     """Returns "cached" or "downloaded"; raises ValueError when the hash does not match."""
     target = dest / pin["file"]
-    if target.exists() and not force and sri(target.read_bytes()) == pin["integrity"]:
+    licence = dest / pin["license_file"]
+    if (
+        target.exists()
+        and licence.exists()
+        and not force
+        and sri(target.read_bytes()) == pin["integrity"]
+    ):
         return "cached"
-    with urllib.request.urlopen(pin["url"], timeout=60) as response:
-        data = response.read()
+    data = _download(pin["url"])
     got = sri(data)
     if got != pin["integrity"]:
         raise ValueError(
@@ -44,14 +54,15 @@ def fetch(pin: dict, dest: Path, force: bool = False) -> str:
         )
     dest.mkdir(parents=True, exist_ok=True)
     target.write_bytes(data)
+    licence.write_bytes(_download(pin["license_url"]))
     return "downloaded"
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--dest", type=Path, default=CACHE)
+    parser.add_argument("--dest", type=Path, default=VENDOR)
     parser.add_argument(
-        "--force", action="store_true", help="download again even if the cache is valid"
+        "--force", action="store_true", help="download again even if the files are valid"
     )
     args = parser.parse_args(argv)
     failed = False

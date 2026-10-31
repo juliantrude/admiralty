@@ -80,7 +80,7 @@ Block 2, the graph page:
       epoch titles count as evidence in the claim check.
 - [x] 8. W, A, S, D move the viewport (entry 13).
 - [x] 9. Flags on nodes about an empire (entry 12).
-- [ ] 10. Libraries and font shipped offline, footer about the game icons (topic 5, ADR 0004).
+- [x] 10. Libraries and font shipped offline, footer about the game icons (topic 5, ADR 0004).
 
 Block 3, reaching a target (entry 10):
 - [ ] 11. Decode the known systems for Fair Play, resolve names, include bypasses and wormholes.
@@ -112,7 +112,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 10 (libraries and font shipped offline, footer about the game icons; `docs/plans/grilling.md` topic 5, ADR 0004). Engine work: `engine/engine.js`, `engine/pins.json`, rebuild with `uv run python tools/bundle_engine.py`.
+**Next action:** increment 11 (decode the known systems for Fair Play, resolve names, include bypasses and wormholes; `docs/proposals/ops.md` entry 10; start with a short plan document `docs/plans/reach-target.md` for block 3).
 **Blockers:** none.
 
 ## Budget
@@ -144,3 +144,4 @@ STATUS: ACTIVE
 - 2026-10-31 — Increment 7 done: Goals carry a `mark` (up, down, flag) as a field of their own: required in the Mechanics Graph (all 13 curated Goals `up`), the Solution Graph and the model's added Goals (`compose` refuses a model Goal without one; a graph Goal must match the curated mark). Icons draw the arrow up, arrow down or flag; the page shows it on placeholders and as a row "Mark" in the detail panel; `skills/ops/SKILL.md` tells the model to set it. `debrief check-epochs` returns `epoch_titles` and logs a clean result to the turn log, so the claim check counts the titles as evidence (a refused proposal does not). Tests added. 890 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.7 min), ruff clean.
 - 2026-10-31 — Increment 8 done: W, A, S, D move the graph view while held (rAF loop, 700 px/s, opposite keys cancel, diagonals not faster; ignored with Ctrl/Alt/Meta and in input fields; released on blur); the engine state has `view` (zoom, pan); seam `AdmiraltyEngine.pan(keys, ms)`. `tests/test_engine_pan.py` added (12 tests). 902 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (18.6 min), ruff clean.
 - 2026-10-31 — Increment 9 done: nodes the model adds may carry `empire` (a name from the expansion's `empires`, empires in contact; `compose` refuses others and a hand-written `flag`); `Snapshot.empire_flags()` reads each flag from the save (kept out of the extract, which is at its 40k budget) and `expand_graph` returns it as `empires`; `graph/icons.py` `load_flag` composes the flag like `gfx/FX/flag_sprite.shader` (background channels weight swatch slots 0-2 of `flags/colors.txt`, symbol over it) and `compose` embeds it as `flag`; the page shows it in place of the placeholder ("G" stays the fallback) and names the empire in the detail panel; skill text added. Tests added. 916 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19 min), ruff clean. Not checked by eye in the live page (Julian's Abnahme: look at a node about a neighbour).
+- 2026-10-31 — Increment 10 done: the graph page is offline. `engine/vendor/` (committed) holds Cytoscape 3.34.4, ELK 0.12.0, cytoscape-elk 2.3.0 and Exo 2 (400/600, latin, @fontsource 5.3.0) with their licence texts; `pins.json` pins version + SRI per file, `tools/fetch_engine_libs.py` writes `vendor/`; `tools/bundle_engine.py` verifies each file against its pin and inlines the libraries as scripts and the font as data URIs (bundle 2.1 MB, loads nothing); `index.html` lost the CDN and Google Fonts tags and got a footer (game icons belong to Paradox, come from the viewer's installation, fan project, sharer is responsible). The test driver now runs Chromium with name resolution off; the `network` marker, the test cache and the CDN tests are gone, replaced by pin/vendor/bundle checks and an offline test of the shipped bundle incl. `document.fonts.check`. 914 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19 min), ruff clean. Not checked by eye (Julian's Abnahme: open the page with the network off, look at the footer and the font).
