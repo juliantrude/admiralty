@@ -29,6 +29,7 @@ def test_every_tool_the_skill_names_is_served(tmp_path):
         "economy",
         "progression",
         "military",
+        "routes_to",
         "expand_graph",
     ):
         assert f"`{tool}`" in text

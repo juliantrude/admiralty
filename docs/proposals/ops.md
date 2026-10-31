@@ -82,7 +82,19 @@ Fair Play nutzt nur diese, God Mode die ganze Karte. Besitzer über Sternenbasis
 fehlt die Technologie, bleibt die Verbindung mit `requires` in der Karte, ein Ende unbekannt, gesperrt
 oder inaktiv lässt sie weg (`skipped`, mit Grund). `bridge = yes` an einer Hyperlane ist eine gewöhnliche
 Lane (Kartenerzeugung, `min_bridges`). Auf Mireesh: Fair Play 499 Systeme, 655 Lanes, 2 Wormholes
-(Technologie fehlt). Schritt 12 baut darauf die Routen.
+(Technologie fehlt).
+
+Umgesetzt (2026-10-31, Schritt 12): `extract/routes.py` und das MCP-Tool `routes_to(target)`. Ziel ist ein
+Reich oder ein System (Display Name). Dijkstra von allen eigenen Systemen; je durchquertes Reich wird es
+gesperrt und neu gesucht; Routen mit gleicher Menge durchquerter Reiche zählen einmal. Jede Route nennt
+Länge, Sprünge, die Reiche mit ihren Systemen auf der Route und deren Haltung (Meinung, feindlich,
+Grenze, relative Stärke; Fair Play nur, was die Intel zeigt) und `needs_technology`, wenn ein
+Wormhole noch nicht erforscht ist. Ohne Weg: `unreachable` mit Grund. Prüfung auf Mireesh 2294.01.01
+(Fair Play, Plexxi): zum Omnivorous Inarian Swarm drei Routen, die kürzeste (356) durch Mireesh
+Accord (feindlich), Priman Matrix und Cormathanian Empire, wie Julian es beschreibt; zur United
+Wi-Zirakian Authority (so heißt sie im Spiel, nicht "Zerakian") zwei Routen (326 durch Mireesh
+Accord und Priman Matrix; 786 durch Cormathanian Empire und Omnivorous Inarian Swarm). Meine
+frühere Prototyp-Zahl (714/833) stammte aus einer Karte ohne Namensauflösung und gilt nicht mehr.
 
 ## 11. Mehrere Briefings
 

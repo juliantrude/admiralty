@@ -17,6 +17,8 @@ from admiralty.debrief.frame import load_campaign, resolve_frame
 from admiralty.debrief.result import build_result, goal_symptoms
 from admiralty.extract import empire as data
 from admiralty.extract.diff import diff_extracts
+from admiralty.extract.galaxy import read_galaxy
+from admiralty.extract.routes import routes_to
 from admiralty.extract.snapshot import Extractor, Snapshot
 from admiralty.graph.expand import catalogue, expand_graph
 from admiralty.graph.mechanics import GraphInvalid, GraphMissing, MechanicsGraph
@@ -220,6 +222,22 @@ class CampaignService:
             "wars": doc["military"]["wars"],
             "known_empires": empires,
             "knowledge": self.config.knowledge,
+        }
+
+    def routes_to(self, target: str, save: str | None = None) -> dict[str, Any]:
+        ref = self.find(save)
+        doc = self.document(ref)
+        snapshot = self.snapshot(ref)
+        attitudes = {}
+        for other in doc["known_empires"]:
+            entry = {k: v for k, v in other.items() if k not in ("full", "country_id", "name")}
+            if self.config.god_mode:
+                entry["full"] = other["full"]
+            attitudes[other["country_id"]] = entry
+        galaxy = read_galaxy(snapshot.ctx, snapshot.country_id, self.config.god_mode)
+        return {
+            "date": doc["header"]["date"],
+            **routes_to(galaxy, snapshot.country_id, target, attitudes),
         }
 
     def progression(self, save: str | None = None) -> dict[str, Any]:

@@ -38,6 +38,8 @@ hostile, borders, power band). A target that is unreachable says so and why (no 
 through a locked bypass). Check on Mireesh 2294.01.01 against the Swarm and against United
 Wi-Zerakian Authority, which Julian names as a second way.
 
+Done: see `docs/proposals/ops.md` entry 10 for the check. The game spells it Wi-Zirakian.
+
 ## 13. Every Cause has a Remedy (`graph check-solution`, page, skill)
 
 A Cause on the way from an Obstacle to a Goal with no fitting Remedy is marked unresolved in the

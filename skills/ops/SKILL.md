@@ -15,7 +15,7 @@ Strategy, Action Plan, Solution Graph, Vicious Circle, Crisis, Playbook Rule.
 
 The workspace is the current directory (it holds `campaign.yaml`). The tools are the MCP tools
 of the `admiralty` server: `campaign_status`, `empire_overview`, `economy`, `progression`,
-`military`, `planets`, `timeline`, `compare` and `expand_graph`. The two commands are run as
+`military`, `planets`, `timeline`, `compare`, `routes_to` and `expand_graph`. The two commands are run as
 
 ```
 uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty briefing compose ...
@@ -51,6 +51,10 @@ uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty graph check-solution ..
    - Add a node only when the graph lacks it: `source: "model"`, id `model.<name>`, a `reason`
      why the graph does not have it, an `evidence` list of tool-result facts if it is a Remedy.
    - Read the Vicious Circles and their break point; name the circle and where to break it.
+   - A Goal whose target the Tracked Empire cannot reach ("neither reachable nor assessed") needs
+     the way there: call `routes_to` with the target's Display Name (a system or an empire). Name
+     the routes that cross different empires, each empire's attitude as the tool gives it, and
+     any `needs_technology`. Never guess a route or an empire's attitude yourself.
 6. **Key Actions.** Run `compose`, then `graph check-solution` on the file it wrote. The ranking
    comes back from the code; you never reorder it. Name as many Key Actions as the evidence
    supports (there is no fixed top three). Crisis Goals come first, as the ranking has it.

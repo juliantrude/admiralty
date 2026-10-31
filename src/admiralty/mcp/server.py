@@ -126,6 +126,17 @@ def build_server(workspace: str | Path | None = None, warm_up: bool = False) -> 
 
     @server.tool()
     @logged
+    def routes_to(svc: CampaignService, target: str, save: str | None = None) -> dict[str, Any]:
+        """Static routes from the Tracked Empire to a target: a system or an empire, by Display
+        Name. Routes that cross different sets of empires, shortest first; each lists its length,
+        the empires crossed with the systems used and what is known about each (opinion, hostile,
+        borders, relative power), and the path. Fair Play routes over the systems the Tracked
+        Empire has found only. A route with needs_technology uses a wormhole or gateway that is
+        not researched yet. Empty routes say why the target is unreachable."""
+        return svc.routes_to(target, save)
+
+    @server.tool()
+    @logged
     def progression(svc: CampaignService, save: str | None = None) -> dict[str, Any]:
         """Traditions, next Tradition cost, ascension perks, edicts, policies, government,
         research in progress."""
