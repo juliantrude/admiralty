@@ -38,6 +38,17 @@ def main(argv: list[str] | None = None) -> int:
     watch.add_argument("--interval", type=float, default=30, help="seconds between looks")
     watch.add_argument("--save-root", help="default: the 'save games' folder of the game")
     watch.add_argument("--data-dir", help="default: ~/.local/share/admiralty")
+    unit = watch.add_subparsers(dest="watch_command", metavar="{install,uninstall,status}")
+    for name, text in (
+        ("install", "run the save service as a systemd user unit, started with the session"),
+        ("uninstall", "stop the save service unit and remove it"),
+        ("status", "is the unit running, and how many saves wait in the inbox"),
+    ):
+        sub = unit.add_parser(name, help=text)
+        sub.add_argument("--unit-dir", help="default: ~/.config/systemd/user")
+        sub.add_argument("--data-dir", default=argparse.SUPPRESS, help=argparse.SUPPRESS)
+        if name == "install":
+            sub.add_argument("--save-root", default=argparse.SUPPRESS, help="written into the unit")
 
     _add_setup_commands(commands)
 
@@ -409,10 +420,33 @@ def _view(args) -> int:
     return 0
 
 
+def _watch_unit(args) -> int:
+    from admiralty.workspace import watch_unit
+
+    unit_dir = Path(args.unit_dir).expanduser() if args.unit_dir else None
+    data_dir = Path(args.data_dir).expanduser() if args.data_dir else None
+    try:
+        if args.watch_command == "install":
+            save_root = Path(args.save_root).expanduser() if args.save_root else None
+            result = watch_unit.install(unit_dir, data_dir=data_dir, save_root=save_root)
+        elif args.watch_command == "uninstall":
+            result = watch_unit.uninstall(unit_dir)
+        else:
+            result = watch_unit.status(unit_dir, base=data_dir)
+    except (watch_unit.UnitError, OSError) as error:
+        print(f"admiralty watch {args.watch_command}: {error}", file=sys.stderr)
+        return 1
+    json.dump(result, sys.stdout, ensure_ascii=False, indent=1)
+    print()
+    return 0
+
+
 def _watch(args) -> int:
     from admiralty.game import save_root
     from admiralty.workspace import registry, watch
 
+    if args.watch_command:
+        return _watch_unit(args)
     root = Path(args.save_root).expanduser() if args.save_root else save_root()
     base = Path(args.data_dir).expanduser() if args.data_dir else registry.data_dir()
     watcher = watch.Watcher(root, base)

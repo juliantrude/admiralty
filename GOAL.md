@@ -95,11 +95,11 @@ Block 4, knowledge (`docs/plans/grilling.md` topic 3, `docs/proposals/debrief.md
 - [x] 15. Debrief: reserve in months beside a negative balance, systems as a series.
 
 Block 5, the save service (`docs/plans/grilling.md` topic 8):
-- [ ] 16. The save service, steps in `docs/plans/save-service.md`:
+- [x] 16. The save service, steps in `docs/plans/save-service.md`:
   - [x] 16a. `admiralty watch` (poll, raw copy by in-game date into `saves/` or the inbox), registry.
   - [x] 16b. Ingest on the next read; autosave copies keep the extract only.
   - [x] 16c. Setup question and autosave interval hint (`settings.txt`).
-  - [ ] 16d. systemd user unit: `watch install` / `uninstall` / `status`.
+  - [x] 16d. systemd user unit: `watch install` / `uninstall` / `status`.
 - [ ] 17. Desktop reminder (`save_reminder_minutes`).
 
 Block 6, titles (`docs/plans/grilling.md` topic 2):
@@ -115,7 +115,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 16d (systemd user unit: `admiralty watch install` writes `~/.config/systemd/user/admiralty-watch.service` and enables it, `uninstall` removes it, `status` names the inbox size; new `workspace/watch_unit.py`, unit directory a parameter so tests never touch the Player's home; the setup skill then runs `watch install` on a yes for `save_service`; see `docs/plans/save-service.md`).
+**Next action:** increment 17 (desktop reminder: `save_reminder_minutes` in `campaign.yaml`, default 20, 0 = off; the watcher sends `notify-send` when the game runs and no new save of the played Campaign came for that long, the next save withdraws it; in `workspace/watch.py`, clock and notifier are parameters so tests need no desktop; setup asks or states the default; see `docs/plans/save-service.md` row 17).
 **Blockers:** none.
 
 ## Budget
@@ -156,3 +156,4 @@ STATUS: ACTIVE
 - 2026-10-31 — Increment 16a done: `docs/plans/save-service.md`; `workspace/watch.py` (`Watcher.poll`: every Campaign folder under "save games", settled saves — 3 s unmodified, meta readable — copied raw as `<in-game date>.sav` / `.autosave.sav` into the registered workspace's `saves/` or `~/.local/share/admiralty/inbox/<folder>/`; first run only records, state in `watch-state.json`), `workspace/registry.py` (`workspaces.json`, `ADMIRALTY_DATA_DIR`; `setup write` registers the folder and adopts its inbox), CLI `admiralty watch [--once] [--interval] [--save-root] [--data-dir]`; conftest points the data dir at a temp folder. `tests/test_watch.py` (5). 969 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19.5 min), ruff clean.
 - 2026-10-31 — Increment 16b done: `workspace/ingest.py` (`waiting`, `ingest`) extracts every raw copy in `saves/` whose date has no extract at least as new (`Archive.current`); autosave copies are deleted afterwards, manual copies only with `backup_saves` off; a copy that fails stays, is a `campaign_status` warning plus turn-log entry and is not parsed again until its mtime changes. `CampaignService.ingest` runs before a new document is built, in `campaign_status` and in `retrospective`. `tests/test_ingest.py` (8). 977 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (21.8 min), ruff clean. Not tried with real saves (Abnahme: the game evening).
 - 2026-10-31 — Increment 16c done: `workspace/autosave.py` reads `autosave=<n>` from the game's `settings.txt` (option order of the localisation keys; checked against `autosave=4` and the half-yearly Mireesh autosaves) and `admiralty setup autosave` returns `setting`, `recommended` (Quarterly when rarer or Never) and `hint`; never changes game settings. `campaign.yaml` got `save_service`, `setup write --save-service/--no-save-service` (no flag keeps the earlier answer), the setup skill asks after Knowledge (step 6). `vulkan_folder` fixture moved to conftest. `tests/test_autosave.py` (17) plus a skill test. 996 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (14.4 min), ruff clean. Abnahme for Julian: run setup and look at the save-service question and the autosave hint; installing the unit follows in 16d.
+- 2026-10-31 — Increment 16d done: `workspace/watch_unit.py` and `admiralty watch install | uninstall | status` (optional subcommands next to `watch --once`): `install` writes `~/.config/systemd/user/admiralty-watch.service` (`ExecStart=<running python> -m admiralty.cli watch`, restart on failure) and runs daemon-reload, enable --now, restart; `uninstall` disables and removes it; `status` gives installed/enabled/active, inbox size per folder and registered workspaces; systemd refusals are a stderr message, exit 1. Unit dir and `systemctl` are parameters (tests use a recorder; the real user manager was not touched). The setup skill runs `watch install` after `check` on a yes (step 9). `tests/test_watch_unit.py` (7) plus a skill test. 1004 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (14.9 min), ruff clean. Not tried against the real user manager (Abnahme: run setup with yes, `admiralty watch status`, log out and in, check the service runs; `uninstall` to remove).

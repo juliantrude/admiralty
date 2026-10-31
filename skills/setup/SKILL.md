@@ -65,7 +65,13 @@ do not ask it again; confirm it in the summary at the end.
    deletes it).
 8. **Check.** Run `admiralty setup check --workspace .`. If `ok` is false, tell the Player
    the problems in their language and fix the cause with a new `write`; do not edit files.
-9. **Next step.** Tell the Player what happens now: save the game in Stellaris, then ask
+9. **Start the save service.** Only when the Player said yes in step 6: run `admiralty watch
+   install`. It writes a systemd user unit and starts it, so the service runs with every login
+   from now on. `active` in its answer must be `active`; tell the Player in one sentence that
+   it runs, and that `admiralty watch uninstall` stops it. If the command is refused, read the
+   message to the Player and go on: the service is an extra, the Campaign works without it. On
+   a no, install nothing and do not remove a unit that is already there.
+10. **Next step.** Tell the Player what happens now: save the game in Stellaris, then ask
    anything about it (Consulting: a Briefing; Coaching: the Coach asks first), and ask
    Debrief for a retrospective after a Play Session. Mention that the new `CLAUDE.md` in
    this directory loads the right skill from the next session on.

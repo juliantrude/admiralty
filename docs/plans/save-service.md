@@ -43,6 +43,14 @@ copied while the game runs is lost for Debrief. Today only a save that is read g
   question after Knowledge and passes the answer as `setup write --save-service|--no-save-service`;
   it lands as `save_service` in `campaign.yaml` (no flag keeps an earlier answer). Installing the
   unit on a yes is step 16d.
+- **The unit (16d):** `admiralty watch install` writes `~/.config/systemd/user/admiralty-watch.service`
+  (`ExecStart=<the running python> -m admiralty.cli watch`, `Restart=on-failure`, `WantedBy=default.target`;
+  `--save-root` / `--data-dir` only when given) and runs `daemon-reload`, `enable --now`, `restart`.
+  `uninstall` disables, removes the file, reloads; `status` returns `installed`, `enabled`, `active`,
+  the inbox (copies and bytes per folder) and the number of registered workspaces. All three print
+  JSON; a refusal of systemd is a message on stderr, exit 1. The unit directory (`--unit-dir`) and
+  the `systemctl` call are parameters; tests use a recorder. The setup skill runs `watch install`
+  after `check` on a yes and never removes a unit on a no (the unit serves every Campaign).
 - **All paths are parameters** (`state_dir`), so tests run on artificial folders and never touch the
   Player's home.
 - **Fair Play / Archive:** the watcher only copies files; it never parses a gamestate and so

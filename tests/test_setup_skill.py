@@ -41,3 +41,9 @@ def test_skill_offers_the_save_service_and_passes_the_answer():
     assert "admiralty setup autosave" in text
     assert "--save-service|--no-save-service" in text
     assert "never changes the\n   game's settings" in text
+
+
+def test_skill_installs_the_unit_only_on_a_yes():
+    text = " ".join(SKILL.read_text().split())
+    assert "Only when the Player said yes in step 6: run `admiralty watch install`" in text
+    assert "do not remove a unit that is already there" in text
