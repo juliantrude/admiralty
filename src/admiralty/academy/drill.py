@@ -11,7 +11,7 @@ Hint Ladder (`academy/ladder.py`), hands the outcome to the Mastery rules (`play
 the Player Model), and keeps what the Evidence rules need: the in-game date the Coach raised each topic (`raised`),
 and all such dates (`prompts`, see `evidence_inputs`) for `player/evidence.record_evidence`.
 
-A topic is `{"concept", "crisis", "open_question", ...}` as the topic builder (20e) hands it over; the fields beyond
+A topic is `{"concept", "crisis", "open_question", ...}` as the topic builder (`academy/topics.py`) hands it over; the fields beyond
 those two flags are kept as they are. `crisis` doubles the Ladder step; the Drill itself keeps the Crisis the
 Snapshot shows (`player/evidence.crisis`) so the Coach can name it in question mode.
 
@@ -64,10 +64,13 @@ def open_drill(
     topics: Iterable[dict[str, Any]],
     campaign: str | None = None,
     extract: dict[str, Any] | None = None,
+    goals: Iterable[str] = (),
 ) -> dict[str, Any]:
     """Start a Drill on the Snapshot of `date`; the first topic is raised at once.
 
-    `extract` is that Snapshot, used for the Crisis flag. Raises `DrillError` while another Drill is open and
+    `extract` is that Snapshot, used for the Crisis flag. `goals` are the Goals the Player named for this
+    Drill (asked at the first Drill and at every Rendezvous), kept as given; the topics come from
+    `academy/topics.build_topics`. Raises `DrillError` while another Drill is open and
     for a topic without a concept or a concept twice.
     """
     day_number(date)  # an in-game date, or FrameError
@@ -82,6 +85,7 @@ def open_drill(
             "status": "open",
             "campaign": campaign,
             "date": date,
+            "goals": list(dict.fromkeys(goals)),
             "crisis": evidence.crisis(extract) if extract is not None else _no_crisis(),
             "topics": prepared,
             "current": None,
@@ -356,6 +360,7 @@ def _view(drill: dict[str, Any]) -> dict[str, Any]:
         "status": drill["status"],
         "date": drill["date"],
         "campaign": drill["campaign"],
+        "goals": drill.get("goals", []),
         "crisis": drill["crisis"],
         "topic": shown,
         "waiting": sum(1 for t in drill["topics"] if t["status"] == "waiting"),
