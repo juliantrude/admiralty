@@ -387,15 +387,36 @@ def _setup(args) -> int:
             )
         else:
             problems = setup.check_workspace(Path(args.workspace))
-            json.dump({"ok": not problems, "problems": problems}, sys.stdout, indent=1)
+            result = {"ok": not problems, "problems": problems}
+            _log_setup_result(args, result)
+            json.dump(result, sys.stdout, indent=1)
             print()
             return 1 if problems else 0
     except (setup.SetupRefused, SetupMissing, NotAWorkspace, FileNotFoundError) as error:
         print(f"admiralty setup: {error}", file=sys.stderr)
         return 1
+    _log_setup_result(args, result)
     json.dump(result, sys.stdout, ensure_ascii=False, indent=1)
     print()
     return 0
+
+
+def _log_setup_result(args, result: dict) -> None:
+    """Put a setup result into the workspace turn log, where the Unverified Claim check looks for
+    evidence (the setup runs by shell, not through the MCP server). `campaigns` and `players` run
+    before the workspace exists: they log into the current directory only if it is a workspace
+    already or empty, so the log never turns another folder into a workspace."""
+    from admiralty.workspace.layout import is_workspace
+    from admiralty.workspace.turnlog import append_entry
+
+    workspace = Path(getattr(args, "workspace", None) or ".").expanduser()
+    if not workspace.is_dir() or not (is_workspace(workspace) or not any(workspace.iterdir())):
+        return
+    params = {k: v for k, v in vars(args).items() if k not in {"command", "setup_command"}}
+    try:
+        append_entry(workspace, f"setup_{args.setup_command}", params, result)
+    except OSError:
+        pass  # a log that cannot be written must not fail the setup
 
 
 if __name__ == "__main__":

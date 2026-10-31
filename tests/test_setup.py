@@ -291,3 +291,52 @@ def test_reference_campaign_is_found_by_campaigns(vulkan_folder, capsys):
     assert code == 0 and result["campaigns"][0]["campaign"]
     assert result["campaigns"][0]["newest_save"] == MID
     assert reference_save(VULKAN, MID)  # skip marker kept explicit
+
+
+# --- results as evidence for the Unverified Claim check ------------------------------------------
+
+
+def test_setup_results_land_in_the_turn_log_of_the_workspace(tmp_path, capsys, monkeypatch):
+    from admiralty.claims.check import check_answer
+    from admiralty.claims.evidence import build_evidence, read_turn_log
+
+    fake_save(tmp_path / "save games" / "mp_borg_1" / "a.sav", name="Die Borg", date="2294.01.01")
+    work = tmp_path / "work"
+    work.mkdir()
+    monkeypatch.chdir(work)
+
+    code, _, err = run(capsys, "campaigns", "--save-root", tmp_path / "save games")
+
+    assert code == 0, err
+    entries = read_turn_log(work)
+    assert [e["tool"] for e in entries] == ["setup_campaigns"]
+    evidence = build_evidence(entries)
+    assert check_answer("Gefunden: **Die Borg**, Stand `2294.01.01`.", evidence).ok
+
+
+def test_setup_check_and_write_log_into_their_workspace(tmp_path, capsys):
+    from admiralty.claims.evidence import read_turn_log
+
+    ws = tmp_path / "ws"
+    ws.mkdir()
+    (ws / ".admiralty").mkdir()
+
+    code, _, _ = run(capsys, "check", "--workspace", ws)
+
+    assert code == 1
+    (entry,) = read_turn_log(ws)
+    assert entry["tool"] == "setup_check" and entry["result"]["ok"] is False
+
+
+def test_setup_never_turns_a_folder_with_other_content_into_a_workspace(
+    tmp_path, capsys, monkeypatch
+):
+    fake_save(tmp_path / "save games" / "mp_x_1" / "a.sav")
+    work = tmp_path / "documents"
+    work.mkdir()
+    (work / "thesis.tex").write_text("x")
+    monkeypatch.chdir(work)
+
+    code, _, _ = run(capsys, "campaigns", "--save-root", tmp_path / "save games")
+
+    assert code == 0 and not (work / ".admiralty").exists()

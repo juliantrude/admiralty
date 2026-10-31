@@ -299,6 +299,18 @@ def test_bold_code_and_quoted_spans_are_names():
     assert claims[0].sentence == answer
 
 
+def test_bold_inside_bold_is_read_as_the_inner_name_and_an_outer_sentence():
+    claims = extract_claims("**Bist du **Die Borg** oder **Plexxi**?** Ja, ich bin **Plexxi**.")
+    assert [(c.kind, c.text) for c in claims] == [("name", "Die Borg"), ("name", "Plexxi")]
+    # the outer span is a question (a sentence), the inner spans are the Display Names
+    assert [c.text for c in extract_claims("**Spielt **Plexxi** mit?**")] == ["Plexxi"]
+
+
+def test_a_bold_opener_that_is_never_closed_is_plain_text():
+    claims = extract_claims("Ein **offener Stern und **Anchorage** hier")
+    assert [c.text for c in claims] == ["Anchorage"]
+
+
 def test_whole_line_bold_is_a_label_not_a_name():
     answer = "**Strategie**\n## **Ausblick**\n**Fazit:**\n- **Supremacy** hilft\nDie **Supremacy**."
     assert names(answer) == ["Supremacy", "Supremacy"]

@@ -24,7 +24,7 @@ again, and do not guess a corrected value.
 
 ## The interview
 
-**One question per turn.** Wait for the answer before asking the next one. If the Player
+One question per turn. Wait for the answer before asking the next one. If the Player
 already gave an answer in their message (for example "I am Plexxi, consulting, fair play"),
 do not ask it again; confirm it in the summary at the end.
 
@@ -36,14 +36,14 @@ do not ask it again; confirm it in the summary at the end.
    their empire names and ask which one is the Player's. Use the answer exactly as listed
    (player name or empire name).
 3. **Who plays along.** For every other human player of the list: ask whether they are an
-   **ally** or a **rival** of the Player. Ask about one player per turn. If there are none,
+   ally or a rival of the Player. Ask about one player per turn. If there are none,
    say so and skip this step.
-4. **Mode.** Ask: **Coaching** (the Player learns to play better, even at the cost of this
-   Campaign; the Coach asks questions) or **Consulting** (the best result now; the
+4. **Mode.** Ask: Coaching (the Player learns to play better, even at the cost of this
+   Campaign; the Coach asks questions) or Consulting (the best result now; the
    Consultant gives Briefings). Say plainly that the mode never switches on its own; the
    Player changes it by running this setup again.
-5. **Knowledge.** Ask: **Fair Play** (only what the Tracked Empire can see in the game) or
-   **God Mode** (anything in the save, including what the Tracked Empire cannot see).
+5. **Knowledge.** Ask: Fair Play (only what the Tracked Empire can see in the game) or
+   God Mode (anything in the save, including what the Tracked Empire cannot see).
 6. **Confirm and write.** Summarise all answers in one short block and ask for a yes. Then run
 
    ```
@@ -67,6 +67,9 @@ do not ask it again; confirm it in the summary at the end.
 ## Rules
 
 - Names (players, empires, Campaigns) are shown exactly as the CLI returns them.
+- Bold marks Display Names from the CLI output and nothing else: not questions, options, modes,
+  dates or emphasis. The Unverified Claim check reads every bold span as a name and looks it up
+  in the results of the `admiralty setup` commands; a bold example question or option is blocked.
 - Do not offer a mode or option the CLI does not accept (`consulting`, `coaching`,
   `fair_play`, `god_mode`).
 - Do not read the Player's save folder with other tools; the CLI is the only reader.

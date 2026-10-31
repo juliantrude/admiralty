@@ -47,6 +47,9 @@ bold would pass unchecked; Display Names in the reference data are at most 5 wor
 
 ## Fehlalarm im Setup (Fund aus dem Ops-Test, 2026-10-31)
 
+**Umgesetzt 2026-10-31** (GOAL.md, Inkrement 1): `admiralty setup` schreibt seine Ergebnisse ins Turn Log,
+verschachtelt Fettes wird als innerer Name plus äußerer Satz gelesen, `skills/setup` setzt nur Display Names fett.
+
 Die Prüfung zählt als Beleg nur MCP-Ergebnisse aus dem Turn Log und den Text des Players. Das Setup
 läuft über `admiralty setup` per Shell, seine Ergebnisse landen nicht im Turn Log. Deshalb galten
 wahre Werte als unbelegt ("Die Borg", `2294.01.01`), und die fett gesetzte Beispielfrage galt als Name.

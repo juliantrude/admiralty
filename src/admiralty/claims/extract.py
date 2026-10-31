@@ -63,7 +63,8 @@ _HEADING = re.compile(r"^\s*#{1,6}\s+")
 _FENCE = re.compile(r"^\s*(```|~~~)")
 _CODE = re.compile(r"`([^`\n]+)`")
 _LINK_TARGET = re.compile(r"\]\(([^)\s]*)\)|<https?://[^>\s]+>|https?://[^\s)>\]]+")
-_BOLD = re.compile(r"\*\*(?=\S)(.+?)(?<=\S)\*\*|__(?=\S)(.+?)(?<=\S)__")
+_BOLD_MARK = re.compile(r"\*\*")
+_BOLD_UNDERSCORE = re.compile(r"__(?=\S)(.+?)(?<=\S)__")
 _QUOTED = re.compile(r'"([^"\n]+?)"|„([^“”"\n]+?)[“”"]|“([^”\n]+?)”|«\s?([^»\n]+?)\s?»')
 _PURE_NUMBER = re.compile(r"[+\-−–]?\d(?:[\d.,]*\d)?\s?(?:%|[kKM])?")
 _LOWERCASE_WORD = re.compile(r"[a-zäöüß]+")
@@ -298,8 +299,8 @@ def _spans(
     spans: list[_Span] = []
     work = list(line)
 
-    def hide(found: re.Match[str]) -> None:
-        work[found.start() : found.end()] = "\0" * (found.end() - found.start())
+    def hide(start: int, end: int) -> None:
+        work[start:end] = "\0" * (end - start)
 
     for found in _CODE.finditer(line):
         if found.start() < body_start:
@@ -308,11 +309,15 @@ def _spans(
         if not _PURE_NUMBER.fullmatch(inner):
             blank(found.start(), found.end())
             spans.append(_Span(found.start(), found.end(), "code", inner))
-        hide(found)
-    for found in _BOLD.finditer("".join(work)):
+        hide(found.start(), found.end())
+    for start, end, inner in _bold_spans("".join(work), line):
+        if start >= body_start:
+            spans.append(_Span(start, end, "bold", inner))
+            hide(start, end)
+    for found in _BOLD_UNDERSCORE.finditer("".join(work)):
         if found.start() >= body_start:
             spans.append(_Span(found.start(), found.end(), "bold", _inner(line, found)))
-            hide(found)
+            hide(found.start(), found.end())
     for found in _QUOTED.finditer("".join(work)):
         if found.start() >= body_start:
             spans.append(_Span(found.start(), found.end(), "quote", _inner(line, found)))
@@ -321,6 +326,29 @@ def _spans(
         if inner and inner not in {"-", "—", "–"}:
             spans.append(_Span(start, end, "table", re.sub(r"[*`]", "", inner)))
     return sorted(spans, key=lambda s: (s.start, s.end))
+
+
+def _bold_spans(work: str, line: str) -> list[tuple[int, int, str]]:
+    """(start, end, inner text) of every `**bold**` span, nested ones included.
+
+    A `**` opens a span when a non-space follows it and closes one when a non-space precedes it
+    (`**Frage: **Borg** mit?**` is the outer span around the inner `**Borg**`). A closer takes the
+    innermost open span; a `**` that closes nothing and an opener never closed are plain text.
+    The inner text of an outer span has the markup of its inner spans removed."""
+    spans: list[tuple[int, int, str]] = []
+    open_at: list[int] = []
+    for found in _BOLD_MARK.finditer(work):
+        before = work[found.start() - 1 : found.start()]
+        after = work[found.end() : found.end() + 1]
+        can_close = bool(before) and not before.isspace() and bool(open_at)
+        can_open = bool(after) and not after.isspace()
+        if can_close and open_at[-1] + 2 < found.start():
+            start = open_at.pop()
+            inner = line[start + 2 : found.start()].replace("**", "").strip()
+            spans.append((start, found.end(), inner))
+        elif can_open:
+            open_at.append(found.start())
+    return sorted(spans)
 
 
 def _is_name(span: _Span, line: str, body_start: int) -> bool:

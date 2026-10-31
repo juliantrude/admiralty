@@ -5,6 +5,7 @@ the MCP server. A line's number (counting from 1) is its id; `expand_graph` hand
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -35,3 +36,21 @@ def read_entry(workspace: Path, line: int) -> dict[str, Any]:
     if not 1 <= line <= len(lines):
         raise LookupError(f"turn log {path} has {len(lines)} entries, none with id {line}")
     return json.loads(lines[line - 1])
+
+
+def append_entry(workspace: Path, tool: str, args: dict[str, Any], result: Any) -> int:
+    """Append one entry from outside the MCP server (the `admiralty setup` CLI) and return its id.
+    The entry has the shape the server writes, so the Unverified Claim check counts it as
+    evidence."""
+    path = turn_log_path(workspace)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    line = count_lines(path) + 1
+    entry = {
+        "ts": datetime.now(UTC).isoformat(timespec="seconds"),
+        "tool": tool,
+        "args": args,
+        "result": result,
+    }
+    with open(path, "a", encoding="utf-8") as handle:
+        handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    return line
