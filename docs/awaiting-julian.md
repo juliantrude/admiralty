@@ -82,3 +82,49 @@ nennen ist urheberrechtlich unkritisch, die Auswahl der Seiten müsstest du aber
 Die Tabelle "Wo im Spiel" (`knowledge/4.5.2/ui_locations.yaml`) stammt allein aus den
 Interface- und Lokalisierungsdateien deiner Installation. Die Stichprobe dazu kommt in den
 Abschnitt "Abnahme".
+
+## 8. Abnahme
+
+Hier sammelt sich alles, was nur du prüfen kannst, in der Reihenfolge, in der du es probieren
+solltest. Der Abschnitt wird im letzten Schritt der Kette um die übrigen Punkte (Ops, Titel,
+Speicherdienst) ergänzt. Bis dahin steht hier die Academy (M9).
+
+### Academy
+
+1. Stichprobe der Tabelle "Wo im Spiel" (`knowledge/4.5.2/ui_locations.yaml`): Öffne im Spiel
+   drei oder vier Einträge nach Wahl, zum Beispiel Einfluss, Unity, Forschung und Markt. Stimmt
+   das Fenster, das hinter einem Klick auf die Zahl in der oberen Leiste aufgeht, mit dem Pfad in
+   der Tabelle überein? Falsche Einträge notierst du; sie werden dann korrigiert, nicht geraten.
+2. Wiki-Lizenz: Lies Abschnitt 7 oben. Bist du einverstanden, dass die Liste der Lesetipps leer
+   bleibt und der Coach keinen Wiki-Link nennt?
+3. Sechs Planungsentscheidungen aus `docs/plans/M9.md` ("Decisions made while planning"), jeweils
+   bestätigen oder ändern:
+   1. Ein Konzept ist ein Ursachen-Knoten (Cause) des Mechanik-Graphen, kein Remedy.
+   2. Ob ein Remedy "im Snapshot zu sehen" ist, sagt nur das Feld `applied_when`; ohne das Feld
+      fragt der Coach dich, und die Stufe bleibt Understand.
+   3. Ob eine Ursache vorhanden ist, sagt nur das Feld `present_when`; ohne das Feld kann sie
+      weder fallen noch Create erreichen.
+   4. Eine Krise (Crisis) entscheidet allein der Code aus den Ressourcen des Snapshots; das Modell
+      darf keine ausrufen.
+   5. Das Player Model ist die Wiedergabe eines Ereignisprotokolls (`events.jsonl`); `model.json`
+      ist nur ein Zwischenspeicher.
+   6. Die Wiki-Liste bleibt leer (siehe Schritt 2).
+4. Lebender Test auf der Kampagne Avarisches Imperium, Stand 2297.02.09: Starte den Coach in
+   dieser Kampagne und sag ihm, was du erreichen willst. Lass dich durch eine Übung führen und
+   versuche zuerst selbst, die Ursache zu nennen. Dabei muss gelten:
+   - Der Coach nennt keine Schlüsselaktion, bevor du es selbst versucht hast.
+   - Kommst du nicht weiter, hilft er in Stufen (zwei Stufen, wenn eine Krise vorliegt) und gibt
+     erst am Ende die ganze Erklärung.
+   - Ein Hinweis oder die volle Erklärung zählt nicht als eigene Leistung. Sag einmal, dass du
+     aussteigen willst: Der Notausgang (Escape Hatch) muss danach im Player Model stehen.
+   - Frag den Coach, was er über dich weiß. Er muss es klar sagen, und es muss zu dem passen, was
+     du erlebt hast.
+   - Im Ordner `player-model/` der Kampagne hast du nichts von Hand geändert; ein Hook sperrt das
+     ohnehin.
+5. Treffpunkt (Rendezvous): Lege am Ende der Übung mit dem Coach ein Datum im Spiel fest, spiele
+   bis dahin weiter und lade den Save. Der Coach muss ihn als Debrief führen: erst deine
+   Selbsteinschätzung, dann die Vorhersagen (Predictions) mit dem Ergebnis, die Rückschau mit
+   weniger Gewicht, zuletzt das Player Model.
+6. Platzhalter, die du nach dem Test einstellst, wenn sie sich falsch anfühlen: der
+   Treffpunkt-Horizont von zwei Jahren, die Toleranz von 30 Tagen beim Datum und die Krisenschwelle
+   von zwölf Monaten Vorrat.
