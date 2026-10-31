@@ -574,6 +574,33 @@ def test_cli_compose_without_out_updates_the_current_briefing(graph, expansion, 
     assert (current / "solution-graph.json").is_file()
 
 
+def test_cli_compose_opens_the_current_briefing_but_not_an_out_file(
+    graph, expansion, tmp_path, capsys, monkeypatch
+):
+    from admiralty.graph import view
+
+    shown = []
+    monkeypatch.setattr(
+        view,
+        "show_current",
+        lambda ws, g: shown.append((ws, g)) or {"url": "http://x", "opened": True},
+    )
+    (tmp_path / "expansion.json").write_text(json.dumps(expansion))
+    (tmp_path / "overlay.json").write_text(json.dumps(OVERLAY))
+    command = ["briefing", "compose", str(tmp_path / "expansion.json"),
+               str(tmp_path / "overlay.json"), "--knowledge-root", str(tmp_path)]  # fmt: skip
+    workspace = ["--workspace", str(tmp_path)]
+    assert main([*command, *workspace]) == 0
+    result = json.loads(capsys.readouterr().out)
+    current = tmp_path / "briefings" / "current" / "solution-graph.json"
+    assert shown == [(tmp_path, current)]
+    assert result["view"] == {"url": "http://x", "opened": True}
+    assert main([*command, *workspace, "--no-open"]) == 0
+    assert "view" not in json.loads(capsys.readouterr().out) and len(shown) == 1
+    assert main([*command, "--out", str(tmp_path / "x.json")]) == 0
+    assert "view" not in json.loads(capsys.readouterr().out) and len(shown) == 1
+
+
 def test_cli_compose_refuses_without_replacing_the_current_briefing(
     graph, expansion, tmp_path, capsys
 ):

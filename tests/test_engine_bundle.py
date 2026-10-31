@@ -104,6 +104,24 @@ def test_view_serves_the_page_and_the_json_on_loopback_only(running_view):
     assert status == 200 and body == graph.read_bytes()
 
 
+def test_view_reads_the_graph_file_afresh_on_every_request(tmp_path):
+    graph = tmp_path / "solution-graph.json"
+    graph.write_text('{"v": 1}', encoding="utf-8")
+    served = tmp_path / "served"
+    served.mkdir()
+    view.prepare(graph, served)
+    server = view.make_server(served, graph=graph)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    try:
+        assert _get(server, "/solution-graph.json") == (200, b'{"v": 1}')
+        graph.write_text('{"v": 2}', encoding="utf-8")
+        assert _get(server, "/solution-graph.json") == (200, b'{"v": 2}')
+        assert _get(server, "/solution-graph.json?x=1")[1] == b'{"v": 2}'
+    finally:
+        server.shutdown()
+        server.server_close()
+
+
 def test_view_refuses_a_path_outside_the_directory(running_view):
     server, _ = running_view
     for path in ("/../secret.txt", "/%2e%2e/secret.txt", "/..%2fsecret.txt", "//etc/passwd"):

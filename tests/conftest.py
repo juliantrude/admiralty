@@ -21,6 +21,13 @@ SAVES_DIR = Path(os.environ.get("ADMIRALTY_SAVES", Path(__file__).parent / "fixt
 PERF_SLACK = float(os.environ.get("ADMIRALTY_PERF_SLACK", "1.0"))
 
 
+@pytest.fixture(autouse=True)
+def no_browser(monkeypatch):
+    """`briefing compose` opens the current Briefing in the browser; no test does that unless it
+    says so (`monkeypatch.delenv("ADMIRALTY_NO_BROWSER")`)."""
+    monkeypatch.setenv("ADMIRALTY_NO_BROWSER", "1")
+
+
 def budget(seconds: float) -> float:
     return seconds * PERF_SLACK
 

@@ -72,7 +72,7 @@ Block 1, Ops as Julian wants it (`docs/proposals/ops.md`, `docs/proposals/claims
 - [x] 3. Roles of text and graph (entry 6) in `skills/ops/SKILL.md`, with its static test.
 - [x] 4. One current Briefing, updated by feedback, new Goals and new saves, older versions in a
       history (entry 11).
-- [ ] 5. Every Briefing composes its graph and opens it in the browser, from the CLI (entry 7).
+- [x] 5. Every Briefing composes its graph and opens it in the browser, from the CLI (entry 7).
 
 Block 2, the graph page:
 - [ ] 6. Empire-wide nodes: general titles, the detail panel names the planets (entry 8).
@@ -112,7 +112,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 5 (every Briefing composes its graph and opens it in the browser, from the CLI; `docs/proposals/ops.md` entry 7). `briefing compose` without `--out` now publishes to `briefings/current/`; opening the page can default to that file.
+**Next action:** increment 6 (empire-wide nodes: general titles, the detail panel names the planets; `docs/proposals/ops.md` entry 8). Find the nodes that concern the whole empire in the Mechanics Graph / `expand_graph` and the page's detail panel.
 **Blockers:** none.
 
 ## Budget
@@ -139,3 +139,4 @@ STATUS: ACTIVE
   Key Actions, no description of the graph); steps 7-8 rewritten accordingly. Static test added. 854 tests green (3 skips) at
   `ADMIRALTY_PERF_SLACK=2.5` (17 min), ruff clean.
 - 2026-10-31 — Increment 4 done: `workspace/briefings.py` keeps one current Briefing (`briefings/current/` overlay + Solution Graph); `admiralty briefing compose` without `--out` publishes it and moves the replaced version to `briefings/history/NNN-<date>/` (staged write, a refused compose leaves the old one). `skills/ops/SKILL.md` has the section "One current Briefing" (update from the current overlay, draft at `briefings/draft/overlay.json`, no second Briefing). Tests added. 860 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.5 min) plus the one skill-text test re-run after a wording fix, ruff clean.
+- 2026-10-31 — Increment 5 done: `briefing compose` without `--out` starts a detached local server per workspace (`graph/view.py` `show_current`, idle timeout 4 h, state in `.admiralty/view.json`, reused while alive; serves the live `briefings/current/solution-graph.json`) and opens the page in the browser; result has a `view` entry; `--no-open` and `ADMIRALTY_NO_BROWSER` (set for all tests in conftest) switch it off; `briefing view` got `--open`/`--idle-timeout`. Skill tells Ops what to say per `opened`/`url`. Tests added. 870 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.6 min), ruff clean.

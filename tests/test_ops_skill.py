@@ -112,3 +112,10 @@ def test_there_is_one_current_briefing_that_updates():
     assert "a second Briefing" not in text
     assert "briefings/<date>" not in text and "--out" not in text
     assert "Never move, rename or delete Briefing files by hand" in text
+
+
+def test_compose_opens_the_graph_page_and_the_skill_says_what_to_tell_the_player():
+    text = " ".join(SKILL.read_text().split())
+    assert "`compose` also opens the graph page in the Player's browser" in text
+    assert "`opened: true`" in text and "`opened: false`" in text and "`url: null`" in text
+    assert "briefing view" not in text

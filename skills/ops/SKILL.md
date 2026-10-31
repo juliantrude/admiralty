@@ -128,6 +128,12 @@ admiralty graph check-solution briefings/current/solution-graph.json
 `--expansion-id`; use the id. Both commands print the problems on a refusal and exit with 1.
 Never edit `solution-graph.json`; change the overlay and compose again.
 
+`compose` also opens the graph page in the Player's browser; you do nothing for that. Its result
+has a `view` entry: with `opened: true` say in one sentence that the graph is open in the
+browser. With `opened: false` and a `url`, give the Player that address to open by hand (the one
+case where an address is allowed in the answer); with `url: null` say the page could not be shown
+and go on with the text.
+
 ## Hard rules
 
 - **Every number comes from a tool result.** Never from memory, never calculated by you, never

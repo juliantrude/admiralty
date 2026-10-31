@@ -73,6 +73,11 @@ def main(argv: list[str] | None = None) -> int:
         "workspace and the one it replaces moves into the history",
     )
     compose.add_argument("--knowledge-root", type=Path, help="default: knowledge/ of the plugin")
+    compose.add_argument(
+        "--no-open",
+        action="store_true",
+        help="do not open the current Briefing in the browser (it is not opened with --out)",
+    )
 
     view = briefing.add_parser(
         "view",
@@ -80,6 +85,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     view.add_argument("file", type=Path)
     view.add_argument("--port", type=int, default=0, help="default: a random free port")
+    view.add_argument("--open", action="store_true", help="open the page in the browser")
+    view.add_argument(
+        "--idle-timeout", type=float, help="end after this many seconds without a request"
+    )
 
     claims = commands.add_parser("claims", help="the Unverified Claim check").add_subparsers(
         dest="claims_command", required=True
@@ -347,6 +356,10 @@ def _compose(args) -> int:
             "out": str(briefings.current_graph(args.workspace)),
             "replaced": str(archived) if archived else None,
         }
+        if not args.no_open:
+            from admiralty.graph.view import show_current
+
+            result["view"] = show_current(args.workspace, briefings.current_graph(args.workspace))
     else:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
@@ -364,7 +377,7 @@ def _view(args) -> int:
     from admiralty.graph.view import ViewUnavailable, serve
 
     try:
-        serve(args.file, args.port)
+        serve(args.file, args.port, open_browser=args.open, idle_seconds=args.idle_timeout)
     except (ViewUnavailable, OSError) as error:
         print(f"admiralty briefing view: {error}", file=sys.stderr)
         return 1
