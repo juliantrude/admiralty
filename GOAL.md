@@ -78,7 +78,7 @@ Block 2, the graph page:
 - [x] 6. Empire-wide nodes: general titles, the detail panel names the planets (entry 8).
 - [x] 7. Goal marks: up, down, flag, a field on the Goal (`docs/plans/grilling.md` topic 7), and the
       epoch titles count as evidence in the claim check.
-- [ ] 8. W, A, S, D move the viewport (entry 13).
+- [x] 8. W, A, S, D move the viewport (entry 13).
 - [ ] 9. Flags on nodes about an empire (entry 12).
 - [ ] 10. Libraries and font shipped offline, footer about the game icons (topic 5, ADR 0004).
 
@@ -112,7 +112,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 8 (W, A, S, D move the viewport, `docs/proposals/ops.md` entry 13). Work in `engine/engine.js`, rebuild with `uv run python tools/bundle_engine.py`, test in `tests/test_engine_*.py`.
+**Next action:** increment 9 (flags on nodes about an empire, `docs/proposals/ops.md` entry 12). Work in `engine/engine.js`, rebuild with `uv run python tools/bundle_engine.py`, test in `tests/test_engine_*.py`.
 **Blockers:** none.
 
 ## Budget
@@ -142,3 +142,4 @@ STATUS: ACTIVE
 - 2026-10-31 — Increment 5 done: `briefing compose` without `--out` starts a detached local server per workspace (`graph/view.py` `show_current`, idle timeout 4 h, state in `.admiralty/view.json`, reused while alive; serves the live `briefings/current/solution-graph.json`) and opens the page in the browser; result has a `view` entry; `--no-open` and `ADMIRALTY_NO_BROWSER` (set for all tests in conftest) switch it off; `briefing view` got `--open`/`--idle-timeout`. Skill tells Ops what to say per `opened`/`url`. Tests added. 870 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.6 min), ruff clean.
 - 2026-10-31 — Increment 6 done: `room.by_planet` (a table, keeps the extract under its 40k budget) in the extract; metrics carry a `by_planet` column, Causes a `places` metric; `expand_graph` adds `places` (up to 8 planets, fewest free first) to Obstacles that are not clear and to those Causes; the Solution Graph shows them as evidence lines in the detail panel. Titles of the empire-wide nodes (slots, housing, jobs) now speak of planets. `tests/test_places.py` plus extract tests. 879 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.6 min), ruff clean.
 - 2026-10-31 — Increment 7 done: Goals carry a `mark` (up, down, flag) as a field of their own: required in the Mechanics Graph (all 13 curated Goals `up`), the Solution Graph and the model's added Goals (`compose` refuses a model Goal without one; a graph Goal must match the curated mark). Icons draw the arrow up, arrow down or flag; the page shows it on placeholders and as a row "Mark" in the detail panel; `skills/ops/SKILL.md` tells the model to set it. `debrief check-epochs` returns `epoch_titles` and logs a clean result to the turn log, so the claim check counts the titles as evidence (a refused proposal does not). Tests added. 890 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.7 min), ruff clean.
+- 2026-10-31 — Increment 8 done: W, A, S, D move the graph view while held (rAF loop, 700 px/s, opposite keys cancel, diagonals not faster; ignored with Ctrl/Alt/Meta and in input fields; released on blur); the engine state has `view` (zoom, pan); seam `AdmiraltyEngine.pan(keys, ms)`. `tests/test_engine_pan.py` added (12 tests). 902 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (18.6 min), ruff clean.

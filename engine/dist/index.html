@@ -766,6 +766,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
       selected: [...current.selected].sort(),
       focus: [...current.focus].sort(),
       panel: current.panel,
+      view: { zoom: round(cyInstance.zoom()), pan: { x: round(cyInstance.pan().x), y: round(cyInstance.pan().y) } },
     };
   }
 
@@ -1130,6 +1131,87 @@ section li::marker { color: var(--accent); font-weight: 600; }
     cy.getElementById(id).emit("tap");
   }
 
+  // --- W, A, S, D move the view, as in the game -----------------------------------------------------
+
+  const PAN_SPEED = 700; // px of the stage per second while a key is held
+  const PAN_KEYS = { w: [0, 1], a: [1, 0], s: [0, -1], d: [-1, 0] }; // the content moves against the view
+  const held = new Set();
+  let panFrame = null;
+  let panFrom = 0;
+
+  /** W, A, S, D as typed or held; null for any other key, for chords (Ctrl, Alt, Meta) and for typing into a field. */
+  function panKeyOf(event) {
+    if (event.ctrlKey || event.altKey || event.metaKey) return null;
+    const target = event.target;
+    if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return null;
+    const key = String(event.key).toLowerCase();
+    return Object.hasOwn(PAN_KEYS, key) ? key : null;
+  }
+
+  /** Moves the view for `ms` milliseconds along the held keys. Opposite keys cancel; diagonals are not faster. */
+  function panHeld(ms) {
+    if (!cy || !held.size) return;
+    let dx = 0;
+    let dy = 0;
+    for (const key of held) {
+      dx += PAN_KEYS[key][0];
+      dy += PAN_KEYS[key][1];
+    }
+    const length = Math.hypot(dx, dy);
+    if (!length) return;
+    const distance = (PAN_SPEED * ms) / 1000;
+    cy.stop(true, false);
+    cy.panBy({ x: (dx / length) * distance, y: (dy / length) * distance });
+  }
+
+  function panLoop(now) {
+    panHeld(now - panFrom);
+    panFrom = now;
+    panFrame = held.size ? requestAnimationFrame(panLoop) : null;
+  }
+
+  function keyDown(key) {
+    held.add(key);
+    if (panFrame === null && typeof requestAnimationFrame === "function") {
+      panFrom = performance.now();
+      panFrame = requestAnimationFrame(panLoop);
+    }
+  }
+
+  function keyUp(key) {
+    held.delete(key);
+    if (!held.size && cy && current) publish();
+  }
+
+  function releaseAll() {
+    held.clear();
+    if (cy && current) publish();
+  }
+
+  /** The seam for the driver: holds the keys for `ms` milliseconds without waiting for animation frames. */
+  function pan(keys, ms) {
+    held.clear();
+    for (const key of keys.toLowerCase()) if (Object.hasOwn(PAN_KEYS, key)) held.add(key);
+    panHeld(ms);
+    held.clear();
+    publish();
+  }
+
+  function listenForPanKeys() {
+    document.addEventListener("keydown", (event) => {
+      const key = panKeyOf(event);
+      if (key) {
+        event.preventDefault();
+        keyDown(key);
+      }
+    });
+    document.addEventListener("keyup", (event) => {
+      const key = String(event.key).toLowerCase();
+      if (Object.hasOwn(PAN_KEYS, key)) keyUp(key);
+    });
+    window.addEventListener("blur", releaseAll);
+  }
+
   // --- drawing --------------------------------------------------------------------------------------
 
   /** Fitting a 50 node graph into the stage shrinks the 11 px labels to about 5 px: below this zoom the view starts at the
@@ -1244,6 +1326,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
     await fontReady();
     applyTheme(storedTheme() || "dark");
     document.getElementById("theme-toggle").addEventListener("click", toggleTheme);
+    listenForPanKeys();
     // the canvas draws its labels once; redraw them when the web font has arrived
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => cy && cy.style().update());
     let doc;
@@ -1265,7 +1348,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
 
   window.AdmiraltyEngine = {
     nodeLabel, nodeSize, validateGraph, toElements, layerConstraints, chainOf, badgesOf, iconOf, impactOf, scaleStep,
-    tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground,
+    tagOf, headerOf, legendOf, panelOf, circlePanelOf, click, clickBackground, pan,
   };
   start();
 })();
