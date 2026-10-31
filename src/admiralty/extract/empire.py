@@ -330,20 +330,42 @@ def room(
     building slots in all zones and by building family (`planet_slots`, computed/building_slots.py),
     and free module and building slots of the starbases (`starbase_slots`,
     computed/starbase_slots.py).
-    Lets the Mechanics Graph check "no free slot" Obstacles."""
+    Lets the Mechanics Graph check "no free slot" Obstacles. `by_planet` repeats the free places
+    planet by planet (columns named like the metrics' `by_planet` paths), so an Obstacle about the whole empire can name the planets it concerns."""
     districts_free = 0
     by_type = dict.fromkeys(RURAL, 0)
+    slots_of = {pid: slots for (pid, _, _), slots in zip(colonies, planet_slots, strict=True)}
+    by_planet = []
     for planet in planets:
         built = sum(d.get("built", 0) for d in planet["districts"].values())
         planet_room = max(0, int(planet["district_limit"]) - built)
         districts_free += planet_room
+        type_rooms = {}
         for name, kind in RURAL.items():
             entry = planet["districts"].get(kind)
             if entry is None or "max" not in entry:
                 continue
             maximum = entry["max"]
             type_room = planet_room if maximum == "uncapped" else max(0, maximum - entry["built"])
-            by_type[name] += min(type_room, planet_room)
+            type_rooms[name] = min(type_room, planet_room)
+            by_type[name] += type_rooms[name]
+        slots = slots_of[planet["id"]]
+        by_planet.append(
+            {
+                "planet": planet["name"],
+                "districts_free": planet_room,
+                **{f"district_types_free.{name}": type_rooms.get(name, 0) for name in RURAL},
+                # None where the planet's free slots are not known (a zone that is not computed)
+                "building_slots_free": None
+                if slots["unsupported"] and not slots["free"]
+                else slots["free"],
+                **{
+                    f"building_slots_free_by_family.{family}": free
+                    for family, free in slots["free_by_family"].items()
+                },
+                "housing_free": rounded(max(planet["free_housing"], 0), 1),
+            }
+        )
     job_defs = ctx.game.category("pop_jobs")
     jobs_table = ctx.table("pop_jobs")
     open_jobs = dict.fromkeys(JOB_OUTPUTS, 0)
@@ -368,6 +390,11 @@ def room(
         "starbase_slots": starbase_slots,
         "districts_free": districts_free,
         "district_types_free": by_type,
+        # a table (columns, one row per planet), or the extract grows by a tenth
+        "by_planet": {
+            "columns": list(by_planet[0]) if by_planet else [],
+            "rows": [list(entry.values()) for entry in by_planet],
+        },
         "open_jobs_by_output": {k: rounded(v) for k, v in open_jobs.items()},
         "open_jobs_by_function": {k: rounded(v) for k, v in open_by_function.items()},
         "housing_free": rounded(sum(max(p["free_housing"], 0) for p in planets), 1),

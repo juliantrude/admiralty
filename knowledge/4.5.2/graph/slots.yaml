@@ -15,11 +15,12 @@ goals:
 nodes:
   - id: slots.few_district_slots
     type: cause
-    title: The planet's district limit is reached
+    title: Planets are at their district limit
     description: >
       The number of districts a planet can have depends on its size and on bonuses from the
       capital building, technologies and traditions. A planet at its limit cannot add a district
       of any kind until the limit rises.
+    places: room.districts_free
     remedies: [slots.more_district_slots]
     facts:
       - district_slots.building.building_capital.planet_max_districts_add
@@ -27,10 +28,11 @@ nodes:
 
   - id: slots.few_building_slots
     type: cause
-    title: The planet has no building slots left
+    title: Planets are running out of building slots
     description: >
       Building slots come from the zones of the districts on the planet, so a planet fills them
       as it gains districts. A planet whose slots hold weak buildings wastes them.
+    places: room.building_slots_free
     remedies: [slots.more_building_slots, slots.replace_weak_buildings]
     facts:
       - building_slots.zone.zone_default.max_buildings
@@ -40,7 +42,7 @@ nodes:
 
   - id: slots.more_district_slots
     type: remedy
-    title: Raise the planet's district limit
+    title: Raise the district limit of the planets
     judgement: >
       Upgrading the capital building, taking the technology and finishing the traditions each add
       a district slot on every planet of their kind. They are one-time steps with a long reach,
@@ -72,7 +74,7 @@ nodes:
 
   - id: slots.replace_weak_buildings
     type: remedy
-    title: Replace the weakest building on the planet
+    title: Replace the weakest building on full planets
     judgement: >
       When no slot can be added, a slot held by a weak building is the cheapest one to free. It
       costs the building that is lost and the build cost of the new one, so it only pays when the
@@ -120,8 +122,8 @@ nodes:
 
   - id: slots.no_district_room
     type: obstacle
-    title: No free district slot on the planet
-    uncertain_title: The planet may have no free district slot
+    title: The planets have no free district slot
+    uncertain_title: The planets may have no free district slot
     description: >
       A new district needs a free district slot. A planet at its limit has to raise the limit or
       replace a district first.

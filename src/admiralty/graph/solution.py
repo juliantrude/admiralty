@@ -502,6 +502,8 @@ def _graph_node(node: dict[str, Any], graph: MechanicsGraph) -> dict[str, Any]:
         uncertain = graph.nodes.get(node["id"], {}).get("uncertain_title")
         if uncertain and out["check_state"] in ("judgement", "unknown"):
             out["title"] = uncertain
+    if node.get("places"):
+        evidence += _places_evidence(node["places"])
     if node["type"] == "remedy":
         out["status"] = node["status"]
         out["ratings"] = dict(node["ratings"])
@@ -513,6 +515,16 @@ def _graph_node(node: dict[str, Any], graph: MechanicsGraph) -> dict[str, Any]:
     if node["rules"]:
         out["rules"] = list(node["rules"])
     return out
+
+
+def _places_evidence(places: dict[str, Any]) -> list[str]:
+    """One line per planet the expansion named for a node about the whole empire: `Astarte: 0
+    building slots`. The planets with the fewest free places come first."""
+    unit = places.get("unit") or "free places"
+    lines = [f"{p['planet']}: {p['free']} {unit}" for p in places["planets"]]
+    if places.get("more"):
+        lines.append(f"and {places['more']} more planets with more room")
+    return lines
 
 
 def _check_evidence(check: dict[str, Any]) -> str:

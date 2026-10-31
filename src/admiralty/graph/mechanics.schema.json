@@ -91,6 +91,7 @@
         "remedies": {"$ref": "#/$defs/ids"},
         "facts": {"$ref": "#/$defs/fact_refs"},
         "rules": {"$ref": "#/$defs/rule_refs"},
+        "places": {"$ref": "#/$defs/text", "description": "A metric with a by_planet path: the Cause concerns the whole empire and its details name the planets with their free places."},
         "circle": {"$ref": "#/$defs/text"},
         "break_point": {"type": "boolean"}
       }

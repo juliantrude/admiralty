@@ -35,6 +35,7 @@ DEFAULT_DEPTH_LIMIT = 5
 RESULT_BUDGET = 40_000  # characters, the size budget of an extract-sized tool result
 EFFECTS_PER_NODE = 5
 EFFECTS_PER_NODE_TIGHT = 3
+PLACES_SHOWN = 8  # planets named in the details of a node about the whole empire
 
 _LINKS = ("causes", "remedies", "obstacles")
 _KIND = {"causes": "cause", "remedies": "remedy", "obstacles": "obstacle"}
@@ -309,10 +310,45 @@ def _node(graph: MechanicsGraph, node_id: str, depth: int, too_far: bool, check_
     }
     if kind == "obstacle":
         out["check"] = check_of(node_id).to_dict()
+        if out["check"]["state"] != "clear":
+            places = _places(graph, out["check"].get("metric"), extract)
+            if places:
+                out["places"] = places
+    elif kind == "cause" and "places" in node:
+        places = _places(graph, node["places"], extract)
+        if places:
+            out["places"] = places
     if kind == "remedy":
         out["ratings"] = {k: node[k] for k in ("strength", "speed", "cost")}
         out.update(_remedy_status(graph, node, check_of, extract))
     return out
+
+
+def _places(graph: MechanicsGraph, metric: str | None, extract: dict[str, Any]):
+    """The planets behind an empire-wide metric, fewest free places first, for the detail panel
+    of a node that concerns the whole empire (docs/proposals/ops.md entry 8). Only metrics with
+    a `by_planet` path have them (a column of `room.by_planet`); a planet whose value is unknown is left out."""
+    path = graph.metrics.get(metric or "", {}).get("by_planet")
+    if path is None:
+        return None
+    table = (extract.get("room") or {}).get("by_planet") or {}
+    columns = table.get("columns") or []
+    if path not in columns:
+        return None
+    column = columns.index(path)
+    rows = []
+    for row in table["rows"]:
+        value = row[column]
+        if isinstance(value, int | float) and not isinstance(value, bool):
+            rows.append({"planet": row[0], "free": value})
+    if not rows:
+        return None
+    rows.sort(key=lambda row: (row["free"], row["planet"]))
+    return {
+        "unit": graph.metrics[metric].get("unit"),
+        "planets": rows[:PLACES_SHOWN],
+        "more": max(0, len(rows) - PLACES_SHOWN),
+    }
 
 
 def _remedy_status(graph: MechanicsGraph, remedy: dict[str, Any], check_of, extract):

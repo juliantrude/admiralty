@@ -39,7 +39,11 @@
             "denominator": {"$ref": "#/$defs/path"}
           }
         },
-        "sum": {"$ref": "#/$defs/paths"}
+        "sum": {"$ref": "#/$defs/paths"},
+        "by_planet": {
+          "description": "Path of the same value inside one entry of room.by_planet, for a value summed over the planets.",
+          "$ref": "#/$defs/path"
+        }
       },
       "oneOf": [{"required": ["path"]}, {"required": ["ratio"]}, {"required": ["sum"]}]
     }

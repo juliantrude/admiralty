@@ -360,6 +360,8 @@ def _node_problems(where, node, nodes, metrics, facts, rules) -> list[Problem]:
         problems.append(Problem("error", where, "dead-end Cause: no deeper causes and no remedies"))
     if node.get("break_point") and "circle" not in node:
         problems.append(Problem("error", where, "break_point is only meaningful with a circle"))
+    if "places" in node:
+        problems += _metric(where, node["places"], metrics)
     for comparison in (node.get("check"), node.get("pending_when")):
         for metric in _comparison_metrics(comparison or {}):
             problems += _metric(where, metric, metrics)

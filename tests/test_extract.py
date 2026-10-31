@@ -251,6 +251,32 @@ def test_room_counts_free_district_slots_and_open_jobs(extractor):
     assert room["open_jobs_by_output"]["energy"] > 0
 
 
+def test_room_names_the_free_places_planet_by_planet(extractor):
+    doc = extract(extractor, VULKAN, "2259.12.25.sav")
+    room = doc["room"]
+    table = room["by_planet"]
+    entries = [dict(zip(table["columns"], row, strict=True)) for row in table["rows"]]
+    assert [e["planet"] for e in entries] == [p["name"] for p in doc["planets"]]
+    assert sum(e["districts_free"] for e in entries) == room["districts_free"]
+    assert sum(e["building_slots_free"] for e in entries) == room["building_slots_free"]
+    for kind, total in room["district_types_free"].items():
+        assert sum(e[f"district_types_free.{kind}"] for e in entries) == total
+    for family, total in room["building_slots_free_by_family"].items():
+        if total is not None:
+            assert sum(e[f"building_slots_free_by_family.{family}"] for e in entries) == total
+    assert sum(e["housing_free"] for e in entries) == pytest.approx(room["housing_free"], abs=0.5)
+
+
+def test_the_by_planet_paths_of_the_metrics_are_columns_of_the_room_table(extractor):
+    from admiralty.graph.mechanics import MechanicsGraph
+
+    doc = extract(extractor, VULKAN, "2259.12.25.sav")
+    columns = set(doc["room"]["by_planet"]["columns"])
+    paths = {m["by_planet"] for m in MechanicsGraph.load().metrics.values() if "by_planet" in m}
+    assert paths
+    assert paths - columns == set()
+
+
 def test_job_functions_follow_the_game_tags():
     from admiralty.extract.empire import job_functions
 

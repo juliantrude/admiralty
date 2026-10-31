@@ -66,23 +66,24 @@ metrics:
   unlocks.housing_buildings_missing: {path: unlocks.housing_buildings.missing, unit: technologies and capital tiers}
   unlocks.logistics_office_missing: {path: unlocks.logistics_office.missing, unit: technologies}
   unlocks.capital_upgrade_missing: {path: unlocks.capital_upgrade.missing, unit: technologies and capital tiers}
-  # free places to grow into (extract section "room")
-  room.districts_free: {path: room.districts_free, unit: district slots}
-  room.generator_free: {path: room.district_types_free.generator, unit: district slots}
-  room.mining_free: {path: room.district_types_free.mining, unit: district slots}
-  room.farming_free: {path: room.district_types_free.farming, unit: district slots}
+  # free places to grow into (extract section "room"); `by_planet` is the same value inside an
+  # entry of room.by_planet, so a node about the whole empire can name the planets it concerns
+  room.districts_free: {path: room.districts_free, unit: district slots, by_planet: districts_free}
+  room.generator_free: {path: room.district_types_free.generator, unit: district slots, by_planet: district_types_free.generator}
+  room.mining_free: {path: room.district_types_free.mining, unit: district slots, by_planet: district_types_free.mining}
+  room.farming_free: {path: room.district_types_free.farming, unit: district slots, by_planet: district_types_free.farming}
   jobs.open_research:
     sum: [room.open_jobs_by_output.physics_research, room.open_jobs_by_output.society_research, room.open_jobs_by_output.engineering_research]
     unit: open job places
   jobs.open_unity: {path: room.open_jobs_by_output.unity, unit: open job places}
   jobs.open_amenities: {path: room.open_jobs_by_function.amenities, unit: open job places}
   jobs.open_order: {path: room.open_jobs_by_function.order, unit: open job places}
-  housing.free: {path: room.housing_free, unit: housing}
-  room.building_slots_free: {path: room.building_slots_free, unit: building slots}
-  room.building_slots_free_foundry: {path: room.building_slots_free_by_family.foundry, unit: building slots}
-  room.building_slots_free_research: {path: room.building_slots_free_by_family.research, unit: building slots}
-  room.building_slots_free_unity: {path: room.building_slots_free_by_family.unity, unit: building slots}
-  room.building_slots_free_order: {path: room.building_slots_free_by_family.order, unit: building slots}
-  room.building_slots_free_housing: {path: room.building_slots_free_by_family.housing, unit: building slots}
-  room.building_slots_free_growth: {path: room.building_slots_free_by_family.growth, unit: building slots}
+  housing.free: {path: room.housing_free, unit: housing, by_planet: housing_free}
+  room.building_slots_free: {path: room.building_slots_free, unit: building slots, by_planet: building_slots_free}
+  room.building_slots_free_foundry: {path: room.building_slots_free_by_family.foundry, unit: building slots, by_planet: building_slots_free_by_family.foundry}
+  room.building_slots_free_research: {path: room.building_slots_free_by_family.research, unit: building slots, by_planet: building_slots_free_by_family.research}
+  room.building_slots_free_unity: {path: room.building_slots_free_by_family.unity, unit: building slots, by_planet: building_slots_free_by_family.unity}
+  room.building_slots_free_order: {path: room.building_slots_free_by_family.order, unit: building slots, by_planet: building_slots_free_by_family.order}
+  room.building_slots_free_housing: {path: room.building_slots_free_by_family.housing, unit: building slots, by_planet: building_slots_free_by_family.housing}
+  room.building_slots_free_growth: {path: room.building_slots_free_by_family.growth, unit: building slots, by_planet: building_slots_free_by_family.growth}
   starbases.slots_free: {path: room.starbase_slots.free, unit: starbase module and building slots}

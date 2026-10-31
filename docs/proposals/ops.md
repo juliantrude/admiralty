@@ -47,6 +47,10 @@ nicht Claude Code (ADR 0004).
 Titel allgemein ("Planets are running out of building slots"); das Detailfeld nennt die betroffenen
 Planeten mit ihren freien Plätzen. Gilt für alle Knoten, die das ganze Reich betreffen.
 
+Umgesetzt (2026-10-31): `room.by_planet` im Extrakt (Tabelle), `by_planet` an den Metriken, `places` an
+den Knoten; die Evidenz im Detailfeld nennt bis zu acht Planeten, die wenigsten freien Plätze zuerst.
+Die Titel der Knoten aus Summen über die Planeten sprechen von "Planets".
+
 ## 9. Flottenkapazität offen
 
 Julian kann nicht sagen, ob 276 direkt nach dem Laden stand; Zahlen schwanken dann erfahrungsgemäß.

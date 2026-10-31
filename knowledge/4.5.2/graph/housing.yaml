@@ -94,8 +94,8 @@ nodes:
 
   - id: housing.no_district_slot
     type: obstacle
-    title: No free district slot on the planet
-    uncertain_title: The planet may have no free district slot
+    title: The planets have no free district slot
+    uncertain_title: The planets may have no free district slot
     description: >
       A city district needs a free district slot. A planet at its district limit has to raise the
       limit or replace a district first.
@@ -116,8 +116,8 @@ nodes:
 
   - id: housing.no_building_slot
     type: obstacle
-    title: No free building slot on the planet
-    uncertain_title: The planet may have no free building slot
+    title: The planets have no free building slot for housing
+    uncertain_title: The planets may have no free building slot for housing
     description: >
       A housing building needs a free building slot on its planet.
     check: {metric: room.building_slots_free_housing, op: "==", compare_to: 0}

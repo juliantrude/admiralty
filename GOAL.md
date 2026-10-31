@@ -75,7 +75,7 @@ Block 1, Ops as Julian wants it (`docs/proposals/ops.md`, `docs/proposals/claims
 - [x] 5. Every Briefing composes its graph and opens it in the browser, from the CLI (entry 7).
 
 Block 2, the graph page:
-- [ ] 6. Empire-wide nodes: general titles, the detail panel names the planets (entry 8).
+- [x] 6. Empire-wide nodes: general titles, the detail panel names the planets (entry 8).
 - [ ] 7. Goal marks: up, down, flag, a field on the Goal (`docs/plans/grilling.md` topic 7), and the
       epoch titles count as evidence in the claim check.
 - [ ] 8. W, A, S, D move the viewport (entry 13).
@@ -112,7 +112,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 6 (empire-wide nodes: general titles, the detail panel names the planets; `docs/proposals/ops.md` entry 8). Find the nodes that concern the whole empire in the Mechanics Graph / `expand_graph` and the page's detail panel.
+**Next action:** increment 7 (Goal marks: up, down, flag, a field on the Goal per `docs/plans/grilling.md` topic 7; the epoch titles count as evidence in the claim check). Read topic 7 first, then the Goal handling in `workspace/` and `claims/`.
 **Blockers:** none.
 
 ## Budget
@@ -140,3 +140,4 @@ STATUS: ACTIVE
   `ADMIRALTY_PERF_SLACK=2.5` (17 min), ruff clean.
 - 2026-10-31 — Increment 4 done: `workspace/briefings.py` keeps one current Briefing (`briefings/current/` overlay + Solution Graph); `admiralty briefing compose` without `--out` publishes it and moves the replaced version to `briefings/history/NNN-<date>/` (staged write, a refused compose leaves the old one). `skills/ops/SKILL.md` has the section "One current Briefing" (update from the current overlay, draft at `briefings/draft/overlay.json`, no second Briefing). Tests added. 860 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.5 min) plus the one skill-text test re-run after a wording fix, ruff clean.
 - 2026-10-31 — Increment 5 done: `briefing compose` without `--out` starts a detached local server per workspace (`graph/view.py` `show_current`, idle timeout 4 h, state in `.admiralty/view.json`, reused while alive; serves the live `briefings/current/solution-graph.json`) and opens the page in the browser; result has a `view` entry; `--no-open` and `ADMIRALTY_NO_BROWSER` (set for all tests in conftest) switch it off; `briefing view` got `--open`/`--idle-timeout`. Skill tells Ops what to say per `opened`/`url`. Tests added. 870 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.6 min), ruff clean.
+- 2026-10-31 — Increment 6 done: `room.by_planet` (a table, keeps the extract under its 40k budget) in the extract; metrics carry a `by_planet` column, Causes a `places` metric; `expand_graph` adds `places` (up to 8 planets, fewest free first) to Obstacles that are not clear and to those Causes; the Solution Graph shows them as evidence lines in the detail panel. Titles of the empire-wide nodes (slots, housing, jobs) now speak of planets. `tests/test_places.py` plus extract tests. 879 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.6 min), ruff clean.
