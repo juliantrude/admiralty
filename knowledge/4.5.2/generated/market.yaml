@@ -1,0 +1,140 @@
+game_version: v4.5.2
+generator: 1
+quantity: market
+facts:
+- id: market.building.building_galactic_stock_exchange.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: -0.05
+  amount_kind: per_unit
+  source:
+    kind: building
+    key: building_galactic_stock_exchange
+    name: Galactic Stock Exchange
+    file: common/buildings/06_trade_buildings.txt
+  requirement:
+  - has_technology = tech_galactic_markets
+  - 'owner?: is_regular_empire = yes'
+  - NOR(has_modifier = resort_colony ; has_modifier = slave_colony ; has_modifier = penal_colony)
+  - 'orbital_ring_and_arkship_equivalent_absent: RING = ring_galactic_stock_exchange'
+  - 'orbital_ring_and_arkship_equivalent_absent: ARKSHIP = arkship_galactic_stock_exchange'
+- id: market.starbase_building.trader_proxy_office.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: -0.05
+  amount_kind: per_unit
+  source:
+    kind: starbase_building
+    key: trader_proxy_office
+    name: Trader Proxy Office
+    file: common/starbase_buildings/00_starbase_buildings.txt
+  requirement:
+  - is_normal_starbase = yes
+  - exists = owner
+  - 'owner: is_homicidal = no'
+  - 'owner: is_gestalt = no'
+  - 'owner: has_country_flag = has_market_access'
+  - 'solar_system: any_fleet_in_system: has_fleet_flag = trader_enclave_station'
+- id: market.starbase_module.waystation_trader_proxy_office.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: -0.05
+  amount_kind: per_unit
+  source:
+    kind: starbase_module
+    key: waystation_trader_proxy_office
+    name: Trader Proxy Office
+    file: common/starbase_modules/00_waystation_modules.txt
+  requirement:
+  - 'owner?: is_homicidal = no'
+  - 'owner?: is_gestalt = no'
+  - 'owner?: has_country_flag = has_market_access'
+  - is_waystation_starbase = yes
+- id: market.static_modifier.black_needle_base_sold_stolen_items.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: 0.1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: black_needle_base_sold_stolen_items
+    name: Sold Stolen Items from the Black Needle Base
+    file: common/static_modifiers/21_static_modifiers_grand_archive.txt
+  requirement: null
+- id: market.static_modifier.galactic_market_founder.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: -0.1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: galactic_market_founder
+    name: Market Nexus
+    file: common/static_modifiers/08_static_modifiers_megacorp.txt
+  requirement: null
+- id: market.static_modifier.resolution_sanctions_economic.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: 0.1
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: resolution_sanctions_economic
+    name: Economic Sanctions
+    file: common/static_modifiers/11_static_modifiers_federations.txt
+  requirement: null
+- id: market.static_modifier.secrets_of_the_inetian_traders.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: -0.05
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: secrets_of_the_inetian_traders
+    name: Secrets of the Inetian Traders
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: market.static_modifier.secrets_of_the_inetian_traders_hive_mach.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: -0.05
+  amount_kind: add
+  source:
+    kind: static_modifier
+    key: secrets_of_the_inetian_traders_hive_mach
+    name: Secrets of the Inetian Traders
+    file: common/static_modifiers/21_static_modifiers_cosmic_storms.txt
+  requirement: null
+- id: market.tradition.tr_logistics_4.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: -0.1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_logistics_4
+    name: Galactic Exchange Efficiencies
+    file: common/traditions/00_logistics.txt
+  requirement: null
+- id: market.tradition.tr_mercantile_insider_trading.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: -0.1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_mercantile_insider_trading
+    name: Insider Trading
+    file: common/traditions/00_mercantile.txt
+  requirement: null
+- id: market.tradition.tr_versatility_adaptive_programming.country_trade_fee
+  effect: modifies
+  modifier: country_trade_fee
+  amount: -0.1
+  amount_kind: add
+  source:
+    kind: tradition
+    key: tr_versatility_adaptive_programming
+    name: Adaptive Programming
+    file: common/traditions/00_versatility.txt
+  requirement: null

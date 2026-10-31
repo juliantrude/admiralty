@@ -43,14 +43,17 @@ icons:
   food.build_agriculture_districts: gfx/interface/icons/districts/district_farming.dds
   food.build_processing: gfx/interface/icons/buildings/building_food_processing_center.dds
   food.cannot_pay_district: gfx/interface/icons/technologies/tech_eco_simulation.dds
+  food.clone_vats_eat: gfx/interface/icons/buildings/building_clone_vats.dds
   food.farming_tech_prerequisites: gfx/interface/icons/technologies/tech_eco_simulation.dds
   food.few_farmers: gfx/interface/icons/jobs/job_farmer.dds
   food.no_farming_slot: gfx/interface/icons/technologies/tech_eco_simulation.dds
   food.no_spare_pops: gfx/interface/icons/technologies/tech_eco_simulation.dds
+  food.pace_clone_vats: gfx/interface/icons/buildings/building_clone_vats.dds
   food.positive: gfx/interface/icons/technologies/tech_eco_simulation.dds
   food.processing_locked: gfx/interface/icons/technologies/tech_eco_simulation.dds
   food.research_farming_techs: gfx/interface/icons/technologies/tech_eco_simulation.dds
   food.staff_farmers: gfx/interface/icons/jobs/job_farmer.dds
+  food.vats_already_built: gfx/interface/icons/technologies/tech_eco_simulation.dds
   food.weak_multipliers: gfx/interface/icons/technologies/tech_eco_simulation.dds
   housing.arcologies: gfx/interface/icons/districts/district_arcology_housing_secondary.dds
   housing.arcology_locked: gfx/interface/icons/technologies/tech_housing_1.dds
@@ -86,6 +89,18 @@ icons:
   jobs.free_jobs: gfx/interface/icons/pop_job.dds
   jobs.no_building_room: gfx/interface/icons/pop_job.dds
   jobs.no_district_room: gfx/interface/icons/pop_job.dds
+  market.big_trades_cost_more: gfx/interface/icons/traditions/tradition_mercantile_marketplace_of_better_ideas.dds
+  market.cut_trade_fee: gfx/interface/icons/buildings/building_galactic_stock_exchange.dds
+  market.deficit_returns: gfx/interface/icons/technologies/tech_galactic_markets.dds
+  market.drop_standing_trades: gfx/interface/icons/technologies/tech_galactic_markets.dds
+  market.fee_sources_missing: gfx/interface/icons/technologies/tech_galactic_markets.dds
+  market.keep_reserve: gfx/interface/icons/technologies/tech_galactic_markets.dds
+  market.match_trade_to_need: gfx/interface/icons/technologies/tech_galactic_markets.dds
+  market.need_unmeasured: gfx/interface/icons/technologies/tech_galactic_markets.dds
+  market.steady_trade: gfx/interface/icons/technologies/tech_galactic_markets.dds
+  market.stock_runs_dry: gfx/interface/icons/technologies/tech_galactic_markets.dds
+  market.stock_short: gfx/interface/icons/technologies/tech_galactic_markets.dds
+  market.trade_pays_deficit: gfx/interface/icons/technologies/tech_galactic_markets.dds
   minerals.build_mining_districts: gfx/interface/icons/districts/district_mining.dds
   minerals.build_purification: gfx/interface/icons/buildings/building_mineral_purification_hub.dds
   minerals.cannot_pay_district: gfx/interface/icons/technologies/tech_mining_1.dds

@@ -24,6 +24,7 @@ from admiralty.extract.computed.tradition_trees import (
 from admiralty.extract.computed.unlocks import unlocks
 from admiralty.extract.context import Context
 from admiralty.extract.header import build_header, resolve_tracked_empire
+from admiralty.extract.market import market
 from admiralty.extract.names import Localisation
 from admiralty.extract.save import Save, load_save
 from admiralty.game import GameEnvironment
@@ -152,6 +153,7 @@ class Snapshot:
                 "victory_rank": country.get("victory_rank"),
             },
             "resources": data.economy(ctx, country),
+            "market": market(ctx, self.country_id, country),
             "pops": data.pops(ctx, self.colonies),
             "planets": planets,
             "room": data.room(ctx, planets, self.colonies, self.planet_slots, self.starbase_slots),

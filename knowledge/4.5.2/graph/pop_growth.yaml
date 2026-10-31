@@ -105,7 +105,7 @@ nodes:
     strength: low
     speed: medium
     cost: medium
-    obstacles: [pop_growth.no_growth_building_slot]
+    obstacles: [pop_growth.no_growth_building_slot, pop_growth.food_deficit]
     facts:
       - pop_growth.building.building_clone_vats.bonus_pop_growth
       - pop_growth.building.building_genomic_facility.logistic_growth_mult

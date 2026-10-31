@@ -6,7 +6,7 @@ goals:
     mark: up
     title: Positive food income
     symptom_metrics: [food.net]
-    causes: [food.few_farmers, food.weak_multipliers]
+    causes: [food.few_farmers, food.weak_multipliers, food.clone_vats_eat]
 
 nodes:
   - id: food.few_farmers
@@ -30,7 +30,33 @@ nodes:
       - food.technology.tech_eco_simulation.planet_farmers_food_produces_mult
       - food.technology.tech_repeatable_improved_tile_food_output.planet_jobs_food_produces_mult
 
+  - id: food.clone_vats_eat
+    type: cause
+    title: Clone Vats raise the food upkeep while they bring more pops
+    description: >
+      Each Clone Vats building has a food upkeep of its own and speeds up growth, and every pop it
+      adds eats. Built on many planets at once, they raise consumption faster than Farmer jobs
+      follow, and the deficit is largest just when the new pops arrive.
+    remedies: [food.pace_clone_vats, food.staff_farmers, market.drop_standing_trades]
+    facts:
+      - food.building.building_clone_vats.upkeep_food
+      - pop_growth.building.building_clone_vats.bonus_pop_growth
+
   # --- Remedies ---------------------------------------------------------------------------
+
+  - id: food.pace_clone_vats
+    type: remedy
+    title: Build the Clone Vats in steps, as the food balance allows
+    judgement: >
+      Costs nothing but patience: the next Clone Vats wait until the food income has absorbed the
+      last ones. Slower growth in the meantime is the price, and it avoids a deficit that a
+      market trade would have to carry.
+    strength: medium
+    speed: high
+    cost: low
+    obstacles: [food.vats_already_built]
+    facts:
+      - food.building.building_clone_vats.upkeep_food
 
   - id: food.staff_farmers
     type: remedy
@@ -147,3 +173,13 @@ nodes:
       The food processing buildings are unlocked by food processing technologies, and the centre
       also needs an upgraded capital building on the planet.
     check: {metric: unlocks.food_processing_missing, op: ">", compare_to: 0}
+
+  - id: food.vats_already_built
+    type: obstacle
+    title: The Clone Vats already stand on the planets
+    uncertain_title: The Clone Vats may already stand on the planets
+    description: >
+      Pacing the Clone Vats only helps for those not yet built. Where they stand, their upkeep and
+      their pops are already there, and the food has to come from production.
+    check: {judgement_only: true}
+    remedies: [food.staff_farmers]

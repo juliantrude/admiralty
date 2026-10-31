@@ -87,3 +87,6 @@ metrics:
   room.building_slots_free_housing: {path: room.building_slots_free_by_family.housing, unit: building slots, by_planet: building_slots_free_by_family.housing}
   room.building_slots_free_growth: {path: room.building_slots_free_by_family.growth, unit: building slots, by_planet: building_slots_free_by_family.growth}
   starbases.slots_free: {path: room.starbase_slots.free, unit: starbase module and building slots}
+  # standing market trades (extract section "market", src/admiralty/extract/market.py)
+  market.standing_count: {path: market.count, unit: standing trades}
+  market.trades_short: {path: market.short, unit: standing trades under one month of stock}

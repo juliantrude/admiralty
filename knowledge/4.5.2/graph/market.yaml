@@ -1,0 +1,140 @@
+version: v4.5.2
+domain: market
+# Curated by hand from knowledge/4.5.2/generated/market.yaml and docs/plans/market.md. Node text
+# carries no figures: every number lives in the generated facts a node links to.
+# The market is not a resource the game files give a production chain for; what holds here comes
+# from defines (common/defines/00_defines.txt, section "trade": MARKET_TRADE_FEE_BASE and _MIN,
+# MARKET_FLUCTUATION_*, MARKET_MONTHLY_TRADE_FRACTION, MARKET_RESOURCE = trade) and from the
+# Player's own account of a collapse (docs/plans/grilling.md topic 3): a trade pays in the resource
+# `trade` and sells from the stockpile; when the stock is empty the trade does not run that month.
+goals:
+  - id: market.steady_trade
+    mark: flag
+    title: Standing trades that keep running
+    symptom_metrics: [market.trades_short]
+    causes: [market.trade_pays_deficit, market.stock_runs_dry, market.big_trades_cost_more]
+
+nodes:
+  - id: market.trade_pays_deficit
+    type: cause
+    title: Standing trades cover a deficit that production should cover
+    description: >
+      A trade set to repeat every month buys the missing food or energy and pays for it with
+      what the empire sells. The deficit stays out of sight until the stock that pays for it runs
+      low, and then both hit at once.
+    remedies: [market.match_trade_to_need, market.drop_standing_trades, food.staff_farmers, energy.staff_technicians]
+
+  - id: market.stock_runs_dry
+    type: cause
+    title: The stock a trade draws on runs out and the trade stalls
+    description: >
+      A sale needs the resource in stock and a purchase needs trade value in stock. When one runs
+      out the trade does not run that month, the deficit it covered returns in full, and the stock
+      builds up again until the trade restarts. The empire then swings between the two states
+      instead of settling.
+    remedies: [market.keep_reserve, market.drop_standing_trades]
+
+  - id: market.big_trades_cost_more
+    type: cause
+    title: Large trades move the price and pay more fee
+    description: >
+      Every trade moves the price against the one who trades, and the market keeps a fee that
+      shrinks only through traditions and buildings. A large standing trade therefore gives less
+      per unit than a small one, and the loss repeats every month.
+    remedies: [market.match_trade_to_need, market.cut_trade_fee]
+    facts:
+      - market.tradition.tr_logistics_4.country_trade_fee
+
+  # --- Remedies ---------------------------------------------------------------------------
+
+  - id: market.drop_standing_trades
+    type: remedy
+    title: Take the standing trades out
+    judgement: >
+      Ends the swing at once, because nothing stalls that does not run. The deficits the trades
+      covered then show in full, so this only works next to a fix in production; alone it trades
+      one crisis for another.
+    strength: high
+    speed: high
+    cost: medium
+    obstacles: [market.deficit_returns]
+
+  - id: market.match_trade_to_need
+    type: remedy
+    title: Buy only as much as the deficit needs
+    judgement: >
+      A smaller trade pays less fee and moves the price less, and a trade sized to the deficit
+      leaves the stock alone once the deficit is gone. It takes watching the balance, since the
+      trade does not shrink by itself.
+    strength: medium
+    speed: high
+    cost: low
+    obstacles: [market.need_unmeasured]
+
+  - id: market.keep_reserve
+    type: remedy
+    title: Keep a reserve in the stock the trades use
+    judgement: >
+      Sell only what lies above a few months of cover, so a bad month does not empty the stock and
+      stop the trade. Cheap, but the reserve has to exist first.
+    strength: medium
+    speed: medium
+    cost: low
+    obstacles: [market.stock_short]
+
+  - id: market.cut_trade_fee
+    type: remedy
+    title: Lower the fee the market keeps
+    judgement: >
+      Traditions and a few buildings and starbase buildings lower the fee, and the fee has a floor.
+      It helps empires that trade a lot, and gains little for one that trades a few times.
+    strength: low
+    speed: low
+    cost: medium
+    obstacles: [market.fee_sources_missing]
+    facts:
+      - market.tradition.tr_logistics_4.country_trade_fee
+      - market.tradition.tr_mercantile_insider_trading.country_trade_fee
+      - market.building.building_galactic_stock_exchange.country_trade_fee
+      - market.starbase_building.trader_proxy_office.country_trade_fee
+
+  # --- Obstacles --------------------------------------------------------------------------
+
+  - id: market.stock_short
+    type: obstacle
+    title: A standing trade has less than one month of stock to run on
+    uncertain_title: A standing trade may have less than one month of stock to run on
+    description: >
+      A sale of more than the stock holds does not run in full, and a purchase needs trade value
+      in stock. A reserve cannot be kept from a stock that is already this low, so the trade has to
+      stop until the stock has grown.
+    check: {metric: market.trades_short, op: ">", compare_to: 0}
+    remedies: [market.drop_standing_trades]
+
+  - id: market.deficit_returns
+    type: obstacle
+    title: The deficit the trades covered shows in full once they stop
+    uncertain_title: The deficit the trades covered may show in full once they stop
+    description: >
+      A trade that is taken out stops buying what the empire lacked. Unless production has been
+      raised first, the stockpile of that resource starts to fall at the full deficit.
+    check: {metric: market.standing_count, op: ">", compare_to: 0, only_clears: true}
+    remedies: [food.staff_farmers, energy.staff_technicians]
+
+  - id: market.need_unmeasured
+    type: obstacle
+    title: What the deficit needs without the trade is not known
+    uncertain_title: What the deficit needs without the trade may not be known
+    description: >
+      A trade sized to the need has to start from the balance as it would be without the trade. The
+      budget books the trades apart, so the balance without them has to be taken from the sources.
+    check: {judgement_only: true}
+
+  - id: market.fee_sources_missing
+    type: obstacle
+    title: The traditions and buildings that lower the fee are not in place
+    uncertain_title: The traditions and buildings that lower the fee may not be in place
+    description: >
+      The fee falls only through a tradition, a building or a starbase building. An empire that has
+      none of them first has to adopt or build one before the fee changes.
+    check: {judgement_only: true}

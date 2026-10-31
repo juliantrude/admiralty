@@ -33,6 +33,7 @@ QUANTITY_IDS = (
     "housing",
     "building_slots",
     "district_slots",
+    "market",
 )
 
 
@@ -126,6 +127,8 @@ QUANTITIES: dict[str, Quantity] = {
             frozenset(),
             _pattern(r"(?:^|_)max_districts_", r"^free_district_slots$", r"_districts_max_"),
         ),
+        # The share the market keeps of every trade (defines MARKET_TRADE_FEE_BASE and _MIN).
+        Quantity("market", frozenset(), _exact("country_trade_fee")),
     )
 }
 

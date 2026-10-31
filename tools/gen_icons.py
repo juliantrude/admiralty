@@ -63,6 +63,7 @@ DOMAIN_ICONS = {
     "slots": ["technologies/tech_planetary_unification.dds", "building_icon.dds"],
     "naval_capacity": ["technologies/tech_doctrine_fleet_size_1.dds", "fleet_size_icon.dds"],
     "stability": ["stability.dds"],
+    "market": ["technologies/tech_galactic_markets.dds", "resources/trade_value_large.dds"],
 }
 
 
