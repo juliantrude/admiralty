@@ -143,7 +143,7 @@ def attempt(
         recorded = mastery.record(
             topic["concept"], event, campaign=drill["campaign"], date=drill["date"]
         )
-        _copy_events(directory, recorded["events"])
+        copy_events(directory, recorded["events"])
         topic["attempts"].append({"ladder": topic["ladder"], "outcome": outcome})
         topic["ladder"] = moved["level"]
         if moved["named"] and moved["named"] not in topic["named"]:
@@ -202,7 +202,7 @@ def escape(
         written: list[dict[str, Any]] = []
         for concept in covered:
             written += mastery.record(concept, event, campaign=campaign, date=date)["events"]
-        _copy_events(directory, written)
+        copy_events(directory, written)
         if topic is not None:
             topic["attempts"].append({"ladder": ladder.TOP, "outcome": "escape_hatch"})
             topic["ladder"] = ladder.TOP
@@ -408,7 +408,7 @@ def _archive(directory: Path) -> Iterable[dict[str, Any]]:
             yield found
 
 
-def _copy_events(directory: Path, events: Iterable[dict[str, Any]]) -> None:
+def copy_events(directory: Path, events: Iterable[dict[str, Any]]) -> None:
     for event in events:
         _append_line(directory / EVIDENCE_FILE, event)
 

@@ -63,6 +63,13 @@ def day_number(date: str) -> int:
     return year * DAYS_PER_YEAR + (month - 1) * 30 + (day - 1)
 
 
+def date_of(day: int) -> str:
+    """The in-game date of a day number (the inverse of `day_number`)."""
+    year, rest = divmod(day, DAYS_PER_YEAR)
+    month, offset = divmod(rest, 30)
+    return f"{year:04d}.{month + 1:02d}.{offset + 1:02d}"
+
+
 def years_between(start: str, end: str) -> float:
     """Span in in-game years, two decimals (12 months of 30 days)."""
     return round((day_number(end) - day_number(start)) / DAYS_PER_YEAR, 2)
