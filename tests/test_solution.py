@@ -781,3 +781,45 @@ def test_unchecked_obstacles_speak_in_the_conditional():
     checked = [n for n in doc["nodes"] if n.get("check_state") in ("present", "clear")]
     assert unchecked and all(" may " in n["title"] for n in unchecked)
     assert all(n["title"] == mechanics.nodes[n["id"]]["title"] for n in checked)
+
+
+# --- nodes about another empire (docs/proposals/ops.md entry 12) -----------------------------------
+
+
+ABOUT_KEL = {**MODEL_CAUSE, "empire": "Kel-Azaan"}
+TO_KEL = [
+    {"from": "t.g", "to": "model.fleet_upkeep"},
+    {"from": "model.fleet_upkeep", "to": "t.ok"},
+]
+
+
+def test_a_node_names_an_empire_in_contact(graph, expansion):
+    expansion = {**expansion, "empires": {"Kel-Azaan": None}}
+    doc = composed(graph, expansion, add_nodes=[ABOUT_KEL], add_edges=TO_KEL)
+    assert node(doc, "model.fleet_upkeep")["empire"] == "Kel-Azaan"
+    assert "flag" not in node(doc, "model.fleet_upkeep")  # the CLI draws it from the install
+    assert errors(graph, doc) == []
+
+
+def test_an_empire_not_in_contact_is_refused_with_the_known_ones(graph, expansion):
+    expansion = {**expansion, "empires": {"Pallyrian Accord": None}}
+    message = refused(graph, expansion, add_nodes=[ABOUT_KEL], add_edges=TO_KEL)
+    assert "'Kel-Azaan'" in message and "Pallyrian Accord" in message
+
+
+def test_an_empire_without_any_contact_is_refused(graph, expansion):
+    message = refused(graph, expansion, add_nodes=[ABOUT_KEL], add_edges=TO_KEL)
+    assert "'Kel-Azaan'" in message and "none" in message
+
+
+def test_the_model_cannot_set_the_flag_itself(graph, expansion):
+    expansion = {**expansion, "empires": {"Kel-Azaan": None}}
+    fake = {**ABOUT_KEL, "flag": "data:image/png;base64,AAAA"}
+    message = refused(graph, expansion, add_nodes=[fake], add_edges=TO_KEL)
+    assert "Admiralty draws it from `empire`" in message
+
+
+def test_a_graph_node_cannot_carry_an_empire(graph, expansion):
+    doc = composed(graph, expansion)
+    node(doc, "t.c")["empire"] = "Kel-Azaan"
+    assert any("empire" in str(e) for e in errors(graph, doc))

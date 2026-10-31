@@ -527,3 +527,29 @@ def test_a_selection_adds_no_lines():
     target = graph["key_actions"][0]["node"]
     after = driver.render_engine(graph, after_ready=f'AdmiraltyEngine.click("{target}")')["edges"]
     assert after == before
+
+
+FLAG_PNG = (
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGP4z8DwHwAFAAH/"
+    "iZk9HQAAAABJRU5ErkJggg=="
+)
+
+
+@needs_browser
+def test_a_node_about_an_empire_shows_its_flag_and_names_it_in_the_panel():
+    graph = rich_graph()
+    node = next(n for n in graph["nodes"] if n["id"] == "energy.few_producers")
+    node |= {"empire": "Pallyrian Accord", "flag": FLAG_PNG}
+    state = driver.render_engine(graph, after_ready='AdmiraltyEngine.click("energy.few_producers")')
+    assert next(n for n in state["nodes"] if n["id"] == "energy.few_producers")["flag"] is True
+    assert state["panel"]["empire"] == "Pallyrian Accord"
+    assert not any(n.get("flag") for n in state["nodes"] if n["id"] != "energy.few_producers")
+
+
+@needs_browser
+def test_an_empire_without_a_drawable_flag_keeps_the_placeholder_of_its_type():
+    graph = rich_graph()
+    node = next(n for n in graph["nodes"] if n["id"] == "energy.few_producers")
+    node |= {"empire": "Pallyrian Accord", "flag": "javascript:alert(1)"}
+    state = driver.render_engine(graph)
+    assert "flag" not in next(n for n in state["nodes"] if n["id"] == "energy.few_producers")

@@ -60,3 +60,58 @@ def test_each_mark_draws_its_own_sign_over_the_icon(install):
 def test_every_goal_of_the_graph_carries_a_mark_of_its_own():
     graph = MechanicsGraph.load("v4.5.2")
     assert {g["mark"] for g in graph.goals.values()} <= {"up", "down", "flag"}
+
+
+FLAG = {
+    "icon": "pointy/flag_pointy_2.dds",
+    "background": "backgrounds/00_solid.dds",
+    "colors": ["intense_red", "grey", "black"],
+}
+
+
+def _flag_pixels(uri):
+    import io
+
+    from PIL import Image
+
+    return Image.open(io.BytesIO(base64.b64decode(uri.removeprefix("data:image/png;base64,"))))
+
+
+def test_a_flag_is_composed_from_background_swatches_and_symbol(install):
+    from admiralty.graph.icons import flag_swatches, load_flag
+
+    image = _flag_pixels(load_flag(install, FLAG)).convert("RGB")
+    # a solid background is all slot 0: the corner shows that swatch, the symbol sits in the middle
+    assert image.getpixel((2, 2)) == flag_swatches(install)["intense_red"]
+    assert len(image.getcolors(maxcolors=10_000)) > 10  # the symbol's gold and shading
+
+
+def test_the_swatches_of_other_slots_colour_the_other_background_channels(install):
+    from admiralty.graph.icons import flag_swatches, load_flag
+
+    swatches = flag_swatches(install)
+    image = _flag_pixels(
+        load_flag(install, {**FLAG, "background": "backgrounds/circle.dds"})
+    ).convert("RGB")
+    assert image.getpixel((2, 2)) == swatches["intense_red"]  # circle.dds: red outside
+    assert image.getpixel((32, 64)) == swatches["grey"]  # green inside, below the symbol
+
+
+def test_a_flag_with_a_missing_part_is_none(install):
+    from admiralty.graph.icons import load_flag
+
+    assert load_flag(install, {**FLAG, "icon": "pointy/nope.dds"}) is None
+    assert load_flag(install, {**FLAG, "colors": ["nope", "grey", "black"]}) is None
+
+
+def test_a_node_naming_an_empire_gets_its_flag(install):
+    doc = {
+        "nodes": [
+            {"id": "model.x", "type": "cause", "source": "model", "empire": "Pallyrian Accord"},
+            {"id": "model.y", "type": "cause", "source": "model", "empire": "Unknown"},
+            {"id": "model.z", "type": "cause", "source": "model"},
+        ]
+    }
+    assert embed_icons(doc, install, "v4.5.2", {"Pallyrian Accord": FLAG}) == 1
+    assert doc["nodes"][0]["flag"].startswith("data:image/png;base64,")
+    assert "flag" not in doc["nodes"][1] and "flag" not in doc["nodes"][2]

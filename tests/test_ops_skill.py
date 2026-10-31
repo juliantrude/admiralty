@@ -126,3 +126,10 @@ def test_a_model_goal_carries_a_mark_of_its_own():
     assert "carries a `mark` of its own" in text
     assert '`up` for "more", `down` for "less", `flag` for a state to reach' in text
     assert "`compose` refuses a model Goal without one" in text
+
+
+def test_a_node_about_another_empire_names_it():
+    text = " ".join(SKILL.read_text().split())
+    assert '`"empire": "<its name>"`' in text
+    assert "`empires` of the expansion" in text
+    assert "Never write `flag` yourself" in text

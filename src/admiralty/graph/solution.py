@@ -252,7 +252,7 @@ def compose(
     """The Solution Graph for `expansion` (an `Expansion.to_dict()`) and the model's `overlay`.
 
     Overlay: `{empire, goals: {id: {horizon, crisis?}}, prune: [{id, reason}], add_nodes: [{id,
-    type, title, reason, ...}], add_edges: [{from, to}], exclude_key_actions: [{id, reason}],
+    type, title, reason, empire?, ...}], add_edges: [{from, to}], exclude_key_actions: [{id, reason}],
     why: {remedy_id: text}, weights: [{from, to, weight, reason}]}`. `weights` must give every
     edge into a Cause (from a Goal or a Cause) a weight, high, medium or low: how much of the
     problem above this Cause explains, with the reason from the numbers. Edges into a Remedy take
@@ -307,6 +307,15 @@ def compose(
     edges = {(a, b) for a, b in edges if a not in gone and b not in gone}
 
     added = [_model_node(n, goal_settings) for n in overlay.get("add_nodes", [])]
+    known_empires = expansion.get("empires") or {}
+    for node in added:
+        if "flag" in node:
+            error(f"add_nodes: '{node['id']}' sets `flag`; Admiralty draws it from `empire`")
+        if "empire" in node and node["empire"] not in known_empires:
+            error(
+                f"add_nodes: '{node['id']}' names the empire {node['empire']!r}, which is not in "
+                f"contact: {', '.join(known_empires) or 'none'} (the expansion's `empires`)"
+            )
     nodes_by_id = {n["id"]: n for n in nodes}
     for node in added:
         if node["id"] in nodes_by_id or node["id"] in by_id:

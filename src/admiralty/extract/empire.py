@@ -587,6 +587,18 @@ def intel_levels(ctx: Context) -> list[tuple[int, int, dict[str, int]]]:
     return sorted(levels)
 
 
+def _contacts(ctx: Context, country_id: int, country: dict[str, Any]):
+    """(id, country, relation) of every empire in contact."""
+    for relation in as_list(block(country.get("relations_manager")).get("relation")):
+        other_id = relation.get("country")
+        other = ctx.countries.get(other_id)
+        if relation.get("contact") != "yes" or not other or other_id == country_id:
+            continue
+        if other.get("type") not in (None, "default"):
+            continue  # fauna, marauders' fleets, event countries
+        yield other_id, other, relation
+
+
 def known_empires(ctx: Context, country_id: int, country: dict[str, Any]) -> list[dict[str, Any]]:
     """Every empire in contact. 'visible' holds what the Tracked Empire's intel shows
     (Fair Play); 'full' holds the save's facts (God Mode)."""
@@ -598,13 +610,7 @@ def known_empires(ctx: Context, country_id: int, country: dict[str, Any]) -> lis
     levels = intel_levels(ctx)
     ours = country
     out = []
-    for relation in as_list(block(country.get("relations_manager")).get("relation")):
-        other_id = relation.get("country")
-        other = ctx.countries.get(other_id)
-        if relation.get("contact") != "yes" or not other or other_id == country_id:
-            continue
-        if other.get("type") not in (None, "default"):
-            continue  # fauna, marauders' fleets, event countries
+    for other_id, other, relation in _contacts(ctx, country_id, country):
         value = intel.get(other_id, 0)
         categories = next((c for low, high, c in levels if low <= value <= high), {})
         full = _empire_facts(ctx, other_id, other)
@@ -624,6 +630,31 @@ def known_empires(ctx: Context, country_id: int, country: dict[str, Any]) -> lis
         )
     out.sort(key=lambda e: (e["player"] is None, -e["full"].get("military_power", 0)))
     return out
+
+
+def empire_flags(ctx: Context, country_id: int, country: dict[str, Any]) -> dict[str, Any]:
+    """Name to flag of every empire in contact (None for one without a flag). Kept out of the
+    extract, which is at its size budget; the expansion carries it, so that a Solution Graph can
+    name an empire on a node and show its flag."""
+    return {
+        ctx.country_name(i): _flag(other) for i, other, _ in _contacts(ctx, country_id, country)
+    }
+
+
+def _flag(country: dict[str, Any]) -> dict[str, Any] | None:
+    """The empire's flag as the save describes it: `icon` and `background` as `category/file`
+    under the game's `flags/`, and the three swatches that colour the background (slots 0 to 2,
+    see flags/colors.txt). Public on the map, so it belongs to Fair Play. None when the save has none."""
+    flag = block(country.get("flag"))
+    icon, background = block(flag.get("icon")), block(flag.get("background"))
+    colors = [c for c in as_list(flag.get("colors")) if isinstance(c, str)]
+    if not (icon.get("file") and background.get("file")) or len(colors) < 3:
+        return None
+    return {
+        "icon": f"{icon['category']}/{icon['file']}",
+        "background": f"{background['category']}/{background['file']}",
+        "colors": colors[:3],
+    }
 
 
 def _empire_facts(ctx: Context, country_id: int, country: dict[str, Any]) -> dict[str, Any]:
@@ -695,6 +726,7 @@ __all__ = [
     "NO_ID",
     "economy",
     "economy_by_source",
+    "empire_flags",
     "fleets",
     "known_empires",
     "owned_colonies",

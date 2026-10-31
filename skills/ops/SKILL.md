@@ -121,6 +121,12 @@ A Goal you add to `add_nodes` (`"type": "goal"`, id `model.<name>`) carries a `m
 from what the Player wants; the catalogue's Goals have theirs, and `compose` refuses a model Goal
 without one. The graph draws it over the Goal's icon.
 
+A node you add that is about another empire carries `"empire": "<its name>"`, spelled as in the
+`empires` of the expansion (the empires in contact; the Display Name). `compose` draws that
+empire's flag on the node in place of the placeholder and refuses a name that is not in contact.
+Never write `flag` yourself. A node about the Player's own empire or about no empire has no
+`empire`.
+
 `goals` needs an entry with `horizon` for every expanded Goal. Every remaining Key Action
 candidate needs a `why` or an `exclude_key_actions` entry with a reason.
 

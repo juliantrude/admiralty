@@ -638,3 +638,15 @@ def test_the_planned_obstacles_have_a_metric_check():
     graph = MechanicsGraph.load()
     grey = [n for n in CHECKED_BY_THE_OBSTACLE_PLAN if graph.node(n)["check"].get("judgement_only")]
     assert grey == []
+
+
+def test_empire_flags_name_the_parts_of_every_known_flag(extractor):
+    ref = reference_save(VULKAN, "2298.03.11.sav")
+    flags = Snapshot(extractor, extractor.context(ref), PLAYER).empire_flags()
+    known = {
+        other["name"] for other in extract(extractor, VULKAN, "2298.03.11.sav")["known_empires"]
+    }
+    assert flags and set(flags) == known
+    assert any(flags.values())
+    for flag in filter(None, flags.values()):
+        assert "/" in flag["icon"] and "/" in flag["background"] and len(flag["colors"]) == 3

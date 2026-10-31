@@ -152,8 +152,10 @@
     return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
   }
 
-  /** A node's icon: an embedded image from the data, else the placeholder of its type. Only data URIs of images are used. */
+  /** A node's icon: the flag of the empire it is about, else an embedded image from the data, else the
+   *  placeholder of its type (the "G" of a Goal stays the fallback). Only data URIs of images are used. */
   function iconOf(node) {
+    if (typeof node.flag === "string" && /^data:image\/png;base64,/.test(node.flag)) return node.flag;
     if (typeof node.icon === "string" && /^data:image\/(png|svg\+xml)[;,]/.test(node.icon)) return node.icon;
     const unchecked = node.type === "obstacle" && (node.check_state === "judgement" || node.check_state === "unknown");
     return placeholderIcon(unchecked ? "unchecked" : node.type, node.mark);
@@ -348,7 +350,7 @@
         .map((n) => n.title)
         .sort();
     }
-    for (const field of ["text", "horizon", "crisis", "mark", "status", "ratings", "check_state", "evidence", "rules", "reason"]) {
+    for (const field of ["text", "horizon", "crisis", "mark", "empire", "status", "ratings", "check_state", "evidence", "rules", "reason"]) {
       if (node[field] !== undefined) panel[field] = node[field];
     }
     const action = doc.key_actions.find((a) => a.node === id);
@@ -478,6 +480,7 @@
       if (node.type === "obstacle") data.checkState = node.check_state;
       if (node.type === "goal") data.crisis = node.crisis === true;
       if (node.type === "goal" && node.mark) data.mark = node.mark;
+      if (data.icon === node.flag) data.flag = true; // the icon is the flag of the empire the node is about
       if (rankOf.has(node.id)) data.rank = rankOf.get(node.id);
       if (circleOf.has(node.id)) data.circleColor = color.get(circleOf.get(node.id));
       return { group: "nodes", data };
@@ -577,7 +580,7 @@
           impact: node.data("impact"),
           faded: node.hasClass("faded"),
         };
-        for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"], ["mark", "mark"]]) {
+        for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"], ["mark", "mark"], ["flag", "flag"]]) {
           if (node.data(field) !== undefined) state[key] = node.data(field);
         }
         return state;
@@ -867,6 +870,7 @@
     if (panel.horizon !== undefined) rows.push(["Horizon", [panel.horizon]]);
     if (panel.crisis) rows.push(["Crisis", ["yes"]]);
     if (panel.mark !== undefined) rows.push(["Mark", [MARK_WORD[panel.mark] || panel.mark]]);
+    if (panel.empire !== undefined) rows.push(["Empire", [panel.empire]]);
     if (panel.status !== undefined) rows.push(["Status", [panel.status]]);
     if (panel.ratings) {
       rows.push(["Ratings", [`strength ${panel.ratings.strength}`, `speed ${panel.ratings.speed}`, `cost ${panel.ratings.cost}`]]);

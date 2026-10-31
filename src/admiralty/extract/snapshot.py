@@ -127,6 +127,9 @@ class Snapshot:
         out.sort(key=lambda p: -p["pops"])
         return out
 
+    def empire_flags(self) -> dict[str, Any]:
+        return data.empire_flags(self.ctx, self.country_id, self.country)
+
     def naval_capacity(self) -> dict[str, Any]:
         return naval_capacity(self.ctx, self.country, self.ledger)
 

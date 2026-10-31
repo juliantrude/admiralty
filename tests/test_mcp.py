@@ -209,3 +209,12 @@ def test_tools_explain_missing_setup(tmp_path, monkeypatch):
 
 def test_env_overrides_do_not_leak():
     assert "ADMIRALTY_EMPIRE" not in os.environ
+
+
+def test_expansion_names_the_empires_in_contact_with_their_flags(tmp_path, save_dir, monkeypatch):
+    server = graph_server(tmp_path, save_dir, monkeypatch)
+    result = call(server, "expand_graph", {"goals": ["unity.more"], "save": "2259.12.25"})
+    empires = result["empires"]
+    assert empires, "the 2259 save has empires in contact"
+    flags = [flag for flag in empires.values() if flag]
+    assert flags and all(set(flag) == {"icon", "background", "colors"} for flag in flags)

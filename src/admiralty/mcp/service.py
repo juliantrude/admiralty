@@ -253,7 +253,8 @@ class CampaignService:
         self, goals: list[str] | None = None, crisis_goals: list[str] | None = None,
         save: str | None = None,
     ) -> dict[str, Any]:  # fmt: skip
-        doc = self.document(self.find(save))
+        ref = self.find(save)
+        doc = self.document(ref)
         graph = self.graph(doc["header"]["game_version"])
         if not goals:
             return {
@@ -270,6 +271,7 @@ class CampaignService:
             )
         result = expansion.to_dict()
         result["warnings"] = [*doc["header"]["warnings"], *result["warnings"]]
+        result["empires"] = self.snapshot(ref).empire_flags()
         result["expansion_id"] = None  # the turn-log line number, filled in by `log`
         return result
 

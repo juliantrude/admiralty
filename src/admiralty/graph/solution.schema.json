@@ -124,11 +124,14 @@
         "horizon": {"enum": ["short", "medium", "long"]},
         "crisis": {"type": "boolean"},
         "mark": {"enum": ["up", "down", "flag"]},
+        "empire": {"$ref": "#/$defs/text"},
+        "flag": {"type": "string", "pattern": "^data:image/png;base64,"},
         "ratings": {"$ref": "#/$defs/ratings"},
         "evidence": {"$ref": "#/$defs/evidence"}
       },
       "allOf": [
-        {"if": {"properties": {"type": {"const": "goal"}}, "required": ["type"]}, "then": {"required": ["horizon", "crisis", "mark"]}}
+        {"if": {"properties": {"type": {"const": "goal"}}, "required": ["type"]}, "then": {"required": ["horizon", "crisis", "mark"]}},
+        {"if": {"required": ["flag"]}, "then": {"required": ["empire"]}}
       ]
     }
   }

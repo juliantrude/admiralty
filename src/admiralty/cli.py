@@ -316,8 +316,9 @@ def _check_solution(args) -> int:
     return 1 if problems else 0
 
 
-def _embed_icons(doc: dict, version: str) -> int:
-    """Game icons from the Player's install; without an install the page shows placeholders."""
+def _embed_icons(doc: dict, version: str, empires: dict | None = None) -> int:
+    """Game icons and empire flags from the Player's install; without an install the page shows
+    placeholders."""
     from admiralty.game import GameEnvironment
     from admiralty.graph.icons import embed_icons
 
@@ -325,7 +326,7 @@ def _embed_icons(doc: dict, version: str) -> int:
         install = GameEnvironment.detect().install_dir
     except FileNotFoundError:
         return 0
-    return embed_icons(doc, install, version)
+    return embed_icons(doc, install, version, empires)
 
 
 def _compose(args) -> int:
@@ -346,7 +347,7 @@ def _compose(args) -> int:
         for problem in error.problems:
             print(problem, file=sys.stderr)
         return 1
-    icons = _embed_icons(doc, expansion.get("version", "v4.5.2"))
+    icons = _embed_icons(doc, expansion.get("version", "v4.5.2"), expansion.get("empires"))
     result: dict = {}
     if args.out is None:
         from admiralty.workspace import briefings
