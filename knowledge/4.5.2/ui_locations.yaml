@@ -1,0 +1,461 @@
+# Where a figure lives in the game's interface (M9, 20f; docs/plans/M9.md). Drafted from the files of
+# the Player's install (4.5.2) only; no wiki text. Each entry names the files it rests on and a string
+# that must occur in them (`find`), and tests/test_academy_locations.py checks both when the install
+# is present. A figure without an entry falls back to its domain (academy/locations.py).
+# Spot check by the Player: docs/awaiting-julian.md, "Abnahme".
+version: v4.5.2
+domains:
+  energy:
+    path: Top bar, the Energy figure (stored amount and monthly balance); a click opens the Market window
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_energy_group
+  minerals:
+    path: Top bar, the Minerals figure (stored amount and monthly balance); a click opens the Market window
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_mineral_group
+  food:
+    path: Top bar, the Food figure (stored amount and monthly balance); a click opens the Market window
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_food_group
+  alloys:
+    path: Top bar, the Alloys figure (stored amount and monthly balance); a click opens the Market window
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_alloys_group
+  unity:
+    path: Top bar, the Unity figure (stored amount and monthly balance); a click opens the Traditions window
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_unity_group
+  influence:
+    path: Top bar, the Influence figure (stored amount and monthly balance); a click opens the Claims window
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_influence_group
+  research:
+    path: Top bar, the Research figure (monthly balance of physics, society and engineering); a click opens the Technology
+      window
+    sources:
+    - file: interface/resource_groups/topbar_research_resource_groups.txt
+      find: tb_research_group
+  market:
+    path: 'Market window (top bar: click Energy, Minerals, Food or Alloys); standing trades under Monthly Trade'
+    sources:
+    - file: interface/market_view.gui
+      find: market_view
+    - file: interface/monthly_trade_view.gui
+      find: monthly_trade_view
+  housing:
+    path: Planet window, the housing line of the planet's population panel
+    sources:
+    - file: interface/planet_view.gui
+      find: housing_needs
+  amenities:
+    path: Planet window, the amenities line of the planet's population panel
+    sources:
+    - file: interface/planet_view.gui
+      find: amenities_usage
+  stability:
+    path: Planet window, the stability figure beside the planet's population
+    sources:
+    - file: interface/planet_view.gui
+      find: planet_stability
+  pop_growth:
+    path: Planet window, the growth panel of the planet's population (growth progress and speed)
+    sources:
+    - file: interface/planet_view.gui
+      find: growth_data
+  jobs:
+    path: Planet window, the jobs list of the planet (filled and open places)
+    sources:
+    - file: interface/planet_view.gui
+      find: jobs_list
+  slots:
+    path: Planet window, the districts and the buildings of the planet; starbase slots in the Starbase window
+    sources:
+    - file: interface/planet_view.gui
+      find: districts_window
+    - file: interface/planet_view.gui
+      find: buildings_box
+  naval_capacity:
+    path: Fleet Manager, the naval capacity line at the top; its tooltip explains the capacity
+    sources:
+    - file: interface/fleet_manager_view.gui
+      find: naval_capacity
+    - file: interface/fleet_manager_view.gui
+      find: NAVY_SIZE_DESC
+figures:
+  alloys.expenses:
+    path: Empire window, tab Budget, the Expenses column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  alloys.income:
+    path: Empire window, tab Budget, the Income column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  alloys.net:
+    path: Top bar, the Alloys figure, the signed number after the stored amount (the monthly balance)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_alloys_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT_NEG
+  alloys.stockpile:
+    path: Top bar, the Alloys figure, the first number (what is stored)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_alloys_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT
+  ascension.slots_free:
+    path: Ascension Perks window, the perk slots
+    sources:
+    - file: interface/ascension_perks_view.gui
+      find: ASCENSION_PERKS
+  empire.size:
+    path: Top bar, the empire size figure; its tooltip lists where the size comes from
+    sources:
+    - file: interface/main.gui
+      find: empire_size_group
+  energy.expenses:
+    path: Empire window, tab Budget, the Expenses column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  energy.income:
+    path: Empire window, tab Budget, the Income column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  energy.net:
+    path: Top bar, the Energy figure, the signed number after the stored amount (the monthly balance)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_energy_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT_NEG
+  energy.stockpile:
+    path: Top bar, the Energy figure, the first number (what is stored)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_energy_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT
+  food.expenses:
+    path: Empire window, tab Budget, the Expenses column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  food.income:
+    path: Empire window, tab Budget, the Income column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  food.net:
+    path: Top bar, the Food figure, the signed number after the stored amount (the monthly balance)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_food_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT_NEG
+  food.stockpile:
+    path: Top bar, the Food figure, the first number (what is stored)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_food_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT
+  housing.free:
+    path: Planet window, the housing line (housing available against needed), for each planet
+    sources:
+    - file: interface/planet_view.gui
+      find: housing_needs
+  influence.expenses:
+    path: Empire window, tab Budget, the Expenses column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  influence.income:
+    path: Empire window, tab Budget, the Income column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  influence.net:
+    path: Top bar, the Influence figure, the signed number after the stored amount (the monthly balance)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_influence_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT_NEG
+  influence.stockpile:
+    path: Top bar, the Influence figure, the first number (what is stored)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_influence_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT
+  jobs.open_amenities:
+    path: Planet window, the jobs list, the open places of each job in it (add them up over the planets)
+    sources:
+    - file: interface/planet_view.gui
+      find: jobs_list
+  jobs.open_order:
+    path: Planet window, the jobs list, the open places of each job in it (add them up over the planets)
+    sources:
+    - file: interface/planet_view.gui
+      find: jobs_list
+  jobs.open_research:
+    path: Planet window, the jobs list, the open places of each job in it (add them up over the planets)
+    sources:
+    - file: interface/planet_view.gui
+      find: jobs_list
+  jobs.open_unity:
+    path: Planet window, the jobs list, the open places of each job in it (add them up over the planets)
+    sources:
+    - file: interface/planet_view.gui
+      find: jobs_list
+  market.standing_count:
+    path: Monthly Trade window, the list of standing trades
+    sources:
+    - file: interface/monthly_trade_view.gui
+      find: monthly_trade_resources_grid
+  market.trades_short:
+    path: Monthly Trade window, the entries of the list that run short of stock
+    sources:
+    - file: interface/monthly_trade_view.gui
+      find: monthly_trade_resources_grid
+  minerals.expenses:
+    path: Empire window, tab Budget, the Expenses column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  minerals.income:
+    path: Empire window, tab Budget, the Income column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  minerals.net:
+    path: Top bar, the Minerals figure, the signed number after the stored amount (the monthly balance)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_mineral_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT_NEG
+  minerals.stockpile:
+    path: Top bar, the Minerals figure, the first number (what is stored)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_mineral_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT
+  naval_capacity.fill:
+    path: Fleet Manager, the naval capacity line at the top; its tooltip explains the capacity
+    sources:
+    - file: interface/fleet_manager_view.gui
+      find: naval_capacity
+    - file: interface/fleet_manager_view.gui
+      find: NAVY_SIZE_DESC
+  naval_capacity.max:
+    path: Fleet Manager, the naval capacity line at the top; its tooltip explains the capacity
+    sources:
+    - file: interface/fleet_manager_view.gui
+      find: naval_capacity
+    - file: interface/fleet_manager_view.gui
+      find: NAVY_SIZE_DESC
+  naval_capacity.used:
+    path: Fleet Manager, the naval capacity line at the top; its tooltip explains the capacity
+    sources:
+    - file: interface/fleet_manager_view.gui
+      find: naval_capacity
+    - file: interface/fleet_manager_view.gui
+      find: NAVY_SIZE_DESC
+  perks.galactic_force_projection:
+    path: Ascension Perks window, the perk slots
+    sources:
+    - file: interface/ascension_perks_view.gui
+      find: ASCENSION_PERKS
+  perks.one_vision:
+    path: Ascension Perks window, the perk slots
+    sources:
+    - file: interface/ascension_perks_view.gui
+      find: ASCENSION_PERKS
+  pops.unemployed:
+    path: Planet window, the unemployed count of the planet's population
+    sources:
+    - file: interface/planet_view.gui
+      find: planet_unemployed
+  pops.unemployed_share:
+    path: Planet window, the unemployed count of the planet's population
+    sources:
+    - file: interface/planet_view.gui
+      find: planet_unemployed
+  research.expenses:
+    path: Empire window, tab Budget, the Expenses column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  research.income:
+    path: Top bar, the Research figure (it shows the monthly balance only)
+    sources:
+    - file: interface/resource_groups/topbar_research_resource_groups.txt
+      find: RESOURCE_GROUP_BALANCE_ONLY
+  research.net:
+    path: Top bar, the Research figure (it shows the monthly balance only)
+    sources:
+    - file: interface/resource_groups/topbar_research_resource_groups.txt
+      find: RESOURCE_GROUP_BALANCE_ONLY
+  room.building_slots_free:
+    path: Planet window, the buildings panel, empty building slots
+    sources:
+    - file: interface/planet_view.gui
+      find: buildings_box
+  room.building_slots_free_foundry:
+    path: Planet window, the buildings panel, empty building slots
+    sources:
+    - file: interface/planet_view.gui
+      find: buildings_box
+  room.building_slots_free_growth:
+    path: Planet window, the buildings panel, empty building slots
+    sources:
+    - file: interface/planet_view.gui
+      find: buildings_box
+  room.building_slots_free_housing:
+    path: Planet window, the buildings panel, empty building slots
+    sources:
+    - file: interface/planet_view.gui
+      find: buildings_box
+  room.building_slots_free_order:
+    path: Planet window, the buildings panel, empty building slots
+    sources:
+    - file: interface/planet_view.gui
+      find: buildings_box
+  room.building_slots_free_research:
+    path: Planet window, the buildings panel, empty building slots
+    sources:
+    - file: interface/planet_view.gui
+      find: buildings_box
+  room.building_slots_free_unity:
+    path: Planet window, the buildings panel, empty building slots
+    sources:
+    - file: interface/planet_view.gui
+      find: buildings_box
+  room.districts_free:
+    path: Planet window, the districts panel, empty district slots
+    sources:
+    - file: interface/planet_view.gui
+      find: districts_window
+  room.farming_free:
+    path: Planet window, the districts panel, empty district slots
+    sources:
+    - file: interface/planet_view.gui
+      find: districts_window
+  room.generator_free:
+    path: Planet window, the districts panel, empty district slots
+    sources:
+    - file: interface/planet_view.gui
+      find: districts_window
+  room.mining_free:
+    path: Planet window, the districts panel, empty district slots
+    sources:
+    - file: interface/planet_view.gui
+      find: districts_window
+  starbases.slots_free:
+    path: Starbase window, the module and building slots of the starbase
+    sources:
+    - file: interface/starbase_view.gui
+      find: starbase_view
+  trade.net:
+    path: Top bar, the Trade figure; a click opens the Market window
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_trade_group
+  traditions.diplomacy_tree:
+    path: 'Traditions window (top bar: click Unity), the tradition trees and the cost of the next tradition'
+    sources:
+    - file: interface/topbar_traditions_view.gui
+      find: TRADITIONS
+  traditions.discovery_finished:
+    path: 'Traditions window (top bar: click Unity), the tradition trees and the cost of the next tradition'
+    sources:
+    - file: interface/topbar_traditions_view.gui
+      find: TRADITIONS
+  traditions.discovery_left:
+    path: 'Traditions window (top bar: click Unity), the tradition trees and the cost of the next tradition'
+    sources:
+    - file: interface/topbar_traditions_view.gui
+      find: TRADITIONS
+  traditions.fleet_logistics_corps:
+    path: 'Traditions window (top bar: click Unity), the tradition trees and the cost of the next tradition'
+    sources:
+    - file: interface/topbar_traditions_view.gui
+      find: TRADITIONS
+  traditions.next_cost:
+    path: 'Traditions window (top bar: click Unity), the tradition trees and the cost of the next tradition'
+    sources:
+    - file: interface/topbar_traditions_view.gui
+      find: TRADITIONS
+  traditions.supremacy_tree:
+    path: 'Traditions window (top bar: click Unity), the tradition trees and the cost of the next tradition'
+    sources:
+    - file: interface/topbar_traditions_view.gui
+      find: TRADITIONS
+  traditions.trees_free:
+    path: 'Traditions window (top bar: click Unity), the tradition trees and the cost of the next tradition'
+    sources:
+    - file: interface/topbar_traditions_view.gui
+      find: TRADITIONS
+  unity.expenses:
+    path: Empire window, tab Budget, the Expenses column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  unity.income:
+    path: Empire window, tab Budget, the Income column (by resource)
+    sources:
+    - file: interface/government_view.gui
+      find: tab_budget
+    - file: interface/government_view.gui
+      find: MONTHLY_INCOME_COLON
+  unity.net:
+    path: Top bar, the Unity figure, the signed number after the stored amount (the monthly balance)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_unity_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT_NEG
+  unity.stockpile:
+    path: Top bar, the Unity figure, the first number (what is stored)
+    sources:
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: tb_unity_group
+    - file: interface/resource_groups/topbar_single_resource_groups.txt
+      find: RESOURCE_GROUP_DEFAULT

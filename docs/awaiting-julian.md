@@ -67,3 +67,18 @@ alle drei stimmen mit der Berechnung überein. Gezählt werden nur fertige Gebä
 
 Abgelesen im selben Save an drei Sternenbasen (Thrish, Menkar, Talemes Mar), eingetragen in
 `tests/golden_values.py`: alle drei stimmen mit der Berechnung überein.
+
+## 7. Lizenz des offiziellen Paradox-Wikis — geprüft am 31.10.2026
+
+Geprüft auf `central.paradoxwikis.com/Central:Copyrights` (die Copyright-Seite des Stellaris-Wikis
+leitet dorthin weiter). Ergebnis: Die Texte stehen unter Creative Commons Attribution-Share Alike
+3.0 (CC BY-SA 3.0): Weitergabe und Bearbeitung nur mit Namensnennung samt Link auf das Wiki und
+unter gleicher Lizenz. Bilder und andere Dateien haben je eigene Lizenzen; Inhalte aus den Spielen
+gehören Paradox. Folge: Admiralty übernimmt keinen Wiki-Text und keine Wiki-Bilder. Die Liste der
+Lesetipps aus dem Wiki bleibt leer (Entscheidung 6 in `docs/plans/M9.md`), der Coach nennt keinen
+Wiki-Link. Wenn du später doch Links (keinen Text) willst, ist das deine Entscheidung; Links zu
+nennen ist urheberrechtlich unkritisch, die Auswahl der Seiten müsstest du aber selbst prüfen.
+
+Die Tabelle "Wo im Spiel" (`knowledge/4.5.2/ui_locations.yaml`) stammt allein aus den
+Interface- und Lokalisierungsdateien deiner Installation. Die Stichprobe dazu kommt in den
+Abschnitt "Abnahme".
