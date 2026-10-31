@@ -83,7 +83,7 @@ Block 2, the graph page:
 - [x] 10. Libraries and font shipped offline, footer about the game icons (topic 5, ADR 0004).
 
 Block 3, reaching a target (entry 10):
-- [ ] 11. Decode the known systems for Fair Play, resolve names, include bypasses and wormholes.
+- [x] 11. Decode the known systems for Fair Play, resolve names, include bypasses and wormholes.
 - [ ] 12. Static routes that differ in the empires they cross, with each empire's attitude, as an
       MCP tool; check on Mireesh 2294.01.01.
 - [ ] 13. The rule: every Cause on the way to a Goal has a fitting Remedy or is marked unresolved
@@ -112,7 +112,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 11 (decode the known systems for Fair Play, resolve names, include bypasses and wormholes; `docs/proposals/ops.md` entry 10; start with a short plan document `docs/plans/reach-target.md` for block 3).
+**Next action:** increment 12 (static routes that differ in the empires they cross, each empire's attitude, as an MCP tool `routes_to`; build on `extract/galaxy.py` `read_galaxy`/`Galaxy.neighbours()`; plan in `docs/plans/reach-target.md` section 12; check on Mireesh 2294.01.01 with `--empire Plexxi` against the Swarm and United Wi-Zerakian Authority).
 **Blockers:** none.
 
 ## Budget
@@ -145,3 +145,4 @@ STATUS: ACTIVE
 - 2026-10-31 — Increment 8 done: W, A, S, D move the graph view while held (rAF loop, 700 px/s, opposite keys cancel, diagonals not faster; ignored with Ctrl/Alt/Meta and in input fields; released on blur); the engine state has `view` (zoom, pan); seam `AdmiraltyEngine.pan(keys, ms)`. `tests/test_engine_pan.py` added (12 tests). 902 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (18.6 min), ruff clean.
 - 2026-10-31 — Increment 9 done: nodes the model adds may carry `empire` (a name from the expansion's `empires`, empires in contact; `compose` refuses others and a hand-written `flag`); `Snapshot.empire_flags()` reads each flag from the save (kept out of the extract, which is at its 40k budget) and `expand_graph` returns it as `empires`; `graph/icons.py` `load_flag` composes the flag like `gfx/FX/flag_sprite.shader` (background channels weight swatch slots 0-2 of `flags/colors.txt`, symbol over it) and `compose` embeds it as `flag`; the page shows it in place of the placeholder ("G" stays the fallback) and names the empire in the detail panel; skill text added. Tests added. 916 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19 min), ruff clean. Not checked by eye in the live page (Julian's Abnahme: look at a node about a neighbour).
 - 2026-10-31 — Increment 10 done: the graph page is offline. `engine/vendor/` (committed) holds Cytoscape 3.34.4, ELK 0.12.0, cytoscape-elk 2.3.0 and Exo 2 (400/600, latin, @fontsource 5.3.0) with their licence texts; `pins.json` pins version + SRI per file, `tools/fetch_engine_libs.py` writes `vendor/`; `tools/bundle_engine.py` verifies each file against its pin and inlines the libraries as scripts and the font as data URIs (bundle 2.1 MB, loads nothing); `index.html` lost the CDN and Google Fonts tags and got a footer (game icons belong to Paradox, come from the viewer's installation, fan project, sharer is responsible). The test driver now runs Chromium with name resolution off; the `network` marker, the test cache and the CDN tests are gone, replaced by pin/vendor/bundle checks and an offline test of the shipped bundle incl. `document.fonts.check`. 914 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19 min), ruff clean. Not checked by eye (Julian's Abnahme: open the page with the network off, look at the footer and the font).
+- 2026-10-31 — Increment 11 done: `extract/galaxy.py` (`read_galaxy(ctx, country_id, god_mode)`) decodes the map: `terra_incognita.systems` is the list of *found* systems (checked: all own and nearly all contacted empires' starbase systems are in it; Mireesh 499 of 591), owner via starbase station fleet (agrees with `sectors`), names via `ctx.name` (0 errors on 591 systems), hyperlanes (once per pair; `bridge` lanes are ordinary), wormholes and gateways as length-0 links with `requires` for a missing technology, left out with a reason when inactive, locked or a far end is unknown. Mireesh Fair Play: 499 systems, 655 lanes, 2 wormholes (tech missing); God Mode 591/854/5. Plan `docs/plans/reach-target.md`; `docs/proposals/ops.md` entry 10 noted. `tests/test_galaxy.py` (11). 925 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19 min), ruff clean.

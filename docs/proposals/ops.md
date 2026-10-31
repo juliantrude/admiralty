@@ -73,6 +73,17 @@ Offen: Fair Play braucht die bekannten Systeme (`terra_incognita`, Format noch n
 Julian nennt als zweite Route United Wi-Zerakian Authority, das muss mit echter Namensauflösung und
 Bypässen nachgeprüft werden.
 
+Umgesetzt (2026-10-31, Schritt 11): `extract/galaxy.py` liest die Karte für den Tracked Empire.
+`terra_incognita.systems` ist die Liste der **gefundenen** Systeme (Mireesh 2294.01.01: 499 von 591;
+alle 23 Systeme mit Sternenbasis des Players und die der Kontaktreiche bis auf wenige sind darin);
+Fair Play nutzt nur diese, God Mode die ganze Karte. Besitzer über Sternenbasis → Station → Flotte
+(deckt sich mit allen Systemen der `sectors`-Tabelle). Namen laufen über `ctx.name`. Wormholes
+(10 Paare, `tech_wormhole_stabilization`) und Gateways (5, alle inaktiv) sind Verbindungen der Länge 0;
+fehlt die Technologie, bleibt die Verbindung mit `requires` in der Karte, ein Ende unbekannt, gesperrt
+oder inaktiv lässt sie weg (`skipped`, mit Grund). `bridge = yes` an einer Hyperlane ist eine gewöhnliche
+Lane (Kartenerzeugung, `min_bridges`). Auf Mireesh: Fair Play 499 Systeme, 655 Lanes, 2 Wormholes
+(Technologie fehlt). Schritt 12 baut darauf die Routen.
+
 ## 11. Mehrere Briefings
 
 Nach Feedback entstand ein zweites Briefing mit eigenem Graphen, das auf das erste verweist. Der
