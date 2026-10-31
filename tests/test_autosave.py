@@ -5,7 +5,7 @@ import yaml
 from test_setup import run
 
 from admiralty.workspace.autosave import AUTOSAVE_OPTIONS, autosave_hint, read_autosave
-from admiralty.workspace.config import CONFIG_FILE, CampaignConfig, write_config
+from admiralty.workspace.config import CONFIG_FILE, CampaignConfig, SetupInvalid, write_config
 
 
 def settings(tmp_path, text):
@@ -98,3 +98,31 @@ def test_setup_write_passes_the_answer(vulkan_folder, tmp_path, capsys):
     assert result["save_service"] is True
     code, result, _ = run(capsys, *args, "--no-save-service")
     assert result["save_service"] is False
+
+
+def test_the_reminder_wait_is_stored_validated_and_kept(tmp_path):
+    workspace = tmp_path / "ws"
+    base = {"save_dir": str(tmp_path), "empire": "Plexxi"}
+    assert write_config(workspace, **base).save_reminder_minutes == 20
+    assert write_config(workspace, save_reminder_minutes=0).save_reminder_minutes == 0
+    assert write_config(workspace, **base).save_reminder_minutes == 0  # kept
+    assert yaml.safe_load((workspace / CONFIG_FILE).read_text())["save_reminder_minutes"] == 0
+    for bad in (-1, "20", True, 2.5):
+        with pytest.raises(SetupInvalid, match="save_reminder_minutes"):
+            write_config(workspace, save_reminder_minutes=bad)
+    assert (
+        CampaignConfig.load(workspace).save_reminder_minutes == 0
+    )  # the bad answers wrote nothing
+
+
+def test_setup_write_passes_the_reminder_wait(vulkan_folder, tmp_path, capsys):
+    workspace = tmp_path / "ws"
+    args = ["write", "--workspace", workspace, "--save-dir", vulkan_folder, "--empire", "Plexxi"]
+    code, result, _ = run(capsys, *args)
+    assert code == 0 and result["save_reminder_minutes"] == 20
+    code, result, _ = run(capsys, *args, "--save-reminder-minutes", "45")
+    assert result["save_reminder_minutes"] == 45
+    code, result, _ = run(capsys, *args)  # not given again: the earlier one stays
+    assert result["save_reminder_minutes"] == 45
+    code, result, _ = run(capsys, *args, "--save-reminder-minutes", "0")
+    assert result["save_reminder_minutes"] == 0

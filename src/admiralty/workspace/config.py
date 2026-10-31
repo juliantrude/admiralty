@@ -10,6 +10,7 @@ by hand any more, but hand edits are fine and survive a rewrite):
     knowledge: fair_play      # or god_mode
     backup_saves: true        # copy every save that is read into saves/
     save_service: true        # the Player wants `admiralty watch` to copy saves while the game runs
+    save_reminder_minutes: 20 # no new save for this long while the game runs: a desktop reminder; 0 = off
     players:                  # everyone else who plays along; may be empty
       - {name: Friend1, relation: ally}   # ally or rival
 """
@@ -26,6 +27,7 @@ import yaml
 
 CONFIG_FILE = "campaign.yaml"
 CONFIG_VERSION = 1
+DEFAULT_REMINDER_MINUTES = 20
 STATE_DIR = ".admiralty"  # inside the Campaign Workspace: turn log, caches
 
 MODES = ("consulting", "coaching")
@@ -58,6 +60,7 @@ class CampaignConfig:
     knowledge: str = "fair_play"
     backup_saves: bool = True
     save_service: bool = False
+    save_reminder_minutes: int = DEFAULT_REMINDER_MINUTES
     players: tuple[Player, ...] = ()
     raw: dict[str, Any] | None = None
 
@@ -90,6 +93,7 @@ class CampaignConfig:
             knowledge=_choice(data, "knowledge", KNOWLEDGE, "fair_play"),
             backup_saves=_flag(data, "backup_saves", True),
             save_service=_flag(data, "save_service", False),
+            save_reminder_minutes=_minutes(data, "save_reminder_minutes", DEFAULT_REMINDER_MINUTES),
             players=parse_players(data.get("players")),
             raw=data,
         )
@@ -171,6 +175,7 @@ _KEY_ORDER = (
     "knowledge",
     "backup_saves",
     "save_service",
+    "save_reminder_minutes",
     "players",
 )
 
@@ -185,6 +190,7 @@ def _check(data: dict[str, Any]) -> None:
     _choice(data, "knowledge", KNOWLEDGE, "fair_play")
     _flag(data, "backup_saves", True)
     _flag(data, "save_service", False)
+    _minutes(data, "save_reminder_minutes", DEFAULT_REMINDER_MINUTES)
     parse_players(data.get("players"))
 
 
@@ -199,4 +205,16 @@ def _flag(data: dict[str, Any], key: str, default: bool) -> bool:
     value = data.get(key, default)
     if not isinstance(value, bool):
         raise SetupInvalid(f"{key} must be true or false, not {value!r}")
+    return value
+
+
+def reminder_minutes(data: dict[str, Any]) -> int:
+    """`save_reminder_minutes` of a raw campaign.yaml (default 20, 0 = off)."""
+    return _minutes(data, "save_reminder_minutes", DEFAULT_REMINDER_MINUTES)
+
+
+def _minutes(data: dict[str, Any], key: str, default: int) -> int:
+    value = data.get(key, default)
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise SetupInvalid(f"{key} must be a whole number of minutes (0 = off), not {value!r}")
     return value

@@ -231,6 +231,14 @@ def _add_setup_commands(commands) -> None:
         help="the Player's answer to the offer of the save service (default: keep the earlier one)",
     )
     write.add_argument(
+        "--save-reminder-minutes",
+        type=int,
+        default=None,
+        metavar="N",
+        help="desktop reminder after N minutes without a new save while the game runs "
+        "(default 20, 0 = off; default: keep the earlier one)",
+    )
+    write.add_argument(
         "--reset-archive", action="store_true", help="move archive/ aside if the empire changes"
     )
 
@@ -449,7 +457,9 @@ def _watch(args) -> int:
         return _watch_unit(args)
     root = Path(args.save_root).expanduser() if args.save_root else save_root()
     base = Path(args.data_dir).expanduser() if args.data_dir else registry.data_dir()
-    watcher = watch.Watcher(root, base)
+    watcher = watch.Watcher(
+        root, base, game_running=watch.game_is_running, notifier=watch.DesktopNotifier()
+    )
 
     def report(copy: watch.Copy) -> None:
         print(f"{copy.source.parent.name}/{copy.source.name} -> {copy.target}", flush=True)
@@ -493,6 +503,7 @@ def _setup(args) -> int:
                 rivals=tuple(args.rival),
                 backup_saves=not args.no_backup,
                 save_service=args.save_service,
+                save_reminder_minutes=args.save_reminder_minutes,
                 reset_archive=args.reset_archive,
             )
         else:

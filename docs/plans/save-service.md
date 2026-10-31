@@ -51,6 +51,18 @@ copied while the game runs is lost for Debrief. Today only a save that is read g
   JSON; a refusal of systemd is a message on stderr, exit 1. The unit directory (`--unit-dir`) and
   the `systemctl` call are parameters; tests use a recorder. The setup skill runs `watch install`
   after `check` on a yes and never removes a unit on a no (the unit serves every Campaign).
+- **The reminder (17):** `save_reminder_minutes` in `campaign.yaml` (default 20, 0 = off, whole
+  minutes; `setup write --save-reminder-minutes`, kept when not given). Every poll the watcher
+  checks `game_running` (a `/proc/<pid>/comm` of `stellaris`) and takes the Campaign folder with
+  the newest save mtime as the one played. Quiet time = now minus the later of that save's mtime
+  and the moment the watcher saw the game start (so an old save does not fire the moment the
+  game opens). At or over the wait: one `notify-send --print-id`; it is withdrawn through
+  `CloseNotification` (gdbus) when a newer save appears, another Campaign takes over, or the game
+  ends, and then the wait starts again. Only folders with a registered workspace are reminded (no
+  workspace, no way to switch it off); a broken `campaign.yaml` counts as off. `game_running` and
+  the notifier are `Watcher` parameters (default none, so tests and `watch --once` in tests touch
+  no desktop); the CLI passes the real ones. Without notify-send or a session bus the reminder is
+  silently skipped.
 - **All paths are parameters** (`state_dir`), so tests run on artificial folders and never touch the
   Player's home.
 - **Fair Play / Archive:** the watcher only copies files; it never parses a gamestate and so

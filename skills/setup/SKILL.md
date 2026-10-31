@@ -49,7 +49,10 @@ do not ask it again; confirm it in the summary at the end.
    the game overwrites later. Ask whether the Player wants it, and when `recommended` is not
    null add its `hint` in the Player's language in the same turn (Admiralty never changes the
    game's settings; the Player does it in the game's settings screen, or not). Wait for the
-   answer and remember it as yes or no.
+   answer and remember it as yes or no. On a yes add one sentence: while the game runs and no
+   new save came for 20 minutes, the service sends a desktop reminder, which the next save
+   withdraws. Pass `--save-reminder-minutes <n>` in step 7 only when the Player wants another
+   wait (0 turns the reminder off).
 7. **Confirm and write.** Summarise all answers in one short block and ask for a yes. Then run
 
    ```

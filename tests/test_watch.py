@@ -10,7 +10,7 @@ from pathlib import Path
 from admiralty.cli import main
 from admiralty.workspace import registry
 from admiralty.workspace.layout import create_workspace
-from admiralty.workspace.watch import Watcher
+from admiralty.workspace.watch import DesktopNotifier, Watcher, game_is_running
 
 NOW = 2_000_000_000.0
 
@@ -105,3 +105,163 @@ def test_watch_once_prints_the_copies(tmp_path, capsys):
     make_save(folder, "a.sav", "2259.12.01", now=time.time())  # the command uses the real clock
     assert main(args) == 0
     assert "vulkan_1/a.sav ->" in capsys.readouterr().out
+
+
+# --- the reminder: the game runs and no new save came -------------------------------------
+
+
+class Desk:
+    """Stands in for the desktop: records what was shown and what was withdrawn."""
+
+    def __init__(self):
+        self.shown: list[tuple[str, str]] = []
+        self.withdrawn: list[object] = []
+
+    def send(self, title, body):
+        self.shown.append((title, body))
+        return len(self.shown)
+
+    def withdraw(self, handle):
+        self.withdrawn.append(handle)
+
+
+class Stage:
+    """A save folder with a workspace, a movable clock and a game that can be started."""
+
+    def __init__(self, tmp_path: Path, minutes: int | None = 20):
+        self.now = NOW
+        self.running = True
+        self.desk = Desk()
+        self.folder = tmp_path / "saves" / "vulkan_1"
+        self.workspace = create_workspace(tmp_path / "ws")
+        if minutes is not None:
+            (self.workspace / "campaign.yaml").write_text(f"save_reminder_minutes: {minutes}\n")
+        registry.register(tmp_path / "data", self.folder.parent / "vulkan_1", self.workspace)
+        make_save(self.folder, "autosave_1.sav", "2259.01.01", age=3600)
+        self.watcher = Watcher(
+            tmp_path / "saves",
+            tmp_path / "data",
+            clock=lambda: self.now,
+            game_running=lambda: self.running,
+            notifier=self.desk,
+        )
+
+    def look(self, minutes_later: float = 0.0):
+        self.now += minutes_later * 60
+        return self.watcher.poll()
+
+    def save(self, date: str, name: str = "autosave_1.sav"):
+        make_save(self.folder, name, date, age=60, body=date * 5, now=self.now)
+
+
+def test_no_new_save_for_the_wait_sends_one_reminder(tmp_path):
+    stage = Stage(tmp_path)
+    stage.look()  # the game is seen starting
+    stage.look(19)
+    assert stage.desk.shown == []
+    stage.look(2)
+    assert len(stage.desk.shown) == 1
+    assert "vulkan_1" in stage.desk.shown[0][1]
+    stage.look(10)
+    assert len(stage.desk.shown) == 1  # one reminder, not a stream
+
+
+def test_the_next_save_withdraws_it_and_the_wait_starts_again(tmp_path):
+    stage = Stage(tmp_path)
+    stage.look()
+    stage.look(21)
+    stage.save("2259.04.01")
+    stage.look(1)
+    assert stage.desk.withdrawn == [1]
+    stage.look(15)
+    assert len(stage.desk.shown) == 1
+    stage.look(10)
+    assert len(stage.desk.shown) == 2  # silent again for 20 minutes after that save
+
+
+def test_the_wait_counts_from_the_start_of_the_game_not_from_an_old_save(tmp_path):
+    stage = Stage(tmp_path)  # the newest save is an hour old
+    stage.running = False
+    stage.look()
+    stage.running = True
+    stage.look(5)  # the game is seen starting here
+    assert stage.desk.shown == []
+    stage.look(15)
+    assert stage.desk.shown == []
+    stage.look(6)
+    assert len(stage.desk.shown) == 1
+
+
+def test_no_game_no_reminder_and_the_end_of_the_game_withdraws(tmp_path):
+    stage = Stage(tmp_path)
+    stage.running = False
+    stage.look(60)
+    assert stage.desk.shown == []
+    stage.running = True
+    stage.look()
+    stage.look(25)
+    assert len(stage.desk.shown) == 1
+    stage.running = False
+    stage.look(1)
+    assert stage.desk.withdrawn == [1]
+
+
+def test_zero_minutes_is_off_and_the_default_is_twenty(tmp_path):
+    off = Stage(tmp_path / "a", minutes=0)
+    off.look()
+    off.look(120)
+    assert off.desk.shown == []
+    default = Stage(tmp_path / "b", minutes=None)
+    default.look()
+    default.look(21)
+    assert len(default.desk.shown) == 1
+
+
+def test_a_campaign_without_a_workspace_is_never_reminded(tmp_path):
+    desk = Desk()
+    now = [NOW]
+    folder = tmp_path / "saves" / "vulkan_1"
+    make_save(folder, "a.sav", "2259.01.01", age=3600)
+    w = Watcher(
+        tmp_path / "saves",
+        tmp_path / "data",
+        clock=lambda: now[0],
+        game_running=lambda: True,
+        notifier=desk,
+    )
+    w.poll()
+    now[0] += 7200
+    w.poll()
+    assert desk.shown == []
+
+
+def test_the_campaign_with_the_newest_save_is_the_one_played(tmp_path):
+    stage = Stage(tmp_path)
+    other = tmp_path / "saves" / "other_2"
+    stage.look()
+    stage.now += 30 * 60
+    make_save(other, "a.sav", "2300.01.01", age=60, now=stage.now)
+    stage.look()
+    assert stage.desk.shown == []  # `other` is played; it has no workspace
+    assert stage.desk.withdrawn == []
+
+
+def test_the_desktop_notifier_survives_missing_tools(monkeypatch):
+    def missing(*args, **kwargs):
+        raise FileNotFoundError("notify-send")
+
+    monkeypatch.setattr("admiralty.workspace.watch.subprocess.run", missing)
+    desk = DesktopNotifier()
+    assert desk.send("title", "body") is None
+    desk.withdraw(7)  # no desktop: no error
+
+
+def test_game_is_running_reads_proc(tmp_path, monkeypatch):
+    assert isinstance(game_is_running(), bool)
+    monkeypatch.setattr("admiralty.workspace.watch.Path", lambda _: tmp_path)
+    (tmp_path / "123").mkdir()
+    (tmp_path / "123" / "comm").write_text("bash\n")
+    assert game_is_running() is False
+    (tmp_path / "456").mkdir()
+    (tmp_path / "456" / "comm").write_text("stellaris\n")
+    assert game_is_running() is True

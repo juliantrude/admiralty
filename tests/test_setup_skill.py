@@ -47,3 +47,9 @@ def test_skill_installs_the_unit_only_on_a_yes():
     text = " ".join(SKILL.read_text().split())
     assert "Only when the Player said yes in step 6: run `admiralty watch install`" in text
     assert "do not remove a unit that is already there" in text
+
+
+def test_skill_states_the_reminder_default_and_how_to_change_it():
+    text = " ".join(SKILL.read_text().split())
+    assert "no new save came for 20 minutes" in text
+    assert "--save-reminder-minutes <n>" in text
