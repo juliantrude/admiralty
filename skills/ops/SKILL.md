@@ -38,7 +38,7 @@ uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty graph check-solution ..
    said they want, and give each a Horizon (`short`, `medium`, `long`). **Three Goals in total
    per Briefing**, because one expansion becomes one Solution Graph and a larger expansion
    exceeds the size a tool result can have. If the Player has more ambitions, say which three
-   you took and offer a second Briefing for the rest. A Goal outside the catalogue is a model
+   you took and offer to bring the rest in with the next update of the Briefing. A Goal outside the catalogue is a model
    Goal (see step 5); say so.
 4. **Expand.** Call `expand_graph` with `goals` (and `crisis_goals` for the Crisis Goals). Keep
    the `expansion_id` of the result. Read its `warnings`; if it asks to expand fewer Goals,
@@ -62,6 +62,25 @@ uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty graph check-solution ..
 8. **Watch list.** End with the Obstacles and Vicious Circles the Player has to watch, only those
    that bear on their wishes, and name the Playbook Rule ids that apply with the rule text quoted.
 
+## One current Briefing
+
+There is always **one** current Briefing with one Solution Graph, never a second one beside it.
+The Player's feedback, a new Goal and a new save all **update** it. The files are
+`briefings/current/overlay.json` and `briefings/current/solution-graph.json`; when the first of
+them exists, this is an update:
+
+- Start from the current overlay: read it, write it as the new draft (below) and keep what still holds, the
+  prunes, weights and `why` entries whose reasons the new numbers still bear out. Drop or change
+  what they no longer bear out, and add what the feedback, the new Goal or the new save brings.
+  Every kept reason is checked against the new tool results, not trusted.
+- Call `expand_graph` again for the Goals of the update; the old `expansion_id` belongs to the old
+  save.
+- Compose as usual. The code moves the Briefing it replaces into the history
+  (`briefings/history/`) itself. Never move, rename or delete Briefing files by hand, and never
+  point the Player to an older version unless they ask for one.
+- The answer is the current Briefing, whole. Say in one sentence what changed since the last
+  version; do not refer to it as another document.
+
 ## Text and graph have separate jobs
 
 - **The graph** shows the connections and the proportions: which Cause weighs how much, which
@@ -75,8 +94,8 @@ uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty graph check-solution ..
 
 ## The overlay and the commands
 
-Write the overlay to `briefings/<in-game date>/overlay.json` (the date as the save header
-gives it). It is the only file you write by hand.
+Write the overlay to `briefings/draft/overlay.json`. It is the only file you write by hand.
+`compose` makes it the current overlay when it succeeds.
 
 ```json
 {
@@ -101,9 +120,8 @@ only a few percent. The graph sizes its nodes by these weights; `compose` refuse
 candidate needs a `why` or an `exclude_key_actions` entry with a reason.
 
 ```
-admiralty briefing compose briefings/<date>/overlay.json --expansion-id <N> --workspace . \
-    --out briefings/<date>/solution-graph.json
-admiralty graph check-solution briefings/<date>/solution-graph.json
+admiralty briefing compose briefings/draft/overlay.json --expansion-id <N> --workspace .
+admiralty graph check-solution briefings/current/solution-graph.json
 ```
 
 `<N>` is the `expansion_id` of step 4. Give exactly one of an expansion file or

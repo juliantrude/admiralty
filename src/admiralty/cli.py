@@ -66,7 +66,12 @@ def main(argv: list[str] | None = None) -> int:
         "--workspace", type=Path, default=Path.cwd(), help="Campaign Workspace (default: cwd)"
     )
     compose.add_argument("overlay", type=Path, help="JSON the model wrote")
-    compose.add_argument("--out", type=Path, required=True)
+    compose.add_argument(
+        "--out",
+        type=Path,
+        help="write the Solution Graph here; default: it becomes the current Briefing of the "
+        "workspace and the one it replaces moves into the history",
+    )
     compose.add_argument("--knowledge-root", type=Path, help="default: knowledge/ of the plugin")
 
     view = briefing.add_parser(
@@ -333,19 +338,25 @@ def _compose(args) -> int:
             print(problem, file=sys.stderr)
         return 1
     icons = _embed_icons(doc, expansion.get("version", "v4.5.2"))
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
-    print(
-        json.dumps(
-            {
-                "out": str(args.out),
-                "nodes": len(doc["nodes"]),
-                "icons": icons,
-                "key_actions": [a["node"] for a in doc["key_actions"]],
-            },
-            indent=1,
-        )
-    )
+    result: dict = {}
+    if args.out is None:
+        from admiralty.workspace import briefings
+
+        archived = briefings.publish(args.workspace, overlay, doc)
+        result = {
+            "out": str(briefings.current_graph(args.workspace)),
+            "replaced": str(archived) if archived else None,
+        }
+    else:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(json.dumps(doc, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        result = {"out": str(args.out)}
+    result |= {
+        "nodes": len(doc["nodes"]),
+        "icons": icons,
+        "key_actions": [a["node"] for a in doc["key_actions"]],
+    }
+    print(json.dumps(result, indent=1))
     return 0
 
 

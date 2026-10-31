@@ -39,7 +39,7 @@ def test_every_command_and_flag_the_skill_runs_exists():
     text = SKILL.read_text()
     for command in ("briefing compose", "graph check-solution"):
         assert f"admiralty {command}" in text
-    for flag in ("--expansion-id", "--workspace", "--out"):
+    for flag in ("--expansion-id", "--workspace"):
         assert flag in text
         assert _cli_accepts(flag)
 
@@ -99,3 +99,16 @@ def test_text_and_graph_have_separate_jobs():
     assert "Key Actions stand in the graph and in the list under it" in text
     steps = re.search(r"6\. \*\*Key Actions\.\*\*(.*?)\n## ", SKILL.read_text(), re.DOTALL).group(1)
     assert "Action Plan.** By domain" not in steps
+
+
+def test_there_is_one_current_briefing_that_updates():
+    text = " ".join(SKILL.read_text().split())
+    assert "## One current Briefing" in text
+    assert (
+        "briefings/current/overlay.json" in text and "briefings/current/solution-graph.json" in text
+    )
+    assert "briefings/history/" in text
+    assert "briefings/draft/overlay.json" in text
+    assert "a second Briefing" not in text
+    assert "briefings/<date>" not in text and "--out" not in text
+    assert "Never move, rename or delete Briefing files by hand" in text

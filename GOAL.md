@@ -70,7 +70,7 @@ Block 1, Ops as Julian wants it (`docs/proposals/ops.md`, `docs/proposals/claims
       the setup skill bolds Display Names only.
 - [x] 2. A stale save goes on when the Player asks for it (entry 1).
 - [x] 3. Roles of text and graph (entry 6) in `skills/ops/SKILL.md`, with its static test.
-- [ ] 4. One current Briefing, updated by feedback, new Goals and new saves, older versions in a
+- [x] 4. One current Briefing, updated by feedback, new Goals and new saves, older versions in a
       history (entry 11).
 - [ ] 5. Every Briefing composes its graph and opens it in the browser, from the CLI (entry 7).
 
@@ -112,7 +112,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 4 (one current Briefing, updated by feedback, new Goals and new saves, older versions in a history; `docs/proposals/ops.md` entry 11).
+**Next action:** increment 5 (every Briefing composes its graph and opens it in the browser, from the CLI; `docs/proposals/ops.md` entry 7). `briefing compose` without `--out` now publishes to `briefings/current/`; opening the page can default to that file.
 **Blockers:** none.
 
 ## Budget
@@ -138,3 +138,4 @@ STATUS: ACTIVE
   proportions, Key Actions in graph and list; text = the Player's wishes, what is not possible and why, what comes first; no repeated
   Key Actions, no description of the graph); steps 7-8 rewritten accordingly. Static test added. 854 tests green (3 skips) at
   `ADMIRALTY_PERF_SLACK=2.5` (17 min), ruff clean.
+- 2026-10-31 — Increment 4 done: `workspace/briefings.py` keeps one current Briefing (`briefings/current/` overlay + Solution Graph); `admiralty briefing compose` without `--out` publishes it and moves the replaced version to `briefings/history/NNN-<date>/` (staged write, a refused compose leaves the old one). `skills/ops/SKILL.md` has the section "One current Briefing" (update from the current overlay, draft at `briefings/draft/overlay.json`, no second Briefing). Tests added. 860 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (17.5 min) plus the one skill-text test re-run after a wording fix, ruff clean.

@@ -557,6 +557,38 @@ def test_cli_compose_and_check_solution(graph, expansion, tmp_path, capsys):
     assert "a Key Action is a Remedy node" in capsys.readouterr().out
 
 
+def test_cli_compose_without_out_updates_the_current_briefing(graph, expansion, tmp_path, capsys):
+    (tmp_path / "expansion.json").write_text(json.dumps(expansion))
+    (tmp_path / "overlay.json").write_text(json.dumps(OVERLAY))
+    command = ["briefing", "compose", str(tmp_path / "expansion.json"),
+               str(tmp_path / "overlay.json"), "--workspace", str(tmp_path),
+               "--knowledge-root", str(tmp_path)]  # fmt: skip
+    assert main(command) == 0
+    first = json.loads(capsys.readouterr().out)
+    current = tmp_path / "briefings" / "current"
+    assert first["out"] == str(current / "solution-graph.json") and first["replaced"] is None
+    assert json.loads((current / "overlay.json").read_text()) == OVERLAY
+    assert main(command) == 0
+    second = json.loads(capsys.readouterr().out)
+    assert second["replaced"] == str(next((tmp_path / "briefings" / "history").iterdir()))
+    assert (current / "solution-graph.json").is_file()
+
+
+def test_cli_compose_refuses_without_replacing_the_current_briefing(
+    graph, expansion, tmp_path, capsys
+):
+    (tmp_path / "expansion.json").write_text(json.dumps(expansion))
+    (tmp_path / "overlay.json").write_text(json.dumps(OVERLAY))
+    command = ["briefing", "compose", str(tmp_path / "expansion.json"),
+               str(tmp_path / "overlay.json"), "--workspace", str(tmp_path),
+               "--knowledge-root", str(tmp_path)]  # fmt: skip
+    assert main(command) == 0
+    capsys.readouterr()
+    (tmp_path / "overlay.json").write_text(json.dumps({"empire": "E", "goals": {}}))
+    assert main(command) == 1
+    assert not (tmp_path / "briefings" / "history").exists()
+
+
 def test_cli_compose_refuses_a_bad_overlay_without_writing(graph, expansion, tmp_path, capsys):
     (tmp_path / "expansion.json").write_text(json.dumps(expansion))
     (tmp_path / "overlay.json").write_text(json.dumps({"empire": "E", "goals": {}}))
