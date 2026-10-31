@@ -155,9 +155,16 @@ def main(argv: list[str] | None = None) -> int:
     hook = commands.add_parser("hook", help="Claude Code hooks (stdin: the hook event)")
     hook_events = hook.add_subparsers(dest="hook_event", required=True)
     hook_events.add_parser("stop", help="Unverified Claim check on the final answer")
+    hook_events.add_parser(
+        "pretooluse", help="Refuse writes to the Player Model folder (Write, Edit, Bash)"
+    )
 
     args = parser.parse_args(argv)
     if args.command == "hook":
+        if args.hook_event == "pretooluse":
+            from admiralty.player.guard import pretooluse
+
+            return pretooluse(sys.stdin, sys.stdout)
         from admiralty.claims.hook import stop
 
         return stop(sys.stdin, sys.stdout)
