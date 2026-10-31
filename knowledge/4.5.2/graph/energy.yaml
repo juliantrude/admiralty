@@ -12,7 +12,7 @@ goals:
 nodes:
   - id: energy.few_producers
     type: cause
-    title: Too few jobs that produce energy
+    title: Few jobs producing energy
     description: >
       Energy comes mainly from Technician jobs, topped up by buildings that add output per
       Technician. An empire whose income is short usually has too few staffed Technician jobs
@@ -23,7 +23,7 @@ nodes:
 
   - id: energy.weak_multipliers
     type: cause
-    title: The multipliers on energy output are small
+    title: Small energy output multipliers
     description: >
       The per-job output is scaled by technology multipliers. With healthy job counts, a larger
       multiplier gains more than another job.
@@ -34,7 +34,7 @@ nodes:
 
   - id: energy.heavy_upkeep
     type: cause
-    title: Upkeep eats the energy income
+    title: Heavy energy upkeep
     description: >
       Districts, buildings and jobs each charge an energy upkeep. Growth in any of them lowers
       net income even when output is unchanged.
@@ -60,7 +60,7 @@ nodes:
 
   - id: energy.upgrade_generator_buildings
     type: remedy
-    title: Build and upgrade the generator buildings
+    title: Build and upgrade generator buildings
     judgement: >
       Each building adds output for every Technician on the planet, so it pays most on planets
       that already have many Technicians. A modest gain per building, with a build cost and its
@@ -90,7 +90,7 @@ nodes:
 
   - id: energy.trim_upkeep
     type: remedy
-    title: Trim buildings and districts that cost more energy than they return
+    title: Trim costly buildings and districts
     judgement: >
       Worth doing only for upkeep that buys nothing the Player needs. It saves energy at once but
       loses whatever the building or district gave, so it is a judgement per planet.

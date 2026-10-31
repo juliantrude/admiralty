@@ -16,7 +16,7 @@ goals:
 nodes:
   - id: pop_growth.slow_rate
     type: cause
-    title: The growth rate bonuses are small
+    title: Small growth rate bonuses
     description: >
       Biological pops grow at a rate that technologies, edicts, traditions and a few buildings
       scale. A planet that grows slowly with room and food to spare is missing those multipliers.
@@ -27,7 +27,7 @@ nodes:
 
   - id: pop_growth.no_room
     type: cause
-    title: Growth stalls because no housing is free
+    title: No free housing for growth
     description: >
       A planet stops growing once its pops fill the housing it has. The growth rate then does not
       matter, and the fix is more housing, not faster growth.
@@ -37,7 +37,7 @@ nodes:
 
   - id: pop_growth.slow_assembly
     type: cause
-    title: Machine pops are assembled slowly
+    title: Slow machine pop assembly
     description: >
       Machine empires do not grow pops; they assemble them, at a rate that other multipliers
       scale. Biological growth bonuses do nothing for them, so the lever is the assembly rate.
@@ -82,7 +82,7 @@ nodes:
 
   - id: pop_growth.growth_edicts
     type: remedy
-    title: Run a growth edict
+    title: Enact a growth edict
     judgement: >
       A quick, temporary lever: it raises the rate on every planet while it runs and stops when
       it is cancelled. The price is Unity every month, so it only pays while growth is the real
@@ -97,7 +97,7 @@ nodes:
 
   - id: pop_growth.growth_buildings
     type: remedy
-    title: Build the buildings that speed up growth
+    title: Build growth buildings
     judgement: >
       A few buildings add growth on their planet, and the capital building adds it too. They use
       a building slot and have a build cost, so they belong on planets with room still left to
@@ -112,7 +112,7 @@ nodes:
 
   - id: pop_growth.assembly_boosts
     type: remedy
-    title: Raise the assembly rate of machine pops
+    title: Raise machine pop assembly
     judgement: >
       Assembly has its own technologies, a civic, a tradition and an edict. Together they are the
       machine answer to growth, and the edict is the quickest of them at a Unity price.

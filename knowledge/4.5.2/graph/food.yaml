@@ -11,7 +11,7 @@ goals:
 nodes:
   - id: food.few_farmers
     type: cause
-    title: Too few staffed Farmer jobs
+    title: Few staffed Farmer jobs
     description: >
       Food comes mainly from Farmer jobs on agriculture districts, and every pop eats. An empire
       whose food income is negative has grown its pop count faster than its Farmer jobs.
@@ -21,7 +21,7 @@ nodes:
 
   - id: food.weak_multipliers
     type: cause
-    title: The multipliers on food output are small
+    title: Small food output multipliers
     description: >
       Farming output is scaled by technology and by buildings that add output per Farmer. With
       healthy job counts, a larger multiplier gains more than another job.
@@ -32,7 +32,7 @@ nodes:
 
   - id: food.clone_vats_eat
     type: cause
-    title: Clone Vats raise the food upkeep while they bring more pops
+    title: Clone Vats raise food upkeep
     description: >
       Each Clone Vats building has a food upkeep of its own and speeds up growth, and every pop it
       adds eats. Built on many planets at once, they raise consumption faster than Farmer jobs
@@ -46,7 +46,7 @@ nodes:
 
   - id: food.pace_clone_vats
     type: remedy
-    title: Build the Clone Vats in steps, as the food balance allows
+    title: Build Clone Vats in steps
     judgement: >
       Costs nothing but patience: the next Clone Vats wait until the food income has absorbed the
       last ones. Slower growth in the meantime is the price, and it avoids a deficit that a

@@ -141,3 +141,11 @@ def test_an_unresolved_cause_is_named_and_never_hidden():
     assert "has a fitting Remedy or `compose` marks it `unresolved`" in text
     assert "**name that Cause in the answer**" in text
     assert "never write `unresolved` yourself" in text
+
+
+def test_titles_of_added_nodes_follow_the_catalogue_wording():
+    text = " ".join(SKILL.read_text().split())
+    assert "Titles of nodes you add follow the wording of the catalogue" in text
+    assert "a phrase of at most five words with no request" in text
+    assert 'an amount with its direction first ("More alloy income")' in text
+    assert "a Remedy an instruction of at most five words" in text

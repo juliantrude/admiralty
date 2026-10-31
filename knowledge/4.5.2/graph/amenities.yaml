@@ -7,14 +7,14 @@ domain: amenities
 goals:
   - id: amenities.enough
     mark: up
-    title: Amenities that cover what the pops use
+    title: Amenities for every pop
     symptom_metrics: [pops.unemployed]
     causes: [amenities.too_few_sources, amenities.high_usage]
 
 nodes:
   - id: amenities.too_few_sources
     type: cause
-    title: Too few jobs and buildings that give amenities
+    title: Few amenity jobs and buildings
     description: >
       Amenities come from the Entertainer and Medical Worker jobs and from a few buildings. A
       planet whose pops use more than that supply loses stability and output until the gap closes.
@@ -25,7 +25,7 @@ nodes:
 
   - id: amenities.high_usage
     type: cause
-    title: Every pop uses a lot of amenities
+    title: High amenity use per pop
     description: >
       The amenities a pop uses are scaled by modifiers. Cutting the use is the cheaper way to close
       a gap, because it needs no job and no building slot.
@@ -38,7 +38,7 @@ nodes:
 
   - id: amenities.staff_amenity_jobs
     type: remedy
-    title: Staff Entertainer and Medical Worker jobs
+    title: Staff amenity jobs
     judgement: >
       The direct fix on a planet that has the job slots. It takes pops away from producing jobs,
       so the gain is real only when the shortfall is larger than the lost output.
@@ -53,7 +53,7 @@ nodes:
 
   - id: amenities.amenity_buildings
     type: remedy
-    title: Build the buildings that give amenities
+    title: Build amenity buildings
     judgement: >
       A building gives a fixed block of amenities for one building slot, which beats a few jobs on
       a large planet. It has a build cost and upkeep and the slot has a price.
@@ -67,7 +67,7 @@ nodes:
 
   - id: amenities.cut_usage
     type: remedy
-    title: Take the modifiers that lower amenity use
+    title: Lower amenity use per pop
     judgement: >
       A tradition, an edict or a clinic upgrade lowers the use of every pop on every planet. It
       scales with the empire and needs no slot, but each costs Unity or a building upgrade.
@@ -82,7 +82,7 @@ nodes:
 
   - id: amenities.amenity_techs
     type: remedy
-    title: Research the technologies that scale amenities
+    title: Research amenity technologies
     judgement: >
       A multiplier on the amenities already produced. It helps most where there is a lot of supply
       already, and it is a small gain next to adding the first jobs.

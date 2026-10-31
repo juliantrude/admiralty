@@ -11,7 +11,7 @@ goals:
 nodes:
   - id: minerals.few_miners
     type: cause
-    title: Too few staffed Miner jobs
+    title: Few staffed Miner jobs
     description: >
       Minerals come mainly from Miner jobs on mining districts. An empire that is short of
       minerals usually has too few staffed Miner jobs for what it builds and what its
@@ -23,7 +23,7 @@ nodes:
 
   - id: minerals.weak_multipliers
     type: cause
-    title: The multipliers on mineral output are small
+    title: Small mineral output multipliers
     description: >
       Mining output is scaled by technology and by buildings that add output per Miner. With
       healthy job counts, a larger multiplier gains more than another job.

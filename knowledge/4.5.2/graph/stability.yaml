@@ -14,7 +14,7 @@ goals:
 nodes:
   - id: stability.weak_order
     type: cause
-    title: Too little order from jobs, buildings and edicts
+    title: Too little order
     description: >
       Stability gets flat bonuses from the order-keeping jobs, from a few buildings and from some
       edicts. A planet with none of them depends on its pops' mood alone.
@@ -25,7 +25,7 @@ nodes:
 
   - id: stability.unhappy_pops
     type: cause
-    title: The pops are unhappy for their own reasons
+    title: Pops unhappy for their own reasons
     description: >
       Pops' ethics, their factions and the policies they dislike lower stability on top of what
       the buildings give. This is the cause that flat bonuses only cover up.
@@ -37,7 +37,7 @@ nodes:
 
   - id: stability.staff_order_jobs
     type: remedy
-    title: Staff Soldier, Enforcer and Bureaucrat jobs
+    title: Staff order jobs
     judgement: >
       The order jobs add stability to their own planet at once. Each takes a pop out of a
       producing job, so it is cheap when pops are idle and a trade-off when they are not.
@@ -52,7 +52,7 @@ nodes:
 
   - id: stability.order_buildings
     type: remedy
-    title: Build the buildings that add stability
+    title: Build stability buildings
     judgement: >
       A building gives a large flat bonus to its planet for one slot. It is the strongest local
       fix, and a poor use of the slot on a planet that is already stable.
@@ -66,7 +66,7 @@ nodes:
 
   - id: stability.stability_edicts
     type: remedy
-    title: Run a stability edict
+    title: Enact a stability edict
     judgement: >
       An edict adds a flat bonus to every planet at once and ends when it is cancelled. The price
       is Unity every month, which competes with the next Tradition.
@@ -80,7 +80,7 @@ nodes:
 
   - id: stability.take_stability_traditions
     type: remedy
-    title: Take the traditions that add stability
+    title: Take stability traditions
     judgement: >
       A tradition adds stability to every planet permanently and has no upkeep. It is slow, since
       it sits behind the rest of its tree, so it is a long-term answer rather than a repair.

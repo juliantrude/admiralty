@@ -11,7 +11,7 @@ goals:
 nodes:
   - id: alloys.few_metallurgists
     type: cause
-    title: Too few staffed Metallurgist jobs
+    title: Few staffed Metallurgist jobs
     description: >
       Alloys come from Metallurgist jobs, which turn minerals into alloys and sit in foundry
       zones. An empire short of alloys has too few staffed Metallurgist jobs, or has them but
@@ -23,7 +23,7 @@ nodes:
 
   - id: alloys.weak_multipliers
     type: cause
-    title: The multipliers on alloy output are small
+    title: Small alloy output multipliers
     description: >
       Alloy output per Metallurgist is raised by technology and by buildings. With healthy job
       counts, a larger bonus gains more than another job.

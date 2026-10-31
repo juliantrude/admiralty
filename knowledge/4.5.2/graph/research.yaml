@@ -12,7 +12,7 @@ goals:
 nodes:
   - id: research.few_researchers
     type: cause
-    title: Too few staffed researcher jobs
+    title: Few staffed researcher jobs
     description: >
       Research comes mainly from the Physicist, Biologist and Engineer jobs, one for each of the
       three fields. An empire whose research lags usually has too few of them staffed for its size.
@@ -24,7 +24,7 @@ nodes:
 
   - id: research.weak_labs
     type: cause
-    title: The lab buildings add little per researcher
+    title: Weak lab buildings
     description: >
       The lab buildings add a bonus for every researcher on the planet. Where many researchers share
       a planet, an upgraded lab gains more than another researcher.
@@ -35,7 +35,7 @@ nodes:
 
   - id: research.slow_research_speed
     type: cause
-    title: Technologies are researched slowly for the output there is
+    title: Slow technology research speed
     description: >
       Output and speed are different levers. A research speed multiplier shortens every technology
       without adding output, and a tradition can add one for the whole empire.
@@ -48,7 +48,7 @@ nodes:
 
   - id: research.staff_researchers
     type: remedy
-    title: Staff more Physicist, Biologist and Engineer jobs
+    title: Staff researcher jobs
     judgement: >
       The direct fix and the one that scales with the empire. It needs pops and job slots, so it is
       cheap when pops are idle and a trade-off against other jobs when they are not.
@@ -63,7 +63,7 @@ nodes:
 
   - id: research.upgrade_labs
     type: remedy
-    title: Build and upgrade the lab buildings
+    title: Build and upgrade labs
     judgement: >
       Each lab adds output for every researcher of its field on the planet, so it pays most on
       planets with many researchers. A modest gain per building, with a build cost and a building
@@ -79,7 +79,7 @@ nodes:
 
   - id: research.research_speed_techs
     type: remedy
-    title: Research the technologies that raise research speed
+    title: Research the speed technologies
     judgement: >
       Each one shortens every later technology at once and costs no upkeep. The gain per step is
       small, and it is a reason to take these early rather than late.

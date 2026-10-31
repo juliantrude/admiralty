@@ -16,7 +16,7 @@ goals:
 nodes:
   - id: slots.few_district_slots
     type: cause
-    title: Planets are at their district limit
+    title: Planets at their district limit
     description: >
       The number of districts a planet can have depends on its size and on bonuses from the
       capital building, technologies and traditions. A planet at its limit cannot add a district
@@ -29,7 +29,7 @@ nodes:
 
   - id: slots.few_building_slots
     type: cause
-    title: Planets are running out of building slots
+    title: Planets short of building slots
     description: >
       Building slots come from the zones of the districts on the planet, so a planet fills them
       as it gains districts. A planet whose slots hold weak buildings wastes them.
@@ -43,7 +43,7 @@ nodes:
 
   - id: slots.more_district_slots
     type: remedy
-    title: Raise the district limit of the planets
+    title: Raise the district limit
     judgement: >
       Upgrading the capital building, taking the technology and finishing the traditions each add
       a district slot on every planet of their kind. They are one-time steps with a long reach,
@@ -60,7 +60,7 @@ nodes:
 
   - id: slots.more_building_slots
     type: remedy
-    title: Build the districts that open building slots
+    title: Build districts that open slots
     judgement: >
       Each district opens building slots through its zone, so a new district on a planet with a
       free district slot adds room for buildings too. It is the cheapest way to more building
@@ -75,7 +75,7 @@ nodes:
 
   - id: slots.replace_weak_buildings
     type: remedy
-    title: Replace the weakest building on full planets
+    title: Replace the weakest building
     judgement: >
       When no slot can be added, a slot held by a weak building is the cheapest one to free. It
       costs the building that is lost and the build cost of the new one, so it only pays when the

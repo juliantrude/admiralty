@@ -12,7 +12,7 @@ goals:
 nodes:
   - id: naval_capacity.low_base_sources
     type: cause
-    title: Few flat sources of naval capacity
+    title: Few flat naval capacity sources
     description: >
       Naval capacity is a flat sum of additive sources, scaled afterwards by the multipliers.
       An empire that is capacity-bound usually leans on too few of those sources: it has not
@@ -32,7 +32,7 @@ nodes:
 
   - id: naval_capacity.weak_multipliers
     type: cause
-    title: The multipliers on naval capacity are small
+    title: Small naval capacity multipliers
     description: >
       The flat sum is scaled by an empire-wide multiplier. When the flat sources are already
       healthy, raising the multiplier gains more than adding another source.
@@ -73,7 +73,7 @@ nodes:
 
   - id: naval_capacity.build_logistics_offices
     type: remedy
-    title: Add a Naval Logistics Office to Anchorage starbases
+    title: Add Naval Logistics Offices
     judgement: >
       Raises what each Anchorage on the same starbase gives. Only pays once there are Anchorages
       to improve, so it follows the Anchorage Remedy rather than replacing it.
@@ -115,7 +115,7 @@ nodes:
 
   - id: naval_capacity.fleet_logistics_corps
     type: remedy
-    title: Take the Fleet Logistics Corps tradition
+    title: Take Fleet Logistics Corps
     judgement: >
       A multiplier on everything the flat sources already give, so it grows in value with the
       rest of the build. It belongs to the Supremacy tree and is pointless without it.

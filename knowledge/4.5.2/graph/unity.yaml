@@ -7,14 +7,14 @@ domain: unity
 goals:
   - id: unity.more
     mark: up
-    title: Unity income that keeps up with the next Tradition
+    title: Unity income for Traditions
     symptom_metrics: [unity.net, traditions.next_cost]
     causes: [unity.few_producers, unity.weak_multipliers, unity.upkeep_drain]
 
 nodes:
   - id: unity.few_producers
     type: cause
-    title: Too few jobs and buildings that produce Unity
+    title: Few Unity jobs and buildings
     description: >
       Unity comes mostly from the Bureaucrat and Politician jobs and from the Unity buildings
       that tech unlocks. An empire whose Unity income lags the Tradition cost usually has too few
@@ -26,7 +26,7 @@ nodes:
 
   - id: unity.weak_multipliers
     type: cause
-    title: The multipliers on Unity output are small
+    title: Small Unity output multipliers
     description: >
       Technologies, ascension perks and civics scale the whole Unity income. With healthy job
       counts a larger multiplier gains more than another job, and it costs no upkeep.
@@ -37,7 +37,7 @@ nodes:
 
   - id: unity.upkeep_drain
     type: cause
-    title: Edicts and decrees charge Unity upkeep every month
+    title: Edicts and decrees drain Unity
     description: >
       Many edicts and decrees are bought with Unity once and then charge an upkeep in Unity for as
       long as they run. A few running edicts can swallow most of the income that was meant for the
@@ -52,7 +52,7 @@ nodes:
   - id: unity.raise_income
     type: remedy
     rules: [unity-vs-next-tradition]
-    title: Staff more Bureaucrat and Politician jobs
+    title: Staff Bureaucrat and Politician jobs
     judgement: >
       The general answer when a step is blocked only because Unity is short. It scales with the
       empire and has no upkeep of its own, but every pop moved here stops producing something else,
@@ -97,7 +97,7 @@ nodes:
 
   - id: unity.take_one_vision
     type: remedy
-    title: Take the One Vision ascension perk
+    title: Take One Vision
     judgement: >
       The largest single multiplier on the list, but an ascension perk slot is scarce and the other
       perks compete for it. Worth it when Traditions are the bottleneck for the strategy, not just
@@ -111,7 +111,7 @@ nodes:
 
   - id: unity.drop_idle_edicts
     type: remedy
-    title: Let edicts and decrees that no longer pay for themselves lapse
+    title: Drop idle edicts and decrees
     judgement: >
       The fastest saving, since the upkeep stops at once. It loses whatever the edict gave, so keep
       the ones that fill a real need and drop those left running out of habit.

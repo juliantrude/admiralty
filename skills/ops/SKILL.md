@@ -130,6 +130,14 @@ A Goal you add to `add_nodes` (`"type": "goal"`, id `model.<name>`) carries a `m
 from what the Player wants; the catalogue's Goals have theirs, and `compose` refuses a model Goal
 without one. The graph draws it over the Goal's icon.
 
+Titles of nodes you add follow the wording of the catalogue, in English and with game objects named
+as the English interface names them, with no figures (they belong in the text and the facts). A
+Goal is the wanted state as a phrase of at most five words with no request: an amount with its
+direction first ("More alloy income"), otherwise the state reached ("Stable planets", "Kel-Azaan
+wiped out"). A Cause is a short state ("Few staffed Metallurgist jobs"), a Remedy an instruction of
+at most five words ("Open more job slots"), an Obstacle says what is missing ("No free building
+slot").
+
 A node you add that is about another empire carries `"empire": "<its name>"`, spelled as in the
 `empires` of the expansion (the empires in contact; the Display Name). `compose` draws that
 empire's flag on the node in place of the placeholder and refuses a name that is not in contact.

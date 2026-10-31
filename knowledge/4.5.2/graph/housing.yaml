@@ -15,7 +15,7 @@ goals:
 nodes:
   - id: housing.too_few_homes
     type: cause
-    title: Districts and buildings give too little housing
+    title: Few housing districts and buildings
     description: >
       Housing comes from districts, from housing buildings and from the capital. A planet whose
       pops outnumber its housing stops growing, and pops that cannot be housed go unemployed.
@@ -26,7 +26,7 @@ nodes:
 
   - id: housing.pops_use_more
     type: cause
-    title: Every pop takes up more housing than it should
+    title: High housing use per pop
     description: >
       Some modifiers scale the housing each pop uses. With housing already built, a smaller use per
       pop frees as much room as a new building and has no upkeep.
@@ -80,7 +80,7 @@ nodes:
 
   - id: housing.cut_usage
     type: remedy
-    title: Take the modifiers that lower housing use per pop
+    title: Lower housing use per pop
     judgement: >
       Free room with no upkeep and no slot, but each one is a tradition or technology that has to
       be taken for other reasons too, so it is a reason to prefer them, not a plan on its own.

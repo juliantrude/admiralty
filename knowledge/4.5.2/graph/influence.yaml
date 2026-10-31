@@ -14,7 +14,7 @@ goals:
 nodes:
   - id: influence.few_sources
     type: cause
-    title: Few steady sources of influence
+    title: Few steady influence sources
     description: >
       Influence comes from a small set of flat bonuses: ascension perks, decrees, traditions and a
       few relics and civics. An empire without them lives on the base income alone and runs short as
@@ -26,7 +26,7 @@ nodes:
 
   - id: influence.big_spending
     type: cause
-    title: Projects and buildings that are paid in influence
+    title: Influence-priced projects and buildings
     description: >
       Megastructures, orbital rings and several starbase modules are bought with influence. A run of
       them in a short time drains the stockpile even when the monthly income is positive.
@@ -37,7 +37,7 @@ nodes:
 
   - id: influence.diplomatic_upkeep
     type: cause
-    title: Diplomatic relations charge influence upkeep
+    title: Influence upkeep from diplomatic relations
     description: >
       Pacts, subjects and federations each charge an upkeep in influence. Their scale grows with the
       number of relations, and reductions apply to the whole bill at once.
@@ -50,7 +50,7 @@ nodes:
 
   - id: influence.take_force_projection
     type: remedy
-    title: Take the Galactic Force Projection ascension perk
+    title: Take Galactic Force Projection
     judgement: >
       A permanent flat gain that costs nothing monthly. An ascension perk slot is scarce, so it is a
       choice against the other perks and only worth it when influence is the standing bottleneck.
@@ -64,7 +64,7 @@ nodes:
   - id: influence.run_will_to_power
     type: remedy
     rules: [unity-vs-next-tradition]
-    title: Run the Will to Power decree
+    title: Enact Will to Power
     judgement: >
       A large flat gain while it runs. The decree is bought in Unity and charges Unity upkeep, so it
       moves the shortage from influence to Unity. Fits when Unity is plentiful and influence is not.

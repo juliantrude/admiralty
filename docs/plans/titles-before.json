@@ -1,0 +1,908 @@
+{
+ "alloys.more": {
+  "type": "goal",
+  "title": "More alloy income"
+ },
+ "alloys.few_metallurgists": {
+  "type": "cause",
+  "title": "Too few staffed Metallurgist jobs"
+ },
+ "alloys.weak_multipliers": {
+  "type": "cause",
+  "title": "The multipliers on alloy output are small"
+ },
+ "alloys.staff_metallurgists": {
+  "type": "remedy",
+  "title": "Staff more Metallurgist jobs"
+ },
+ "alloys.build_foundry_zones": {
+  "type": "remedy",
+  "title": "Build foundry zones"
+ },
+ "alloys.research_alloy_techs": {
+  "type": "remedy",
+  "title": "Research the alloy technologies"
+ },
+ "alloys.build_production_ministry": {
+  "type": "remedy",
+  "title": "Build the production ministry building"
+ },
+ "alloys.no_spare_pops": {
+  "type": "obstacle",
+  "title": "No unemployed pops to fill new Metallurgist jobs",
+  "uncertain_title": "There may be no unemployed pops for new Metallurgist jobs"
+ },
+ "alloys.minerals_short": {
+  "type": "obstacle",
+  "title": "The mineral income cannot feed more foundries",
+  "uncertain_title": "The mineral income may not feed more foundries"
+ },
+ "alloys.energy_short": {
+  "type": "obstacle",
+  "title": "The energy income cannot carry more buildings",
+  "uncertain_title": "The energy income may not carry more buildings"
+ },
+ "alloys.no_foundry_slot": {
+  "type": "obstacle",
+  "title": "No free zone or building slot for foundries",
+  "uncertain_title": "There may be no free zone or building slot for foundries"
+ },
+ "alloys.alloy_tech_prerequisites": {
+  "type": "obstacle",
+  "title": "The alloy technologies need their prerequisites",
+  "uncertain_title": "The alloy technologies may still need their prerequisites"
+ },
+ "alloys.ministry_locked": {
+  "type": "obstacle",
+  "title": "The ministry building is not unlocked",
+  "uncertain_title": "The ministry building may not be unlocked yet"
+ },
+ "amenities.enough": {
+  "type": "goal",
+  "title": "Amenities that cover what the pops use"
+ },
+ "amenities.too_few_sources": {
+  "type": "cause",
+  "title": "Too few jobs and buildings that give amenities"
+ },
+ "amenities.high_usage": {
+  "type": "cause",
+  "title": "Every pop uses a lot of amenities"
+ },
+ "amenities.staff_amenity_jobs": {
+  "type": "remedy",
+  "title": "Staff Entertainer and Medical Worker jobs"
+ },
+ "amenities.amenity_buildings": {
+  "type": "remedy",
+  "title": "Build the buildings that give amenities"
+ },
+ "amenities.cut_usage": {
+  "type": "remedy",
+  "title": "Take the modifiers that lower amenity use"
+ },
+ "amenities.amenity_techs": {
+  "type": "remedy",
+  "title": "Research the technologies that scale amenities"
+ },
+ "amenities.no_spare_pops": {
+  "type": "obstacle",
+  "title": "No unemployed pops to staff amenity jobs",
+  "uncertain_title": "There may be no unemployed pops for amenity jobs"
+ },
+ "amenities.no_amenity_slot": {
+  "type": "obstacle",
+  "title": "No free amenity job slot",
+  "uncertain_title": "There may be no free amenity job slot"
+ },
+ "amenities.no_building_slot": {
+  "type": "obstacle",
+  "title": "No free building slot for an amenity building",
+  "uncertain_title": "There may be no free building slot for an amenity building"
+ },
+ "amenities.building_locked": {
+  "type": "obstacle",
+  "title": "The amenity building is not unlocked",
+  "uncertain_title": "The amenity building may not be unlocked yet"
+ },
+ "amenities.usage_needs_unity": {
+  "type": "obstacle",
+  "title": "Not enough Unity banked for the tradition or edict",
+  "uncertain_title": "There may not be enough Unity banked for the tradition or edict"
+ },
+ "amenities.tech_empire_type": {
+  "type": "obstacle",
+  "title": "The technology applies to one kind of empire only",
+  "uncertain_title": "The technology may apply to another kind of empire only"
+ },
+ "energy.more": {
+  "type": "goal",
+  "title": "Positive energy income"
+ },
+ "energy.few_producers": {
+  "type": "cause",
+  "title": "Too few jobs that produce energy"
+ },
+ "energy.weak_multipliers": {
+  "type": "cause",
+  "title": "The multipliers on energy output are small"
+ },
+ "energy.heavy_upkeep": {
+  "type": "cause",
+  "title": "Upkeep eats the energy income"
+ },
+ "energy.staff_technicians": {
+  "type": "remedy",
+  "title": "Staff more Technician jobs"
+ },
+ "energy.upgrade_generator_buildings": {
+  "type": "remedy",
+  "title": "Build and upgrade the generator buildings"
+ },
+ "energy.research_power_techs": {
+  "type": "remedy",
+  "title": "Research the power plant technologies"
+ },
+ "energy.trim_upkeep": {
+  "type": "remedy",
+  "title": "Trim buildings and districts that cost more energy than they return"
+ },
+ "energy.no_spare_pops": {
+  "type": "obstacle",
+  "title": "No unemployed pops to fill new Technician jobs",
+  "uncertain_title": "There may be no unemployed pops for new Technician jobs"
+ },
+ "energy.no_generator_slot": {
+  "type": "obstacle",
+  "title": "No free generator district or building slot",
+  "uncertain_title": "There may be no free generator district or building slot"
+ },
+ "energy.generator_building_locked": {
+  "type": "obstacle",
+  "title": "The generator building is not unlocked",
+  "uncertain_title": "The generator building may not be unlocked yet"
+ },
+ "energy.power_tech_prerequisites": {
+  "type": "obstacle",
+  "title": "The power plant technologies need their prerequisites",
+  "uncertain_title": "The power plant technologies may still need their prerequisites"
+ },
+ "energy.upkeep_buys_something": {
+  "type": "obstacle",
+  "title": "The upkeep pays for something the empire uses",
+  "uncertain_title": "The upkeep may pay for something the empire uses"
+ },
+ "food.positive": {
+  "type": "goal",
+  "title": "Positive food income"
+ },
+ "food.few_farmers": {
+  "type": "cause",
+  "title": "Too few staffed Farmer jobs"
+ },
+ "food.weak_multipliers": {
+  "type": "cause",
+  "title": "The multipliers on food output are small"
+ },
+ "food.clone_vats_eat": {
+  "type": "cause",
+  "title": "Clone Vats raise the food upkeep while they bring more pops"
+ },
+ "food.pace_clone_vats": {
+  "type": "remedy",
+  "title": "Build the Clone Vats in steps, as the food balance allows"
+ },
+ "food.staff_farmers": {
+  "type": "remedy",
+  "title": "Staff more Farmer jobs"
+ },
+ "food.build_agriculture_districts": {
+  "type": "remedy",
+  "title": "Build agriculture districts"
+ },
+ "food.research_farming_techs": {
+  "type": "remedy",
+  "title": "Research the farming technologies"
+ },
+ "food.build_processing": {
+  "type": "remedy",
+  "title": "Build the food processing buildings"
+ },
+ "food.no_spare_pops": {
+  "type": "obstacle",
+  "title": "No unemployed pops to fill new Farmer jobs",
+  "uncertain_title": "There may be no unemployed pops for new Farmer jobs"
+ },
+ "food.no_farming_slot": {
+  "type": "obstacle",
+  "title": "No free agriculture district or building slot",
+  "uncertain_title": "There may be no free agriculture district or building slot"
+ },
+ "food.cannot_pay_district": {
+  "type": "obstacle",
+  "title": "The mineral stockpile is empty",
+  "uncertain_title": "The mineral stockpile may be empty"
+ },
+ "food.farming_tech_prerequisites": {
+  "type": "obstacle",
+  "title": "The farming technologies need their prerequisites",
+  "uncertain_title": "The farming technologies may still need their prerequisites"
+ },
+ "food.processing_locked": {
+  "type": "obstacle",
+  "title": "The processing building is not unlocked",
+  "uncertain_title": "The processing building may not be unlocked yet"
+ },
+ "food.vats_already_built": {
+  "type": "obstacle",
+  "title": "The Clone Vats already stand on the planets",
+  "uncertain_title": "The Clone Vats may already stand on the planets"
+ },
+ "housing.enough": {
+  "type": "goal",
+  "title": "Housing for every pop"
+ },
+ "housing.too_few_homes": {
+  "type": "cause",
+  "title": "Districts and buildings give too little housing"
+ },
+ "housing.pops_use_more": {
+  "type": "cause",
+  "title": "Every pop takes up more housing than it should"
+ },
+ "housing.free_housing": {
+  "type": "remedy",
+  "title": "Build city districts for housing"
+ },
+ "housing.dwelling_buildings": {
+  "type": "remedy",
+  "title": "Build housing buildings"
+ },
+ "housing.arcologies": {
+  "type": "remedy",
+  "title": "Convert districts to arcologies"
+ },
+ "housing.cut_usage": {
+  "type": "remedy",
+  "title": "Take the modifiers that lower housing use per pop"
+ },
+ "housing.no_district_slot": {
+  "type": "obstacle",
+  "title": "The planets have no free district slot",
+  "uncertain_title": "The planets may have no free district slot"
+ },
+ "housing.district_upkeep": {
+  "type": "obstacle",
+  "title": "Energy income cannot carry another district",
+  "uncertain_title": "The energy income may not carry another district"
+ },
+ "housing.no_building_slot": {
+  "type": "obstacle",
+  "title": "The planets have no free building slot for housing",
+  "uncertain_title": "The planets may have no free building slot for housing"
+ },
+ "housing.dwelling_locked": {
+  "type": "obstacle",
+  "title": "The housing building is not unlocked",
+  "uncertain_title": "The housing building may not be unlocked yet"
+ },
+ "housing.arcology_locked": {
+  "type": "obstacle",
+  "title": "The arcology is not unlocked, or the planet is no city world",
+  "uncertain_title": "The arcology may not be unlocked, or the planet may be no city world"
+ },
+ "housing.cannot_pay_conversion": {
+  "type": "obstacle",
+  "title": "Not enough alloys for the conversion",
+  "uncertain_title": "There may not be enough alloys for the conversion"
+ },
+ "housing.usage_modifier_locked": {
+  "type": "obstacle",
+  "title": "The tradition or technology is not taken yet",
+  "uncertain_title": "The tradition or technology may not be taken yet"
+ },
+ "influence.positive": {
+  "type": "goal",
+  "title": "Positive influence income"
+ },
+ "influence.few_sources": {
+  "type": "cause",
+  "title": "Few steady sources of influence"
+ },
+ "influence.big_spending": {
+  "type": "cause",
+  "title": "Projects and buildings that are paid in influence"
+ },
+ "influence.diplomatic_upkeep": {
+  "type": "cause",
+  "title": "Diplomatic relations charge influence upkeep"
+ },
+ "influence.take_force_projection": {
+  "type": "remedy",
+  "title": "Take the Galactic Force Projection ascension perk"
+ },
+ "influence.run_will_to_power": {
+  "type": "remedy",
+  "title": "Run the Will to Power decree"
+ },
+ "influence.take_colonial_viceroys": {
+  "type": "remedy",
+  "title": "Take the Colonial Viceroys tradition"
+ },
+ "influence.stagger_projects": {
+  "type": "remedy",
+  "title": "Spread influence-priced projects over time"
+ },
+ "influence.adopt_diplomacy_tradition": {
+  "type": "remedy",
+  "title": "Adopt the Diplomacy tradition tree"
+ },
+ "influence.research_federation_code": {
+  "type": "remedy",
+  "title": "Research Federation Code"
+ },
+ "influence.no_ascension_slot": {
+  "type": "obstacle",
+  "title": "No free ascension perk slot",
+  "uncertain_title": "There may be no free ascension perk slot"
+ },
+ "influence.decree_locked": {
+  "type": "obstacle",
+  "title": "The decree is not unlocked yet",
+  "uncertain_title": "The decree may not be unlocked yet"
+ },
+ "influence.decree_costs_unity": {
+  "type": "obstacle",
+  "title": "Not enough Unity to buy and keep the decree",
+  "uncertain_title": "There may not be enough Unity to buy and keep the decree"
+ },
+ "influence.viceroys_needs_unity": {
+  "type": "obstacle",
+  "title": "Not enough Unity banked for the next Tradition",
+  "uncertain_title": "There may not be enough Unity banked for the next Tradition"
+ },
+ "influence.diplomacy_needs_unity": {
+  "type": "obstacle",
+  "title": "Not enough Unity banked to adopt the tradition tree",
+  "uncertain_title": "There may not be enough Unity banked to adopt the tradition tree"
+ },
+ "influence.project_cannot_wait": {
+  "type": "obstacle",
+  "title": "The project cannot wait for the stockpile to refill",
+  "uncertain_title": "The project may not be able to wait for the stockpile to refill"
+ },
+ "influence.federation_code_prerequisites": {
+  "type": "obstacle",
+  "title": "Federation Code needs its prerequisites",
+  "uncertain_title": "Federation Code may still need its prerequisites"
+ },
+ "jobs.free_jobs": {
+  "type": "remedy",
+  "title": "Open more job slots"
+ },
+ "jobs.no_district_room": {
+  "type": "obstacle",
+  "title": "The planets have no free district slot",
+  "uncertain_title": "The planets may have no free district slot"
+ },
+ "jobs.no_building_room": {
+  "type": "obstacle",
+  "title": "The planets have no free building slot",
+  "uncertain_title": "The planets may have no free building slot"
+ },
+ "market.steady_trade": {
+  "type": "goal",
+  "title": "Standing trades that keep running"
+ },
+ "market.trade_pays_deficit": {
+  "type": "cause",
+  "title": "Standing trades cover a deficit that production should cover"
+ },
+ "market.stock_runs_dry": {
+  "type": "cause",
+  "title": "The stock a trade draws on runs out and the trade stalls"
+ },
+ "market.big_trades_cost_more": {
+  "type": "cause",
+  "title": "Large trades move the price and pay more fee"
+ },
+ "market.drop_standing_trades": {
+  "type": "remedy",
+  "title": "Take the standing trades out"
+ },
+ "market.match_trade_to_need": {
+  "type": "remedy",
+  "title": "Buy only as much as the deficit needs"
+ },
+ "market.keep_reserve": {
+  "type": "remedy",
+  "title": "Keep a reserve in the stock the trades use"
+ },
+ "market.cut_trade_fee": {
+  "type": "remedy",
+  "title": "Lower the fee the market keeps"
+ },
+ "market.stock_short": {
+  "type": "obstacle",
+  "title": "A standing trade has less than one month of stock to run on",
+  "uncertain_title": "A standing trade may have less than one month of stock to run on"
+ },
+ "market.deficit_returns": {
+  "type": "obstacle",
+  "title": "The deficit the trades covered shows in full once they stop",
+  "uncertain_title": "The deficit the trades covered may show in full once they stop"
+ },
+ "market.need_unmeasured": {
+  "type": "obstacle",
+  "title": "What the deficit needs without the trade is not known",
+  "uncertain_title": "What the deficit needs without the trade may not be known"
+ },
+ "market.fee_sources_missing": {
+  "type": "obstacle",
+  "title": "The traditions and buildings that lower the fee are not in place",
+  "uncertain_title": "The traditions and buildings that lower the fee may not be in place"
+ },
+ "minerals.more": {
+  "type": "goal",
+  "title": "More mineral income"
+ },
+ "minerals.few_miners": {
+  "type": "cause",
+  "title": "Too few staffed Miner jobs"
+ },
+ "minerals.weak_multipliers": {
+  "type": "cause",
+  "title": "The multipliers on mineral output are small"
+ },
+ "minerals.staff_miners": {
+  "type": "remedy",
+  "title": "Staff more Miner jobs"
+ },
+ "minerals.build_mining_districts": {
+  "type": "remedy",
+  "title": "Build mining districts"
+ },
+ "minerals.research_mining_techs": {
+  "type": "remedy",
+  "title": "Research the mining technologies"
+ },
+ "minerals.build_purification": {
+  "type": "remedy",
+  "title": "Build the mineral purification buildings"
+ },
+ "minerals.use_omnifarious_acquisition": {
+  "type": "remedy",
+  "title": "Enact the Omnifarious Acquisition decree"
+ },
+ "minerals.no_spare_pops": {
+  "type": "obstacle",
+  "title": "No unemployed pops to fill new Miner jobs",
+  "uncertain_title": "There may be no unemployed pops for new Miner jobs"
+ },
+ "minerals.no_mining_slot": {
+  "type": "obstacle",
+  "title": "No free mining district or building slot",
+  "uncertain_title": "There may be no free mining district or building slot"
+ },
+ "minerals.cannot_pay_district": {
+  "type": "obstacle",
+  "title": "The mineral stockpile is empty",
+  "uncertain_title": "The mineral stockpile may be empty"
+ },
+ "minerals.mining_tech_prerequisites": {
+  "type": "obstacle",
+  "title": "The mining technologies need their prerequisites",
+  "uncertain_title": "The mining technologies may still need their prerequisites"
+ },
+ "minerals.purification_locked": {
+  "type": "obstacle",
+  "title": "The purification building is not unlocked",
+  "uncertain_title": "The purification building may not be unlocked yet"
+ },
+ "minerals.decree_locked": {
+  "type": "obstacle",
+  "title": "The decree is not available",
+  "uncertain_title": "The decree may not be available"
+ },
+ "naval_capacity.more": {
+  "type": "goal",
+  "title": "More naval capacity"
+ },
+ "naval_capacity.low_base_sources": {
+  "type": "cause",
+  "title": "Few flat sources of naval capacity"
+ },
+ "naval_capacity.weak_multipliers": {
+  "type": "cause",
+  "title": "The multipliers on naval capacity are small"
+ },
+ "naval_capacity.adopt_supremacy": {
+  "type": "remedy",
+  "title": "Adopt the Supremacy tradition tree"
+ },
+ "naval_capacity.build_anchorages": {
+  "type": "remedy",
+  "title": "Build Anchorages on starbases"
+ },
+ "naval_capacity.build_logistics_offices": {
+  "type": "remedy",
+  "title": "Add a Naval Logistics Office to Anchorage starbases"
+ },
+ "naval_capacity.research_fleet_doctrine": {
+  "type": "remedy",
+  "title": "Research the naval capacity technologies"
+ },
+ "naval_capacity.staff_soldier_jobs": {
+  "type": "remedy",
+  "title": "Staff Soldier jobs"
+ },
+ "naval_capacity.fleet_logistics_corps": {
+  "type": "remedy",
+  "title": "Take the Fleet Logistics Corps tradition"
+ },
+ "naval_capacity.supremacy_needs_unity": {
+  "type": "obstacle",
+  "title": "Not enough Unity banked for the next Tradition",
+  "uncertain_title": "There may not be enough Unity banked for the next Tradition"
+ },
+ "naval_capacity.tradition_slot_taken": {
+  "type": "obstacle",
+  "title": "The tradition trees are already committed elsewhere",
+  "uncertain_title": "The tradition trees may already be committed elsewhere"
+ },
+ "naval_capacity.anchorage_needs_alloys": {
+  "type": "obstacle",
+  "title": "Alloy income does not carry another module",
+  "uncertain_title": "The alloy income may not carry another module"
+ },
+ "naval_capacity.no_free_starbase_slot": {
+  "type": "obstacle",
+  "title": "No starbase has a free module or building slot",
+  "uncertain_title": "No starbase may have a free module or building slot"
+ },
+ "naval_capacity.office_needs_technology": {
+  "type": "obstacle",
+  "title": "The Office is not unlocked",
+  "uncertain_title": "The Office may not be unlocked yet"
+ },
+ "naval_capacity.doctrine_prerequisites": {
+  "type": "obstacle",
+  "title": "The doctrine technologies need their prerequisites first",
+  "uncertain_title": "The doctrine technologies may still need their prerequisites"
+ },
+ "naval_capacity.no_spare_pops": {
+  "type": "obstacle",
+  "title": "No unemployed pops to fill Soldier jobs",
+  "uncertain_title": "There may be no unemployed pops for Soldier jobs"
+ },
+ "naval_capacity.soldier_jobs_cost_output": {
+  "type": "obstacle",
+  "title": "Soldier jobs take pops from productive work",
+  "uncertain_title": "Soldier jobs may take pops from productive work"
+ },
+ "pop_growth.faster": {
+  "type": "goal",
+  "title": "Faster pop growth"
+ },
+ "pop_growth.slow_rate": {
+  "type": "cause",
+  "title": "The growth rate bonuses are small"
+ },
+ "pop_growth.no_room": {
+  "type": "cause",
+  "title": "Growth stalls because no housing is free"
+ },
+ "pop_growth.slow_assembly": {
+  "type": "cause",
+  "title": "Machine pops are assembled slowly"
+ },
+ "pop_growth.grow_pops": {
+  "type": "remedy",
+  "title": "Grow more pops"
+ },
+ "pop_growth.growth_techs": {
+  "type": "remedy",
+  "title": "Research the growth technologies"
+ },
+ "pop_growth.growth_edicts": {
+  "type": "remedy",
+  "title": "Run a growth edict"
+ },
+ "pop_growth.growth_buildings": {
+  "type": "remedy",
+  "title": "Build the buildings that speed up growth"
+ },
+ "pop_growth.assembly_boosts": {
+  "type": "remedy",
+  "title": "Raise the assembly rate of machine pops"
+ },
+ "pop_growth.food_deficit": {
+  "type": "obstacle",
+  "title": "Food income is negative",
+  "uncertain_title": "Food income may be negative"
+ },
+ "pop_growth.no_free_housing": {
+  "type": "obstacle",
+  "title": "The planets have no free housing",
+  "uncertain_title": "The planets may have no free housing"
+ },
+ "pop_growth.growth_tech_locked": {
+  "type": "obstacle",
+  "title": "The growth technologies are not researched yet",
+  "uncertain_title": "The growth technologies may not be researched yet"
+ },
+ "pop_growth.edict_costs_unity": {
+  "type": "obstacle",
+  "title": "The edict is paid in Unity",
+  "uncertain_title": "The edict may cost Unity that is needed elsewhere"
+ },
+ "pop_growth.no_growth_building_slot": {
+  "type": "obstacle",
+  "title": "No free building slot for a growth building",
+  "uncertain_title": "There may be no free building slot for a growth building"
+ },
+ "pop_growth.assembly_locked": {
+  "type": "obstacle",
+  "title": "The assembly boosts are not unlocked yet",
+  "uncertain_title": "The assembly boosts may not be unlocked yet"
+ },
+ "research.more": {
+  "type": "goal",
+  "title": "More research output"
+ },
+ "research.few_researchers": {
+  "type": "cause",
+  "title": "Too few staffed researcher jobs"
+ },
+ "research.weak_labs": {
+  "type": "cause",
+  "title": "The lab buildings add little per researcher"
+ },
+ "research.slow_research_speed": {
+  "type": "cause",
+  "title": "Technologies are researched slowly for the output there is"
+ },
+ "research.staff_researchers": {
+  "type": "remedy",
+  "title": "Staff more Physicist, Biologist and Engineer jobs"
+ },
+ "research.upgrade_labs": {
+  "type": "remedy",
+  "title": "Build and upgrade the lab buildings"
+ },
+ "research.research_speed_techs": {
+  "type": "remedy",
+  "title": "Research the technologies that raise research speed"
+ },
+ "research.finish_discovery": {
+  "type": "remedy",
+  "title": "Finish the Discovery tradition tree"
+ },
+ "research.no_spare_pops": {
+  "type": "obstacle",
+  "title": "No unemployed pops to fill new researcher jobs",
+  "uncertain_title": "There may be no unemployed pops for new researcher jobs"
+ },
+ "research.no_researcher_slot": {
+  "type": "obstacle",
+  "title": "No free researcher job slot",
+  "uncertain_title": "There may be no free researcher job slot"
+ },
+ "research.lab_locked": {
+  "type": "obstacle",
+  "title": "The upgraded lab is not unlocked",
+  "uncertain_title": "The upgraded lab may not be unlocked yet"
+ },
+ "research.no_lab_slot": {
+  "type": "obstacle",
+  "title": "No free building slot for another lab",
+  "uncertain_title": "There may be no free building slot for another lab"
+ },
+ "research.speed_tech_prerequisites": {
+  "type": "obstacle",
+  "title": "The speed technologies need their prerequisites",
+  "uncertain_title": "The speed technologies may still need their prerequisites"
+ },
+ "research.discovery_needs_unity": {
+  "type": "obstacle",
+  "title": "Not enough Unity banked for the next Tradition",
+  "uncertain_title": "There may not be enough Unity banked for the next Tradition"
+ },
+ "research.discovery_tree_unfinished": {
+  "type": "obstacle",
+  "title": "The Discovery tree has Traditions left to take",
+  "uncertain_title": "The Discovery tree may have Traditions left to take"
+ },
+ "slots.more": {
+  "type": "goal",
+  "title": "More building and district slots"
+ },
+ "slots.few_district_slots": {
+  "type": "cause",
+  "title": "Planets are at their district limit"
+ },
+ "slots.few_building_slots": {
+  "type": "cause",
+  "title": "Planets are running out of building slots"
+ },
+ "slots.more_district_slots": {
+  "type": "remedy",
+  "title": "Raise the district limit of the planets"
+ },
+ "slots.more_building_slots": {
+  "type": "remedy",
+  "title": "Build the districts that open building slots"
+ },
+ "slots.replace_weak_buildings": {
+  "type": "remedy",
+  "title": "Replace the weakest building on full planets"
+ },
+ "slots.capital_upgrade_locked": {
+  "type": "obstacle",
+  "title": "The capital building is not upgraded yet",
+  "uncertain_title": "The capital building may not be upgraded yet"
+ },
+ "slots.tradition_needs_unity": {
+  "type": "obstacle",
+  "title": "Not enough Unity banked for the next Tradition",
+  "uncertain_title": "There may not be enough Unity banked for the next Tradition"
+ },
+ "slots.district_tech_locked": {
+  "type": "obstacle",
+  "title": "The technology is not researched yet",
+  "uncertain_title": "The technology may not be researched yet"
+ },
+ "slots.no_district_room": {
+  "type": "obstacle",
+  "title": "The planets have no free district slot",
+  "uncertain_title": "The planets may have no free district slot"
+ },
+ "slots.district_upkeep": {
+  "type": "obstacle",
+  "title": "Energy income cannot carry another district",
+  "uncertain_title": "The energy income may not carry another district"
+ },
+ "slots.weak_building_unknown": {
+  "type": "obstacle",
+  "title": "It is not clear which building is the weakest",
+  "uncertain_title": "It may not be clear which building is the weakest"
+ },
+ "stability.up": {
+  "type": "goal",
+  "title": "Stable planets"
+ },
+ "stability.weak_order": {
+  "type": "cause",
+  "title": "Too little order from jobs, buildings and edicts"
+ },
+ "stability.unhappy_pops": {
+  "type": "cause",
+  "title": "The pops are unhappy for their own reasons"
+ },
+ "stability.staff_order_jobs": {
+  "type": "remedy",
+  "title": "Staff Soldier, Enforcer and Bureaucrat jobs"
+ },
+ "stability.order_buildings": {
+  "type": "remedy",
+  "title": "Build the buildings that add stability"
+ },
+ "stability.stability_edicts": {
+  "type": "remedy",
+  "title": "Run a stability edict"
+ },
+ "stability.take_stability_traditions": {
+  "type": "remedy",
+  "title": "Take the traditions that add stability"
+ },
+ "stability.settle_factions": {
+  "type": "remedy",
+  "title": "Deal with the unhappy factions"
+ },
+ "stability.no_spare_pops": {
+  "type": "obstacle",
+  "title": "No unemployed pops to staff order jobs",
+  "uncertain_title": "There may be no unemployed pops for order jobs"
+ },
+ "stability.no_order_slot": {
+  "type": "obstacle",
+  "title": "No free order job slot",
+  "uncertain_title": "There may be no free order job slot"
+ },
+ "stability.no_building_slot": {
+  "type": "obstacle",
+  "title": "No free building slot for a stability building",
+  "uncertain_title": "There may be no free building slot for a stability building"
+ },
+ "stability.building_locked": {
+  "type": "obstacle",
+  "title": "The stability building is not unlocked",
+  "uncertain_title": "The stability building may not be unlocked yet"
+ },
+ "stability.edict_costs_unity": {
+  "type": "obstacle",
+  "title": "Not enough Unity banked for the edict",
+  "uncertain_title": "There may not be enough Unity banked for the edict"
+ },
+ "stability.tradition_needs_unity": {
+  "type": "obstacle",
+  "title": "Not enough Unity banked for the next Tradition",
+  "uncertain_title": "There may not be enough Unity banked for the next Tradition"
+ },
+ "stability.faction_demands_conflict": {
+  "type": "obstacle",
+  "title": "The factions want things the empire cannot give",
+  "uncertain_title": "The factions may want things the empire cannot give"
+ },
+ "unity.more": {
+  "type": "goal",
+  "title": "Unity income that keeps up with the next Tradition"
+ },
+ "unity.few_producers": {
+  "type": "cause",
+  "title": "Too few jobs and buildings that produce Unity"
+ },
+ "unity.weak_multipliers": {
+  "type": "cause",
+  "title": "The multipliers on Unity output are small"
+ },
+ "unity.upkeep_drain": {
+  "type": "cause",
+  "title": "Edicts and decrees charge Unity upkeep every month"
+ },
+ "unity.raise_income": {
+  "type": "remedy",
+  "title": "Staff more Bureaucrat and Politician jobs"
+ },
+ "unity.build_unity_buildings": {
+  "type": "remedy",
+  "title": "Build the Unity buildings"
+ },
+ "unity.research_unity_techs": {
+  "type": "remedy",
+  "title": "Research the Unity technologies"
+ },
+ "unity.take_one_vision": {
+  "type": "remedy",
+  "title": "Take the One Vision ascension perk"
+ },
+ "unity.drop_idle_edicts": {
+  "type": "remedy",
+  "title": "Let edicts and decrees that no longer pay for themselves lapse"
+ },
+ "unity.no_spare_pops": {
+  "type": "obstacle",
+  "title": "No unemployed pops to fill new Unity jobs",
+  "uncertain_title": "There may be no unemployed pops for new Unity jobs"
+ },
+ "unity.no_unity_job_slot": {
+  "type": "obstacle",
+  "title": "No free Bureaucrat or Politician job slot",
+  "uncertain_title": "There may be no free Bureaucrat or Politician job slot"
+ },
+ "unity.building_locked": {
+  "type": "obstacle",
+  "title": "The Unity building is not unlocked",
+  "uncertain_title": "The Unity building may not be unlocked yet"
+ },
+ "unity.no_building_slot": {
+  "type": "obstacle",
+  "title": "No free building slot for another Unity building",
+  "uncertain_title": "There may be no free building slot for another Unity building"
+ },
+ "unity.unity_tech_prerequisites": {
+  "type": "obstacle",
+  "title": "The Unity technologies need their prerequisites",
+  "uncertain_title": "The Unity technologies may still need their prerequisites"
+ },
+ "unity.no_ascension_slot": {
+  "type": "obstacle",
+  "title": "No free ascension perk slot",
+  "uncertain_title": "There may be no free ascension perk slot"
+ },
+ "unity.edict_still_needed": {
+  "type": "obstacle",
+  "title": "The edict still serves a purpose",
+  "uncertain_title": "The edict may still serve a purpose"
+ }
+}
