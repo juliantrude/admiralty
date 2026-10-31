@@ -1,7 +1,9 @@
 """Metrics: named Snapshot values the Mechanics Graph checks, and the comparisons built on them.
 
 `knowledge/<version>/graph/metrics.yaml` registers each metric as a dotted `path` into the
-Snapshot extract, a `sum` of paths or a `ratio` of two. `resolve_metric` reads one, `evaluate`
+Snapshot extract, a `sum` of paths, a `ratio` of two or a `contains` (1 when a Display Name is in a
+list of the extract, such as the taken Ascension Perks, else 0; the labels follow the language of the
+Player's game, the pack is written against English, so another language reads as "not taken"). `resolve_metric` reads one, `evaluate`
 runs an Obstacle's `check` (or a Remedy's `pending_when`) and keeps the numbers it compared, so a
 Briefing can state them from a tool result.
 
@@ -42,6 +44,9 @@ def resolve_metric(spec: dict[str, Any], extract: dict[str, Any]):
     if "sum" in spec:
         parts = [dig(extract, path) for path in spec["sum"]]
         return None if None in parts else sum(parts)
+    if "contains" in spec:
+        listed = dig(extract, spec["contains"]["path"])
+        return None if not isinstance(listed, list) else int(spec["contains"]["label"] in listed)
     ratio = spec["ratio"]
     top, bottom = dig(extract, ratio["numerator"]), dig(extract, ratio["denominator"])
     # rounded: a ratio is shown to the Player, and 1.0062893081761006 helps nobody

@@ -44,6 +44,7 @@ nodes:
 
   - id: naval_capacity.adopt_supremacy
     type: remedy
+    applied_when: {metric: traditions.supremacy_tree, op: "==", compare_to: 1}
     rules: [unity-vs-next-tradition]
     title: Adopt the Supremacy tradition tree
     judgement: >
@@ -86,6 +87,7 @@ nodes:
 
   - id: naval_capacity.research_fleet_doctrine
     type: remedy
+    applied_when: {metric: unlocks.doctrine_missing, op: "==", compare_to: 0}
     title: Research the naval capacity technologies
     judgement: >
       The doctrine line gives flat capacity for no upkeep, and its repeatable follow-up keeps
@@ -115,6 +117,7 @@ nodes:
 
   - id: naval_capacity.fleet_logistics_corps
     type: remedy
+    applied_when: {metric: traditions.fleet_logistics_corps, op: "==", compare_to: 1}
     title: Take Fleet Logistics Corps
     judgement: >
       A multiplier on everything the flat sources already give, so it grows in value with the

@@ -384,6 +384,42 @@ def test_cycle_without_exit_is_an_error(tmp_path):
 # --- the metrics registry ---------------------------------------------------------------------
 
 
+def test_applied_when_and_present_when_are_checked_like_a_check(tmp_path):
+    def change(graph):
+        node(graph, "adopt_supremacy")["applied_when"] = {
+            "metric": "traditions.supremacy_tre",
+            "op": "==",
+            "compare_to": 1,
+        }
+        node(graph, "few_sources")["present_when"] = {
+            "metric": "naval_capacity.filled",
+            "op": ">",
+            "compare_to": 0.9,
+        }
+
+    problems = problems_of(tmp_path, mutated(change))
+    expect(problems, "adopt_supremacy", "traditions.supremacy_tre")
+    expect(problems, "few_sources", "naval_capacity.filled")
+
+
+def test_applied_when_belongs_to_a_remedy_and_present_when_to_a_cause(tmp_path):
+    def change(graph):
+        comparison = {"metric": "unity.stockpile", "op": ">", "compare_to": 1}
+        node(graph, "few_sources")["applied_when"] = comparison
+        node(graph, "adopt_supremacy")["present_when"] = comparison
+
+    problems = problems_of(tmp_path, mutated(change))
+    expect(problems, "nodes/0", "'applied_when' was unexpected")
+    expect(problems, "nodes/1", "'present_when' was unexpected")
+
+
+def test_a_contains_metric_needs_its_path_and_label(tmp_path):
+    bad = copy.deepcopy(METRICS)
+    bad["metrics"]["perks.nothing"] = {"contains": {"path": "progression.perks"}, "unit": "1"}
+    root = write_pack(tmp_path, metrics=bad)
+    assert any("metrics.yaml" in str(p) for p in validate("v4.5.2", root))
+
+
 def test_metrics_registry_shape(tmp_path):
     bad = copy.deepcopy(METRICS)
     bad["metrics"]["unity.both"] = {"path": "a.b", "sum": ["a.b", "a.c"], "unit": "unity"}
@@ -416,6 +452,10 @@ def test_every_registered_metric_path_exists_in_the_extract():
     document = Extractor().extract(str(save), "Plexxi")
     registry = yaml.safe_load((KNOWLEDGE_ROOT / "4.5.2" / "graph" / "metrics.yaml").read_text())
     for name, metric in registry["metrics"].items():
+        if "contains" in metric:
+            value = _dig(document, metric["contains"]["path"])
+            assert isinstance(value, list), f"{name}: {metric['contains']['path']} is not a list"
+            continue
         paths = (
             [metric["path"]]
             if "path" in metric

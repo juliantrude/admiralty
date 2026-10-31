@@ -92,6 +92,7 @@
         "remedies": {"$ref": "#/$defs/ids"},
         "facts": {"$ref": "#/$defs/fact_refs"},
         "rules": {"$ref": "#/$defs/rule_refs"},
+        "present_when": {"$ref": "#/$defs/comparison", "description": "The comparison that is true while the Cause is there in a Snapshot (Academy: the Cause reappears). Only where one metric says it; without it a Snapshot cannot show the Cause."},
         "places": {"$ref": "#/$defs/text", "description": "A metric with a by_planet path: the Cause concerns the whole empire and its details name the planets with their free places."},
         "circle": {"$ref": "#/$defs/text"},
         "break_point": {"type": "boolean"}
@@ -113,6 +114,7 @@
         "facts": {"$ref": "#/$defs/fact_refs"},
         "rules": {"$ref": "#/$defs/rule_refs"},
         "pending_when": {"$ref": "#/$defs/comparison"},
+        "applied_when": {"$ref": "#/$defs/comparison", "description": "The comparison that is true once the Remedy is done in a Snapshot (Academy: Apply). Only where one metric says it; without it a Snapshot cannot show the Remedy."},
         "circle": {"$ref": "#/$defs/text"},
         "break_point": {"type": "boolean"}
       }

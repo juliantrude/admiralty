@@ -93,6 +93,7 @@ nodes:
 
   - id: research.finish_discovery
     type: remedy
+    applied_when: {metric: traditions.discovery_finished, op: "==", compare_to: 1}
     title: Finish the Discovery tradition tree
     judgement: >
       The finishing bonus speeds every technology, and the tree's earlier Traditions help with

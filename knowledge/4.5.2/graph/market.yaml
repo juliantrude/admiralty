@@ -26,6 +26,7 @@ nodes:
 
   - id: market.stock_runs_dry
     type: cause
+    present_when: {metric: market.trades_short, op: ">", compare_to: 0}
     title: Trade stock runs dry
     description: >
       A sale needs the resource in stock and a purchase needs trade value in stock. When one runs

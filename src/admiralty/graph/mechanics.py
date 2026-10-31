@@ -362,7 +362,12 @@ def _node_problems(where, node, nodes, metrics, facts, rules) -> list[Problem]:
         problems.append(Problem("error", where, "break_point is only meaningful with a circle"))
     if "places" in node:
         problems += _metric(where, node["places"], metrics)
-    for comparison in (node.get("check"), node.get("pending_when")):
+    for comparison in (
+        node.get("check"),
+        node.get("pending_when"),
+        node.get("applied_when"),
+        node.get("present_when"),
+    ):
         for metric in _comparison_metrics(comparison or {}):
             problems += _metric(where, metric, metrics)
     for pattern in node.get("facts", []):

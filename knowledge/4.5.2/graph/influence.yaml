@@ -50,6 +50,7 @@ nodes:
 
   - id: influence.take_force_projection
     type: remedy
+    applied_when: {metric: perks.galactic_force_projection, op: "==", compare_to: 1}
     title: Take Galactic Force Projection
     judgement: >
       A permanent flat gain that costs nothing monthly. An ascension perk slot is scarce, so it is a
@@ -108,6 +109,7 @@ nodes:
 
   - id: influence.adopt_diplomacy_tradition
     type: remedy
+    applied_when: {metric: traditions.diplomacy_tree, op: "==", compare_to: 1}
     rules: [unity-vs-next-tradition]
     title: Adopt the Diplomacy tradition tree
     judgement: >

@@ -23,7 +23,7 @@
     "paths": {"type": "array", "items": {"$ref": "#/$defs/path"}, "minItems": 2, "uniqueItems": true},
     "unit": {"type": "string", "minLength": 1},
     "metric": {
-      "description": "Exactly one of: path (a value), ratio (numerator / denominator), sum (of several values).",
+      "description": "Exactly one of: path (a value), ratio (numerator / denominator), sum (of several values), contains (a label in a list).",
       "type": "object",
       "required": ["unit"],
       "additionalProperties": false,
@@ -40,12 +40,19 @@
           }
         },
         "sum": {"$ref": "#/$defs/paths"},
+        "contains": {
+          "description": "1 when the label is in the list at the path (taken Ascension Perks, adopted Traditions), else 0; the list must exist in the extract. Labels are Display Names of the English game files.",
+          "type": "object",
+          "required": ["path", "label"],
+          "additionalProperties": false,
+          "properties": {"path": {"$ref": "#/$defs/path"}, "label": {"type": "string", "minLength": 1}}
+        },
         "by_planet": {
           "description": "Path of the same value inside one entry of room.by_planet, for a value summed over the planets.",
           "$ref": "#/$defs/path"
         }
       },
-      "oneOf": [{"required": ["path"]}, {"required": ["ratio"]}, {"required": ["sum"]}]
+      "oneOf": [{"required": ["path"]}, {"required": ["ratio"]}, {"required": ["sum"]}, {"required": ["contains"]}]
     }
   }
 }

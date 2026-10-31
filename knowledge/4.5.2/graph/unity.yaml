@@ -97,6 +97,7 @@ nodes:
 
   - id: unity.take_one_vision
     type: remedy
+    applied_when: {metric: perks.one_vision, op: "==", compare_to: 1}
     title: Take One Vision
     judgement: >
       The largest single multiplier on the list, but an ascension perk slot is scarce and the other

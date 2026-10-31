@@ -90,3 +90,11 @@ metrics:
   # standing market trades (extract section "market", src/admiralty/extract/market.py)
   market.standing_count: {path: market.count, unit: standing trades}
   market.trades_short: {path: market.short, unit: standing trades under one month of stock}
+  # taken Ascension Perks, adopted Tradition trees and Traditions (extract section "progression"):
+  # 1 when the Display Name is in the list. Labels checked against localisation/english/traditions_l_english.yml
+  perks.galactic_force_projection: {contains: {path: progression.ascension_perks, label: Galactic Force Projection}, unit: 1 when taken}
+  perks.one_vision: {contains: {path: progression.ascension_perks, label: One Vision}, unit: 1 when taken}
+  traditions.diplomacy_tree: {contains: {path: progression.tradition_trees, label: Diplomacy}, unit: 1 when adopted}
+  traditions.supremacy_tree: {contains: {path: progression.tradition_trees, label: Supremacy}, unit: 1 when adopted}
+  traditions.discovery_finished: {contains: {path: progression.traditions, label: Discovery Traditions Finished}, unit: 1 when adopted}
+  traditions.fleet_logistics_corps: {contains: {path: progression.traditions, label: Fleet Logistics Corps}, unit: 1 when adopted}

@@ -27,6 +27,7 @@ nodes:
 
   - id: pop_growth.no_room
     type: cause
+    present_when: {metric: housing.free, op: "<=", compare_to: 0}
     title: No free housing for growth
     description: >
       A planet stops growing once its pops fill the housing it has. The growth rate then does not
@@ -67,6 +68,7 @@ nodes:
 
   - id: pop_growth.growth_techs
     type: remedy
+    applied_when: {metric: unlocks.growth_techs_missing, op: "==", compare_to: 0}
     title: Research the growth technologies
     judgement: >
       Each technology raises the growth rate of every planet at once and has no upkeep. The gain

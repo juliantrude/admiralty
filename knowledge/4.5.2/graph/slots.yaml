@@ -16,6 +16,7 @@ goals:
 nodes:
   - id: slots.few_district_slots
     type: cause
+    present_when: {metric: room.districts_free, op: "<=", compare_to: 0}
     title: Planets at their district limit
     description: >
       The number of districts a planet can have depends on its size and on bonuses from the
@@ -29,6 +30,7 @@ nodes:
 
   - id: slots.few_building_slots
     type: cause
+    present_when: {metric: room.building_slots_free, op: "<=", compare_to: 0}
     title: Planets short of building slots
     description: >
       Building slots come from the zones of the districts on the planet, so a planet fills them
