@@ -292,13 +292,13 @@ def _check_epochs(args) -> int:
     material = candidates_for_frame(loaded, frame)
     result = check_epochs(epochs, material["candidates"], frame.start, frame.end)
     if not result["errors"]:
+        result["epoch_titles"] = [e["title"] for e in epochs]
         result["events_by_epoch"] = place_events(epochs, material["timeline"]["events"])
-    json.dump(
-        {"frame": {"from": frame.start, "to": frame.end, "request": frame.request}, **result},
-        sys.stdout,
-        ensure_ascii=False,
-        indent=1,
-    )
+    result = {"frame": {"from": frame.start, "to": frame.end, "request": frame.request}, **result}
+    if not result["errors"]:
+        # the titles an accepted proposal names are evidence for the Unverified Claim check
+        _log_result(args.workspace, "debrief_check_epochs", _logged_args(args), result)
+    json.dump(result, sys.stdout, ensure_ascii=False, indent=1)
     print()
     return 1 if result["errors"] else 0
 
@@ -426,21 +426,34 @@ def _setup(args) -> int:
 
 
 def _log_setup_result(args, result: dict) -> None:
-    """Put a setup result into the workspace turn log, where the Unverified Claim check looks for
-    evidence (the setup runs by shell, not through the MCP server). `campaigns` and `players` run
-    before the workspace exists: they log into the current directory only if it is a workspace
-    already or empty, so the log never turns another folder into a workspace."""
+    _log_result(
+        getattr(args, "workspace", None), f"setup_{args.setup_command}", _logged_args(args), result
+    )
+
+
+def _logged_args(args) -> dict:
+    skipped = {"command", "setup_command"}
+    return {
+        k: str(v) if isinstance(v, Path) else v for k, v in vars(args).items() if k not in skipped
+    }
+
+
+def _log_result(workspace: Path | None, tool: str, params: dict, result: dict) -> None:
+    """Put the result of a command that runs by shell into the workspace turn log, where the
+    Unverified Claim check looks for evidence (only MCP calls land there by themselves).
+    `campaigns` and `players` of the setup run before the workspace exists: they log into the
+    current directory only if it is a workspace already or empty, so the log never turns another
+    folder into a workspace."""
     from admiralty.workspace.layout import is_workspace
     from admiralty.workspace.turnlog import append_entry
 
-    workspace = Path(getattr(args, "workspace", None) or ".").expanduser()
-    if not workspace.is_dir() or not (is_workspace(workspace) or not any(workspace.iterdir())):
+    folder = Path(workspace or ".").expanduser()
+    if not folder.is_dir() or not (is_workspace(folder) or not any(folder.iterdir())):
         return
-    params = {k: v for k, v in vars(args).items() if k not in {"command", "setup_command"}}
     try:
-        append_entry(workspace, f"setup_{args.setup_command}", params, result)
+        append_entry(folder, tool, params, result)
     except OSError:
-        pass  # a log that cannot be written must not fail the setup
+        pass  # a log that cannot be written must not fail the command
 
 
 if __name__ == "__main__":

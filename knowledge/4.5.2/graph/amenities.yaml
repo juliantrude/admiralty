@@ -6,6 +6,7 @@ domain: amenities
 # metric for it yet; Obstacles stay judgement-only unless another registered metric decides them.
 goals:
   - id: amenities.enough
+    mark: up
     title: Amenities that cover what the pops use
     symptom_metrics: [pops.unemployed]
     causes: [amenities.too_few_sources, amenities.high_usage]

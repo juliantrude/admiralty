@@ -119,3 +119,10 @@ def test_compose_opens_the_graph_page_and_the_skill_says_what_to_tell_the_player
     assert "`compose` also opens the graph page in the Player's browser" in text
     assert "`opened: true`" in text and "`opened: false`" in text and "`url: null`" in text
     assert "briefing view" not in text
+
+
+def test_a_model_goal_carries_a_mark_of_its_own():
+    text = " ".join(SKILL.read_text().split())
+    assert "carries a `mark` of its own" in text
+    assert '`up` for "more", `down` for "less", `flag` for a state to reach' in text
+    assert "`compose` refuses a model Goal without one" in text

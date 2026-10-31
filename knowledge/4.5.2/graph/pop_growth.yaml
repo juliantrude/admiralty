@@ -8,6 +8,7 @@ domain: pop_growth
 # Growth speed and machine assembly are two different mechanisms; the Causes keep them apart.
 goals:
   - id: pop_growth.faster
+    mark: up
     title: Faster pop growth
     symptom_metrics: [pops.total, pops.unemployed]
     causes: [pop_growth.slow_rate, pop_growth.no_room, pop_growth.slow_assembly]

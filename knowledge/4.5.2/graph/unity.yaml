@@ -6,6 +6,7 @@ domain: unity
 # only "not enough Unity yet" (see naval_capacity.supremacy_needs_unity).
 goals:
   - id: unity.more
+    mark: up
     title: Unity income that keeps up with the next Tradition
     symptom_metrics: [unity.net, traditions.next_cost]
     causes: [unity.few_producers, unity.weak_multipliers, unity.upkeep_drain]

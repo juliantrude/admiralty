@@ -3,6 +3,7 @@ domain: minerals
 # Curated by hand from knowledge/4.5.2/generated/minerals.yaml. Node text carries no figures.
 goals:
   - id: minerals.more
+    mark: up
     title: More mineral income
     symptom_metrics: [minerals.net]
     causes: [minerals.few_miners, minerals.weak_multipliers]

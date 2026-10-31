@@ -4,6 +4,7 @@ domain: naval_capacity
 # every number lives in the generated facts a node links to (docs/plans/M4.md).
 goals:
   - id: naval_capacity.more
+    mark: up
     title: More naval capacity
     symptom_metrics: [naval_capacity.fill]
     causes: [naval_capacity.low_base_sources, naval_capacity.weak_multipliers]

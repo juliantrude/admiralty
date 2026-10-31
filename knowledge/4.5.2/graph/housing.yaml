@@ -7,6 +7,7 @@ domain: housing
 # stay judgement-only until the metrics registry can read a planet list.
 goals:
   - id: housing.enough
+    mark: up
     title: Housing for every pop
     symptom_metrics: [pops.unemployed]
     causes: [housing.too_few_homes, housing.pops_use_more]

@@ -288,15 +288,18 @@ section li::marker { color: var(--accent); font-weight: 600; }
   }
 
   // Placeholder icons per node type until a node carries a game icon (docs/plans/M6-revision.md).
+  const MARK_GLYPH = { up: "\u25b2", down: "\u25bc", flag: "\u2691" }; // a Goal's mark: more, less, a state to reach
+  const MARK_WORD = { up: "more", down: "less", flag: "a state to reach" };
   const TYPE_GLYPH = { goal: "G", cause: "?", remedy: "\u2713", obstacle: "!", unchecked: "?" };
   const TYPE_INK = { goal: "#1a56c4", cause: "#a35d00", remedy: "#1e7e34", obstacle: "#b3261e", unchecked: "#6b7686" };
 
-  function placeholderIcon(type) {
+  function placeholderIcon(type, mark) {
+    const glyph = type === "goal" && MARK_GLYPH[mark] ? MARK_GLYPH[mark] : TYPE_GLYPH[type];
     const svg =
       `<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">` +
       `<rect x="1" y="1" width="20" height="20" rx="5" fill="${TYPE_INK[type]}"/>` +
       `<text x="11" y="15.5" font-family="sans-serif" font-size="13" font-weight="700" fill="#fff" ` +
-      `text-anchor="middle">${TYPE_GLYPH[type]}</text></svg>`;
+      `text-anchor="middle">${glyph}</text></svg>`;
     return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
   }
 
@@ -304,7 +307,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
   function iconOf(node) {
     if (typeof node.icon === "string" && /^data:image\/(png|svg\+xml)[;,]/.test(node.icon)) return node.icon;
     const unchecked = node.type === "obstacle" && (node.check_state === "judgement" || node.check_state === "unknown");
-    return placeholderIcon(unchecked ? "unchecked" : node.type);
+    return placeholderIcon(unchecked ? "unchecked" : node.type, node.mark);
   }
 
   // Impact (docs/plans/M6-revision.md): edge weights multiply along the way from a Goal, the
@@ -496,7 +499,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
         .map((n) => n.title)
         .sort();
     }
-    for (const field of ["text", "horizon", "crisis", "status", "ratings", "check_state", "evidence", "rules", "reason"]) {
+    for (const field of ["text", "horizon", "crisis", "mark", "status", "ratings", "check_state", "evidence", "rules", "reason"]) {
       if (node[field] !== undefined) panel[field] = node[field];
     }
     const action = doc.key_actions.find((a) => a.node === id);
@@ -625,6 +628,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
       if (node.type === "remedy") data.status = node.status;
       if (node.type === "obstacle") data.checkState = node.check_state;
       if (node.type === "goal") data.crisis = node.crisis === true;
+      if (node.type === "goal" && node.mark) data.mark = node.mark;
       if (rankOf.has(node.id)) data.rank = rankOf.get(node.id);
       if (circleOf.has(node.id)) data.circleColor = color.get(circleOf.get(node.id));
       return { group: "nodes", data };
@@ -724,7 +728,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
           impact: node.data("impact"),
           faded: node.hasClass("faded"),
         };
-        for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"]]) {
+        for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"], ["mark", "mark"]]) {
           if (node.data(field) !== undefined) state[key] = node.data(field);
         }
         return state;
@@ -1012,6 +1016,7 @@ section li::marker { color: var(--accent); font-weight: 600; }
     if (panel.text !== undefined) rows.push(["Text", [panel.text]]);
     if (panel.horizon !== undefined) rows.push(["Horizon", [panel.horizon]]);
     if (panel.crisis) rows.push(["Crisis", ["yes"]]);
+    if (panel.mark !== undefined) rows.push(["Mark", [MARK_WORD[panel.mark] || panel.mark]]);
     if (panel.status !== undefined) rows.push(["Status", [panel.status]]);
     if (panel.ratings) {
       rows.push(["Ratings", [`strength ${panel.ratings.strength}`, `speed ${panel.ratings.speed}`, `cost ${panel.ratings.cost}`]]);

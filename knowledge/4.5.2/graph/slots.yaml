@@ -9,6 +9,7 @@ domain: slots
 # one unnamed cycle that M5 could not break anywhere.
 goals:
   - id: slots.more
+    mark: up
     title: More building and district slots
     causes: [slots.few_district_slots, slots.few_building_slots]
 

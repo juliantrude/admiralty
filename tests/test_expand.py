@@ -75,6 +75,7 @@ def goal(name, causes):
     return {
         "id": f"t.{name}",
         "title": name,
+        "mark": "up",
         "symptom_metrics": ["m.a"],
         "causes": [f"t.{c}" for c in causes],
     }

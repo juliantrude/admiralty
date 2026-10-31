@@ -4,6 +4,7 @@ domain: research
 # every number lives in the generated facts a node links to (docs/plans/M4.md).
 goals:
   - id: research.more
+    mark: up
     title: More research output
     symptom_metrics: [research.net]
     causes: [research.few_researchers, research.weak_labs, research.slow_research_speed]

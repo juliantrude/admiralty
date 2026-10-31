@@ -19,7 +19,7 @@ needs_browser = pytest.mark.skipif(
 def _node(id_, type_, title, **extra):
     node = {"id": id_, "type": type_, "source": "graph", "title": title}
     if type_ == "goal":
-        node |= {"horizon": "short", "crisis": False}
+        node |= {"horizon": "short", "crisis": False, "mark": "up"}
     if type_ == "remedy":
         node |= {
             "status": "actionable",

@@ -7,7 +7,7 @@ import base64
 import pytest
 
 from admiralty.game import GameEnvironment
-from admiralty.graph.icons import embed_icons, icon_paths
+from admiralty.graph.icons import embed_icons, icon_paths, load_icon
 from admiralty.graph.mechanics import MechanicsGraph
 
 
@@ -32,7 +32,7 @@ def test_every_icon_file_exists_in_the_install(install):
 def test_icons_are_embedded_as_png_for_graph_nodes_only(install):
     doc = {
         "nodes": [
-            {"id": "alloys.more", "type": "goal", "source": "graph"},
+            {"id": "alloys.more", "type": "goal", "source": "graph", "mark": "up"},
             {"id": "alloys.few_metallurgists", "type": "cause", "source": "graph"},
             {"id": "model.idea", "type": "remedy", "source": "model"},
         ]
@@ -45,6 +45,18 @@ def test_icons_are_embedded_as_png_for_graph_nodes_only(install):
 
 
 def test_without_an_install_nothing_is_embedded():
-    doc = {"nodes": [{"id": "alloys.more", "type": "goal", "source": "graph"}]}
+    doc = {"nodes": [{"id": "alloys.more", "type": "goal", "source": "graph", "mark": "up"}]}
     assert embed_icons(doc, None, "v4.5.2") == 0
     assert "icon" not in doc["nodes"][0]
+
+
+def test_each_mark_draws_its_own_sign_over_the_icon(install):
+    file = install / icon_paths("v4.5.2")["alloys.more"]
+    plain = load_icon(file)
+    marked = {mark: load_icon(file, mark=mark) for mark in ("up", "down", "flag")}
+    assert len({plain, *marked.values()}) == 4
+
+
+def test_every_goal_of_the_graph_carries_a_mark_of_its_own():
+    graph = MechanicsGraph.load("v4.5.2")
+    assert {g["mark"] for g in graph.goals.values()} <= {"up", "down", "flag"}

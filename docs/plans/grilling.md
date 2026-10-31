@@ -277,6 +277,10 @@ Keine.
 - **Key-Action-Rangliste (R1 Q3):** bleibt vorerst unter dem Graphen; Prüfpunkt beim Ops-Briefing
   auf Mireesh Accord 2294.01.01 (Thema 3).
 
+**Umgesetzt 2026-10-31** (GOAL.md, Inkrement 7): Zeichen der Ziele (`mark`: up, down, flag als Feld am Ziel,
+im Mechanics Graph, im Solution Graph, im Overlay-Knoten des Modells, auf dem Symbol und im Detailfenster)
+und die Epochentitel als Beleg. Die Key-Action-Rangliste bleibt unter dem Graphen.
+
 ### Offene Äste
 
 Keine.

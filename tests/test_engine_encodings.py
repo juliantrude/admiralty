@@ -321,6 +321,17 @@ def test_a_click_shows_what_the_json_says_about_the_node():
 
 
 @needs_browser
+def test_a_goal_shows_its_mark_in_the_node_and_the_panel():
+    graph = rich_graph()
+    goal = next(n for n in graph["nodes"] if n["id"] == "energy.more")
+    goal["mark"] = "flag"
+    state = driver.render_engine(graph, after_ready='AdmiraltyEngine.click("energy.more")')
+    assert next(n for n in state["nodes"] if n["id"] == "energy.more")["mark"] == "flag"
+    assert state["panel"]["mark"] == "flag"
+    assert "mark" not in next(n for n in state["nodes"] if n["id"] == "energy.few_producers")
+
+
+@needs_browser
 def test_a_click_on_an_obstacle_shows_check_state_and_evidence_strings_unchanged():
     graph = rich_graph()
     obstacle = next(n for n in graph["nodes"] if n["id"] == "energy.judged")

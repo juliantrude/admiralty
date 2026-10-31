@@ -69,7 +69,8 @@ Player Model write in this skill), and you say nothing about Predictions.
 
    and fix the file until it is clean (it prints the problems and exits with 1). Read the
    warnings too: a long epoch with a candidate inside is usually a missed epoch. Once clean,
-   it lists `events_by_epoch`: file every Timeline event under exactly that epoch.
+   it lists `events_by_epoch`: file every Timeline event under exactly that epoch. It also returns
+   `epoch_titles`; the titles it accepted count as evidence in the claim check, so use them as given.
 4. **Per epoch.** Under one heading per epoch: what happened (the Timeline events and the
    intervals inside it), what went well, what went badly. Take both from `findings` and
    `intervals`; the findings are candidates, not verdicts, so you decide which are good or bad

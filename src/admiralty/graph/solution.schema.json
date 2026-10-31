@@ -97,6 +97,7 @@
         "icon": {"type": "string", "pattern": "^data:image/png;base64,"},
         "horizon": {"enum": ["short", "medium", "long"]},
         "crisis": {"type": "boolean"},
+        "mark": {"enum": ["up", "down", "flag"]},
         "status": {"enum": ["actionable", "pending", "obstructed"]},
         "ratings": {"$ref": "#/$defs/ratings"},
         "check_state": {"enum": ["present", "clear", "unknown", "judgement"]},
@@ -104,7 +105,7 @@
         "rules": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"}, "uniqueItems": true}
       },
       "allOf": [
-        {"if": {"properties": {"type": {"const": "goal"}}, "required": ["type"]}, "then": {"required": ["horizon", "crisis"]}},
+        {"if": {"properties": {"type": {"const": "goal"}}, "required": ["type"]}, "then": {"required": ["horizon", "crisis", "mark"]}},
         {"if": {"properties": {"type": {"const": "remedy"}}, "required": ["type"]}, "then": {"required": ["status", "ratings"]}},
         {"if": {"properties": {"type": {"const": "obstacle"}}, "required": ["type"]}, "then": {"required": ["check_state"]}}
       ]
@@ -122,11 +123,12 @@
         "reason": {"$ref": "#/$defs/text"},
         "horizon": {"enum": ["short", "medium", "long"]},
         "crisis": {"type": "boolean"},
+        "mark": {"enum": ["up", "down", "flag"]},
         "ratings": {"$ref": "#/$defs/ratings"},
         "evidence": {"$ref": "#/$defs/evidence"}
       },
       "allOf": [
-        {"if": {"properties": {"type": {"const": "goal"}}, "required": ["type"]}, "then": {"required": ["horizon", "crisis"]}}
+        {"if": {"properties": {"type": {"const": "goal"}}, "required": ["type"]}, "then": {"required": ["horizon", "crisis", "mark"]}}
       ]
     }
   }

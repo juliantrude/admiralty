@@ -129,6 +129,7 @@ def test_compose_gives_a_valid_graph_with_the_ranking_from_the_code(graph, expan
     assert helper["unlocks"] == ["t.blocked"]
     assert helper["serves"] == ["t.g"]
     assert node(doc, "t.g")["horizon"] == "short"
+    assert node(doc, "t.g")["mark"] == "up"
 
 
 def test_graph_nodes_keep_what_the_code_computed(graph, expansion):
@@ -350,6 +351,8 @@ def mutate(good, change):
         (lambda d: node(d, "t.ok").pop("status"), "'status' is a required property"),
         (lambda d: node(d, "t.g").pop("horizon"), "'horizon' is a required property"),
         (lambda d: node(d, "t.g").update(horizon="soon"), "is not one of"),
+        (lambda d: node(d, "t.g").pop("mark"), "'mark' is a required property"),
+        (lambda d: node(d, "t.g").update(mark="sideways"), "is not one of"),
         (lambda d: d["key_actions"][0].update(why=""), "non-empty"),
         (lambda d: d.update(schema=2), "was expected"),
     ],
@@ -383,6 +386,38 @@ def add_model_node(doc, **fields):
 )
 def test_a_model_node_cannot_look_like_graph_evidence(graph, good, change, expected):
     assert expected in "\n".join(errors(graph, mutate(good, change)))
+
+
+def test_a_graph_goal_keeps_the_mark_of_the_mechanics_graph(graph, good):
+    doc = mutate(good, lambda d: node(d, "t.g").update(mark="down"))
+    assert "the Mechanics Graph marks this Goal up" in "\n".join(errors(graph, doc))
+
+
+def test_a_mark_belongs_to_a_goal(graph, good):
+    doc = mutate(good, lambda d: node(d, "t.ok").update(mark="up"))
+    assert "mark belongs to a goal" in "\n".join(errors(graph, doc))
+
+
+def test_a_goal_the_model_adds_carries_a_mark_of_its_own(graph, expansion):
+    goal_node = {
+        "id": "model.wipe",
+        "type": "goal",
+        "title": "Kel-Azaan wiped out",
+        "reason": "Why.",
+    }
+    edges = [{"from": "model.wipe", "to": "t.c"}]
+    settings = {"t.g": {"horizon": "short"}, "model.wipe": {"horizon": "long"}}
+    assert "'mark' is a required property" in refused(
+        graph, expansion, add_nodes=[goal_node], add_edges=edges, goals=settings
+    )
+    doc = composed(
+        graph,
+        expansion,
+        add_nodes=[{**goal_node, "mark": "flag"}],
+        add_edges=edges,
+        goals=settings,
+    )
+    assert node(doc, "model.wipe")["mark"] == "flag"
 
 
 def test_a_graph_node_the_graph_does_not_have(graph, good):

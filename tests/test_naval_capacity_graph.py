@@ -110,7 +110,7 @@ def test_the_walk_terminates_on_a_cycle(graph):
     """A cycle is legal in the graph; the walk must not loop on it."""
     looped = MechanicsGraph(
         version="v4.5.2",
-        goals={"d.g": {"id": "d.g", "title": "g", "causes": ["d.a"]}},
+        goals={"d.g": {"id": "d.g", "title": "g", "mark": "up", "causes": ["d.a"]}},
         nodes={
             "d.a": {"id": "d.a", "type": "cause", "remedies": ["d.r"]},
             "d.r": {"id": "d.r", "type": "remedy", "obstacles": ["d.o"]},

@@ -7,6 +7,7 @@ domain: stability
 # judgement text only.
 goals:
   - id: stability.up
+    mark: up
     title: Stable planets
     causes: [stability.weak_order, stability.unhappy_pops]
 

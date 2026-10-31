@@ -3,6 +3,7 @@ domain: alloys
 # Curated by hand from knowledge/4.5.2/generated/alloys.yaml. Node text carries no figures.
 goals:
   - id: alloys.more
+    mark: up
     title: More alloy income
     symptom_metrics: [alloys.net]
     causes: [alloys.few_metallurgists, alloys.weak_multipliers]

@@ -137,6 +137,7 @@ def _node_problems(node: dict[str, Any], graph: MechanicsGraph, rules) -> list[P
     for field_name, only in (
         ("horizon", "goal"),
         ("crisis", "goal"),
+        ("mark", "goal"),
         ("status", "remedy"),
         ("ratings", "remedy"),
         ("check_state", "obstacle"),
@@ -147,6 +148,10 @@ def _node_problems(node: dict[str, Any], graph: MechanicsGraph, rules) -> list[P
         known = graph.goals if kind == "goal" else graph.nodes
         if node["id"] not in known or (kind != "goal" and known[node["id"]]["type"] != kind):
             error(f"source is graph but the Mechanics Graph has no {kind} '{node['id']}'")
+        elif kind == "goal" and node.get("mark") not in (None, known[node["id"]]["mark"]):
+            error(
+                f"mark is {node['mark']}, the Mechanics Graph marks this Goal {known[node['id']]['mark']}"
+            )
     for rule_id in node.get("rules", []):
         if rule_id not in rules:
             error(f"rules: '{rule_id}' is not a Playbook Rule")
@@ -278,7 +283,8 @@ def compose(
             error(f"goals: '{goal_id}' is not a Goal of the expansion or an added Goal")
 
     nodes: list[dict[str, Any]] = [
-        _goal_node(g, goal_settings.get(g["id"], {})) for g in expansion["goals"]
+        _goal_node(g, goal_settings.get(g["id"], {}), graph.goals[g["id"]]["mark"])
+        for g in expansion["goals"]
     ]
     nodes += [_graph_node(n, graph) for n in expansion["nodes"]]
     edges = {(e["from"], e["to"]) for e in expansion["edges"]}
@@ -457,7 +463,7 @@ def _reasoned(entry: Any) -> bool:
     )
 
 
-def _goal_node(goal: dict[str, Any], setting: dict[str, Any]) -> dict[str, Any]:
+def _goal_node(goal: dict[str, Any], setting: dict[str, Any], mark: str) -> dict[str, Any]:
     evidence = [
         f"{s['metric']} {s['value']}{_unit(s)}"
         if s["value"] is not None
@@ -471,6 +477,7 @@ def _goal_node(goal: dict[str, Any], setting: dict[str, Any]) -> dict[str, Any]:
         "title": goal["title"],
         "horizon": setting.get("horizon", "short"),
         "crisis": setting.get("crisis", goal["crisis"]),
+        "mark": mark,
         "evidence": evidence,
     }
 

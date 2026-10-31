@@ -6,6 +6,7 @@ domain: influence
 # not scanned, so the remedies below are the ones the facts can back.
 goals:
   - id: influence.positive
+    mark: up
     title: Positive influence income
     symptom_metrics: [influence.net]
     causes: [influence.few_sources, influence.big_spending, influence.diplomatic_upkeep]

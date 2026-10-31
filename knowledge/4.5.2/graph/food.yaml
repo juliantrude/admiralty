@@ -3,6 +3,7 @@ domain: food
 # Curated by hand from knowledge/4.5.2/generated/food.yaml. Node text carries no figures.
 goals:
   - id: food.positive
+    mark: up
     title: Positive food income
     symptom_metrics: [food.net]
     causes: [food.few_farmers, food.weak_multipliers]

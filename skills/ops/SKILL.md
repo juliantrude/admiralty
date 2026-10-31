@@ -116,6 +116,11 @@ sentence from the tool results. Example: Metallurgists already bring most of the
 so "too few Metallurgists" is high and "weak multipliers" is low when the alloy techs would add
 only a few percent. The graph sizes its nodes by these weights; `compose` refuses a missing one.
 
+A Goal you add to `add_nodes` (`"type": "goal"`, id `model.<name>`) carries a `mark` of its own:
+`up` for "more", `down` for "less", `flag` for a state to reach ("Kel-Azaan wiped out"). Choose it
+from what the Player wants; the catalogue's Goals have theirs, and `compose` refuses a model Goal
+without one. The graph draws it over the Goal's icon.
+
 `goals` needs an entry with `horizon` for every expanded Goal. Every remaining Key Action
 candidate needs a `why` or an `exclude_key_actions` entry with a reason.
 

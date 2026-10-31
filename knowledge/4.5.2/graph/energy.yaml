@@ -4,6 +4,7 @@ domain: energy
 # every number lives in the generated facts a node links to (docs/plans/M4.md).
 goals:
   - id: energy.more
+    mark: up
     title: Positive energy income
     symptom_metrics: [energy.net]
     causes: [energy.few_producers, energy.weak_multipliers, energy.heavy_upkeep]

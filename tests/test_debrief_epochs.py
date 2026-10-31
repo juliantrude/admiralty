@@ -556,6 +556,69 @@ def test_the_cli_refuses_an_unreadable_epochs_file(tmp_path):
         )
 
 
+def _stub_frame(monkeypatch):
+    """The CLI on a stand-in archive: the frame and the candidates are fixed."""
+    from types import SimpleNamespace
+
+    from admiralty.debrief import epochs as epochs_module
+    from admiralty.debrief import frame as frame_module
+    from admiralty.workspace import archive
+
+    monkeypatch.setattr(archive, "Archive", lambda workspace: None)
+    monkeypatch.setattr(
+        frame_module, "load_campaign", lambda archive: SimpleNamespace(dates=[START, END])
+    )
+    monkeypatch.setattr(
+        frame_module, "resolve_frame", lambda *a: SimpleNamespace(start=START, end=END, request="x")
+    )
+    monkeypatch.setattr(
+        epochs_module,
+        "candidates_for_frame",
+        lambda loaded, frame: {"candidates": CANDIDATES, "timeline": {"events": []}},
+    )
+
+
+def _check_epochs_cli(tmp_path, epochs):
+    (tmp_path / ".admiralty").mkdir(exist_ok=True)
+    (tmp_path / "epochs.json").write_text(json.dumps(epochs))
+    return main(
+        [
+            "debrief",
+            "check-epochs",
+            "--workspace",
+            str(tmp_path),
+            "--epochs",
+            str(tmp_path / "epochs.json"),
+        ]
+    )
+
+
+def test_accepted_epoch_titles_are_returned_and_count_as_evidence(tmp_path, capsys, monkeypatch):
+    from admiralty.claims.check import check_answer
+    from admiralty.claims.evidence import build_evidence, read_turn_log
+
+    _stub_frame(monkeypatch)
+    assert _check_epochs_cli(tmp_path, GOOD) == 0
+    result = json.loads(capsys.readouterr().out)
+    assert result["epoch_titles"] == [e["title"] for e in GOOD]
+    (entry,) = read_turn_log(tmp_path)
+    assert entry["tool"] == "debrief_check_epochs"
+    evidence = build_evidence([entry])
+    title = GOOD[2]["title"]
+    assert check_answer(f"## **{title}**", evidence).ok
+    # an invented game name still stands out
+    assert not check_answer("Die **Schlacht um Atlantis** begann.", evidence).ok
+
+
+def test_a_refused_epoch_proposal_is_no_evidence(tmp_path, capsys, monkeypatch):
+    from admiralty.claims.evidence import read_turn_log
+
+    _stub_frame(monkeypatch)
+    assert _check_epochs_cli(tmp_path, [GOOD[0], GOOD[2]]) == 1
+    assert "epoch_titles" not in json.loads(capsys.readouterr().out)
+    assert read_turn_log(tmp_path) == []
+
+
 def test_events_are_placed_by_their_date_not_by_a_between_border():
     from admiralty.debrief.epochs import place_events
 

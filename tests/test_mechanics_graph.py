@@ -44,6 +44,7 @@ GRAPH = {
         {
             "id": "naval_capacity.more",
             "title": "More naval capacity",
+            "mark": "up",
             "symptom_metrics": ["naval_capacity.fill"],
             "causes": ["naval_capacity.few_sources"],
         }
@@ -356,7 +357,7 @@ def cycle_graph(circle: str | None, exit_link: bool) -> dict:
                 "cost": "low",
             }
         )
-    goals = [{"id": "energy.more", "title": "More", "causes": ["energy.a"]}]
+    goals = [{"id": "energy.more", "title": "More", "mark": "up", "causes": ["energy.a"]}]
     return {"version": "v4.5.2", "domain": "energy", "goals": goals, "nodes": nodes}
 
 

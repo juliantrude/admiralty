@@ -59,11 +59,12 @@
     },
     "goal": {
       "type": "object",
-      "required": ["id", "title", "causes"],
+      "required": ["id", "title", "mark", "causes"],
       "additionalProperties": false,
       "properties": {
         "id": {"$ref": "#/$defs/id"},
         "title": {"$ref": "#/$defs/text"},
+        "mark": {"enum": ["up", "down", "flag"], "description": "More, less, or a state to reach; a field of its own, never read from the title."},
         "symptom_metrics": {"type": "array", "items": {"$ref": "#/$defs/metric"}},
         "causes": {"allOf": [{"$ref": "#/$defs/ids"}, {"minItems": 1}]}
       }

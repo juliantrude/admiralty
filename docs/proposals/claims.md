@@ -56,3 +56,7 @@ wahre Werte als unbelegt ("Die Borg", `2294.01.01`), und die fett gesetzte Beisp
 Vorschlag: `admiralty setup` schreibt seine Ergebnisse ins Turn Log; `skills/setup` setzt nur
 Display Names fett. Das Etikett "Stop hook error" stammt von Claude Code; der Hook selbst blockt wie
 vorgesehen, die zweite Antwort kam ohne Fehler durch.
+
+**Epochentitel umgesetzt 2026-10-31** (GOAL.md, Inkrement 7): `debrief check-epochs` gibt bei einem sauberen
+Vorschlag `epoch_titles` zurück und schreibt das Ergebnis ins Turn Log; die Prüfung zählt die Titel damit als
+Beleg. Ein abgelehnter Vorschlag zählt nicht. Erfundene Spielnamen fallen weiter auf.
