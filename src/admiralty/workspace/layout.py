@@ -8,6 +8,7 @@
                     service that wait for their extract (workspace/ingest.py)
     briefings/      the current Briefing and its history (workspace/briefings.py), made on demand
     predictions/    reserved for Coaching mode (M9), created so the layout is stable
+    academy/        the open Drill and its record (academy/drill.py), made by the first Drill
     .admiralty/    machine state: turn log, Unverified Claim blocks
 """
 

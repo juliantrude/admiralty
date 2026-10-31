@@ -74,7 +74,7 @@ def append(
     _check(event)
     directory = model_dir(base)
     directory.mkdir(parents=True, exist_ok=True)
-    with _locked(directory):
+    with locked(directory):
         events = list(_read_events(directory))
         event = {"seq": len(events) + 1, "ts": _now(), **event}
         line = json.dumps(event, ensure_ascii=False, sort_keys=True) + "\n"
@@ -84,7 +84,7 @@ def append(
             os.fsync(fd)
         finally:
             os.close(fd)
-        _write_atomic(directory / MODEL_FILE, replay([*events, event]))
+        write_atomic(directory / MODEL_FILE, replay([*events, event]))
     return event
 
 
@@ -104,9 +104,9 @@ def read_model(base: Path | None = None) -> dict[str, Any]:
         cached = None
     if cached != expected and (directory / EVENTS_FILE).exists():
         directory.mkdir(parents=True, exist_ok=True)
-        with _locked(directory):
+        with locked(directory):
             expected = replay(_read_events(directory))
-            _write_atomic(directory / MODEL_FILE, expected)
+            write_atomic(directory / MODEL_FILE, expected)
     return expected
 
 
@@ -179,7 +179,7 @@ def _read_events(directory: Path) -> Iterator[dict[str, Any]]:
 
 
 @contextmanager
-def _locked(directory: Path) -> Iterator[None]:
+def locked(directory: Path) -> Iterator[None]:
     with (directory / LOCK_FILE).open("a") as handle:
         fcntl.flock(handle, fcntl.LOCK_EX)
         try:
@@ -188,7 +188,7 @@ def _locked(directory: Path) -> Iterator[None]:
             fcntl.flock(handle, fcntl.LOCK_UN)
 
 
-def _write_atomic(path: Path, document: dict[str, Any]) -> None:
+def write_atomic(path: Path, document: dict[str, Any]) -> None:
     fd, temp = tempfile.mkstemp(dir=path.parent, prefix=path.name, suffix=".tmp")
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as handle:
