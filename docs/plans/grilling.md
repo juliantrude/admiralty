@@ -177,6 +177,28 @@ Keine.
   Thema 8 (die rotierenden Autosaves von 2292 wären archiviert worden). Die Trace-Mod bleibt zu,
   bis sich zeigt, dass auch der Hintergrunddienst Krisen verpasst.
 
+### Julians Ursachen vor dem Briefing (2026-10-31, vor dem Lauf festgehalten)
+
+1. Klontanks auf allen Planeten gleichzeitig gebaut: Nahrungsverbrauch unterschätzt, hohes Defizit.
+2. Als Maschinenintelligenz wächst der Energiebedarf mit jeder Skalierung: Energiedefizit.
+3. Beide Defizite per Dauerhandel mit Mineralien und Alloys gedeckt, bis die Vorräte fast leer waren.
+   Dann ein Pendeln: Autohandel läuft nicht mehr, Ressourcen fallen auf null, Krise beginnt, ein
+   Monat Mineralien bleibt liegen, im nächsten Monat läuft der Handel wieder. Die großen Handel
+   verschlechtern zugleich Preise und Gebühren.
+
+Gelöst: alle Handel herausgenommen, damit das Pendeln unterbrochen, dann nur noch so viel gekauft,
+wie gebraucht wurde.
+
+### Nach Julians Ursachen (R3)
+
+- **Bewertung (R3 Q1):** die Krise liegt vor dem Save. "Zwei von drei" zählt nur für Ursachen, die im
+  Save noch sichtbar sind; vom Modell ergänzte Knoten zählen mit. Ist weniger als eine zweite Ursache
+  sichtbar, gilt dieser Teil als nicht beurteilbar. Die Prüfung der Begründungen bleibt.
+- **Markt im Mechanik-Graphen (R3 Q2):** der Graph kennt keinen Markt. Nach dem Test kommt ein
+  eigener Bereich dazu (Dauerhandel, Preise, Gebühren, Handel fällt mangels Vorrat aus), die
+  Klontanks bekommen die Verbindung zur Nahrungsbilanz. Eine Playbook-Regel nur als Vorschlag in
+  `docs/proposals/playbook.md`.
+
 ## 4. Restliche graue Hindernisse
 
 Stand: 85 Hindernisse, 46 an Zahlen geprüft, 39 nur per Urteil (`check: judgement_only`):

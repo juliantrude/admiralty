@@ -44,3 +44,12 @@ Proposal, not applied: (1) a bold span that ends in `.`/`!`/`?` or holds more th
 (2) a code span that is a snake_case/kebab-case identifier or holds a path is no name; (3) the skill could tell the
 model not to put tool names in the answer at all (they are no help to the Player). Cost of (1): a long real name in
 bold would pass unchecked; Display Names in the reference data are at most 5 words.
+
+## Fehlalarm im Setup (Fund aus dem Ops-Test, 2026-10-31)
+
+Die Prüfung zählt als Beleg nur MCP-Ergebnisse aus dem Turn Log und den Text des Players. Das Setup
+läuft über `admiralty setup` per Shell, seine Ergebnisse landen nicht im Turn Log. Deshalb galten
+wahre Werte als unbelegt ("Die Borg", `2294.01.01`), und die fett gesetzte Beispielfrage galt als Name.
+Vorschlag: `admiralty setup` schreibt seine Ergebnisse ins Turn Log; `skills/setup` setzt nur
+Display Names fett. Das Etikett "Stop hook error" stammt von Claude Code; der Hook selbst blockt wie
+vorgesehen, die zweite Antwort kam ohne Fehler durch.
