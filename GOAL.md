@@ -106,8 +106,20 @@ Block 6, titles (`docs/plans/grilling.md` topic 2):
 - [x] 18. Rewrite all titles by the rules, lint test, old/new review page for Julian.
 
 Block 7, Academy (M9):
-- [ ] 19. Plan document `docs/plans/M9.md` from the build plan and topic 1.
-- [ ] 20. And the following increments as that plan lists them, ending with the LLM-free rules test.
+- [x] 19. Plan document `docs/plans/M9.md` from the build plan and topic 1.
+- [ ] 20. The increments of `docs/plans/M9.md`, ending with the LLM-free rules test:
+  - [ ] 20a. Store and single write path (`player/store.py`, concepts, PreToolUse hook).
+  - [ ] 20b. Mastery rules (`player/mastery.py`, patch rule).
+  - [ ] 20c. Snapshot evidence (`applied_when` on Remedies, `player/evidence.py`, Crisis flag).
+  - [ ] 20d. Hint Ladder, Escape Hatch, Drill state.
+  - [ ] 20e. Topics (Crisis first, Fair Play pointers).
+  - [ ] 20f. Where in the game (`ui_locations.yaml`, wiki licence check).
+  - [ ] 20g. Predictions and Rendezvous.
+  - [ ] 20h. MCP tools and CLI.
+  - [ ] 20i. The skill `skills/academy/SKILL.md` with static tests and the title-wording paragraph.
+  - [ ] 20j. Debrief at a Rendezvous.
+  - [ ] 20k. The LLM-free rules test on the vulkan mid save.
+  - [ ] 20l. Academy entries in the "Abnahme" of `docs/awaiting-julian.md`.
 
 Final:
 - [ ] Final verification and the section "Abnahme".
@@ -115,7 +127,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 19 (Block 7, Academy: write `docs/plans/M9.md` from `docs/build-plan.md` (M9), `GLOSSARY.md` and `docs/plans/grilling.md` topic 1; list the increments of M9 there, ending with the LLM-free rules test, and add them under `## Plan` as item 20's sub-items; the Academy skill gets the title-wording paragraph from `docs/plans/titles.md`).
+**Next action:** increment 20a (Block 7, `docs/plans/M9.md`: `src/admiralty/player/store.py` event store with atomic append under a lock and rebuildable `model.json`, `player/concepts.py` (Causes of the loaded Mechanics Graph), the PreToolUse hook `admiralty hook pretooluse` registered in `hooks/hooks.json` that blocks Write, Edit and Bash on the `player-model/` path; tests as listed in the plan).
 **Blockers:** none.
 
 ## Budget
@@ -159,3 +171,4 @@ STATUS: ACTIVE
 - 2026-10-31 — Increment 16d done: `workspace/watch_unit.py` and `admiralty watch install | uninstall | status` (optional subcommands next to `watch --once`): `install` writes `~/.config/systemd/user/admiralty-watch.service` (`ExecStart=<running python> -m admiralty.cli watch`, restart on failure) and runs daemon-reload, enable --now, restart; `uninstall` disables and removes it; `status` gives installed/enabled/active, inbox size per folder and registered workspaces; systemd refusals are a stderr message, exit 1. Unit dir and `systemctl` are parameters (tests use a recorder; the real user manager was not touched). The setup skill runs `watch install` after `check` on a yes (step 9). `tests/test_watch_unit.py` (7) plus a skill test. 1004 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (14.9 min), ruff clean. Not tried against the real user manager (Abnahme: run setup with yes, `admiralty watch status`, log out and in, check the service runs; `uninstall` to remove).
 - 2026-10-31 — Increment 17 done: desktop reminder. `save_reminder_minutes` in `campaign.yaml` (default 20, 0 = off, validated whole minutes; `setup write --save-reminder-minutes`, kept when not given, echoed in the result); `Watcher` takes `game_running` and `notifier` (default none) and, per poll, picks the Campaign folder with the newest save as the one played, sends one notification when the quiet time (since the later of that save and the watcher first seeing the game run) reaches the wait, and withdraws it on a newer save, another Campaign taking over or the game ending. Real parts: `game_is_running` (`/proc/*/comm` = `stellaris`) and `DesktopNotifier` (`notify-send --print-id`, `CloseNotification` via gdbus; silent without them); only the CLI passes them. Only folders with a registered workspace are reminded. Setup skill states the default. Tests added (watch 8, autosave 2, skill 1); plan `docs/plans/save-service.md` updated. 1016 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (14.8 min), ruff clean. Not tried on the real desktop (Abnahme: with the service running, start the game, wait 20 minutes without saving, see the notification; save, see it disappear; set `save_reminder_minutes: 0` to silence).
 - 2026-10-31 — Increment 18 done: `docs/plans/titles.md`; 69 of 204 curated titles rewritten (all Causes now short states, Remedies at most five words with an imperative verb, Goals `Amenities for every pop` and `Unity income for Traditions`, edicts are enacted, one long Obstacle shortened; old titles in `docs/plans/titles-before.json`); `admiralty.graph.titles.lint` + `tests/test_titles.py` (Goal/Remedy <=5 words, Cause <=6, Obstacle <=12 are house caps except the first two, no digits, `uncertain_title` with "may"); `tools/titles_review.py` writes `docs/plans/titles-review.html` (old/new, all Goals and Remedies, energy in full, sample of ten, by domain; staleness tested); Ops skill paragraph on titles of added nodes. 1024 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (14.5 min), ruff clean. Abnahme for Julian: open `docs/plans/titles-review.html`, read all Goals and Remedies, the energy domain and the sample of ten; more than two bad in the sample: read everything.
+- 2026-10-31 — Increment 19 done: `docs/plans/M9.md` (division of labour, six planning decisions for Julian to confirm: concept = Cause node, `applied_when` on Remedies, Cause presence via `expand_graph`, Crisis by code, event store, wiki list empty until the licence is checked; layout, the fixed rules as one table, increments 20a-20l, risks); item 20 split into 20a-20l above. Docs only: ruff clean, benchmarks/titles/setup tests green (46).
