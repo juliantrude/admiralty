@@ -69,7 +69,7 @@ Block 1, Ops as Julian wants it (`docs/proposals/ops.md`, `docs/proposals/claims
 - [x] 1. Claim check: `admiralty setup` results count as evidence, bold inside bold is read correctly,
       the setup skill bolds Display Names only.
 - [x] 2. A stale save goes on when the Player asks for it (entry 1).
-- [ ] 3. Roles of text and graph (entry 6) in `skills/ops/SKILL.md`, with its static test.
+- [x] 3. Roles of text and graph (entry 6) in `skills/ops/SKILL.md`, with its static test.
 - [ ] 4. One current Briefing, updated by feedback, new Goals and new saves, older versions in a
       history (entry 11).
 - [ ] 5. Every Briefing composes its graph and opens it in the browser, from the CLI (entry 7).
@@ -112,7 +112,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 3 (roles of text and graph, `docs/proposals/ops.md` entry 6, in `skills/ops/SKILL.md` with its static test).
+**Next action:** increment 4 (one current Briefing, updated by feedback, new Goals and new saves, older versions in a history; `docs/proposals/ops.md` entry 11).
 **Blockers:** none.
 
 ## Budget
@@ -134,3 +134,7 @@ STATUS: ACTIVE
   instructions, `skills/ops/SKILL.md` step 1 and the workspace CLAUDE.md say: ask for a new save or for the
   Player's wish to work with this one, then name its age in one sentence and go on. Static test added.
   853 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (full run 17 min on the throttled CPU), ruff clean.
+- 2026-10-31 — Increment 3 done: `skills/ops/SKILL.md` has the section "Text and graph have separate jobs" (graph = connections and
+  proportions, Key Actions in graph and list; text = the Player's wishes, what is not possible and why, what comes first; no repeated
+  Key Actions, no description of the graph); steps 7-8 rewritten accordingly. Static test added. 854 tests green (3 skips) at
+  `ADMIRALTY_PERF_SLACK=2.5` (17 min), ruff clean.

@@ -87,3 +87,15 @@ def test_a_stale_save_goes_on_when_the_player_asks_for_it():
     assert "work with this save" in step
     assert "age in one sentence" in step
     assert "Never stop for good on a stale save" in step
+
+
+def test_text_and_graph_have_separate_jobs():
+    text = " ".join(SKILL.read_text().replace("**", "").split())
+    assert "Text and graph have separate jobs" in text
+    assert "answers the Player's wishes" in text
+    assert "what is not possible and why" in text
+    assert "Never repeat a Key Action in the text" in text
+    assert "Never describe the graph" in text
+    assert "Key Actions stand in the graph and in the list under it" in text
+    steps = re.search(r"6\. \*\*Key Actions\.\*\*(.*?)\n## ", SKILL.read_text(), re.DOTALL).group(1)
+    assert "Action Plan.** By domain" not in steps

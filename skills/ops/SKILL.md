@@ -55,12 +55,23 @@ uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty graph check-solution ..
    comes back from the code; you never reorder it. Name as many Key Actions as the evidence
    supports (there is no fixed top three). Crisis Goals come first, as the ranking has it.
    If `compose` refuses, read the problem list, fix the overlay and run it again.
-7. **Strategy.** Tell the ordered path through the Solution Graph in a few sentences: from the
-   first Key Actions along their `unlocks` chains to the Goals.
-8. **Action Plan.** By domain (economy, military, diplomacy, ...): each Key Action with its
-   `why`, its ratings in words (strength, speed, cost: high, medium or low, as in the graph),
-   whether it is Actionable or Pending, the Playbook Rule ids that apply and the rule text
-   quoted. End with the Obstacles and Vicious Circles to watch.
+7. **The answer.** Text and graph have separate jobs (see below). Answer what the Player
+   wished for: say what does not work and why, and what is needed first. The Strategy (the path
+   from the first Key Actions along their `unlocks` chains to the Goals), the Action Plan and the
+   Key Actions are in the Solution Graph and in the list under it; point to them in one sentence.
+8. **Watch list.** End with the Obstacles and Vicious Circles the Player has to watch, only those
+   that bear on their wishes, and name the Playbook Rule ids that apply with the rule text quoted.
+
+## Text and graph have separate jobs
+
+- **The graph** shows the connections and the proportions: which Cause weighs how much, which
+  Remedy unlocks which. **The Key Actions** stand in the graph and in the list under it, with
+  their ratings, Actionable or Pending, and the domain they belong to.
+- **Your text** answers the Player's wishes. It says what is not possible and why (for example:
+  the strength of the target is unknown and there is no shared border) and what is needed first.
+- **Never repeat a Key Action in the text**, not as a list, not in other words. **Never describe
+  the graph**: no walk through its nodes, no "the graph shows". If the Player's wish is met by a
+  Key Action, say that it is and why it does not need more words.
 
 ## The overlay and the commands
 
