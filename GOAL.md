@@ -18,13 +18,13 @@ chain does not stop for him.
 
 ## Definition of Done
 
-- [ ] Every block of `## Plan` is done, or the item that could not be finished is named in
+- [x] Every block of `## Plan` is done, or the item that could not be finished is named in
       `docs/awaiting-julian.md` with the reason.
-- [ ] `ADMIRALTY_PERF_SLACK=1.5 uv run pytest` passes (pending skips are fine) and
+- [x] `ADMIRALTY_PERF_SLACK=1.5 uv run pytest` passes (pending skips are fine) and
       `uv run ruff check . && uv run ruff format --check .` is clean.
-- [ ] One headless Ops Briefing on `vulkan` and one LLM-free Academy rules test on the `vulkan` mid
+- [x] One headless Ops Briefing on `vulkan` and one LLM-free Academy rules test on the `vulkan` mid
       save pass, numbers recorded in the Log.
-- [ ] `docs/awaiting-julian.md` ends with a German section "Abnahme": one short step per thing
+- [x] `docs/awaiting-julian.md` ends with a German section "Abnahme": one short step per thing
       Julian has to try, without code, in the order he should try them, including the title review,
       the spot check of the UI-location table, the evening with the save service, and the live
       Academy trial on Avarisches Imperium 2297.02.09.
@@ -122,12 +122,12 @@ Block 7, Academy (M9):
   - [x] 20l. Academy entries in the "Abnahme" of `docs/awaiting-julian.md`.
 
 Final:
-- [ ] Final verification and the section "Abnahme".
+- [x] Final verification and the section "Abnahme".
 
 ## Status
 
-STATUS: ACTIVE
-**Next action:** the Final block: (1) run the whole suite with `ADMIRALTY_PERF_SLACK=1.5` and ruff; `tests/test_smoke.py::test_parses_late_save_in_under_3_seconds` can fail when the machine is loaded (it passed alone), so rerun it alone before calling it a regression; (2) one headless Ops Briefing on `vulkan` and the LLM-free Academy rules test (`tests/test_academy_rules.py`) on the mid save, numbers into the Log; (3) extend section 8 "Abnahme" of `docs/awaiting-julian.md` (Academy part exists) with the other Julian steps in the order he should try them: title review, spot check of the UI-location table (already in the Academy part), the evening with the save service, Ops Briefing and graph; then set `STATUS: COMPLETE` when the Definition of Done holds.
+STATUS: COMPLETE
+**Next action:** none; the goal is done. Julian works through section 8 "Abnahme" of `docs/awaiting-julian.md`.
 **Blockers:** none.
 
 ## Budget
@@ -184,3 +184,4 @@ STATUS: ACTIVE
 - 2026-10-31 — Increment 20j done: `debrief/coaching.py` `coaching_material`; `retrospective` of a Coaching Campaign carries `coaching` (`predictions` made, due or decided in the frame with `due`, `hindsight` labelled `weight: "less"`, `player_model` = level/drop/hatch events of this Campaign dated in the frame with concept titles; no `coaching` key in Consulting, no `goals` key in Coaching). `skills/debrief/SKILL.md` section "Coaching Campaigns" now orders self-assessment, Predictions (`prediction_check`, never judged by the model), analysis, Player Model (read only through `player_model`), new topics (hand-over, no Key Action). Tests: `test_debrief_result.py` (+6), `test_debrief_skill.py` (the old "no Predictions, no Player Model" test replaced by four that pin the new order, the read-only rule and the tool names). 1413 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (7.9 min), ruff clean.
 - 2026-10-31 — Increment 20k done: `tests/test_academy_rules.py` (19 tests): a scripted Player runs Drills through the real Academy tools — a whole topic (miss, miss, hinted cause gives no level, Remedy, `all_done`), cause at once = Understand, Crisis double step and Escape Hatch with Situation, support held/denied, Apply in the five-year window, `ask_once` written once past it, a Remedy already shown on the raise day does not count, drop after two calm Snapshots a year apart (not at 337 days, never with Crisis Snapshots), patch rule from Apply back to Understand with `peak` kept, Rendezvous before/at/after/moved, proposal waiting for a Prediction, single write path (three files, gapless `seq`, cache = replay, hand-edited cache rebuilt, hook refuses Write/Edit/Bash on the folder). Real half on vulkan 2259.12.29 / 2273.09 / 2284.09 through the real server: 5 topics found, 2 events written (1 level, 1 hatch), 0 changes from the later saves (no Apply, drop or ask_once fired for the two concepts the script learned; whether coverage or the saves explain it was not examined), 30-36 s for the three saves at slack 2.5. 1432 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (14 min), ruff clean.
 - 2026-10-31 19:06 — Increment 20l done: section 8 "Abnahme" (Academy part, German, six steps: UI-location spot check, wiki licence, six planning decisions, live trial on Avarisches Imperium 2297.02.09, Rendezvous Debrief, placeholders) in `docs/awaiting-julian.md`. Full suite 1431 passed, 3 skipped, 1 failed (smoke perf timing under load 4; passes alone in 3.7s); ruff clean.
+- 2026-10-31 — Final block done, goal COMPLETE. Full suite at `ADMIRALTY_PERF_SLACK=1.5`: 1432 passed, 3 skipped (11 min 41 s, smoke parse budget passed too); ruff check and format clean. Headless Ops Briefing on vulkan 2298.03.11 (all 14 Goals expanded through `CampaignService.expand_graph`, mechanical overlay with the validator's required reasons and medium weights, `compose` accepted): 188 expansion nodes (89 Obstacles, 64 Remedies, 35 Causes), 202 nodes and 222 edges composed with the 14 Goals, 0 unresolved Causes; Obstacles 42 clear / 29 present / 18 judgement; only warning is the 40000-character size note of expanding all Goals at once; 7.3 s to expand. LLM-free Academy rules test on the vulkan mid save (`tests/test_academy_rules.py`, 19 tests, all green): 5 topics, 2 events written (1 level, 1 hatch), no change from the later saves, 37.2 s for three saves. Section 8 "Abnahme" of `docs/awaiting-julian.md` now has 20 steps in the order to try them: titles review, Ops and graph (stale save, one current Briefing, W/A/S/D, flags, offline page, routes on Mireesh, market Goal and Clone Vats, system count 47 on vulkan 2298.03.11, Debrief), save service evening (setup, `watch status`, reminder, uninstall), Academy (UI-location spot check, wiki licence, six decisions, live trial, Rendezvous, placeholders).

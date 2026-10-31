@@ -86,18 +86,65 @@ Abschnitt "Abnahme".
 ## 8. Abnahme
 
 Hier sammelt sich alles, was nur du prüfen kannst, in der Reihenfolge, in der du es probieren
-solltest. Der Abschnitt wird im letzten Schritt der Kette um die übrigen Punkte (Ops, Titel,
-Speicherdienst) ergänzt. Bis dahin steht hier die Academy (M9).
+solltest: erst, was ohne Spiel geht (Titel, Ops und Graph), dann der Spieleabend mit dem
+Speicherdienst, zuletzt die Academy, die ein laufendes Spiel braucht. Was nicht stimmt, notierst du
+kurz dazu; es wird dann korrigiert, nicht geraten.
+
+### Titel
+
+1. Öffne `docs/plans/titles-review.html` im Browser. Lies alle Ziele und alle Maßnahmen (Goals und
+   Remedies), den Bereich Energie ganz und die Stichprobe von zehn. Lesen sich die neuen Titel
+   besser als die alten? Sind mehr als zwei der zehn schlecht, lies alles durch und markiere, was
+   nicht passt.
+
+### Ops und Graph
+
+Alle Schritte in diesem Teil gehen an einer Kampagne mit Save; nimm Mireesh 2294.01.01 oder `vulkan`.
+
+2. Starte Ops, gib einen Save an, der älter ist als der neueste im Ordner. Ops soll nach einem
+   neuen Save oder deinem Wunsch fragen, das Alter in einem Satz nennen und dann weitermachen.
+3. Lass ein Briefing bauen. Die Seite öffnet sich von selbst im Browser. Es gibt nur ein aktuelles
+   Briefing; gibst du Rückmeldung oder ein neues Ziel, wird es ersetzt und das alte liegt in
+   `briefings/history/`. Prüfe, dass der Text nicht wiederholt, was der Graph schon zeigt.
+4. In der Graph-Seite: Mit W, A, S, D bewegst du die Ansicht, bei zwei Tasten diagonal und nicht
+   schneller. Die Zeichen an den Zielen (Pfeil hoch, Pfeil runter, Flagge) stimmen mit dem, was du
+   wolltest. Ein Knoten über ein Nachbarreich zeigt dessen Flagge; der Detailbereich eines
+   reichsweiten Knotens nennt die Planeten. Eine Ursache ohne Maßnahme ist gepunktet und trägt
+   "unresolved".
+5. Schalte das Netz ab und öffne die Seite erneut. Sie muss gleich aussehen, mit der Schrift und
+   mit dem Hinweis am Fuß zu den Spielsymbolen.
+6. Frage Ops auf Mireesh 2294.01.01 nach dem Weg zum Omnivorous Inarian Swarm. Es müssen drei
+   Wege kommen, der kürzeste durch Mireesh Accord, Priman Matrix und Cormathanian Empire, mit der
+   Haltung jedes durchquerten Reichs.
+7. Taucht beim Markt-Ziel und bei den Klonbecken (Clone Vats) auf, was du erwartest? Preis und
+   Gebühr stehen nicht im Save; der Graph nennt den Hebel, keine Zahl.
+8. Zahl lesen: Im Spiel zeigt `vulkan` 2298.03.11 unter den eigenen Sternensystemen eine Zahl.
+   Admiralty zählt 47 (2259.12.25: 37). Stimmt das?
+9. Debrief über mehrere Epochen: Erscheinen die Systeme als Verlauf und steht neben einer
+   negativen Bilanz der Vorrat in Monaten?
+
+### Speicherdienst (der Spieleabend)
+
+10. Führe das Setup einer Kampagne aus und antworte mit Ja auf die Frage nach dem Speicherdienst.
+    Beachte den Hinweis zur Autosave-Häufigkeit; die Spieleinstellung ändert Admiralty nicht.
+11. `admiralty watch status` zeigt den Dienst als installiert und aktiv. Melde dich ab und wieder
+    an: Er läuft weiter.
+12. Spiele einen Abend. Jeder Save (auch Autosave) erscheint als Kopie unter dem Datum im Spiel in
+    `saves/` oder im Eingang (Inbox). Beim nächsten Lesen werden sie aufgenommen; Autosave-Kopien
+    behalten nur den Auszug.
+13. Spiele 20 Minuten ohne zu speichern: Eine Benachrichtigung erinnert dich. Speichere: Sie
+    verschwindet. Mit `save_reminder_minutes: 0` in `campaign.yaml` bleibt sie still.
+14. Zum Entfernen: `admiralty watch uninstall`.
 
 ### Academy
 
-1. Stichprobe der Tabelle "Wo im Spiel" (`knowledge/4.5.2/ui_locations.yaml`): Öffne im Spiel
+15. Stichprobe der Tabelle "Wo im Spiel" (`knowledge/4.5.2/ui_locations.yaml`): Öffne im Spiel
    drei oder vier Einträge nach Wahl, zum Beispiel Einfluss, Unity, Forschung und Markt. Stimmt
    das Fenster, das hinter einem Klick auf die Zahl in der oberen Leiste aufgeht, mit dem Pfad in
    der Tabelle überein? Falsche Einträge notierst du; sie werden dann korrigiert, nicht geraten.
-2. Wiki-Lizenz: Lies Abschnitt 7 oben. Bist du einverstanden, dass die Liste der Lesetipps leer
+16. Wiki-Lizenz: Lies Abschnitt 7 oben. Bist du einverstanden, dass die Liste der Lesetipps leer
    bleibt und der Coach keinen Wiki-Link nennt?
-3. Sechs Planungsentscheidungen aus `docs/plans/M9.md` ("Decisions made while planning"), jeweils
+17. Sechs Planungsentscheidungen aus `docs/plans/M9.md` ("Decisions made while planning"), jeweils
    bestätigen oder ändern:
    1. Ein Konzept ist ein Ursachen-Knoten (Cause) des Mechanik-Graphen, kein Remedy.
    2. Ob ein Remedy "im Snapshot zu sehen" ist, sagt nur das Feld `applied_when`; ohne das Feld
@@ -109,7 +156,7 @@ Speicherdienst) ergänzt. Bis dahin steht hier die Academy (M9).
    5. Das Player Model ist die Wiedergabe eines Ereignisprotokolls (`events.jsonl`); `model.json`
       ist nur ein Zwischenspeicher.
    6. Die Wiki-Liste bleibt leer (siehe Schritt 2).
-4. Lebender Test auf der Kampagne Avarisches Imperium, Stand 2297.02.09: Starte den Coach in
+18. Lebender Test auf der Kampagne Avarisches Imperium, Stand 2297.02.09: Starte den Coach in
    dieser Kampagne und sag ihm, was du erreichen willst. Lass dich durch eine Übung führen und
    versuche zuerst selbst, die Ursache zu nennen. Dabei muss gelten:
    - Der Coach nennt keine Schlüsselaktion, bevor du es selbst versucht hast.
@@ -121,10 +168,10 @@ Speicherdienst) ergänzt. Bis dahin steht hier die Academy (M9).
      du erlebt hast.
    - Im Ordner `player-model/` der Kampagne hast du nichts von Hand geändert; ein Hook sperrt das
      ohnehin.
-5. Treffpunkt (Rendezvous): Lege am Ende der Übung mit dem Coach ein Datum im Spiel fest, spiele
+19. Treffpunkt (Rendezvous): Lege am Ende der Übung mit dem Coach ein Datum im Spiel fest, spiele
    bis dahin weiter und lade den Save. Der Coach muss ihn als Debrief führen: erst deine
    Selbsteinschätzung, dann die Vorhersagen (Predictions) mit dem Ergebnis, die Rückschau mit
    weniger Gewicht, zuletzt das Player Model.
-6. Platzhalter, die du nach dem Test einstellst, wenn sie sich falsch anfühlen: der
+20. Platzhalter, die du nach dem Test einstellst, wenn sie sich falsch anfühlen: der
    Treffpunkt-Horizont von zwei Jahren, die Toleranz von 30 Tagen beim Datum und die Krisenschwelle
    von zwölf Monaten Vorrat.
