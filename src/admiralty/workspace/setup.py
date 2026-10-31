@@ -18,6 +18,7 @@ import rust_parser
 
 from admiralty.extract.header import game_version
 from admiralty.extract.snapshot import Extractor
+from admiralty.workspace import registry
 from admiralty.workspace.archive import EXTRACT_SUFFIX
 from admiralty.workspace.config import (
     CONFIG_FILE,
@@ -206,6 +207,7 @@ def write_setup(
     (workspace / WORKSPACE_CLAUDE_MD).write_text(
         render_workspace_claude_md(config), encoding="utf-8"
     )
+    adopted = registry.register(registry.data_dir(), save_dir, workspace)
     return {
         "workspace": str(workspace),
         "campaign": info["campaign"],
@@ -215,6 +217,7 @@ def write_setup(
         "players": [{"name": p.name, "relation": p.relation} for p in config.players],
         "backup_saves": config.backup_saves,
         "archive_moved_to": str(moved) if moved else None,
+        "inbox_adopted": len(adopted),
     }
 
 

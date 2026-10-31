@@ -1,4 +1,4 @@
-"""Command line: admiralty extract | diff | mcp | setup (campaigns, players, write, check) | graph |
+"""Command line: admiralty extract | diff | mcp | watch | setup (campaigns, players, write, check) | graph |
 briefing | claims | blocks | hook."""
 
 from __future__ import annotations
@@ -30,6 +30,14 @@ def main(argv: list[str] | None = None) -> int:
 
     mcp = commands.add_parser("mcp", help="run the MCP server on stdio")
     mcp.add_argument("--workspace", help="Campaign Workspace directory (default: cwd)")
+
+    watch = commands.add_parser(
+        "watch", help="the save service: copy every new save of the game while it runs"
+    )
+    watch.add_argument("--once", action="store_true", help="look once and exit")
+    watch.add_argument("--interval", type=float, default=30, help="seconds between looks")
+    watch.add_argument("--save-root", help="default: the 'save games' folder of the game")
+    watch.add_argument("--data-dir", help="default: ~/.local/share/admiralty")
 
     _add_setup_commands(commands)
 
@@ -158,6 +166,8 @@ def main(argv: list[str] | None = None) -> int:
         return _graph_validate(args)
     if args.command == "briefing":
         return _view(args) if args.briefing_command == "view" else _compose(args)
+    if args.command == "watch":
+        return _watch(args)
     if args.command == "setup":
         return _setup(args)
     if args.command == "mcp":
@@ -385,6 +395,29 @@ def _view(args) -> int:
     except (ViewUnavailable, OSError) as error:
         print(f"admiralty briefing view: {error}", file=sys.stderr)
         return 1
+    return 0
+
+
+def _watch(args) -> int:
+    from admiralty.game import save_root
+    from admiralty.workspace import registry, watch
+
+    root = Path(args.save_root).expanduser() if args.save_root else save_root()
+    base = Path(args.data_dir).expanduser() if args.data_dir else registry.data_dir()
+    watcher = watch.Watcher(root, base)
+
+    def report(copy: watch.Copy) -> None:
+        print(f"{copy.source.parent.name}/{copy.source.name} -> {copy.target}", flush=True)
+
+    if args.once:
+        for copy in watcher.poll():
+            report(copy)
+        return 0
+    print(f"watching {root} every {args.interval:g} s", file=sys.stderr, flush=True)
+    try:
+        watch.run(watcher, args.interval, report)
+    except KeyboardInterrupt:
+        return 0
     return 0
 
 

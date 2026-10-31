@@ -95,8 +95,11 @@ Block 4, knowledge (`docs/plans/grilling.md` topic 3, `docs/proposals/debrief.md
 - [x] 15. Debrief: reserve in months beside a negative balance, systems as a series.
 
 Block 5, the save service (`docs/plans/grilling.md` topic 8):
-- [ ] 16. `admiralty watch`, inbox, ingest on the next read, autosave extract only, setup question,
-      autosave interval hint, systemd user unit.
+- [ ] 16. The save service, steps in `docs/plans/save-service.md`:
+  - [x] 16a. `admiralty watch` (poll, raw copy by in-game date into `saves/` or the inbox), registry.
+  - [ ] 16b. Ingest on the next read; autosave copies keep the extract only.
+  - [ ] 16c. Setup question and autosave interval hint (`settings.txt`).
+  - [ ] 16d. systemd user unit: `watch install` / `uninstall` / `status`.
 - [ ] 17. Desktop reminder (`save_reminder_minutes`).
 
 Block 6, titles (`docs/plans/grilling.md` topic 2):
@@ -112,7 +115,7 @@ Final:
 ## Status
 
 STATUS: ACTIVE
-**Next action:** increment 16 (Block 5, the save service: `admiralty watch`, inbox, ingest on the next read, autosave extract only, setup question, autosave interval hint, systemd user unit; source `docs/plans/grilling.md` topic 8; write `docs/plans/save-service.md` first, the block needs more than two increments).
+**Next action:** increment 16b (ingest on the next read: `workspace/ingest.py`, called from `CampaignService` before `campaign_status`/`document`; extract every `saves/*.sav` whose date has no extract at least as new, delete autosave copies (`.autosave.sav`) after extraction and manual copies when `backup_saves` is off; see `docs/plans/save-service.md`).
 **Blockers:** none.
 
 ## Budget
@@ -150,3 +153,4 @@ STATUS: ACTIVE
 - 2026-10-31 — Increment 13 done: `compose` marks every Cause with no Remedy anywhere below it `unresolved: true` (graph and model Causes; code-computed, schema allows the field on Causes only); the validator errors on a dead-end Cause without the mark and on a mark with a Remedy on the way; `graph check-solution` lists marked Causes as warnings (`0 error(s), N unresolved Cause(s)`, exit 0); the page tags the node "unresolved", draws it dotted, has a legend entry and a panel row (bundle rebuilt); skill step 6 tells Ops to name such a Cause and never prune a Remedy to hide it. Tests added (solution 8, engine 1, skill 1). 945 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19 min), ruff clean. Not checked by eye (Julian's Abnahme: look at a dotted Cause in the live page).
 - 2026-10-31 — Increment 14 done: market domain. Extract section `market` (`extract/market.py`: standing buys and sells of the Tracked Empire from `market.monthly_trades`, `count`, `short` = trades under one month of stock, `sell_cover` / `buy_cover` in months; keys are short because the Zygerrian 2363 extract was 64 characters over its 40k test limit, now about 20 under). New quantity `market` (`country_trade_fee`) with `generated/market.yaml`; `graph/market.yaml`: Goal `market.steady_trade` (flag), Causes (trade pays a deficit, stock runs dry, big trades cost more), Remedies (drop standing trades, buy only the need, keep a reserve, lower the fee), Obstacles (`stock_short` checked by `market.trades_short`, `deficit_returns`, two judgement-only). Clone vats: Cause `food.clone_vats_eat` under `food.positive` (upkeep and growth facts), Remedy `food.pace_clone_vats`, Obstacle `food.vats_already_built`; `pop_growth.growth_buildings` meets `pop_growth.food_deficit`. Playbook Rule `standing-trades-are-not-a-fix` only proposed in `docs/proposals/playbook.md`. Plan `docs/plans/market.md`. `tests/test_market.py` (11). 956 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19.5 min), ruff clean. Not checked on Mireesh (no save of it here): Abnahme for Julian: run Ops on Mireesh 2294.01.01 and look at whether the market Goal and the Clone Vats Cause show up; the price and fee actually in force are not in the save (`price` is 0 in every standing trade), so the graph names the lever, not the figure.
 - 2026-10-31 — Increment 15 done: `net_negative` carries `reserve_months` (stockpile at the end of the interval divided by the negative net, one decimal; no stockpile value, no field); `empire.systems` in the extract counts the systems whose starbase belongs to the Tracked Empire (`owned_system_count`, same path as the map owners; vulkan 1, 19, 35, 37, 45, 47, 47, 47 over the eight saves, no golden value, Julian checks in the Abnahme); `systems` is a series and in `REGIME_SERIES`; older archived extracts without it give no systems interval. Debrief skill and `docs/proposals/debrief.md` updated, tests added (galaxy 1, series 2, epochs 4, skill 1). 964 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19.5 min), ruff clean.
+- 2026-10-31 — Increment 16a done: `docs/plans/save-service.md`; `workspace/watch.py` (`Watcher.poll`: every Campaign folder under "save games", settled saves — 3 s unmodified, meta readable — copied raw as `<in-game date>.sav` / `.autosave.sav` into the registered workspace's `saves/` or `~/.local/share/admiralty/inbox/<folder>/`; first run only records, state in `watch-state.json`), `workspace/registry.py` (`workspaces.json`, `ADMIRALTY_DATA_DIR`; `setup write` registers the folder and adopts its inbox), CLI `admiralty watch [--once] [--interval] [--save-root] [--data-dir]`; conftest points the data dir at a temp folder. `tests/test_watch.py` (5). 969 tests green (3 skips) at `ADMIRALTY_PERF_SLACK=2.5` (19.5 min), ruff clean.

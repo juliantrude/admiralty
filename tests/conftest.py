@@ -28,6 +28,15 @@ def no_browser(monkeypatch):
     monkeypatch.setenv("ADMIRALTY_NO_BROWSER", "1")
 
 
+@pytest.fixture(autouse=True)
+def data_dir(monkeypatch, tmp_path_factory):
+    """The save service keeps its registry, state and inbox under the Player's data folder; no
+    test touches the real one."""
+    path = tmp_path_factory.mktemp("admiralty-data")
+    monkeypatch.setenv("ADMIRALTY_DATA_DIR", str(path))
+    return path
+
+
 def budget(seconds: float) -> float:
     return seconds * PERF_SLACK
 
