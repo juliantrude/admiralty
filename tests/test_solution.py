@@ -565,6 +565,71 @@ def test_a_circle_survives_into_the_solution_graph_with_its_break_point(tmp_path
     assert pruned["circles"] == []
 
 
+# --- every Cause has a Remedy or is marked unresolved -------------------------------------
+
+
+def test_a_cause_with_a_remedy_is_not_marked(graph, good):
+    assert [n["id"] for n in good["nodes"] if n.get("unresolved")] == []
+
+
+def test_pruning_the_last_remedy_marks_the_cause_unresolved(graph, expansion):
+    doc = composed(graph, expansion, prune=[{"id": "t.fine", "reason": "Not for this empire."}])
+    assert node(doc, "t.d")["unresolved"] is True
+    assert "unresolved" not in node(doc, "t.c")
+    assert errors(graph, doc) == []
+
+
+def test_a_cause_is_resolved_by_a_remedy_further_down(graph, expansion):
+    pruned = composed(graph, expansion, prune=[{"id": "t.fine", "reason": "No."}])
+    chained = composed(
+        graph,
+        expansion,
+        prune=[{"id": "t.fine", "reason": "No."}],
+        add_nodes=[{**MODEL_CAUSE, "id": "model.deeper"}],
+        add_edges=[{"from": "t.d", "to": "model.deeper"}, {"from": "model.deeper", "to": "t.ok"}],
+    )
+    assert node(pruned, "t.d")["unresolved"] is True
+    assert "unresolved" not in node(chained, "t.d")
+    assert "unresolved" not in node(chained, "model.deeper")
+
+
+def test_a_model_cause_without_a_remedy_is_marked(graph, expansion):
+    doc = composed(
+        graph,
+        expansion,
+        add_nodes=[MODEL_CAUSE],
+        add_edges=[{"from": "t.g", "to": "model.fleet_upkeep"}],
+    )
+    assert node(doc, "model.fleet_upkeep")["unresolved"] is True
+    assert errors(graph, doc) == []
+
+
+def test_a_dead_end_cause_without_the_mark_is_an_error(graph, expansion):
+    doc = composed(graph, expansion, prune=[{"id": "t.fine", "reason": "No."}])
+    del node(doc, "t.d")["unresolved"]
+    assert any("t.d" in e and "not marked unresolved" in e for e in errors(graph, doc))
+
+
+def test_a_mark_on_a_cause_that_has_a_remedy_is_an_error(graph, good):
+    node(good, "t.c")["unresolved"] = True
+    assert any("t.c" in e and "a Remedy lies on the way" in e for e in errors(graph, good))
+
+
+def test_the_mark_belongs_to_a_cause(graph, good):
+    node(good, "t.ok")["unresolved"] = True
+    assert any("unresolved belongs to a cause" in e for e in errors(graph, good))
+
+
+def test_check_solution_names_the_unresolved_causes(graph, expansion, tmp_path, capsys):
+    doc = composed(graph, expansion, prune=[{"id": "t.fine", "reason": "No."}])
+    out = tmp_path / "solution-graph.json"
+    out.write_text(json.dumps(doc))
+    assert main(["graph", "check-solution", str(out), "--knowledge-root", str(tmp_path)]) == 0
+    text = capsys.readouterr().out
+    assert "warning: solution-graph t.d: unresolved" in text
+    assert "0 error(s), 1 unresolved Cause(s)" in text
+
+
 # --- command line -----------------------------------------------------------------------------
 
 

@@ -104,6 +104,8 @@ def validate_solution_graph(
         if node["type"] != "goal" and node_id not in reached:
             error(f"{WHERE} {node_id}", "orphan: not reachable from any Goal")
 
+    problems += _unresolved_problems(nodes, onward)
+
     for circle in doc["circles"]:
         where = f"{WHERE} circle {circle['id']}"
         for member in circle["members"]:
@@ -141,6 +143,7 @@ def _node_problems(node: dict[str, Any], graph: MechanicsGraph, rules) -> list[P
         ("status", "remedy"),
         ("ratings", "remedy"),
         ("check_state", "obstacle"),
+        ("unresolved", "cause"),
     ):
         if field_name in node and kind != only:
             error(f"{field_name} belongs to a {only}, this is a {kind}")
@@ -198,6 +201,56 @@ def _reach(start: str, onward: dict[str, list[str]]) -> set[str]:
                 seen.add(target)
                 queue.append(target)
     return seen
+
+
+def unresolved_causes(nodes: dict[str, dict[str, Any]], onward: dict[str, list[str]]) -> set[str]:
+    """The Causes with no Remedy anywhere on the way down from them: following the edges from
+    the Cause never meets a Remedy. A Cause whose sub-Causes end in a Remedy is resolved; a
+    sub-Cause without one is unresolved on its own."""
+    return {
+        node_id
+        for node_id, node in nodes.items()
+        if node["type"] == "cause"
+        and not any(nodes[t]["type"] == "remedy" for t in _reach(node_id, onward) if t in nodes)
+    }
+
+
+def _unresolved_problems(nodes, onward) -> list[Problem]:
+    """The rule of reaching a Goal: every Cause on the way has a fitting Remedy or is marked
+    `unresolved`. A mark that does not match the edges is an error too: the code computes it."""
+    problems: list[Problem] = []
+    dead = unresolved_causes(nodes, onward)
+    for node_id, node in sorted(nodes.items()):
+        if node["type"] != "cause":
+            continue
+        where = f"{WHERE} {node_id}"
+        marked = node.get("unresolved") is True
+        if node_id in dead and not marked:
+            problems.append(
+                Problem(
+                    "error",
+                    where,
+                    "a Cause with no Remedy on the way and not marked unresolved: add a Remedy "
+                    "for it or let compose mark it",
+                )
+            )
+        elif marked and node_id not in dead:
+            problems.append(
+                Problem("error", where, "marked unresolved, but a Remedy lies on the way from it")
+            )
+    return problems
+
+
+def unresolved_notes(doc: dict[str, Any]) -> list[Problem]:
+    """One warning per Cause marked unresolved: not an error (the rule is satisfied by the
+    mark), but the Briefing has to name it. For `graph check-solution`."""
+    return [
+        Problem(
+            "warning", f"{WHERE} {n['id']}", "unresolved: no Remedy known for this Cause; name it"
+        )
+        for n in doc["nodes"]
+        if n["type"] == "cause" and n.get("unresolved") is True
+    ]
 
 
 def _key_action_problems(doc, nodes, reach) -> list[Problem]:
@@ -347,6 +400,7 @@ def compose(
         for a, b in sorted(edges)
         if a in types and b in types
     ]
+    _mark_unresolved(ordered, edge_docs)
     known = {(e["from"], e["to"]) for e in expansion["edges"]}
     known |= {(e["from"], e["to"]) for e in overlay.get("add_edges", [])}
     _weigh(edge_docs, {n["id"]: n for n in ordered}, overlay.get("weights", []), known, error)
@@ -373,6 +427,15 @@ def compose(
     if problems:
         raise SolutionInvalid(problems)
     return doc
+
+
+def _mark_unresolved(ordered: list[dict[str, Any]], edge_docs: list[dict[str, Any]]) -> None:
+    """Mark the Causes that no Remedy answers; the page shows them, the model names them."""
+    onward: dict[str, list[str]] = {}
+    for edge in edge_docs:
+        onward.setdefault(edge["from"], []).append(edge["to"])
+    for node_id in unresolved_causes({n["id"]: n for n in ordered}, onward):
+        next(n for n in ordered if n["id"] == node_id)["unresolved"] = True
 
 
 def _weigh(

@@ -134,3 +134,10 @@ def test_a_node_about_another_empire_names_it():
     assert '`"empire": "<its name>"`' in text
     assert "`empires` of the expansion" in text
     assert "Never write `flag` yourself" in text
+
+
+def test_an_unresolved_cause_is_named_and_never_hidden():
+    text = " ".join(SKILL.read_text().split())
+    assert "has a fitting Remedy or `compose` marks it `unresolved`" in text
+    assert "**name that Cause in the answer**" in text
+    assert "never write `unresolved` yourself" in text

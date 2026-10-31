@@ -304,7 +304,7 @@ def _check_epochs(args) -> int:
 
 
 def _check_solution(args) -> int:
-    from admiralty.graph.solution import validate_solution_graph
+    from admiralty.graph.solution import unresolved_notes, validate_solution_graph
 
     doc = _read_json(args.file, "solution graph")
     version = doc.get("game_version") if isinstance(doc, dict) else None
@@ -312,7 +312,10 @@ def _check_solution(args) -> int:
     problems = validate_solution_graph(doc, graph, graph.rules)
     for problem in problems:
         print(problem)
-    print(f"{len(problems)} error(s)")
+    notes = unresolved_notes(doc) if not problems else []
+    for note in notes:
+        print(note)
+    print(f"{len(problems)} error(s), {len(notes)} unresolved Cause(s)")
     return 1 if problems else 0
 
 

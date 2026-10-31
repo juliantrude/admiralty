@@ -332,6 +332,21 @@ def test_a_goal_shows_its_mark_in_the_node_and_the_panel():
 
 
 @needs_browser
+def test_an_unresolved_cause_is_in_words_in_the_legend_and_in_the_panel():
+    graph = chain_graph()
+    cause = next(n for n in graph["nodes"] if n["id"] == "energy.few_producers")
+    cause["unresolved"] = True
+    state = driver.render_engine(graph, after_ready='AdmiraltyEngine.click("energy.few_producers")')
+    node = nodes_of(state)["energy.few_producers"]
+    assert node["unresolved"] is True and node["tag"].endswith("unresolved")
+    assert state["panel"]["unresolved"] is True
+    assert "unresolved" in [e["id"] for e in state["legend"]]
+    plain = driver.render_engine(chain_graph())
+    assert "unresolved" not in [e["id"] for e in plain["legend"]]
+    assert all("unresolved" not in n for n in plain["nodes"])
+
+
+@needs_browser
 def test_a_click_on_an_obstacle_shows_check_state_and_evidence_strings_unchanged():
     graph = rich_graph()
     obstacle = next(n for n in graph["nodes"] if n["id"] == "energy.judged")

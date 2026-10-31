@@ -101,6 +101,7 @@
         "status": {"enum": ["actionable", "pending", "obstructed"]},
         "ratings": {"$ref": "#/$defs/ratings"},
         "check_state": {"enum": ["present", "clear", "unknown", "judgement"]},
+        "unresolved": {"const": true},
         "evidence": {"$ref": "#/$defs/evidence"},
         "rules": {"type": "array", "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"}, "uniqueItems": true}
       },
@@ -127,6 +128,7 @@
         "empire": {"$ref": "#/$defs/text"},
         "flag": {"type": "string", "pattern": "^data:image/png;base64,"},
         "ratings": {"$ref": "#/$defs/ratings"},
+        "unresolved": {"const": true},
         "evidence": {"$ref": "#/$defs/evidence"}
       },
       "allOf": [

@@ -44,3 +44,10 @@ Done: see `docs/proposals/ops.md` entry 10 for the check. The game spells it Wi-
 
 A Cause on the way from an Obstacle to a Goal with no fitting Remedy is marked unresolved in the
 Solution Graph (not hidden), `check-solution` reports it, the skill tells the model to name it.
+
+Done: `compose` marks every Cause with no Remedy anywhere on the way down from it with
+`unresolved: true` (graph and model Causes alike; code computes it, the model cannot write it).
+`validate_solution_graph` errors on a dead-end Cause without the mark and on a mark with a Remedy on
+the way; `graph check-solution` lists the marked ones as warnings (`unresolved_notes`) and exits 0.
+The page tags the node "unresolved", draws it dotted, adds a legend entry and a panel row. The skill
+(step 6) tells Ops to name such a Cause in the answer and never to prune a Remedy to hide it.

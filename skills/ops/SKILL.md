@@ -59,6 +59,11 @@ uv run --quiet --project ${CLAUDE_PLUGIN_ROOT} admiralty graph check-solution ..
    comes back from the code; you never reorder it. Name as many Key Actions as the evidence
    supports (there is no fixed top three). Crisis Goals come first, as the ranking has it.
    If `compose` refuses, read the problem list, fix the overlay and run it again.
+   Every Cause on the way to a Goal has a fitting Remedy or `compose` marks it `unresolved`
+   (the page draws it dotted, `check-solution` lists it as a warning). Add a Remedy from the
+   tools' evidence if one fits; if none does, leave the mark and **name that Cause in the answer**
+   as one nothing in the Playbook or the numbers answers. Never prune a Remedy just to hide it, and
+   never write `unresolved` yourself.
 7. **The answer.** Text and graph have separate jobs (see below). Answer what the Player
    wished for: say what does not work and why, and what is needed first. The Strategy (the path
    from the first Key Actions along their `unlocks` chains to the Goals), the Action Plan and the

@@ -120,6 +120,7 @@
     }
     if (node.type === "remedy" && node.status) parts.push(node.status);
     if (node.type === "obstacle" && node.check_state) parts.push(node.check_state);
+    if (node.type === "cause" && node.unresolved) parts.push("unresolved");
     if (breakPoint) parts.push("\u2691 break point");
     return parts.join(" \u00b7 ");
   }
@@ -272,6 +273,9 @@
         });
       }
     }
+    if (doc.nodes.some((n) => n.type === "cause" && n.unresolved)) {
+      entries.push({ id: "unresolved", label: "Cause unresolved: no Remedy known (dotted border)", fill: T.fill.cause, border: T.border.cause, borderStyle: "dotted" });
+    }
     const checkLook = {
       present: "red line into it",
       unknown: "not checkable from the save, judge it yourself: grey with ?",
@@ -350,7 +354,7 @@
         .map((n) => n.title)
         .sort();
     }
-    for (const field of ["text", "horizon", "crisis", "mark", "empire", "status", "ratings", "check_state", "evidence", "rules", "reason"]) {
+    for (const field of ["text", "horizon", "crisis", "mark", "empire", "status", "ratings", "check_state", "unresolved", "evidence", "rules", "reason"]) {
       if (node[field] !== undefined) panel[field] = node[field];
     }
     const action = doc.key_actions.find((a) => a.node === id);
@@ -478,6 +482,7 @@
       };
       if (node.type === "remedy") data.status = node.status;
       if (node.type === "obstacle") data.checkState = node.check_state;
+      if (node.type === "cause" && node.unresolved) data.unresolved = true;
       if (node.type === "goal") data.crisis = node.crisis === true;
       if (node.type === "goal" && node.mark) data.mark = node.mark;
       if (data.icon === node.flag) data.flag = true; // the icon is the flag of the empire the node is about
@@ -580,7 +585,7 @@
           impact: node.data("impact"),
           faded: node.hasClass("faded"),
         };
-        for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["crisis", "crisis"], ["mark", "mark"], ["flag", "flag"]]) {
+        for (const [key, field] of [["status", "status"], ["check_state", "checkState"], ["unresolved", "unresolved"], ["crisis", "crisis"], ["mark", "mark"], ["flag", "flag"]]) {
           if (node.data(field) !== undefined) state[key] = node.data(field);
         }
         return state;
@@ -701,6 +706,7 @@
       selector: 'node[checkState = "unknown"], node[checkState = "judgement"]',
       style: { "border-style": "dotted", "border-width": 2, "background-color": T.judgeFill, "border-color": T.judgeBorder },
     },
+    { selector: "node[?unresolved]", style: { "border-style": "dotted", "border-width": 3 } },
     { selector: "node[?crisis]", style: { "border-width": 6, "border-color": T.crisis } },
     { selector: "node[circleColor]", style: { "border-width": 5, "border-color": "data(circleColor)" } },
     { selector: "node[?model]", style: { "border-style": "dashed" } },
@@ -879,6 +885,7 @@
       rows.push(["Checked, not in the way", panel.checked_clear]);
     }
     if (panel.check_state !== undefined) rows.push(["Check state", [panel.check_state]]);
+    if (panel.unresolved) rows.push(["Unresolved", ["no Remedy known for this Cause"]]);
     if (panel.evidence !== undefined) rows.push(["Evidence", panel.evidence.length ? panel.evidence : ["none"]]);
     if (panel.rules !== undefined) rows.push(["Playbook Rules", panel.rules.length ? panel.rules : ["none"]]);
     if (panel.reason !== undefined) rows.push(["Reason (model)", [panel.reason]]);
