@@ -267,9 +267,7 @@ def render_workspace_claude_md(config: CampaignConfig) -> str:
     campaign = (config.raw or {}).get("campaign") or config.workspace.name
     if config.mode == "coaching":
         questions = (
-            "Questions about the current game: use the `admiralty:academy` skill (Coaching mode "
-            "is built in milestone M9 and may not be installed yet; if it is missing, answer "
-            "from tool results only and say that Coaching is not available)."
+            "Questions about the current game: use the `admiralty:academy` skill (Coaching)."
         )
     else:
         questions = "Questions about the current game: use the `admiralty:ops` skill."
