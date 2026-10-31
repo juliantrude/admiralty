@@ -14,6 +14,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from admiralty.extract.context import rounded
+
 MAX_PER_INTERVAL = 12
 
 # Series values that are not a gain or a loss in themselves: the rank has its own finding (lower is
@@ -54,7 +56,7 @@ def _discrete(interval: dict[str, Any], last: bool) -> list[dict[str, Any]]:
         if part == "stockpile" and value["to"] == 0 and _at_zero(values, label, value, last):
             found.append(_finding("stockpile_zero", interval, name, value))
         if part == "net" and value["from"] >= 0 > value["to"]:
-            found.append(_finding("net_negative", interval, name, value))
+            found.append(_finding("net_negative", interval, name, value, **_reserve(values, label)))
     rank = values.get("victory_rank")
     if rank and rank["change"]:
         found.append(_finding("rank_change", interval, "victory_rank", rank))
@@ -82,6 +84,14 @@ def _discrete(interval: dict[str, Any], last: bool) -> list[dict[str, Any]]:
             _finding("unemployed_outgrew_pops", interval, "unemployed", unemployed, **extra)
         )
     return sorted(found, key=_size)
+
+
+def _reserve(values: dict[str, Any], label: str) -> dict[str, Any]:
+    """The stock at the end of the interval in months of the negative net, so a cushion is not an alarm."""
+    stock, net = values.get(f"{label} stockpile"), values[f"{label} net"]
+    if stock is None:
+        return {}
+    return {"reserve_months": rounded(stock["to"] / -net["to"], 1)}
 
 
 def _at_zero(values: dict, label: str, stockpile: dict, last: bool) -> bool:

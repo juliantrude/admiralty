@@ -75,6 +75,9 @@ Player Model write in this skill), and you say nothing about Predictions.
    intervals inside it), what went well, what went badly. Take both from `findings` and
    `intervals`; the findings are candidates, not verdicts, so you decide which are good or bad
    and why. Every figure comes from the result; every Display Name is in **bold**.
+   A `net_negative` finding carries `reserve_months`, the stock divided by the balance: a reserve of
+   many months is a cushion, not an alarm, so name it beside the balance. Systems are a series of
+   their own (`systems`); a system lost and won back shows there while `planets` stays the same.
 5. **What to learn.** Two to four lessons, each tied to a finding and saying where it shows
    (which epoch, which interval). In Consulting, also the state of the Goals: from `goals`, the
    first date against the last, which Symptom moved and which did not. Quote a Playbook Rule

@@ -9,7 +9,7 @@ import pytest
 from conftest import LATE, VULKAN, reference_save
 
 from admiralty.extract.context import NO_ID, Context
-from admiralty.extract.galaxy import GATEWAY_TECH, WORMHOLE_TECH, read_galaxy
+from admiralty.extract.galaxy import GATEWAY_TECH, WORMHOLE_TECH, owned_system_count, read_galaxy
 from admiralty.extract.header import resolve_tracked_empire
 from admiralty.extract.names import UnresolvedName
 from admiralty.extract.save import Save
@@ -111,6 +111,25 @@ def test_owner_comes_from_the_starbase_and_only_empires_count():
     galaxy = build(known=ALL)
     assert galaxy.systems[2].owner == 7 and galaxy.systems[2].owner_name == "Neighbour"
     assert galaxy.systems[0].owner is None
+
+
+def test_the_systems_an_empire_holds_are_counted_through_their_starbases():
+    gamestate = {
+        "galactic_object": {
+            0: system("Alpha", 0, starbase=50),
+            1: system("Beta", 10, starbase=51),
+            2: system("Gamma", 20),
+        },
+        "starbase_mgr": {"starbases": {50: {"station": 60}, 51: {"station": 61}}},
+        "ships": {60: {"fleet": 70}, 61: {"fleet": 71}},
+        "country": {0: country("Home", fleets=[70]), 7: country("Neighbour", fleets=[71])},
+    }
+    ctx = Context(save=Save(Path("x.sav"), {}, gamestate), loc=Names(), game=None)
+    assert (owned_system_count(ctx, 0), owned_system_count(ctx, 7), owned_system_count(ctx, 5)) == (
+        1,
+        1,
+        0,
+    )
 
 
 def test_a_wormhole_with_both_ends_known_links_the_systems_and_names_the_missing_tech():

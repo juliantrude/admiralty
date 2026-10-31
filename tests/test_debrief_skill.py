@@ -70,6 +70,12 @@ def test_skill_keeps_the_hard_rules():
     assert "`between`" in text
 
 
+def test_the_skill_tells_the_reserve_in_months_and_the_systems_series():
+    text = SKILL.read_text()
+    assert "`reserve_months`" in text and "cushion, not an alarm" in text
+    assert "`systems`" in text
+
+
 def test_the_coaching_branch_asks_first_and_stays_inside_m8():
     text = SKILL.read_text()
     assert "ask the Player for **their own assessment**" in text

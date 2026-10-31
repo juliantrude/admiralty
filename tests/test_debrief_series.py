@@ -28,7 +28,18 @@ from admiralty.workspace.config import CampaignConfig
 DATES = ["2200.01.01", "2220.04.26", "2245.01.23", "2259.12.29", "2298.03.11"]
 
 
-def doc(date, *, planets=2, pops=100, military=1000, wars=(), timeline=(), total=None, **header):
+def doc(
+    date,
+    *,
+    planets=2,
+    systems=2,
+    pops=100,
+    military=1000,
+    wars=(),
+    timeline=(),
+    total=None,
+    **header,
+):
     return {
         "schema": 1,
         "header": {
@@ -42,6 +53,7 @@ def doc(date, *, planets=2, pops=100, military=1000, wars=(), timeline=(), total
             "economy_power": 50,
             "tech_power": 40,
             "victory_rank": 6,
+            "systems": systems,
         },
         "resources": {
             "energy": {"label": "Energy Credits", "stockpile": 200.5, "net": -3.25},
@@ -160,9 +172,29 @@ def test_series_values_are_flat_and_use_the_display_name_labels():
     assert values["naval_capacity_used"] == 10 and values["naval_capacity_max"] == 20
     assert values["traditions"] == 1 and values["ascension_perks"] == 0
     assert values["wars_running"] == 0 and values["victory_rank"] == 6
+    assert values["systems"] == 2
     assert values["Energy Credits stockpile"] == 200.5 and values["Energy Credits net"] == -3.25
     assert values["Alloys net"] == 0
     assert "energy net" not in values  # the key is not a name
+
+
+def test_systems_move_while_the_planets_stay_the_same():
+    older, newer = doc("2200.01.01", planets=3, systems=5), doc("2220.01.01", planets=3, systems=2)
+    (interval,) = build_intervals([older, newer])
+    assert interval["values"]["planets"]["change"] == 0
+    assert interval["values"]["systems"] == {
+        "from": 5,
+        "to": 2,
+        "change": -3,
+        "change_pct": -60.0,
+    }
+
+
+def test_an_archived_extract_without_the_systems_count_gives_no_systems_interval():
+    old = doc("2200.01.01")
+    del old["empire"]["systems"]
+    (interval,) = build_intervals([old, doc("2220.01.01")])
+    assert "systems" not in interval["values"]
 
 
 def test_a_value_the_extract_lacks_is_left_out():

@@ -132,6 +132,14 @@ def test_a_sign_flip_is_a_regime_change_and_a_zero_growth_is_not():
     assert not [r for r in reasons if r.startswith("pops -0.2/yr")]
 
 
+def test_systems_lost_and_won_back_are_a_regime_change_while_the_planets_stay_put():
+    lost = interval("2200.01.01", "2210.01.01", 10, planets=(5, 5), systems=(20, 10))  # -1/yr
+    won = interval("2210.01.01", "2220.01.01", 10, planets=(5, 5), systems=(10, 20))  # +1/yr
+    candidates = build_candidates([], [lost, won], "2200.01.01", "2220.01.01")
+    regime = pick(candidates, "between", "2200.01.01", "2220.01.01")
+    assert regime["reasons"] == ["systems -1/yr -> 1/yr"]
+
+
 def test_only_the_regime_series_count():
     slow = interval("2200.01.01", "2210.01.01", 10, traditions=(1, 2), tech_power=(10, 20))
     fast = interval("2210.01.01", "2220.01.01", 10, traditions=(2, 9), tech_power=(20, 90))
@@ -332,6 +340,44 @@ def test_the_biggest_percent_movers_come_first_and_each_finding_carries_the_chan
     pops = findings[0]
     assert pops["interval"] == {"from": "2200.01.01", "to": "2220.01.01"}
     assert (pops["from"], pops["to"], pops["change"], pops["change_pct"]) == (100, 300, 200, 200.0)
+
+
+def test_a_net_that_turned_negative_names_the_reserve_in_months():
+    findings = build_findings(
+        [
+            interval(
+                "2200.01.01",
+                "2220.01.01",
+                20,
+                **{"Energy Credits stockpile": (6000, 6600), "Energy Credits net": (10, -55)},
+            )
+        ]
+    )
+    (net,) = [f for f in findings if f["kind"] == "net_negative"]
+    assert net["reserve_months"] == 120.0  # 6600 / 55
+
+
+def test_a_net_negative_without_a_stockpile_value_names_no_reserve():
+    findings = build_findings(
+        [interval("2200.01.01", "2220.01.01", 20, **{"Energy Credits net": (10, -55)})]
+    )
+    (net,) = [f for f in findings if f["kind"] == "net_negative"]
+    assert "reserve_months" not in net
+
+
+def test_an_empty_stockpile_under_a_negative_net_has_a_reserve_of_zero_months():
+    findings = build_findings(
+        [
+            interval(
+                "2200.01.01",
+                "2220.01.01",
+                20,
+                **{"Alloys stockpile": (0, 0), "Alloys net": (1, -2)},
+            )
+        ]
+    )
+    (net,) = [f for f in findings if f["kind"] == "net_negative"]
+    assert net["reserve_months"] == 0
 
 
 def test_victory_rank_and_wars_running_are_no_percent_movers():

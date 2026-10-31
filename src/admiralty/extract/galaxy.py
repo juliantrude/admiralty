@@ -89,6 +89,11 @@ def system_owners(ctx: Context) -> dict[int, int]:
     return owners
 
 
+def owned_system_count(ctx: Context, country_id: int) -> int:
+    """How many systems the empire holds through a starbase (the Systems series of Debrief)."""
+    return sum(1 for owner in system_owners(ctx).values() if owner == country_id)
+
+
 def known_systems(country: dict[str, Any]) -> set[int]:
     return set(as_list(block(country.get("terra_incognita")).get("systems")))
 

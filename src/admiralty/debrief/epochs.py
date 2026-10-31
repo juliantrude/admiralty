@@ -19,7 +19,7 @@ from admiralty.debrief.series import build_intervals, merge_timeline, timeline_i
 
 # The regime change rule: the growth per year of one of these series values in an interval differs
 # from the interval before by more than REGIME_FACTOR (both nonzero), or its sign flips.
-REGIME_SERIES = ("planets", "pops", "military_power", "economy_power")
+REGIME_SERIES = ("planets", "systems", "pops", "military_power", "economy_power")
 REGIME_FACTOR = 2
 
 # An epoch longer than this with a candidate strictly inside it draws a warning.

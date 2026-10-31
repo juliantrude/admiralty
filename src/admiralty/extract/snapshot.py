@@ -23,6 +23,7 @@ from admiralty.extract.computed.tradition_trees import (
 )
 from admiralty.extract.computed.unlocks import unlocks
 from admiralty.extract.context import Context
+from admiralty.extract.galaxy import owned_system_count
 from admiralty.extract.header import build_header, resolve_tracked_empire
 from admiralty.extract.market import market
 from admiralty.extract.names import Localisation
@@ -151,6 +152,7 @@ class Snapshot:
                 "economy_power": round(country.get("economy_power", 0)),
                 "tech_power": round(country.get("tech_power", 0)),
                 "victory_rank": country.get("victory_rank"),
+                "systems": owned_system_count(ctx, self.country_id),
             },
             "resources": data.economy(ctx, country),
             "market": market(ctx, self.country_id, country),

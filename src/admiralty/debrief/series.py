@@ -21,6 +21,7 @@ from admiralty.graph.metrics import dig
 # Series value -> dotted path into the extract. `len:` counts a list.
 SCALARS: dict[str, str] = {
     "planets": "len:planets",
+    "systems": "empire.systems",
     "pops": "pops.total",
     "unemployed": "pops.unemployed",
     "military_power": "empire.military_power",
