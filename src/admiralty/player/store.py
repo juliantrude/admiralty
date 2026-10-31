@@ -114,6 +114,12 @@ def level_of(model: dict[str, Any], concept: str) -> str:
     return model["concepts"].get(concept, {}).get("level", NEW)
 
 
+def state_of(model: dict[str, Any], concept: str) -> dict[str, Any]:
+    """The model's entry for a concept; one never seen is New with nothing behind it."""
+    fresh = {"level": NEW, "peak": NEW, "last_change": None, "drops": 0, "hatch_uses": 0}
+    return {**fresh, **model["concepts"].get(concept, {})}
+
+
 def replay(history: Iterable[dict[str, Any]]) -> dict[str, Any]:
     """Fold events into the model: per concept its level, the last change, drops and hatch uses."""
     concepts: dict[str, dict[str, Any]] = {}
@@ -124,10 +130,12 @@ def replay(history: Iterable[dict[str, Any]]) -> dict[str, Any]:
         if kind not in ("level", "drop", "hatch") or not isinstance(concept, str):
             continue
         entry = concepts.setdefault(
-            concept, {"level": NEW, "last_change": None, "drops": 0, "hatch_uses": 0}
+            concept, {"level": NEW, "peak": NEW, "last_change": None, "drops": 0, "hatch_uses": 0}
         )
         if kind in ("level", "drop") and event.get("level") in LEVELS:
             entry["level"] = event["level"]
+            if LEVELS.index(entry["level"]) > LEVELS.index(entry["peak"]):
+                entry["peak"] = entry["level"]
             entry["last_change"] = {
                 "seq": event.get("seq"),
                 "date": event.get("date"),
