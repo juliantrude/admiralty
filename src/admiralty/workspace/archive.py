@@ -78,6 +78,10 @@ class Archive:
             raise
         return True
 
+    def current(self, date: str, source_mtime: float) -> bool:
+        """True when the extract of `date` was made from a save at least as new as this one."""
+        return _not_older(self.extracts / f"{_check_date(date)}{EXTRACT_SUFFIX}", source_mtime)
+
     def has(self, date: str) -> bool:
         return (self.extracts / f"{_check_date(date)}{EXTRACT_SUFFIX}").is_file()
 

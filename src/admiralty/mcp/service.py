@@ -4,6 +4,7 @@ the workspace turn log (read by the Unverified Claim check, M7)."""
 
 from __future__ import annotations
 
+import contextlib
 import json
 import threading
 import time
@@ -24,6 +25,7 @@ from admiralty.graph.expand import catalogue, expand_graph
 from admiralty.graph.mechanics import GraphInvalid, GraphMissing, MechanicsGraph
 from admiralty.workspace.archive import Archive
 from admiralty.workspace.config import CampaignConfig
+from admiralty.workspace.ingest import ingest, waiting
 from admiralty.workspace.turnlog import count_lines, turn_log_path
 
 STALE_AFTER_SECONDS = 10 * 60  # a save older than this in real time: ask for a new one
@@ -50,6 +52,7 @@ class CampaignService:
         self._lock = threading.RLock()  # the warm-up thread and tool calls share the caches
         self.archive = Archive(config.workspace)
         self._archive_warnings: dict[str, str] = {}  # save file name -> why it was not archived
+        self._failed_copies: set[tuple[str, float]] = set()  # raw copies not tried again unchanged
         self._graphs: dict[str, MechanicsGraph] = {}  # by game version, loaded on first use
         self._log_lock = threading.Lock()
 
@@ -98,6 +101,7 @@ class CampaignService:
         key = (str(ref.path), ref.mtime, planet_detail)
         with self._lock:
             if key not in self._documents:
+                self.ingest()  # before the save is parsed: ingesting drops the cached gamestate
                 if planet_detail:
                     self.document(ref)  # every save that is read is archived, compact form
                 self._documents[key] = self.snapshot(ref).document(planet_detail)
@@ -123,9 +127,44 @@ class CampaignService:
         else:
             self._archive_warnings.pop(ref.path.name, None)
 
+    def ingest(self) -> list[str]:
+        """Extract the raw copies the save service left in saves/ (workspace/ingest.py). Never
+        fails the tool call: what cannot be read stays and shows up in the warnings. Returns the
+        in-game dates that were added to the archive."""
+        with self._lock:
+            copies = {p.name: p.stat().st_mtime for _, p, _ in waiting(self.archive)}
+            if not copies:
+                self._failed_copies.clear()
+                return []
+            self._failed_copies = {(n, m) for n, m in self._failed_copies if copies.get(n) == m}
+            result = ingest(
+                self.archive,
+                self._extract_copy,
+                self.config.backup_saves,
+                skip=lambda path, mtime: (path.name, mtime) in self._failed_copies,
+            )
+            for name in copies.keys() - self._failed_names() - result.problems.keys():
+                self._archive_warnings.pop(name, None)  # read now, or nothing to complain about
+            self._archive_warnings.update(result.problems)
+            for name in result.problems:
+                with contextlib.suppress(OSError):  # the copy vanished meanwhile
+                    self._failed_copies.add((name, (self.archive.saves / name).stat().st_mtime))
+            for name, message in result.problems.items():
+                self.log("archive", {"save": name}, {"error": message})
+            return result.extracted
+
+    def _failed_names(self) -> set[str]:
+        return {name for name, _ in self._failed_copies}
+
+    def _extract_copy(self, path: Path) -> dict[str, Any]:
+        self._snapshot = None  # one gamestate in memory at a time
+        ctx = self.extractor.context(path)
+        return Snapshot(self.extractor, ctx, self.config.empire).document()
+
     # --- tools ----------------------------------------------------------------------------
 
     def campaign_status(self) -> dict[str, Any]:
+        self.ingest()
         ref = self.newest()
         header = self.document(ref)["header"]
         age = ref.age_seconds
@@ -301,6 +340,7 @@ class CampaignService:
         alone answers. A save older than the newest archived date is read but the frame stays
         on the archive, and the result warns."""
         warnings: list[str] = []
+        self.ingest()
         try:
             ref = self.find(save)
         except FileNotFoundError:

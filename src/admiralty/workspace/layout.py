@@ -4,7 +4,8 @@
     campaign.yaml   the Campaign Setup
     CLAUDE.md       generated; routes to the skill of the chosen mode
     archive/        one extract per in-game date (workspace/archive.py)
-    saves/          backup copies of the saves that were read
+    saves/          backup copies of the saves that were read, and raw copies of the save
+                    service that wait for their extract (workspace/ingest.py)
     briefings/      the current Briefing and its history (workspace/briefings.py), made on demand
     predictions/    reserved for Coaching mode (M9), created so the layout is stable
     .admiralty/    machine state: turn log, Unverified Claim blocks

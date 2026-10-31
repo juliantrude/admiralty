@@ -29,6 +29,13 @@ copied while the game runs is lost for Debrief. Today only a save that is read g
   `admiralty setup write` adds the entry. A folder without an entry goes to
   `~/.local/share/admiralty/inbox/<folder name>/`. Writing the entry moves the inbox of that
   folder into the new workspace's `saves/`.
+- **Ingest (16b):** `CampaignService.ingest` runs before a new document is built, in
+  `campaign_status` and in `retrospective`. A copy is extracted when its date has no extract made
+  from a save at least as new (mtime compare, as in the archive); then an autosave copy is
+  deleted, a manual copy only when `backup_saves` is off. A copy that fails (half written,
+  other empire) stays, goes to the warnings of `campaign_status` and the turn log, and is not
+  parsed again until its mtime changes. Ingest runs before the requested save is parsed because
+  it drops the cached gamestate.
 - **All paths are parameters** (`state_dir`), so tests run on artificial folders and never touch the
   Player's home.
 - **Fair Play / Archive:** the watcher only copies files; it never parses a gamestate and so
