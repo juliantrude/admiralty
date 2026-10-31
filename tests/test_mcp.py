@@ -108,7 +108,8 @@ def test_tools_log_every_result(tmp_path, save_dir, monkeypatch):
     assert set(tools) == {
         "campaign_status", "empire_overview", "planets", "planet", "economy",
         "military", "routes_to", "progression", "timeline", "compare", "expand_graph",
-        "retrospective",
+        "retrospective", "academy_open", "academy_attempt", "academy_next", "academy_escape",
+        "academy_close", "prediction_add", "prediction_check", "rendezvous_set", "player_model",
     }  # fmt: skip
     assert "svc" not in json.dumps(tools["planet"].input_schema)
 

@@ -1,5 +1,5 @@
 """Command line: admiralty extract | diff | mcp | watch | setup (campaigns, players, autosave, write, check) | graph |
-briefing | claims | blocks | hook."""
+briefing | claims | blocks | academy | hook."""
 
 from __future__ import annotations
 
@@ -159,7 +159,11 @@ def main(argv: list[str] | None = None) -> int:
         "pretooluse", help="Refuse writes to the Player Model folder (Write, Edit, Bash)"
     )
 
+    _add_academy_commands(commands)
+
     args = parser.parse_args(argv)
+    if args.command == "academy":
+        return _academy(args)
     if args.command == "hook":
         if args.hook_event == "pretooluse":
             from admiralty.player.guard import pretooluse
@@ -205,6 +209,58 @@ def main(argv: list[str] | None = None) -> int:
     json.dump(result, sys.stdout, ensure_ascii=False, indent=1)
     print(f"\n# {time.perf_counter() - start:.2f} s", file=sys.stderr)
     return 0
+
+
+def _add_academy_commands(commands) -> None:
+    """`admiralty academy <tool>`: the Academy tools of the MCP server, by the same names (academy_open is
+    `open`, prediction_add is `prediction-add`). JSON on stdout, a refused call is a message on stderr, exit 1."""
+    academy = commands.add_parser(
+        "academy", help="the Academy tools of a Coaching Campaign (JSON on stdout)"
+    ).add_subparsers(dest="academy_command", required=True)
+
+    def tool(name: str, text: str):
+        sub = academy.add_parser(name, help=text)
+        sub.add_argument("--workspace", default=".", help="Campaign Workspace (default: cwd)")
+        return sub
+
+    opened = tool("open", "start or continue the Drill")
+    opened.add_argument("--goal", action="append", default=[], help="a Goal id (repeatable)")
+    attempt = tool("attempt", "report the outcome of the Player's answer")
+    attempt.add_argument("outcome")
+    attempt.add_argument("--text")
+    attempt.add_argument("--situation")
+    attempt.add_argument(
+        "--domain-unnamed", action="store_true", help="the question did not name the domain"
+    )
+    attempt.add_argument(
+        "--support-path", help="for `support`: the extract path the answer rests on"
+    )
+    attempt.add_argument("--support-op")
+    attempt.add_argument("--support-value", type=float)
+    tool("next", "next topic")
+    escape = tool("escape", "the Escape Hatch")
+    escape.add_argument("situation")
+    escape.add_argument("--concept", action="append", default=[], help="a further Cause id covered")
+    close = tool("close", "end the Drill with the summary")
+    close.add_argument("summary")
+    add = tool("prediction-add", "store a Prediction")
+    add.add_argument("kind")
+    add.add_argument("sentence")
+    add.add_argument("--check-date")
+    add.add_argument("--basis", default="foretold")
+    add.add_argument("--subject")
+    add.add_argument("--concept", action="append", default=[])
+    add.add_argument("--expect-path")
+    add.add_argument("--expect-op")
+    add.add_argument("--expect-value", type=float)
+    check = tool("prediction-check", "check the open Predictions, or store the Player's verdict")
+    check.add_argument("--id")
+    check.add_argument("--verdict")
+    check.add_argument("--note")
+    rendezvous = tool("rendezvous-set", "agree on or move the Rendezvous")
+    rendezvous.add_argument("date")
+    rendezvous.add_argument("--save-name")
+    tool("player-model", "what the Coach knows about the Player (read only)")
 
 
 def _add_setup_commands(commands) -> None:
@@ -481,6 +537,71 @@ def _watch(args) -> int:
     except KeyboardInterrupt:
         return 0
     return 0
+
+
+def _academy(args) -> int:
+    from admiralty.mcp.service import CampaignService
+    from admiralty.workspace.config import CampaignConfig, SetupMissing
+
+    workspace = Path(args.workspace).expanduser()
+    tool = args.academy_command.replace("-", "_")
+    if tool in ("open", "attempt", "next", "escape", "close"):
+        tool = f"academy_{tool}"
+    params = _academy_params(args)
+    try:
+        service = CampaignService(CampaignConfig.load(workspace))
+        result = getattr(service.academy, tool)(**params)
+    except (SetupMissing, LookupError, FileNotFoundError, ValueError) as error:
+        print(f"admiralty academy: {error}", file=sys.stderr)
+        return 1
+    _log_result(workspace, tool, {k: v for k, v in params.items() if v is not None}, result)
+    json.dump(result, sys.stdout, ensure_ascii=False, indent=1)
+    print()
+    return 0
+
+
+def _academy_params(args) -> dict:
+    """The keyword arguments of the tool a command stands for."""
+    name = args.academy_command
+    if name == "open":
+        return {"goals": args.goal or None}
+    if name == "attempt":
+        support = None
+        if args.support_path is not None:
+            support = {
+                "path": args.support_path,
+                "op": args.support_op,
+                "value": args.support_value,
+            }
+        return {
+            "outcome": args.outcome,
+            "text": args.text,
+            "domain_named": not args.domain_unnamed,
+            "support": support,
+            "situation": args.situation,
+        }
+    if name == "escape":
+        return {"situation": args.situation, "concepts": args.concept or None}
+    if name == "close":
+        return {"summary": args.summary}
+    if name == "prediction-add":
+        expect = None
+        if args.expect_path is not None:
+            expect = {"path": args.expect_path, "op": args.expect_op, "value": args.expect_value}
+        return {
+            "kind": args.kind,
+            "sentence": args.sentence,
+            "check_date": args.check_date,
+            "basis": args.basis,
+            "subject": args.subject,
+            "concepts": args.concept or None,
+            "expect": expect,
+        }
+    if name == "prediction-check":
+        return {"id": args.id, "verdict": args.verdict, "note": args.note}
+    if name == "rendezvous-set":
+        return {"date": args.date, "save_name": args.save_name}
+    return {}
 
 
 def _setup(args) -> int:

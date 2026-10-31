@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from admiralty.academy.tools import AcademyTools
 from admiralty.debrief.frame import load_campaign, resolve_frame
 from admiralty.debrief.result import build_result, goal_symptoms
 from admiralty.extract import empire as data
@@ -55,6 +56,7 @@ class CampaignService:
         self._failed_copies: set[tuple[str, float]] = set()  # raw copies not tried again unchanged
         self._graphs: dict[str, MechanicsGraph] = {}  # by game version, loaded on first use
         self._log_lock = threading.Lock()
+        self.academy = AcademyTools(self)  # the Coaching tools (Coaching Campaigns only)
 
     def warm_up(self) -> None:
         """Load localisation, game files and the newest save ahead of the first question."""

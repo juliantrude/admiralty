@@ -285,6 +285,16 @@ def raised_dates(workspace: Path, concept: str) -> list[str]:
     return sorted(dates, key=day_number)
 
 
+def raised_concepts(workspace: Path) -> list[str]:
+    """Every concept the Coach ever raised in this Campaign, open and closed Drills, first raised first."""
+    directory = academy_dir(workspace)
+    drills = [*_archive(directory)]
+    current = _read(directory)
+    if current is not None:
+        drills.append(current)
+    return list(dict.fromkeys(t["concept"] for d in drills for t in d["topics"] if t.get("raised")))
+
+
 def evidence_inputs(workspace: Path, concept: str) -> dict[str, Any]:
     """`{"raised": latest date or None, "prompts": all dates}` for `player/evidence.record_evidence`."""
     dates = raised_dates(workspace, concept)

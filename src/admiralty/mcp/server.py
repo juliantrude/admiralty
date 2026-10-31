@@ -194,6 +194,111 @@ def build_server(workspace: str | Path | None = None, warm_up: bool = False) -> 
         until: in-game date. Dates are moved to archived dates and the result names them."""
         return svc.retrospective(since, until, save)
 
+    # The Academy (Coaching Campaigns only; a Consulting Campaign gets an error answer).
+
+    @server.tool()
+    @logged
+    def academy_open(svc: CampaignService, goals: list[str] | None = None) -> dict[str, Any]:
+        """Start or continue the Drill, the first Academy call of a turn. Checks for a newer save,
+        runs the Snapshot rules on the Player Model (`changes`: level changes and drops to say
+        openly, `ask_once` to ask), names decisions the save announces or shows (`announced`,
+        `happened`), the Rendezvous position, and returns the current topic with its Hint Ladder
+        level and how many topics wait. The topic carries no Cause and no answer until the Ladder
+        reaches its top level. goals: Goal ids the Player named; without them (and no open Drill)
+        the answer lists the Goals to pick from."""
+        return svc.academy.academy_open(goals)
+
+    @server.tool()
+    @logged
+    def academy_attempt(
+        svc: CampaignService,
+        outcome: str,
+        text: str | None = None,
+        domain_named: bool = True,
+        support: dict[str, Any] | None = None,
+        situation: str | None = None,
+    ) -> dict[str, Any]:
+        """Report the outcome of the Player's answer to the current topic: cause, remedy, support,
+        miss, partial, full_explanation or escape_hatch. The tool moves the Hint Ladder and the
+        Player Model; the answer says where the Ladder stands and what to announce. support: for
+        outcome `support` the figure of the Snapshot the answer rests on, {path, op, value};
+        text: the Player's answer in a sentence. domain_named: False when the question did not
+        name the domain. situation: required with escape_hatch."""
+        return svc.academy.academy_attempt(outcome, text, domain_named, support, situation)
+
+    @server.tool()
+    @logged
+    def academy_next(svc: CampaignService) -> dict[str, Any]:
+        """Next topic: skips the current one unless it is over. `finished` when none waits."""
+        return svc.academy.academy_next()
+
+    @server.tool()
+    @logged
+    def academy_escape(
+        svc: CampaignService, situation: str, concepts: list[str] | None = None
+    ) -> dict[str, Any]:
+        """The Player asks to just be told: Ladder level 4, the answer is revealed, the Escape
+        Hatch is recorded with its Situation (what the Player was doing when asking).
+        concepts: further Cause ids a full Briefing the Player asked for covered."""
+        return svc.academy.academy_escape(situation, concepts)
+
+    @server.tool()
+    @logged
+    def academy_close(svc: CampaignService, summary: str) -> dict[str, Any]:
+        """End the Drill with the summary of what the Player means to do (two or three
+        sentences). Answers with the proposed Rendezvous (`proposal`) and the one agreed, if any."""
+        return svc.academy.academy_close(summary)
+
+    @server.tool()
+    @logged
+    def prediction_add(
+        svc: CampaignService,
+        kind: str,
+        sentence: str,
+        check_date: str | None = None,
+        basis: str = "foretold",
+        subject: str | None = None,
+        concepts: list[str] | None = None,
+        expect: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Store the Player's Prediction: one sentence about what a decision will achieve. kind:
+        war, ascension_perk, tradition_tree, megastructure, federation or world_designation.
+        check_date: in-game date, at most five years ahead (default two years). basis: foretold
+        (before the decision) or hindsight. expect: {path, op, value} on the extract, to be
+        decided by the data. concepts: Cause ids a confirmed Prediction counts for."""
+        return svc.academy.prediction_add(
+            kind, sentence, check_date, basis, subject, concepts, expect
+        )
+
+    @server.tool()
+    @logged
+    def prediction_check(
+        svc: CampaignService,
+        id: str | None = None,
+        verdict: str | None = None,
+        note: str | None = None,
+    ) -> dict[str, Any]:
+        """Check the open Predictions against the saves: those whose date has come and that carry a
+        measurable expectation are decided; `needs_verdict` lists those the Player must judge.
+        id and verdict (confirmed, refuted, unclear) store the Player's verdict on one Prediction."""
+        return svc.academy.prediction_check(id, verdict, note)
+
+    @server.tool()
+    @logged
+    def rendezvous_set(
+        svc: CampaignService, date: str, save_name: str | None = None
+    ) -> dict[str, Any]:
+        """Agree on the Rendezvous (the proposal of academy_close or the Player's own date, at most
+        five years ahead) or move it. `unchecked` lists open Predictions due after it."""
+        return svc.academy.rendezvous_set(date, save_name)
+
+    @server.tool()
+    @logged
+    def player_model(svc: CampaignService) -> dict[str, Any]:
+        """What the Coach knows about the Player: every Cause with its level, drops and Escape
+        Hatch uses, and the latest events with their reasons. Read only."""
+        return svc.academy.player_model()
+
     return server
 
 
