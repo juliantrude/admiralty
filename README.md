@@ -200,7 +200,8 @@ include empire names and multiplayer player names from your saves.
   tells you when the newest save is old.
 - **No "good for 2260" comparisons yet.** The Benchmarks are an unreviewed draft, and no Briefing
   uses them.
-- **Early software.** Admiralty is at version 0.1 and has mostly been tested by one player.
+- **Early software.** Admiralty has mostly been tested by one player. Its version number follows the
+  Stellaris version it supports, so it says nothing about maturity.
 
 ## Development
 

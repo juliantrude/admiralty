@@ -4,7 +4,7 @@ requires-python = ">=3.14"
 
 [[package]]
 name = "admiralty"
-version = "0.1.0"
+version = "4.5.2"
 source = { editable = "." }
 dependencies = [
     { name = "jsonschema" },
