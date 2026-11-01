@@ -95,7 +95,7 @@ def install(
     return {"unit": str(path), "installed": True, "active": _state(run, "is-active")}
 
 
-def uninstall(unit_dir: Path | None = None, *, run: Systemctl = systemctl) -> dict:
+def uninstall(unit_dir: Path | None = None, *, run: Systemctl | None = None) -> dict:
     run = run or systemctl
     path = (unit_dir or default_unit_dir()) / UNIT_NAME
     existed = path.exists()

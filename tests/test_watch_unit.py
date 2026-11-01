@@ -114,6 +114,7 @@ def test_cli_install_status_uninstall_never_touch_the_real_user_manager(
 
     assert main(["watch", "uninstall", "--unit-dir", units]) == 0
     assert json.loads(capsys.readouterr().out)["removed"] is True
+    assert ["disable", "--now", "admiralty-watch.service"] in systemctl.calls
 
 
 def test_cli_reports_a_refusal_on_stderr(tmp_path, capsys, monkeypatch):
