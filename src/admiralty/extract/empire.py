@@ -409,12 +409,14 @@ def progression(ctx: Context, country: dict[str, Any]) -> dict[str, Any]:
     in_progress = []
     for area in ("physics", "society", "engineering"):
         for item in as_list(tech.get(f"{area}_queue"))[:1]:
+            # A special project in the queue has an id instead of a technology.
+            current = (
+                {"technology": ctx.label(item["technology"])}
+                if "technology" in item
+                else {"special_project": True}
+            )
             in_progress.append(
-                {
-                    "area": area,
-                    "technology": ctx.label(item["technology"]),
-                    "progress": rounded(item.get("progress", 0)),
-                }
+                {"area": area, **current, "progress": rounded(item.get("progress", 0))}
             )
     government = block(country.get("government"))
     return {

@@ -14,6 +14,7 @@ import pytest
 from conftest import SAVES_DIR, VULKAN, budget, reference_save
 from golden_values import PENDING, matches, value
 
+from admiralty.extract import empire
 from admiralty.extract.context import as_list, block
 from admiralty.extract.diff import DiffError, diff_extracts
 from admiralty.extract.snapshot import Extractor, Snapshot
@@ -249,6 +250,24 @@ def test_room_counts_free_district_slots_and_open_jobs(extractor):
         int(astarte["district_limit"]) - sum(d["built"] for d in astarte["districts"].values()) == 1
     )
     assert room["open_jobs_by_output"]["energy"] > 0
+
+
+def test_a_special_project_at_the_head_of_a_research_queue(extractor):
+    # Seen in a 2272 save: the area works on the project, the technology behind it waits.
+    ctx = extractor.context(reference_save(VULKAN, "2259.12.25.sav"))
+    country = Snapshot(extractor, ctx, PLAYER).country
+    queues = {
+        "physics_queue": [{"technology": "tech_lasers_3", "progress": 887.59542}],
+        "engineering_queue": [
+            {"special_project": 25, "progress": 2620.45582},
+            {"technology": "tech_mine_rare_crystals", "progress": 234.33055},
+        ],
+    }
+    tech_status = {**block(country.get("tech_status")), **queues, "society_queue": []}
+    result = empire.progression(ctx, {**country, "tech_status": tech_status})
+    physics, engineering = result["research_in_progress"]
+    assert physics["area"] == "physics" and "technology" in physics
+    assert engineering == {"area": "engineering", "special_project": True, "progress": 2620.46}
 
 
 def test_room_names_the_free_places_planet_by_planet(extractor):
