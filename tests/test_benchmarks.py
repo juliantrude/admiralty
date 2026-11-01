@@ -19,6 +19,7 @@ from admiralty.graph.benchmarks import (
     resolve_source,
 )
 from admiralty.graph.mechanics import KNOWLEDGE_ROOT, validate
+from admiralty.workspace.setup import describe_save
 
 METRICS = {
     "research.income": {"sum": ["a.x", "a.y"]},
@@ -185,17 +186,21 @@ def test_committed_page_matches_the_yaml():
     assert page == render_review_page(benchmarks, {})
 
 
-def test_committed_figures_cover_the_plan_and_name_no_player():
+def test_committed_figures_cover_the_plan():
     benchmarks = load_benchmarks()
     assert set(benchmarks.figures) >= {
         "research_income", "alloys_income", "energy_income", "minerals_income", "food_income",
         "unity_income", "influence_income", "naval_capacity", "pop_count", "planet_count",
     }  # fmt: skip
-    text = (KNOWLEDGE_ROOT / "4.5.2" / "benchmarks.yaml").read_text(encoding="utf-8")
-    for name in ("Plexxi", "Patrick"):
-        assert name not in text
     for entry in benchmarks.figures.values():
         assert entry["provenance"] and entry["observed"]
+
+
+@pytest.mark.saves
+def test_committed_figures_name_no_player():
+    text = (KNOWLEDGE_ROOT / "4.5.2" / "benchmarks.yaml").read_text(encoding="utf-8")
+    for player in describe_save(reference_save(VULKAN, MID))["players"]:
+        assert player["name"].split("_")[0] not in text
 
 
 def test_graph_validate_reports_benchmark_errors(tmp_path):
