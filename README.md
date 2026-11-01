@@ -29,9 +29,11 @@ checksum-safe.
 
 ### Install the plugin
 
+Admiralty comes from the [juliantrude marketplace](https://github.com/juliantrude/claude-plugins):
+
 ```sh
-claude plugin marketplace add juliantrude/admiralty
-claude plugin install admiralty@admiralty
+claude plugin marketplace add juliantrude/claude-plugins
+claude plugin install admiralty@juliantrude
 ```
 
 Then build it once. This compiles the save parser and takes a few minutes the first time; a Rust
@@ -39,7 +41,7 @@ toolchain is downloaded automatically if you have none. Skipping this step works
 session may then start before the build is done.
 
 ```sh
-uv sync --project ~/.claude/plugins/cache/admiralty/admiralty/*/
+uv sync --project ~/.claude/plugins/cache/juliantrude/admiralty/*/
 ```
 
 If Admiralty cannot find your game, set these before you start Claude Code:
