@@ -5,8 +5,9 @@ object to stdin. The fields used (probed on Claude Code, see the plan's open ris
 `session_id`, `prompt_id`, `transcript_path`, `stop_hook_active` (true while the model answers
 after an earlier block of this hook) and `last_assistant_message`, the final answer.
 
-Protocol: allow = no output; block = `{"decision": "block", "reason": ...}` on stdout. Every path
-exits 0: a broken check must not silence the Coach, so an exception is logged to
+Protocol: allow = no output; block = `additionalContext` in `hookSpecificOutput` on stdout, which
+Claude Code answers with another model turn and shows as a "Stop hook feedback" line (the blocked
+answer itself stays off the screen, see `claims/display.py`). Every path exits 0: a broken check must not silence the Coach, so an exception is logged to
 `.admiralty/hook-errors.log` and the answer goes through.
 """
 
@@ -37,7 +38,7 @@ RELEASE_NOTICE = (
 _INSTRUCTION = (
     "Rewrite the answer using only figures and names from the tool results, or call a tool to "
     "get them. For a total, show the addends in the same item or quote the tool's figure. "
-    "Do not mention this check to the Player."
+    "The Player has not seen this answer: give it again in full, and do not mention this check."
 )
 
 
@@ -64,12 +65,31 @@ def stop(stdin: TextIO, stdout: TextIO) -> int:
         workspace = find_workspace(Path(cwd)) if isinstance(cwd, str) and cwd else None
         if workspace is None:
             return 0
-        output = decide(event, workspace)
+        output = _decide_for_display(event, workspace)
         if output is not None:
             stdout.write(json.dumps(output, ensure_ascii=True) + "\n")
     except Exception:  # noqa: BLE001 - the hook must never take the session down
-        _log_error(workspace, traceback.format_exc())
+        log_error(workspace, traceback.format_exc())
     return 0
+
+
+def _decide_for_display(event: dict[str, Any], workspace: Path) -> dict[str, Any] | None:
+    """`decide`, with the verdict handed to the MessageDisplay hook that holds the answer back."""
+    from admiralty.claims import display
+
+    session, shown = event.get("session_id"), event.get("last_assistant_message")
+    shown = shown if isinstance(shown, str) else ""
+    display.stop_began(workspace, session, shown)
+    output = None
+    try:
+        output = decide(event, workspace)
+    finally:
+        display.stop_decided(workspace, session, shown, not is_block(output))
+    return output
+
+
+def is_block(output: dict[str, Any] | None) -> bool:
+    return output is not None and "hookSpecificOutput" in output
 
 
 def decide(event: dict[str, Any], workspace: Path) -> dict[str, Any] | None:
@@ -94,7 +114,12 @@ def decide(event: dict[str, Any], workspace: Path) -> dict[str, Any] | None:
     _append_block(workspace, session, prompt, answer, verdict, active, released)
     if released:
         return {"systemMessage": RELEASE_NOTICE}
-    return {"decision": "block", "reason": block_reason(verdict)}
+    return {
+        "hookSpecificOutput": {
+            "hookEventName": "Stop",
+            "additionalContext": block_reason(verdict),
+        }
+    }
 
 
 def block_reason(verdict: Verdict) -> str:
@@ -204,7 +229,7 @@ def _append_block(
         handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 
-def _log_error(workspace: Path | None, trace: str) -> None:
+def log_error(workspace: Path | None, trace: str) -> None:
     if workspace is None:
         return
     try:

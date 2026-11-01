@@ -51,6 +51,11 @@ def run(payload) -> tuple[int, dict | None]:
     return code, json.loads(text) if text else None
 
 
+def reason_of(output: dict | None) -> str | None:
+    """What the hook tells the model, None when it does not block."""
+    return (output or {}).get("hookSpecificOutput", {}).get("additionalContext")
+
+
 def blocks(workspace: Path) -> list[dict]:
     path = workspace / ".admiralty" / "blocks.jsonl"
     if not path.exists():
@@ -71,11 +76,10 @@ def test_a_planted_wrong_district_count_is_blocked_and_logged(tmp_path):
     workspace = make_workspace(tmp_path)
     code, output = run(event(workspace, "You have 12 city districts."))
     assert code == 0
-    assert output["decision"] == "block"
-    reason = output["reason"]
+    reason = reason_of(output)
     assert '"12"' in reason and "You have 12 city districts." in reason
     assert "nearest value in the tool results: 11" in reason
-    assert "show the addends" in reason and "Do not mention this check" in reason
+    assert "show the addends" in reason and "do not mention this check" in reason
     (line,) = blocks(workspace)
     assert (line["session_id"], line["prompt_id"]) == ("s1", "p1")
     assert (line["stop_hook_active"], line["released"]) == (False, False)
@@ -124,7 +128,7 @@ def test_tool_results_before_the_session_start_are_not_evidence(tmp_path):
         encoding="utf-8",
     )
     _, output = run(event(workspace, "11 city districts.", transcript_path=str(transcript)))
-    assert output["decision"] == "block"
+    assert reason_of(output)
 
 
 def test_the_final_answer_comes_from_the_transcript_when_the_input_lacks_it(tmp_path):
@@ -151,16 +155,16 @@ def test_the_final_answer_comes_from_the_transcript_when_the_input_lacks_it(tmp_
     payload = event(workspace, "", transcript_path=str(transcript))
     del payload["last_assistant_message"]
     _, output = run(payload)
-    assert output["decision"] == "block" and '"14"' in output["reason"]
-    assert "99" not in output["reason"]
+    assert '"14"' in reason_of(output)
+    assert "99" not in reason_of(output)
 
 
 def test_a_long_list_of_findings_is_cut_in_the_reason(tmp_path):
     workspace = make_workspace(tmp_path, entries=())
     answer = " ".join(f"Fleet {n} has {n + 500} ships." for n in range(1, 13))
     _, output = run(event(workspace, answer))
-    assert output["reason"].startswith("24 unverified")
-    assert "and 16 more" in output["reason"]
+    assert reason_of(output).startswith("24 unverified")
+    assert "and 16 more" in reason_of(output)
 
 
 # --- the loop guard ---------------------------------------------------------------------------
@@ -172,8 +176,8 @@ def test_the_hook_blocks_twice_then_releases_with_a_notice(tmp_path):
     _, first = run(event(workspace, wrong))
     _, second = run(event(workspace, wrong, stop_hook_active=True))
     code, third = run(event(workspace, wrong, stop_hook_active=True))
-    assert first["decision"] == second["decision"] == "block"
-    assert code == 0 and "decision" not in third
+    assert reason_of(first) and reason_of(second)
+    assert code == 0 and not reason_of(third)
     assert "could not verify" in third["systemMessage"]
     assert [(b["stop_hook_active"], b["released"]) for b in blocks(workspace)] == [
         (False, False),
@@ -188,9 +192,9 @@ def test_a_new_answer_starts_counting_again(tmp_path):
     for _ in range(3):
         run(event(workspace, wrong, stop_hook_active=True))
     _, output = run(event(workspace, wrong, prompt_id="p2"))
-    assert output["decision"] == "block"
+    assert reason_of(output)
     _, output = run(event(workspace, wrong, prompt_id="p2", stop_hook_active=True))
-    assert output["decision"] == "block"
+    assert reason_of(output)
 
 
 def test_a_rewritten_answer_that_checks_out_passes_after_a_block(tmp_path):
@@ -214,7 +218,7 @@ def test_the_workspace_is_found_from_a_subdirectory(tmp_path):
     sub = workspace / "notes" / "deep"
     sub.mkdir(parents=True)
     _, output = run(event(sub, "You have 14 city districts."))
-    assert output["decision"] == "block"
+    assert reason_of(output)
     assert len(blocks(workspace)) == 1
 
 
@@ -262,7 +266,7 @@ def test_cli_hook_stop_reads_stdin_and_prints_the_decision(tmp_path, monkeypatch
         sys, "stdin", io.StringIO(json.dumps(event(workspace, "14 city districts.")))
     )
     assert main(["hook", "stop"]) == 0
-    assert json.loads(capsys.readouterr().out)["decision"] == "block"
+    assert reason_of(json.loads(capsys.readouterr().out))
 
 
 def test_the_installed_command_blocks_in_a_subprocess(tmp_path):
@@ -281,7 +285,7 @@ def test_the_installed_command_blocks_in_a_subprocess(tmp_path):
         timeout=60,
     )
     assert done.returncode == 0, done.stderr
-    assert json.loads(done.stdout)["decision"] == "block"
+    assert reason_of(json.loads(done.stdout))
 
 
 # --- wiring -----------------------------------------------------------------------------------

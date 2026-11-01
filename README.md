@@ -164,7 +164,9 @@ dark and light:
 ## What else it does
 
 - **Checks its own claims.** Answers are blocked and rewritten when a number, date or name in them
-  does not appear in the game data. This is the Unverified Claim check.
+  does not appear in the game data. This is the Unverified Claim check. An answer appears only after
+  the check and all at once, so you see just the last version, plus a `Stop hook feedback` line when
+  one was rewritten. This needs Claude Code 2.1.314 or newer; older versions ignore the feedback.
 - **Separates code from judgement.** Code extracts the numbers, walks the graph and ranks the actions.
   The model reads the Situation, chooses the Goals and explains.
 - **Plans routes.** It finds the ways to a target empire or system, with the empires you would cross
